@@ -127,6 +127,10 @@ jobs:
         if: steps.find-prs.outputs.has-prs == 'true'
         run: npm ci
 
+      - name: Ensure Svelte Kit is in sync
+        if: steps.find-prs.outputs.has-prs == 'true'
+        run: npx svelte-kit sync
+
       - name: Run validation tests
         if: steps.find-prs.outputs.has-prs == 'true'
         run: |
