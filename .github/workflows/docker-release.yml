@@ -39,6 +39,9 @@ jobs:
     if: |
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.conclusion == 'success'
+    outputs:
+      image-tags: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build-and-push.outputs.digest }}
 
     steps:
       - name: Checkout repository
@@ -198,34 +201,21 @@ jobs:
     needs: build-and-push
 
     steps:
-      - name: Determine image tag for scanning
-        id: determine-tag
+      - name: Extract first pushed tag for scanning
+        id: extract-tag
         run: |
-          # Determine which tag to scan based on event type
-          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/tags/* ]]; then
-            # For tag pushes, use the tag name without 'refs/tags/'
-            TAG="${{ github.ref_name }}"
-          elif [[ "${{ github.event_name }}" == "release" ]]; then
-            # For releases, use the tag name
-            TAG="${{ github.event.release.tag_name }}"
-          elif [[ "${{ github.event_name }}" == "workflow_run" ]]; then
-            # For workflow_run (after semantic-release), use 'latest' or 'main'
-            TAG="latest"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            # For manual dispatch, use provided input or default
-            TAG="${{ inputs.tag }}"
-          else
-            # Fallback to branch name
-            TAG="${{ github.ref_name }}"
-          fi
+          # Get the first tag from the build-and-push job output
+          TAGS="${{ needs.build-and-push.outputs.image-tags }}"
+          # Extract first tag (first line)
+          FIRST_TAG=$(echo "$TAGS" | head -n1)
 
-          echo "tag=${TAG}" >> $GITHUB_OUTPUT
-          echo "Scanning image with tag: ${TAG}"
+          echo "tag=${FIRST_TAG}" >> $GITHUB_OUTPUT
+          echo "Scanning image: ${FIRST_TAG}"
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ steps.determine-tag.outputs.tag }}
+          image-ref: ${{ steps.extract-tag.outputs.tag }}
           format: 'sarif'
           output: 'trivy-results.sarif'
 
@@ -238,7 +228,7 @@ jobs:
       - name: Run Trivy vulnerability scanner (JSON)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ steps.determine-tag.outputs.tag }}
+          image-ref: ${{ steps.extract-tag.outputs.tag }}
           format: 'json'
           output: 'trivy-results.json'
 
