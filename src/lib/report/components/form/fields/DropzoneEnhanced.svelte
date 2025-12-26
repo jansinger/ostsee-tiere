@@ -62,8 +62,7 @@
 	// Initialisierung der Upload-Map mit bestehenden Formulardaten
 	let uploadedFiles = $derived($form.uploadedFiles);
 
-	// Direkte Referenz auf mediaStore.mediaFiles für Reaktivität
-	// WICHTIG: Nicht als $derived definieren, da wir den Store direkt mutieren müssen
+	// Direkte, abgeleitete Referenz auf mediaStore.mediaFiles für Reaktivität
 	let mediaFiles = $derived(mediaStore.mediaFiles);
 
 	// Hilfsfunktion zum Aktualisieren des mediaStore
@@ -186,10 +185,12 @@
 					deleteFile(mediaFile.uid);
 					createToast('error', 'Fehler beim Hochladen der Datei');
 				});
+			// Capture current positionMediaFile state to avoid timing-dependent behavior
+			const hadPositionMediaFileAtCreation = !!positionMediaFile;
 			// Trigger positionMediaFile update when metadata is ready
 			mediaFile.metadata.then(() => {
 				// Trigger store update to refresh derived values
-				if (!positionMediaFile && mediaFile.hasPosition()) {
+				if (!hadPositionMediaFileAtCreation && mediaFile.hasPosition()) {
 					updateMediaFiles([...mediaStore.mediaFiles]);
 				}
 			});
@@ -420,7 +421,7 @@
 		{#await positionMediaFile.metadata}
 			<!-- Loading state while metadata is being extracted -->
 			<div class="bg-base-100 border-base-300 rounded-lg border p-4">
-				<div class="flex items-center justify-center gap-2 py-8">
+				<div class="flex items-center justify-center gap-2 py-8" role="status" aria-label="Analysiere Bilddaten">
 					<div class="loading loading-spinner loading-md text-primary"></div>
 					<span class="text-base-content/60 text-sm">Analysiere Bilddaten...</span>
 				</div>
@@ -479,7 +480,7 @@
 
 					<!-- Show upload progress if still uploading -->
 					{#await positionMediaFile.uploadedFile}
-						<div class="mt-3 flex items-center justify-center gap-2">
+						<div class="mt-3 flex items-center justify-center gap-2" role="status" aria-label="Upload läuft">
 							<div class="loading loading-spinner loading-sm"></div>
 							<span class="text-base-content/60 text-sm">Upload läuft im Hintergrund...</span>
 						</div>
@@ -539,7 +540,7 @@
 
 					<!-- Show upload progress if still uploading -->
 					{#await positionMediaFile.uploadedFile}
-						<div class="mt-3 flex items-center justify-center gap-2">
+						<div class="mt-3 flex items-center justify-center gap-2" role="status" aria-label="Upload läuft">
 							<div class="loading loading-spinner loading-sm"></div>
 							<span class="text-base-content/60 text-sm">Upload läuft im Hintergrund...</span>
 						</div>
