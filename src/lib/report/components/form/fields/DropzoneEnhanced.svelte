@@ -62,19 +62,37 @@
 	// Initialisierung der Upload-Map mit bestehenden Formulardaten
 	let uploadedFiles = $derived($form.uploadedFiles);
 
-	let mediaFiles: MediaFile[] = $derived(mediaStore.mediaFiles);
+	// Direkte Referenz auf mediaStore.mediaFiles für Reaktivität
+	// WICHTIG: Nicht als $derived definieren, da wir den Store direkt mutieren müssen
+	let mediaFiles = $derived(mediaStore.mediaFiles);
+
+	// Hilfsfunktion zum Aktualisieren des mediaStore
+	function updateMediaFiles(newFiles: MediaFile[]): void {
+		mediaStore.mediaFiles = newFiles;
+	}
 
 	$effect.pre(() => {
 		logger.info('Updating media files from uploaded files');
+		const currentMediaFiles = mediaStore.mediaFiles;
+		let hasChanges = false;
+		const updatedFiles = [...currentMediaFiles];
+
 		uploadedFiles.forEach((uf) => {
-			if (!mediaFiles.some((mf) => mf.uid === uf.uid)) {
-				mediaFiles = [...mediaFiles, MediaFile.fromUploadedFile(uf, referenceId)];
+			if (!currentMediaFiles.some((mf) => mf.uid === uf.uid)) {
+				updatedFiles.push(MediaFile.fromUploadedFile(uf, referenceId));
+				hasChanges = true;
 			}
 		});
+
+		if (hasChanges) {
+			updateMediaFiles(updatedFiles);
+		}
 	});
 
-	// Mediafile für Positionsdaten (wird beim Zufügen neuer Dateien geändert)
-	let positionMediaFile = $derived(mediaFiles.find((mf) => mf.hasPosition()));
+	// Mediafile für Positionsdaten - bevorzuge Dateien mit GPS, aber zeige auch erste Datei ohne GPS
+	let positionMediaFile = $derived(
+		mediaFiles.find((mf) => mf.hasPosition()) ?? (isPositionStep ? mediaFiles[0] : undefined)
+	);
 
 	/**
 	 * Trigger a change event for the specified form field.
@@ -100,9 +118,7 @@
 	 */
 	function deleteFile(uid: string) {
 		uploadedFiles = uploadedFiles.filter((uf) => uf.uid !== uid);
-		mediaFiles = mediaFiles.filter((mf) => mf.uid !== uid);
-		// Update position media file
-		//positionMediaFile = mediaFiles.find((mf) => mf.hasPosition());
+		updateMediaFiles(mediaStore.mediaFiles.filter((mf) => mf.uid !== uid));
 		triggerChange('uploadedFiles', uploadedFiles);
 	}
 
@@ -157,30 +173,29 @@
 		if (filesToProcess.length === 0) return;
 
 		// Add new files to mediaFiles and process them
-		mediaFiles = mediaFiles.concat(
-			filesToProcess.map((file) => {
-				const mediaFile = MediaFile.createMediaFile(referenceId, file, isPositionStep);
-				mediaFile.uploadedFile
-					.then((uploadedFile) => {
-						// Update form data
-						addUploadedFile(uploadedFile);
-						createToast('success', 'Datei erfolgreich hochgeladen.');
-					})
-					.catch((error) => {
-						logger.error({ error }, 'Fehler beim Hochladen der Datei.');
-						deleteFile(mediaFile.uid);
-						createToast('error', 'Fehler beim Hochladen der Datei');
-					});
-				// Trigger positionMediaFile update
-				mediaFile.metadata.then(() => {
-					// Trigger $derived update
-					if (!positionMediaFile && mediaFile.hasPosition()) {
-						mediaFiles = [...mediaFiles];
-					}
+		const newMediaFiles = filesToProcess.map((file) => {
+			const mediaFile = MediaFile.createMediaFile(referenceId, file, isPositionStep);
+			mediaFile.uploadedFile
+				.then((uploadedFile) => {
+					// Update form data
+					addUploadedFile(uploadedFile);
+					createToast('success', 'Datei erfolgreich hochgeladen.');
+				})
+				.catch((error) => {
+					logger.error({ error }, 'Fehler beim Hochladen der Datei.');
+					deleteFile(mediaFile.uid);
+					createToast('error', 'Fehler beim Hochladen der Datei');
 				});
-				return mediaFile;
-			})
-		);
+			// Trigger positionMediaFile update when metadata is ready
+			mediaFile.metadata.then(() => {
+				// Trigger store update to refresh derived values
+				if (!positionMediaFile && mediaFile.hasPosition()) {
+					updateMediaFiles([...mediaStore.mediaFiles]);
+				}
+			});
+			return mediaFile;
+		});
+		updateMediaFiles([...mediaStore.mediaFiles, ...newMediaFiles]);
 	}
 
 	/**
@@ -239,11 +254,8 @@
 		try {
 			dropzoneFiles = [];
 
-			// Clear media files
-			mediaFiles = [];
-
-			// Update wird nicht ausgelöst
-			//positionMediaFile = undefined;
+			// Clear media files im Store
+			updateMediaFiles([]);
 
 			// Alle hochgeladenen Dateien vom Server löschen
 			deleteMultipleFiles(uploadedFiles);
@@ -403,9 +415,17 @@
 		</div>
 	{/if}
 
-	<!-- Map View (when GPS data available) or Unified Dropzone -->
+	<!-- Map View (when GPS data available) or Preview/Dropzone -->
 	{#if isPositionStep && positionMediaFile}
-		{#await positionMediaFile.metadata then positionMediafileMetadata}
+		{#await positionMediaFile.metadata}
+			<!-- Loading state while metadata is being extracted -->
+			<div class="bg-base-100 border-base-300 rounded-lg border p-4">
+				<div class="flex items-center justify-center gap-2 py-8">
+					<div class="loading loading-spinner loading-md text-primary"></div>
+					<span class="text-base-content/60 text-sm">Analysiere Bilddaten...</span>
+				</div>
+			</div>
+		{:then positionMediafileMetadata}
 			{#if positionMediafileMetadata.exifData?.latitude && positionMediafileMetadata.exifData?.longitude}
 				<!-- Map Display with GPS Position -->
 				<div class="bg-base-100 border-base-300 rounded-lg border p-4">
@@ -446,6 +466,66 @@
 							readonly={true}
 							--map-height="300px"
 						/>
+					</div>
+
+					{#if positionMediaFile.timestamp}
+						<div class="mt-3 text-center">
+							<p class="text-base-content/60 text-xs flex items-center justify-center gap-1">
+								<Icon icon="lucide:calendar" width="12" height="12" class="text-primary" />
+								Aufnahmezeit: {positionMediaFile.timestamp.toLocaleString('de-DE')}
+							</p>
+						</div>
+					{/if}
+
+					<!-- Show upload progress if still uploading -->
+					{#await positionMediaFile.uploadedFile}
+						<div class="mt-3 flex items-center justify-center gap-2">
+							<div class="loading loading-spinner loading-sm"></div>
+							<span class="text-base-content/60 text-sm">Upload läuft im Hintergrund...</span>
+						</div>
+					{/await}
+				</div>
+			{:else}
+				<!-- Image uploaded but no GPS data - show preview with info -->
+				<div class="bg-base-100 border-base-300 rounded-lg border p-4">
+					<div class="mb-3 flex items-center justify-between">
+						<div class="flex items-center gap-2">
+							<Icon icon="lucide:image" class="h-[18px] w-[18px] text-primary" />
+							<h4 class="text-sm font-semibold">Foto hochgeladen</h4>
+						</div>
+						{#await positionMediaFile.uploadedFile}
+							<div class="loading loading-spinner loading-sm text-primary"></div>
+						{:then}
+							<button
+								type="button"
+								class="btn btn-ghost btn-xs text-error hover:bg-error hover:text-white"
+								onclick={handleClear}
+							>
+								Neu auswählen
+							</button>
+						{/await}
+					</div>
+
+					<!-- Thumbnail preview -->
+					{#if positionMediaFile.thumbnail}
+						<div class="bg-base-200 flex h-40 items-center justify-center overflow-hidden rounded-lg">
+							<img
+								src={positionMediaFile.thumbnail}
+								alt={positionMediaFile.fileName}
+								class="h-full w-full object-contain"
+							/>
+						</div>
+					{/if}
+
+					<!-- Warning: No GPS data -->
+					<div class="alert alert-warning mt-3">
+						<Icon icon="lucide:map-pin-off" width="20" />
+						<div>
+							<h4 class="font-medium">Keine GPS-Daten im Foto</h4>
+							<p class="text-sm">
+								Bitte wählen Sie die Position manuell auf der Karte oder laden Sie ein Foto mit GPS-Daten hoch.
+							</p>
+						</div>
 					</div>
 
 					{#if positionMediaFile.timestamp}
