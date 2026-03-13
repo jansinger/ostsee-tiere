@@ -44,7 +44,7 @@ export async function GET({ url, cookies }: { url: URL; cookies: Cookies }) {
 
 		authUser.roles = claims[rolesClaim] || [];
 
-		setAuthCookie(cookies, authUser);
+		await setAuthCookie(cookies, authUser);
 		cookies.delete('csrfState', { path: '/' });
 	} catch (err) {
 		logger.info({ err }, 'Failed to get token');

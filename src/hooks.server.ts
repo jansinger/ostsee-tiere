@@ -8,7 +8,7 @@ import type { User } from '$lib/types/index';
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { randomBytes } from 'crypto';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
 // Dynamic environment variables for Docker runtime
 const COOKIE_NAME = env.COOKIE_NAME ?? 'auth-cookie';
@@ -54,9 +54,11 @@ const authentication: Handle = async ({ event, resolve }) => {
 	if (cookie) {
 		try {
 			// Extend the cookie
-			user = jwt.verify(cookie, SESSION_SECRET) as User;
+			const secret = new TextEncoder().encode(SESSION_SECRET);
+			const { payload } = await jwtVerify(cookie, secret);
+			user = payload as unknown as User;
 			logger.debug({ userSub: user?.sub }, 'Authenticated user');
-			setAuthCookie(event.cookies, user);
+			await setAuthCookie(event.cookies, user);
 			// Set user in locals for access in components
 			event.locals.user = user;
 			// Set admin flag for easier access

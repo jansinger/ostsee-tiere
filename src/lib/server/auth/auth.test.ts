@@ -1,13 +1,15 @@
 import type { User } from '$lib/types/User';
 import type { Cookies } from '@sveltejs/kit';
 import { error, redirect } from '@sveltejs/kit';
-import jwt from 'jsonwebtoken';
-import { JwksClient } from 'jwks-rsa';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock all external dependencies
-vi.mock('jsonwebtoken');
-vi.mock('jwks-rsa');
+vi.mock('jose', () => ({
+	createRemoteJWKSet: vi.fn(),
+	jwtVerify: vi.fn(),
+	decodeJwt: vi.fn(),
+	SignJWT: vi.fn()
+}));
 vi.mock('@sveltejs/kit', async () => {
 	const actual = await vi.importActual('@sveltejs/kit');
 	return {
@@ -44,59 +46,27 @@ vi.mock('./crypto.js', () => ({
 	decrypt: vi.fn()
 }));
 
+// Import jose mocks
+import { createRemoteJWKSet, decodeJwt, jwtVerify, SignJWT } from 'jose';
+
 // Import the functions to test after mocking
 import {
 	clearAuthCookie,
 	getAuthUser,
 	getPKCEVerifierFromCookie,
 	getToken,
-	getTokenClaims,
 	requireUserRole,
 	setAuthCookie,
 	setCsrfCookie,
-	setPKCECookie,
-	verifyToken
+	setPKCECookie
 } from './auth';
 import { decrypt, encrypt, getPKCEChallengeData } from './crypto.js';
 
 describe('auth.ts', () => {
-	let mockJwt: {
-		verify: ReturnType<typeof vi.fn>;
-		decode: ReturnType<typeof vi.fn>;
-		sign: ReturnType<typeof vi.fn>;
-	};
-	let mockJwksClient: {
-		getSigningKey: ReturnType<typeof vi.fn>;
-		getKeys: ReturnType<typeof vi.fn>;
-		getSigningKeys: ReturnType<typeof vi.fn>;
-	};
 	let mockCookies: Cookies;
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-
-		// Setup JWT mocks
-		mockJwt = {
-			verify: vi.fn(),
-			decode: vi.fn(),
-			sign: vi.fn()
-		};
-		// @ts-expect-error - Vitest mock type incompatibility
-		vi.mocked(jwt).verify = mockJwt.verify;
-		// @ts-expect-error - Vitest mock type incompatibility
-		vi.mocked(jwt).decode = mockJwt.decode;
-		// @ts-expect-error - Vitest mock type incompatibility
-		vi.mocked(jwt).sign = mockJwt.sign;
-
-		// Setup JWKS client mock
-		mockJwksClient = {
-			getSigningKey: vi.fn(),
-			getKeys: vi.fn(),
-			getSigningKeys: vi.fn()
-		};
-		vi.mocked(JwksClient).mockImplementation(function() {
-			return mockJwksClient as unknown as JwksClient;
-		});
 
 		// Setup cookies mock
 		mockCookies = {
@@ -109,6 +79,19 @@ describe('auth.ts', () => {
 
 		// Setup global fetch mock
 		global.fetch = vi.fn();
+
+		// Setup SignJWT mock as a class constructor
+		const mockSignJWTInstance = {
+			setProtectedHeader: vi.fn().mockReturnThis(),
+			sign: vi.fn().mockResolvedValue('signed-jwt-token')
+		};
+		vi.mocked(SignJWT).mockImplementation(function () {
+			return mockSignJWTInstance as unknown as InstanceType<typeof SignJWT>;
+		} as any);
+	});
+
+	beforeEach(() => {
+		vi.resetModules();
 	});
 
 	afterEach(() => {
@@ -117,154 +100,71 @@ describe('auth.ts', () => {
 
 	describe('verifyToken', () => {
 		it('should successfully verify a valid token', async () => {
+			const { verifyToken } = await import('./auth');
 			const testPayload = { sub: 'test-user', email: 'test@example.com' };
-			const mockKey = { getPublicKey: () => 'public-key' };
 
-			mockJwksClient.getSigningKey.mockImplementation(
-				(
-					_kid: string,
-					callback: (err: Error | null, key?: { getPublicKey: () => string }) => void
-				) => {
-					callback(null, mockKey);
-				}
-			);
-
-			mockJwt.verify.mockImplementation(
-				(
-					_token: string,
-					_keyFn: (header: unknown, callback: (err: Error | null, key?: string) => void) => void,
-					_options: unknown,
-					callback: (err: Error | null, payload?: unknown) => void
-				) => {
-					callback(null, testPayload);
-				}
-			);
+			vi.mocked(createRemoteJWKSet).mockReturnValue(vi.fn() as any);
+			vi.mocked(jwtVerify).mockResolvedValue({
+				payload: testPayload,
+				protectedHeader: { alg: 'RS256' }
+			} as any);
 
 			const result = await verifyToken('valid-token');
 
 			expect(result).toEqual(testPayload);
-			expect(mockJwt.verify).toHaveBeenCalledWith(
-				'valid-token',
-				expect.any(Function),
-				{},
-				expect.any(Function)
-			);
+			expect(jwtVerify).toHaveBeenCalledWith('valid-token', expect.any(Function), {
+				issuer: 'https://test-domain.auth0.com/',
+				audience: 'test-client-id',
+				algorithms: ['RS256']
+			});
 		});
 
 		it('should reject invalid tokens', async () => {
-			const testError = new Error('Invalid token');
+			const { verifyToken } = await import('./auth');
 
-			mockJwt.verify.mockImplementation(
-				(
-					_token: string,
-					_keyFn: (header: unknown, callback: (err: Error | null, key?: string) => void) => void,
-					_options: unknown,
-					callback: (err: Error | null, payload?: unknown) => void
-				) => {
-					callback(testError);
-				}
-			);
+			vi.mocked(createRemoteJWKSet).mockReturnValue(vi.fn() as any);
+			vi.mocked(jwtVerify).mockRejectedValue(new Error('Invalid token'));
 
 			await expect(verifyToken('invalid-token')).rejects.toThrow('Invalid token');
 		});
 
 		it('should handle JWKS key retrieval errors', async () => {
-			const keyError = new Error('Key not found');
+			const { verifyToken } = await import('./auth');
 
-			mockJwksClient.getSigningKey.mockImplementation(
-				(
-					_kid: string,
-					callback: (err: Error | null, key?: { getPublicKey: () => string }) => void
-				) => {
-					callback(keyError);
-				}
-			);
-
-			mockJwt.verify.mockImplementation(
-				(
-					_token: string,
-					keyFn: (header: unknown, callback: (err: Error | null, key?: string) => void) => void,
-					_options: unknown,
-					callback: (err: Error | null, payload?: unknown) => void
-				) => {
-					// Simulate the key function being called
-					const mockHeader = { kid: 'test-kid' };
-					keyFn(mockHeader, (err: Error | null) => {
-						if (err) callback(err);
-					});
-				}
-			);
+			vi.mocked(createRemoteJWKSet).mockReturnValue(vi.fn() as any);
+			vi.mocked(jwtVerify).mockRejectedValue(new Error('Key not found'));
 
 			await expect(verifyToken('token-with-bad-key')).rejects.toThrow('Key not found');
-		});
-
-		it('should use cached key when available', async () => {
-			const testPayload = { sub: 'test-user' };
-			const mockKey = { getPublicKey: () => 'public-key' };
-
-			// First call to cache the key
-			mockJwksClient.getSigningKey.mockImplementationOnce(
-				(
-					_kid: string,
-					callback: (err: Error | null, key?: { getPublicKey: () => string }) => void
-				) => {
-					callback(null, mockKey);
-				}
-			);
-
-			mockJwt.verify.mockImplementation(
-				(
-					_token: string,
-					_keyFn: (header: unknown, callback: (err: Error | null, key?: string) => void) => void,
-					_options: unknown,
-					callback: (err: Error | null, payload?: unknown) => void
-				) => {
-					callback(null, testPayload);
-				}
-			);
-
-			await verifyToken('first-token');
-
-			// Second call should use cached key
-			mockJwksClient.getSigningKey.mockImplementationOnce(
-				(
-					_kid: string,
-					callback: (err: Error | null, key?: { getPublicKey: () => string }) => void
-				) => {
-					// Should use cached key, so callback with cached value
-					callback(null, undefined); // key should be null but cached key should be used
-				}
-			);
-
-			const result = await verifyToken('second-token');
-			expect(result).toEqual(testPayload);
 		});
 	});
 
 	describe('getTokenClaims', () => {
 		it('should decode token claims', async () => {
+			const { getTokenClaims } = await import('./auth');
 			const testClaims = { sub: 'test-user', email: 'test@example.com', roles: ['user'] };
-			mockJwt.decode.mockReturnValue(testClaims);
+			vi.mocked(decodeJwt).mockReturnValue(testClaims as any);
 
 			const result = await getTokenClaims('valid-token');
 
 			expect(result).toEqual(testClaims);
-			expect(mockJwt.decode).toHaveBeenCalledWith('valid-token');
+			expect(decodeJwt).toHaveBeenCalledWith('valid-token');
 		});
 
 		it('should return null for empty token', async () => {
+			const { getTokenClaims } = await import('./auth');
 			const result = await getTokenClaims('');
 
 			expect(result).toBeNull();
-			expect(mockJwt.decode).not.toHaveBeenCalled();
+			expect(decodeJwt).not.toHaveBeenCalled();
 		});
 
 		it('should return null for undefined token', async () => {
+			const { getTokenClaims } = await import('./auth');
 			// Test with undefined token (edge case)
 			const result = await getTokenClaims(undefined as any);
 
 			expect(result).toBeNull();
-			expect(mockJwt.decode).not.toHaveBeenCalled();
+			expect(decodeJwt).not.toHaveBeenCalled();
 		});
 	});
 
@@ -324,7 +224,7 @@ describe('auth.ts', () => {
 	});
 
 	describe('getAuthUser', () => {
-		it('should return user from valid cookie', () => {
+		it('should return user from valid cookie', async () => {
 			const testUser: User = {
 				nickname: 'testuser',
 				name: 'Test User',
@@ -342,35 +242,47 @@ describe('auth.ts', () => {
 			};
 
 			vi.mocked(mockCookies.get).mockReturnValue('valid-jwt-token');
-			mockJwt.decode.mockReturnValue(testUser);
+			vi.mocked(jwtVerify).mockResolvedValue({
+				payload: testUser,
+				protectedHeader: { alg: 'HS256' }
+			} as any);
 
-			const result = getAuthUser(mockCookies);
+			const result = await getAuthUser(mockCookies);
 
 			expect(result).toEqual(testUser);
 			expect(mockCookies.get).toHaveBeenCalledWith('test-auth-cookie');
-			expect(mockJwt.decode).toHaveBeenCalledWith('valid-jwt-token');
+			expect(jwtVerify).toHaveBeenCalledWith('valid-jwt-token', expect.any(Uint8Array));
 		});
 
-		it('should return null when no cookie exists', () => {
+		it('should return null when no cookie exists', async () => {
 			vi.mocked(mockCookies.get).mockReturnValue(undefined);
 
-			const result = getAuthUser(mockCookies);
+			const result = await getAuthUser(mockCookies);
 
 			expect(result).toBeNull();
-			expect(mockJwt.decode).not.toHaveBeenCalled();
+			expect(jwtVerify).not.toHaveBeenCalled();
 		});
 
-		it('should return null when cookie is empty', () => {
+		it('should return null when cookie is empty', async () => {
 			vi.mocked(mockCookies.get).mockReturnValue('');
 
-			const result = getAuthUser(mockCookies);
+			const result = await getAuthUser(mockCookies);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null when token is invalid', async () => {
+			vi.mocked(mockCookies.get).mockReturnValue('invalid-token');
+			vi.mocked(jwtVerify).mockRejectedValue(new Error('Invalid token'));
+
+			const result = await getAuthUser(mockCookies);
 
 			expect(result).toBeNull();
 		});
 	});
 
 	describe('setAuthCookie', () => {
-		it('should set auth cookie with correct parameters', () => {
+		it('should set auth cookie with correct parameters', async () => {
 			const testUser: User = {
 				nickname: 'testuser',
 				name: 'Test User',
@@ -387,13 +299,10 @@ describe('auth.ts', () => {
 				roles: ['user']
 			};
 
-			const signedToken = 'signed-jwt-token';
-			mockJwt.sign.mockReturnValue(signedToken);
+			await setAuthCookie(mockCookies, testUser);
 
-			setAuthCookie(mockCookies, testUser);
-
-			expect(mockJwt.sign).toHaveBeenCalledWith(testUser, 'test-session-secret');
-			expect(mockCookies.set).toHaveBeenCalledWith('test-auth-cookie', signedToken, {
+			expect(SignJWT).toHaveBeenCalledWith({ ...testUser });
+			expect(mockCookies.set).toHaveBeenCalledWith('test-auth-cookie', 'signed-jwt-token', {
 				httpOnly: true,
 				sameSite: 'lax',
 				maxAge: 60 * 60 * 24 * 1, // 1 Tag

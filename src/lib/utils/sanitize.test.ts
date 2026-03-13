@@ -1,26 +1,30 @@
 import { describe, it, expect } from 'vitest';
 import { sanitizeHtml, sanitizeText } from '$lib/utils/sanitize';
 
-describe('sanitizeHtml', () => {
-	it('preserves safe tags', () => {
-		const input = '<a href="https://example.com">link</a> <em>emphasis</em> <strong>bold</strong> <br>';
+/**
+ * Note: Tests run in a server environment (no window/DOM).
+ * sanitizeHtml and sanitizeText use the server-side fallback (tag stripping).
+ * Client-side DOMPurify sanitization is tested via E2E tests.
+ */
+
+describe('sanitizeHtml (server fallback)', () => {
+	it('strips all tags on server (SSR fallback)', () => {
+		const input = '<a href="https://example.com">link</a> <em>emphasis</em> <strong>bold</strong>';
 		const result = sanitizeHtml(input);
-		expect(result).toContain('<a href="https://example.com">link</a>');
-		expect(result).toContain('<em>emphasis</em>');
-		expect(result).toContain('<strong>bold</strong>');
-		expect(result).toContain('<br>');
+		expect(result).toBe('link emphasis bold');
 	});
 
-	it('strips script tags', () => {
+	it('strips script tags and their content', () => {
 		const result = sanitizeHtml('<script>alert("xss")</script>Safe text');
 		expect(result).not.toContain('<script>');
+		expect(result).not.toContain('alert');
 		expect(result).toContain('Safe text');
 	});
 
 	it('strips event handlers', () => {
 		const result = sanitizeHtml('<a href="#" onclick="alert(1)">click</a>');
 		expect(result).not.toContain('onclick');
-		expect(result).toContain('<a href="#">click</a>');
+		expect(result).toContain('click');
 	});
 
 	it('strips javascript: URLs', () => {
@@ -40,24 +44,18 @@ describe('sanitizeHtml', () => {
 		expect(sanitizeHtml('')).toBe('');
 	});
 
-	it('preserves copyright HTML patterns from SpeciesIdentificationHelp', () => {
+	it('preserves text content from copyright HTML', () => {
 		const copyright =
 			'© <a href="https://commons.wikimedia.org/wiki/File:Example.jpg">Author</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>, via Wikimedia Commons';
 		const result = sanitizeHtml(copyright);
-		expect(result).toContain('<a href="https://commons.wikimedia.org/wiki/File:Example.jpg">Author</a>');
-		expect(result).toContain('<a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>');
+		expect(result).toContain('Author');
+		expect(result).toContain('CC BY-SA 3.0');
 		expect(result).toContain('via Wikimedia Commons');
 	});
 
 	it('strips dangerous tags like iframe', () => {
 		const result = sanitizeHtml('<iframe src="https://evil.com"></iframe>');
 		expect(result).not.toContain('<iframe');
-	});
-
-	it('preserves span and p tags', () => {
-		const result = sanitizeHtml('<span class="highlight">text</span><p>paragraph</p>');
-		expect(result).toContain('<span class="highlight">text</span>');
-		expect(result).toContain('<p>paragraph</p>');
 	});
 });
 
@@ -103,11 +101,11 @@ describe('sanitizeText - map popup XSS scenarios', () => {
 	});
 
 	it('removes svg onload payload entirely', () => {
-		// DOMPurify strips SVG elements and their text content in text-only mode
 		const result = sanitizeText('<svg onload=alert(1)>evil</svg>Klaus');
 		expect(result).not.toContain('<svg');
 		expect(result).not.toContain('onload');
 		expect(result).not.toContain('evil');
+		expect(result).toContain('Klaus');
 	});
 
 	it('preserves normal Unicode names', () => {

@@ -16,9 +16,7 @@ const getJwksUrl = () => env.JWKS_URL ?? '';
 const getSessionSecret = () => env.SESSION_SECRET ?? '';
 const getNodeEnv = () => env.NODE_ENV ?? 'development';
 import { error, redirect, type Cookies } from '@sveltejs/kit';
-import type { JwtHeader, SigningKeyCallback } from 'jsonwebtoken';
-import jwt from 'jsonwebtoken';
-import { JwksClient } from 'jwks-rsa';
+import { createRemoteJWKSet, decodeJwt, jwtVerify, SignJWT } from 'jose';
 import { decrypt, encrypt, getPKCEChallengeData } from './crypto.js';
 
 /**
@@ -49,10 +47,36 @@ export const isSuperAdminUser = (user: User | null | undefined): boolean => {
 };
 
 /**
- * Cache für den öffentlichen Schlüssel von Auth0's JWT-Signierung.
- * Wird gespeichert um wiederholte Netzwerkanfragen zu vermeiden.
+ * Lazy-initialized JWKS (JSON Web Key Set) für Auth0 Token-Verifizierung.
+ * createRemoteJWKSet cached Keys intern.
  */
-let cachedKey: string | undefined = undefined;
+let jwks: ReturnType<typeof createRemoteJWKSet> | undefined;
+function getJWKS(): ReturnType<typeof createRemoteJWKSet> {
+	if (!jwks) {
+		const jwksUrl = getJwksUrl();
+
+		if (!jwksUrl) {
+			throw new Error(
+				'Configuration error: JWKS_URL environment variable is not set. ' +
+				'Please configure the JWKS endpoint URL for Auth0 token verification.'
+			);
+		}
+
+		let url: URL;
+		try {
+			url = new URL(jwksUrl);
+		} catch (_e) {
+			throw new Error(
+				`Configuration error: JWKS_URL environment variable is invalid ("${jwksUrl}"). ` +
+				'It must be a valid absolute URL (e.g. "https://example.auth0.com/.well-known/jwks.json").',
+				{ cause: _e }
+			);
+		}
+
+		jwks = createRemoteJWKSet(url);
+	}
+	return jwks;
+}
 
 /**
  * Dauer der Session-Cookies in Sekunden.
@@ -67,33 +91,6 @@ const COOKIE_DURATION_SECONDS = 60 * 60 * 24 * 1; // 1 Tag
 const COOKIE_AUTHORIZE_DURATION_SECONDS = 60 * 10; // 10 Minuten
 
 /**
- * Holt den öffentlichen Schlüssel von Auth0's JWKS (JSON Web Key Set) Endpoint.
- *
- * Diese Funktion wird von der JWT-Verifizierung verwendet, um den korrekten
- * öffentlichen Schlüssel basierend auf der Key ID (kid) im JWT-Header zu finden.
- * Der Schlüssel wird gecacht, um redundante Netzwerkanfragen zu vermeiden.
- *
- * @param header - Der JWT-Header, der die Key ID (kid) enthält
- * @param callback - Callback-Funktion, die mit dem Schlüssel oder Fehler aufgerufen wird
- */
-function getKey(header: JwtHeader, callback: SigningKeyCallback) {
-	const client = new JwksClient({ jwksUri: getJwksUrl() });
-
-	client.getSigningKey(header.kid, function (err, key) {
-		if (err) {
-			callback(err);
-		}
-		if (cachedKey) {
-			callback(null, cachedKey);
-		} else {
-			const signingKey = key?.getPublicKey();
-			cachedKey = signingKey;
-			callback(null, signingKey);
-		}
-	});
-}
-
-/**
  * Verifiziert ein JWT-Token von Auth0.
  *
  * Diese Funktion überprüft die Signatur des Tokens gegen den öffentlichen
@@ -106,27 +103,14 @@ function getKey(header: JwtHeader, callback: SigningKeyCallback) {
  * @param token - Das zu verifizierende JWT-Token
  * @returns Ein Promise mit dem verifizierten und decodierten Token-Payload
  * @throws Wirft einen Fehler wenn die Verifizierung fehlschlägt
- *
- * @example
- * ```typescript
- * try {
- *   const user = await verifyToken<User>(idToken);
- *   console.log('Verified user:', user.email);
- * } catch (error) {
- *   console.error('Token verification failed:', error);
- * }
- * ```
  */
 export async function verifyToken<T>(token: string): Promise<T> {
-	return new Promise((resolve, reject) => {
-		jwt.verify(token, getKey, {}, (err, payload) => {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(payload as T);
-			}
-		});
+	const { payload } = await jwtVerify(token, getJWKS(), {
+		issuer: `https://${getAuth0Domain()}/`,
+		audience: getAuth0ClientId(),
+		algorithms: ['RS256']
 	});
+	return payload as T;
 }
 
 /**
@@ -152,7 +136,12 @@ export async function getTokenClaims<T>(token: string): Promise<T> {
 		return <T>null;
 	}
 
-	return <T>jwt.decode(token);
+	try {
+		return <T>decodeJwt(token);
+	} catch {
+		// If the token is malformed or cannot be decoded, treat it as absent
+		return <T>null;
+	}
 }
 
 /**
@@ -205,21 +194,20 @@ export async function getToken({ code, pkceVerifier }: { code: string; pkceVerif
  * Holt den authentifizierten Benutzer aus dem Session-Cookie.
  *
  * Diese Funktion liest das JWT-Token aus dem HTTP-Only Cookie und
- * decodiert es, um die Benutzerinformationen zu erhalten. Das Token
- * wurde bereits bei der Anmeldung verifiziert und mit unserem
- * Session-Secret signiert.
+ * verifiziert es mit unserem Session-Secret, um die Benutzerinformationen
+ * sicher zu erhalten.
  *
- * Hinweis: Diese Funktion verifiziert das Session-Token NICHT erneut,
- * da es mit unserem eigenen Secret signiert wurde (nicht Auth0's).
+ * Das Session-Token wird mit unserem eigenen Secret signiert (nicht Auth0's)
+ * und bei jedem Aufruf dieser Funktion erneut geprüft.
  *
  * @param cookies - SvelteKit's Cookies-Objekt
- * @returns Der Benutzer oder null wenn nicht angemeldet
+ * @returns Promise mit dem Benutzer oder null wenn nicht angemeldet/Token ungültig
  *
  * @example
  * ```typescript
  * // In einem +page.server.ts oder +server.ts
  * export async function load({ cookies }) {
- *   const user = getAuthUser(cookies);
+ *   const user = await getAuthUser(cookies);
  *   if (!user) {
  *     throw redirect(302, '/login');
  *   }
@@ -227,14 +215,20 @@ export async function getToken({ code, pkceVerifier }: { code: string; pkceVerif
  * }
  * ```
  */
-export const getAuthUser = (cookies: Cookies) => {
+export const getAuthUser = async (cookies: Cookies) => {
 	const jwtToken = cookies.get(getCookieName());
 
 	if (!jwtToken) {
 		return null;
 	}
 
-	return jwt.decode(jwtToken) as User;
+	try {
+		const secret = new TextEncoder().encode(getSessionSecret());
+		const { payload } = await jwtVerify(jwtToken, secret);
+		return payload as unknown as User;
+	} catch {
+		return null;
+	}
 };
 
 /**
@@ -262,9 +256,12 @@ export const getAuthUser = (cookies: Cookies) => {
  * setAuthCookie(cookies, authUser);
  * ```
  */
-export const setAuthCookie = (cookies: Cookies, user: User) => {
-	const cookieValue = jwt.sign(user, getSessionSecret());
-	cookies.set(getCookieName(), cookieValue, {
+export const setAuthCookie = async (cookies: Cookies, user: User) => {
+	const secret = new TextEncoder().encode(getSessionSecret());
+	const token = await new SignJWT({ ...user })
+		.setProtectedHeader({ alg: 'HS256' })
+		.sign(secret);
+	cookies.set(getCookieName(), token, {
 		httpOnly: true,
 		sameSite: 'lax',
 		maxAge: COOKIE_DURATION_SECONDS,
