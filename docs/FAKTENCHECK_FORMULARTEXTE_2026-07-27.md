@@ -194,11 +194,15 @@ die 280 Epoch-Datensätze damit **mitgezählt** und `yearsOfService` sprang von 
 Jahre. Die feste UTC-Grenze ist zeitzonenunabhängig; abgesichert durch
 `statisticsEpochExclusion.test.ts`, der alle 24 Stundenvarianten des 01.01.1970 prüft.
 
-### Offen geblieben
+### Datensätze ohne Uhrzeit zählen mit
 
 365 Datensätze haben exakt `00:00:00` als Uhrzeit. Anders als die Epoch-Datensätze sind
-das plausible Sichtungen mit fehlender Uhrzeitangabe — sie werden **nicht** ausgeschlossen,
-sollten bei tageszeitlichen Auswertungen aber gefiltert werden (wie in Abschnitt 1 geschehen).
+das plausible Sichtungen mit fehlender Uhrzeitangabe. **Entscheidung des Meeresmuseums
+(2026-07-27): Sie zählen mit** und werden nicht ausgeschlossen.
+
+Nur bei **tageszeitlichen** Auswertungen gehören sie gefiltert — sonst erzeugen 365
+vermeintliche Mitternachtssichtungen einen Scheingipfel um 0 Uhr. In Abschnitt 1 ist das
+so gehandhabt.
 
 ---
 
