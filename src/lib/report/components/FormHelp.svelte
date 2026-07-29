@@ -5,6 +5,7 @@
 	const logger = createLogger('components:FormHelp');
 	import SpeciesIdentificationHelp from './form/fields/SpeciesIdentificationHelp.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import StatusBlock from '$lib/components/StatusBlock.svelte';
 
 	// Keine Platzhalter-Zahlen: Statistiken werden erst angezeigt, wenn sie
 	// tatsächlich geladen wurden. Erfundene Fallback-Werte würden Bürgern sonst
@@ -66,9 +67,25 @@
 							</p>
 							<div class="bg-base-100 mt-3 rounded-lg p-3">
 								{#if !loading && fetchFailed}
-									<p class="text-base-content/70 text-center text-xs">
-										Statistiken konnten nicht geladen werden
-									</p>
+									<!--
+										Vorher eine graue Zeile ohne Form und ohne Einordnung: Sie sah
+										aus wie ein Platzhalter und ließ offen, ob jetzt das Formular
+										kaputt ist. Der StatusBlock sagt beides — was fehlt und was
+										trotzdem geht.
+									-->
+									<!--
+										`announce="status"`: Der Abruf startet beim Seitenaufbau, nicht
+										auf Knopfdruck — und er steckt in einem zugeklappten `<details>`.
+										Ein `role="alert"` würde den Screenreader hier über etwas
+										unterbrechen, das der Nutzer nicht angestoßen hat und gar nicht
+										sieht.
+									-->
+									<StatusBlock
+										variant="failed"
+										announce="status"
+										title="Statistiken konnten nicht geladen werden"
+										description="Das Formular funktioniert vollständig — nur die Zahlen in diesem Hilfetext fehlen."
+									/>
 								{:else}
 									<div class="grid grid-cols-2 gap-4 text-center text-sm">
 										<div>

@@ -26,6 +26,7 @@
 	import { replaceState } from '$app/navigation';
 	import 'ol/ol.css';
 	import LoadingOverlay from './LoadingOverlay.svelte';
+	import StatusBlock from '$lib/components/StatusBlock.svelte';
 	import FilterPanel from './Panel/FilterPanel.svelte';
 	import LegendPanel from './Panel/LegendPanel.svelte';
 	import SightingsListView from './SightingsListView.svelte';
@@ -760,39 +761,47 @@
 		     dessen Toggle-Tab auch bei geschlossenem Panel mitrotiert. -->
 		<LoadingOverlay isVisible={isInitialLoading} type="initial" />
 
+		<!--
+			Die beiden Leer-Zustände waren zwei handgebaute Glas-Kästchen mit je
+			eigener Typografie und eigener Rollenauszeichnung. Inhaltlich sind sie
+			derselbe Fall — „hier stünden Daten, es gibt aber keine" — und laufen
+			jetzt beide über `StatusBlock`. Der Wrapper trägt nur noch die Position
+			und eine deckende Fläche, damit der Text über den Kartenkacheln lesbar
+			bleibt; Rolle, Icon und Abstände kommen aus der Komponente.
+		-->
+
 		<!-- Keine Sichtungen für das gewählte Jahr -->
 		{#if showNoResults}
 			<div
-				role="status"
-				class="glass absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 rounded-lg px-5 py-3 text-center shadow-lg backdrop-blur-md"
+				class="bg-base-100 rounded-box absolute top-1/2 left-1/2 z-30 w-[min(24rem,90%)] -translate-x-1/2 -translate-y-1/2"
+				style="box-shadow: var(--shadow-floating)"
 			>
-				<p class="text-base-content text-sm font-medium">
-					Keine Sichtungen für {currentDisplayedYear} vorhanden.
-				</p>
-				{#if latestYearWithData !== undefined && latestYearWithData !== currentDisplayedYear}
-					<button
-						type="button"
-						class="btn btn-primary btn-sm mt-2"
-						onclick={() => switchToYear(latestYearWithData!)}
-					>
-						Sichtungen {latestYearWithData} anzeigen
-					</button>
-				{/if}
+				<StatusBlock
+					variant="empty"
+					title="Keine Sichtungen für {currentDisplayedYear} vorhanden"
+					description="Für dieses Jahr liegen keine freigegebenen Meldungen vor."
+					action={latestYearWithData !== undefined && latestYearWithData !== currentDisplayedYear
+						? {
+								label: `Sichtungen ${latestYearWithData} anzeigen`,
+								onClick: () => switchToYear(latestYearWithData!),
+								icon: 'lucide:calendar'
+							}
+						: undefined}
+				/>
 			</div>
 		{/if}
 
 		<!-- Alle Sichtungen durch Filter ausgeblendet -->
 		{#if showNoVisibleResults}
 			<div
-				role="status"
-				class="glass absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 rounded-lg px-5 py-3 text-center shadow-lg backdrop-blur-md"
+				class="bg-base-100 rounded-box absolute top-1/2 left-1/2 z-30 w-[min(24rem,90%)] -translate-x-1/2 -translate-y-1/2"
+				style="box-shadow: var(--shadow-floating)"
 			>
-				<p class="text-base-content text-sm font-medium">
-					Keine Sichtungen für den aktuellen Filter sichtbar.
-				</p>
-				<p class="text-base-content/60 mt-1 text-xs">
-					Passen Sie den Zeitraum oder die Tierart-Filter an.
-				</p>
+				<StatusBlock
+					variant="empty"
+					title="Keine Sichtungen für den aktuellen Filter sichtbar"
+					description="Passen Sie den Zeitraum oder die Tierart-Filter an."
+				/>
 			</div>
 		{/if}
 

@@ -1,24 +1,31 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
 
-	// Props
-	type LoadingType = 'default' | 'filter' | 'features' | 'initial';
+	/**
+	 * Nur noch `initial`.
+	 *
+	 * Diese Komponente ist ein `fixed inset-0`-Overlay mit Backdrop — sie nimmt
+	 * die ganze Karte aus der Hand. Beim allerersten Aufbau ist das richtig: Es
+	 * gibt noch nichts zu bedienen. Für alles danach ist es der falsche Griff,
+	 * und die früheren Varianten `filter`, `features` und `default` waren genau
+	 * das: Sie hätten bei jedem Filterwechsel die Karte gesperrt. Aufrufstellen
+	 * hatten sie keine — der Filterzustand läuft über den Inline-Spinner im
+	 * `FilterPanel` (`isLoading`), Leer- und Fehlerzustände über `StatusBlock`.
+	 *
+	 * Die Varianten sind entfernt, damit der blockierende Weg nicht versehentlich
+	 * wieder eingeschlagen wird. Wer hier eine neue braucht, prüft zuerst, ob ein
+	 * `StatusBlock` an der Stelle der Daten genügt.
+	 */
+	type LoadingType = 'initial';
 
-	let { isVisible = false, type = 'default' }: { isVisible?: boolean; type?: LoadingType } =
+	let { isVisible = false, type = 'initial' }: { isVisible?: boolean; type?: LoadingType } =
 		$props();
 
-	// Typ-sichere Zuordnungen
 	const iconMap: Record<LoadingType, string> = {
-		default: 'lucide:loader-2',
-		filter: 'lucide:filter',
-		features: 'lucide:map-pin',
 		initial: 'lucide:loader-2'
 	};
 
 	const messageMap: Record<LoadingType, string> = {
-		default: 'Daten werden geladen...',
-		filter: 'Filter werden angewendet...',
-		features: 'Kartenfeatures werden geladen...',
 		initial: 'Karte wird initialisiert...'
 	};
 

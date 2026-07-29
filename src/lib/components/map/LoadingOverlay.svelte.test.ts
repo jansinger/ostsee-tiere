@@ -43,17 +43,24 @@ describe('LoadingOverlay', () => {
 	});
 
 	it('dekoratives Spinner-Icon ist aria-hidden (wird in der Live-Region nicht mit angesagt)', () => {
-		render(LoadingOverlay, { isVisible: true, type: 'filter' });
+		render(LoadingOverlay, { isVisible: true, type: 'initial' });
 
 		const svg = document.querySelector('[role="status"] svg');
 		expect(svg).not.toBeNull();
 		expect(svg?.getAttribute('aria-hidden')).toBe('true');
 	});
 
-	it('zeigt den passenden Text für Filter-Ladevorgänge', () => {
-		render(LoadingOverlay, { isVisible: true, type: 'filter' });
+	/**
+	 * Das Overlay sperrt mit `fixed inset-0` plus Backdrop die ganze Karte. Beim
+	 * ersten Aufbau ist das richtig — es gibt noch nichts zu bedienen. Für
+	 * Filterwechsel wäre es der falsche Griff, und genau dafür gab es früher die
+	 * Varianten `filter`, `features` und `default` (ohne Aufrufstelle). Sie sind
+	 * entfernt; Filter zeigen ihren Ladezustand inline im `FilterPanel`.
+	 */
+	it('kennt nur noch den Initial-Ladevorgang', () => {
+		render(LoadingOverlay, { isVisible: true });
 
-		expect(document.body.textContent).toContain('Filter werden angewendet...');
-		expect(document.body.textContent).not.toContain('Tastaturkürzel');
+		expect(document.body.textContent).toContain('Karte wird initialisiert...');
+		expect(document.body.textContent).not.toContain('Filter werden angewendet');
 	});
 });

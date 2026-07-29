@@ -70,6 +70,13 @@
 	import Phone from '~icons/lucide/phone';
 	import Play from '~icons/lucide/play';
 	import RefreshCw from '~icons/lucide/refresh-cw';
+	import Database from '~icons/lucide/database';
+	import GitCompareArrows from '~icons/lucide/git-compare-arrows';
+	import MapPinOff from '~icons/lucide/map-pin-off';
+	import RotateCcw from '~icons/lucide/rotate-ccw';
+	import ZoomIn from '~icons/lucide/zoom-in';
+	import SearchX from '~icons/lucide/search-x';
+	import WifiOff from '~icons/lucide/wifi-off';
 	import Save from '~icons/lucide/save';
 	import Scale from '~icons/lucide/scale';
 	import Send from '~icons/lucide/send';
@@ -158,6 +165,13 @@
 		'lucide:archive': Archive,
 		'lucide:file': File,
 		'lucide:refresh-cw': RefreshCw,
+		'lucide:database': Database,
+		'lucide:git-compare-arrows': GitCompareArrows,
+		'lucide:map-pin-off': MapPinOff,
+		'lucide:rotate-ccw': RotateCcw,
+		'lucide:zoom-in': ZoomIn,
+		'lucide:search-x': SearchX,
+		'lucide:wifi-off': WifiOff,
 		'lucide:home': Home,
 		'lucide:file-search': FileSearch,
 		'lucide:lock': Lock,

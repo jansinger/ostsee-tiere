@@ -26,6 +26,7 @@
 -->
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
+	import StatusBlock from '$lib/components/StatusBlock.svelte';
 	/* Importiert statt abgeschrieben: die Marker-Palette ist Datenkodierung mit
 	   genau einer Quelle (design-system.md, „Randbereiche: wo Hex-Werte erlaubt
 	   sind"). Eine zweite Liste hier hätte den Absatz darunter — der
@@ -368,6 +369,44 @@
 				<Icon icon="lucide:circle-alert" class="shrink-0" aria-hidden="true" />
 				<span>Bitte beheben Sie die 2 Fehler in „Position &amp; Zeit".</span>
 			</div>
+		</div>
+	</section>
+
+	<!-- ══ StatusBlock ══ -->
+	<section class="mb-10">
+		<h2 class="text-title mb-1 font-bold">StatusBlock</h2>
+		<p class="text-support text-base-content/70 mb-4">
+			Inline-Statusfläche für jede Oberfläche, die Daten lädt — nie als Overlay, sondern an der
+			Stelle, an der die Daten stünden. <code>loading</code> und <code>empty</code> tragen bewusst
+			<strong>keine</strong>
+			Statusfarbe: Ein Ladevorgang ist keine Warnung, ein Filter ohne Treffer kein Fehler.
+			<code>role</code>
+			ist <code>alert</code> nur bei <code>failed</code> — der Folge einer Nutzeraktion.
+		</p>
+		<div class="space-y-3">
+			<StatusBlock variant="loading" title="Sichtungen werden geladen …" />
+			<StatusBlock
+				variant="empty"
+				title="Keine Sichtungen in diesem Zeitraum"
+				description="Für 2026 liegen zwischen 1. Mai und 3. Mai keine freigegebenen Meldungen vor."
+				action={{ label: 'Zeitraum zurücksetzen', onClick: () => {}, icon: 'lucide:rotate-ccw' }}
+			/>
+			<StatusBlock
+				variant="partial"
+				title="Wetterdaten aus dem Zwischenspeicher"
+				description="Der Wetterdienst antwortet gerade nicht. Angezeigt werden die zuletzt abgerufenen Werte."
+			/>
+			<StatusBlock
+				variant="failed"
+				title="Statistiken konnten nicht geladen werden"
+				description="Das Formular funktioniert vollständig — nur die Zahlen in diesem Hilfetext fehlen."
+			/>
+			<StatusBlock
+				variant="offline"
+				title="Kartenmaterial braucht eine Verbindung"
+				description="Bereits geladene Kacheln bleiben sichtbar. Neue Bereiche erscheinen, sobald Sie wieder online sind."
+				action={{ label: 'Erneut versuchen', onClick: () => {} }}
+			/>
 		</div>
 	</section>
 

@@ -3,6 +3,7 @@
 	import type { WeatherDataWithMetadata } from '$lib/types';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import Icon from '$lib/components/Icon.svelte';
+	import StatusBlock from '$lib/components/StatusBlock.svelte';
 	import WeatherDisplay from './WeatherDisplay.svelte';
 
 	interface Props {
@@ -152,12 +153,21 @@
 						<span class="badge badge-xs badge-info ml-2">aus Cache</span>
 					{/if}
 				</p>
-				{#if weatherData._metadata?.dataType === 'forecast'}
-					<p class="text-warning-strong">
-						⚠️ Prognosedaten für heutige Sichtung (aktualisiert sich mehrmals täglich)
-					</p>
-				{/if}
 			</div>
+
+			<!--
+				Prognosewerte sind unvollständige Daten, keine Warnung an den Nutzer —
+				`partial` ist dafür die richtige Variante. Vorher ein Absatz mit
+				Emoji-Warndreieck, der weder Form noch ARIA-Rolle hatte und im
+				Fließtext der Quellenangabe unterging.
+			-->
+			{#if weatherData._metadata?.dataType === 'forecast'}
+				<StatusBlock
+					variant="partial"
+					title="Prognosedaten für die heutige Sichtung"
+					description="Für heute liegen noch keine gemessenen Werte vor. Die Vorhersage aktualisiert sich mehrmals täglich."
+				/>
+			{/if}
 		</div>
 	{/if}
 </div>
