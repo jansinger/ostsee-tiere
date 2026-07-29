@@ -250,10 +250,16 @@ test.describe('Sichtung melden — Submit mit API-Mock', () => {
 
 		// Formular sollte auf Step 4 bleiben (kein Wechsel zur Erfolgsseite)
 		await expectCurrentStep(page, /Kontaktdaten/i);
-		// Error-Toast sollte die Server-Fehlermeldung anzeigen
-		await expect(page.getByText('Interner Serverfehler')).toBeVisible({
-			timeout: 5000
-		});
+
+		// Der Fehlschlag steht als SubmitStatus über der Navigation — nicht mehr
+		// als Toast. Die Server-Meldung eines 5xx wird bewusst NICHT gezeigt: sie
+		// ist generisch („Ein unbekannter Fehler ist aufgetreten") und sagt dem
+		// Nutzer weniger als die Zusage, dass seine Eingaben erhalten bleiben.
+		const status = page.locator('[data-testid="submit-status-failed"]');
+		await expect(status).toBeVisible({ timeout: 5000 });
+		await expect(status).toContainText('Ihre Eingaben sind nicht verloren');
+		await expect(status).toContainText('Versuch 1 von 3');
+		await expect(status.getByRole('button', { name: /Erneut absenden/i })).toBeVisible();
 	});
 
 	test('Validation-Rejection: Server gibt 400 zurück — Fehlermeldung sichtbar', async ({
@@ -283,7 +289,7 @@ test.describe('Sichtung melden — Submit mit API-Mock', () => {
 		});
 	});
 
-	test('Netzwerkfehler: Route abgebrochen — Error-Handling greift', async ({ page }) => {
+	test('Netzwerkfehler: Route abgebrochen — als Verbindungsproblem erkannt', async ({ page }) => {
 		await page.route('**/api/sightings', (route) => {
 			route.abort('connectionrefused');
 		});
@@ -295,9 +301,23 @@ test.describe('Sichtung melden — Submit mit API-Mock', () => {
 
 		// Formular bleibt auf Step 4
 		await expectCurrentStep(page, /Kontaktdaten/i);
-		// Fehlermeldung sichtbar
-		await expect(
-			page.getByText('Fehler beim Absenden des Formulars. Bitte versuchen Sie es erneut.')
-		).toBeVisible({ timeout: 5000 });
+
+		// `fetch` wirft hier einen TypeError — das ist ein Verbindungsproblem, kein
+		// Serverfehler, und wird als solches gezeigt. Genau der Fall „WLAN an Bord
+		// ohne Uplink": `navigator.onLine` meldet weiter `true`.
+		const status = page.locator('[data-testid="submit-status-offline"]');
+		await expect(status).toBeVisible({ timeout: 5000 });
+		await expect(status).toContainText('Eingaben bleiben vollständig gespeichert');
+
+		// Aber NICHT gesperrt: Der Zustand ist hier nur aus einem gescheiterten
+		// Request abgeleitet — `navigator.onLine` meldet weiter `true`, und ohne
+		// `online`-Ereignis würde ihn nichts wieder aufheben. Eine harte Sperre
+		// hielte den Nutzer bis zum Neuladen fest. Gesperrt wird nur beim sicheren
+		// Nein des Browsers (siehe e2e/submit-offline.spec.ts).
+		await expect(page.getByRole('button', { name: /Formular absenden/i })).not.toHaveAttribute(
+			'aria-disabled',
+			'true'
+		);
+		await expect(status.getByRole('button', { name: /Trotzdem versuchen/i })).toBeVisible();
 	});
 });

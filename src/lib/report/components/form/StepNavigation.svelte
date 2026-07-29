@@ -22,11 +22,18 @@
 	let {
 		currentStep = $bindable(0),
 		totalSteps = $bindable(formStepsConfig.length),
-		onSubmit
+		onSubmit,
+		submitBlocked = false
 	}: {
 		onSubmit?: (e: Event) => Promise<void>;
 		currentStep?: number;
 		totalSteps?: number;
+		/**
+		 * Sperrt „Absenden" vorab, statt den Versuch scheitern zu lassen. Die
+		 * Begründung steht in `SubmitStatus` über dieser Navigation — ein
+		 * vorhersehbarer Fehlschlag ist keine Fehlermeldung wert.
+		 */
+		submitBlocked?: boolean;
 	} = $props();
 
 	const formContext = getFormContext();
@@ -98,8 +105,18 @@
 	}
 
 	// Navigation functions
+	/** Absenden ist gesperrt — nur auf dem letzten Schritt relevant. */
+	const isSubmitBlocked = $derived(isLastStep && submitBlocked);
+
 	async function nextStep(): Promise<void> {
 		try {
+			// Wächter zur `aria-disabled`-Sperre am Button: Das Element bleibt
+			// fokussierbar (siehe design-system.md), die eigentliche Sperre sitzt hier.
+			if (isSubmitBlocked) {
+				logger.info('Absenden gesperrt — keine Verbindung');
+				return;
+			}
+
 			if (!canGoNext) {
 				logger.warn({ currentStep }, 'Validation failed for current step');
 				attemptedStep = currentStep;
@@ -142,8 +159,13 @@
 			logger.info('Form submitted successfully');
 		} catch (error) {
 			logger.error({ error }, 'Error during form submission');
-			toast.error('Fehler beim Absenden des Formulars. Bitte versuchen Sie es erneut.');
-			// Navigate to first error field if validation failed
+			// Kein Toast mehr: Der Fehlschlag steht als `SubmitStatus` direkt über
+			// dieser Navigation, verschwindet nicht von selbst und trägt die
+			// Wiederholen-Aktion. Ein Toast daneben wäre eine zweite Anzeige
+			// derselben Sache — und die flüchtigere von beiden.
+			// Der Validierungs-Toast in `showValidationError` bleibt: der ist
+			// flüchtig, verlangt keine Handlung an Ort und Stelle und begleitet
+			// den Sprung zum fehlerhaften Feld.
 			await showValidationError();
 		}
 	}
@@ -272,15 +294,27 @@
 			</button>
 		{/if}
 
+		<!--
+			`aria-disabled` statt `disabled` für die Verbindungssperre: Das Element
+			bleibt fokussierbar, damit die Tastaturposition erhalten bleibt und der
+			Grund erreichbar ist (design-system.md). Der laufende Submit sperrt
+			weiterhin hart über `disabled` — dort ist der Zustand von sehr kurzer
+			Dauer und ein Doppelklick hätte echte Folgen.
+		-->
 		<button
 			type="button"
 			onclick={nextStep}
 			disabled={$isSubmitting}
+			aria-disabled={isSubmitBlocked}
 			class="btn btn-primary"
+			class:btn-disabled={isSubmitBlocked}
 			aria-label={isLastStep ? 'Formular absenden' : 'Nächster Schritt'}
+			title={isSubmitBlocked ? 'Ohne Internetverbindung kann nicht abgesendet werden' : undefined}
 		>
 			{#if $isSubmitting}
 				<span class="loading loading-spinner loading-sm"></span>
+			{:else if isSubmitBlocked}
+				<Icon icon="lucide:wifi-off" width="16" class="shrink-0" aria-hidden="true" />
 			{/if}
 			{isLastStep ? 'Absenden' : 'Weiter →'}
 		</button>

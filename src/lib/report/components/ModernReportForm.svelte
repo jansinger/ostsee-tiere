@@ -4,8 +4,10 @@
 	import FormActions from './form/FormActions.svelte';
 	import RequiredConsent from './form/RequiredConsent.svelte';
 
+	import SubmitStatus, { type SubmitState } from './form/SubmitStatus.svelte';
+
 	import { browser } from '$app/environment';
-	import Icon from '$lib/components/Icon.svelte';
+	import { connection, watchConnection } from '$lib/stores/connectionState.svelte';
 	import { describeSubmitFailure, submitSightingForm } from '$lib/form/submitSightingForm';
 	import { sightingSchema } from '$lib/form/validation/sightingSchema';
 	import { createLogger } from '$lib/logger';
@@ -71,8 +73,48 @@
 		});
 	}
 
-	// Status für Fehleranzeige
-	let submissionError = $state<string | null>(null);
+	/**
+	 * Zustand der Übermittlung — getragen von `SubmitStatus` über der Navigation.
+	 *
+	 * Ersetzt den früheren `submissionError`-Alert plus den Submit-Fehler-Toast:
+	 * beide sagten nur, DASS etwas schiefging, nicht was mit den Daten passiert
+	 * ist und was der Nutzer jetzt tun kann.
+	 */
+	let submitState = $state<SubmitState>('idle');
+	/** Überschrift im Zustand `failed` — je nach Fehlerart eine andere. */
+	let submitTitle = $state('Der Server hat nicht geantwortet');
+	/** Zählt die Absende-Versuche, damit „Wiederholen" sichtbar etwas bewirkt. */
+	let submitAttempt = $state(0);
+
+	// Verbindungszustand an die Browser-Ereignisse binden.
+	$effect(() => watchConnection());
+
+	/**
+	 * Ohne Verbindung wird vorab gesperrt, statt den Versuch scheitern zu lassen.
+	 * Ein laufender Submit behält seinen eigenen Zustand — sonst überschriebe ein
+	 * kurzer Aussetzer die Anzeige mitten in der Übertragung.
+	 */
+	$effect(() => {
+		if (connection.isOffline) {
+			// NUR aus `idle` heraus. Ein bereits angezeigter Fehlschlag darf nicht
+			// überschrieben werden: Er verschwände beim nächsten Verbindungswechsel
+			// von selbst wieder — genau das, was `SubmitStatus` ausschließt.
+			if (submitState === 'idle') submitState = 'offline';
+		} else if (submitState === 'offline') {
+			submitState = 'idle';
+		}
+	});
+
+	/**
+	 * Hart gesperrt wird nur beim sicheren Nein des Browsers.
+	 *
+	 * `connection.isOffline` ist auch dann wahr, wenn lediglich der letzte
+	 * Request an einem `TypeError` gescheitert ist — das wirft `fetch` aber auch
+	 * bei einem Server-Neustart oder einem CORS-Fehler, und dort feuert nie ein
+	 * `online`-Ereignis, das den Zustand wieder aufhebt. An dieser Bedingung
+	 * gesperrt käme der Nutzer nur durch ein Neuladen wieder heraus.
+	 */
+	const submitBlocked = $derived(submitState === 'offline' && connection.isInterfaceDown);
 
 	// Formular initialisieren
 	const formProps = {
@@ -89,14 +131,35 @@
 				// set mediaUpload indicator
 				submitValues.mediaUpload = uploadedFiles ? uploadedFiles.length > 0 : false;
 
+				submitAttempt += 1;
+				submitState = 'submitting';
+
 				const result = await submitSightingForm(submitValues);
 
 				if (result.status !== 'ok') {
-					// Zwischenschritt: Die Oberfläche kann die vier Fehlerarten noch nicht
-					// unterschiedlich darstellen, deshalb wird hier auf eine Meldung
-					// eingedampft. `SubmitStatus` übernimmt den Zustand als Ganzes.
-					throw new Error(describeSubmitFailure(result));
+					// Jede Fehlerart bekommt ihren eigenen Zustand: `offline` sperrt das
+					// Absenden vorab, die übrigen bieten Wiederholen an. Liegt bereits
+					// eine Aufnahme auf dem Server, gilt die Datenzusage nicht mehr
+					// uneingeschränkt — dafür gibt es `partial`.
+					connection[result.status === 'offline' ? 'reportUnreachable' : 'reportReachable']();
+
+					// Einmal berechnen: Anzeige und geworfene Meldung sollen dieselbe
+					// Aussage tragen, nicht zwei unabhängig entstandene.
+					const failure = describeSubmitFailure(result);
+
+					if (result.status === 'offline') {
+						submitState = 'offline';
+					} else {
+						submitState = submitValues.mediaUpload ? 'partial' : 'failed';
+						submitTitle = failure;
+					}
+
+					throw new Error(failure);
 				}
+
+				connection.reportReachable();
+				submitState = 'idle';
+				submitAttempt = 0;
 
 				// Speichere Benutzer-Kontaktdaten für zukünftige Formulare basierend auf Zustimmung
 				{
@@ -122,7 +185,6 @@
 					);
 				}
 
-				submissionError = null;
 				const submitResult = await onSubmit(submitValues);
 				// Reset nur nach erfolgreichem Submit (Fehler in onSubmit soll Formular erhalten).
 				// Diese Stelle ist seither die EINZIGE, die nach einer Übermittlung aufräumt:
@@ -134,14 +196,35 @@
 				saveToStorage(STORAGE_KEYS.CURRENT_STEP, 0);
 				return submitResult;
 			} catch (error: unknown) {
-				submissionError = (error as Error)?.message || 'Unbekannter Fehler bei der Übermittlung';
-				logger.error(error, submissionError);
+				const message = (error as Error)?.message || 'Unbekannter Fehler bei der Übermittlung';
+				// Scheitert erst der `onSubmit`-Callback (nicht die Übermittlung),
+				// steht `submitState` noch auf `submitting` — auch dieser Fall ist ein
+				// Fehlschlag und braucht die Wiederholen-Fläche.
+				if (submitState === 'submitting') {
+					submitState = 'failed';
+					submitTitle = message;
+				}
+				logger.error(error, message);
 				throw error;
 			}
 		}
 	};
 
 	let formContext: FormContext = $state({} as FormContext);
+
+	/**
+	 * Erneuter Versuch aus `SubmitStatus` heraus.
+	 *
+	 * `handleFinalSubmit` wirft bei einem Fehlschlag weiter, damit die
+	 * Schritt-Navigation ihren Weg zum fehlerhaften Feld gehen kann. Hier gibt es
+	 * keinen solchen Aufrufer — der Zustand steht bereits in `submitState`, das
+	 * erneute Werfen wäre nur eine unbehandelte Rejection in der Konsole.
+	 */
+	function retrySubmit(): void {
+		void handleFinalSubmit(new Event('submit')).catch((error: unknown) => {
+			logger.error({ error }, 'Erneuter Absendeversuch fehlgeschlagen');
+		});
+	}
 
 	// Formularstatus
 	async function handleFinalSubmit(e: Event): Promise<void> {
@@ -245,13 +328,12 @@
 		</div>
 	{/if}
 
-	<!-- Error Message -->
-	{#if submissionError}
-		<div class="alert alert-error mb-6" role="alert">
-			<Icon icon="lucide:circle-alert" class="shrink-0" aria-hidden="true" />
-			<span>{submissionError}</span>
-		</div>
-	{/if}
+	<!--
+		Der frühere `submissionError`-Alert stand hier oben, weit weg von der
+		Schaltfläche, die ihn ausgelöst hat — auf dem Telefon außerhalb des
+		Bildschirms. Er ist in `SubmitStatus` aufgegangen, das direkt über der
+		Schritt-Navigation sitzt.
+	-->
 
 	<!-- Step Progress -->
 	<FormSteps steps={formStepsConfig} bind:currentStep />
@@ -275,7 +357,21 @@
 			<!-- Required Privacy Consent - Prominent placement before submit -->
 			<RequiredConsent {currentStep} />
 
-			<StepNavigation bind:currentStep onSubmit={handleFinalSubmit} />
+			<!--
+				`referenceId` kommt aus `savedFormData`, nicht aus `$form`: `formContext`
+				wird erst über `bind:context` gefüllt, beim Server-Rendering ist `$form`
+				an dieser Stelle noch undefiniert. Die Referenz steht ohnehin fest — sie
+				entsteht einmal beim Aufbau des Formulars und ändert sich nie.
+			-->
+			<SubmitStatus
+				state={submitState}
+				title={submitTitle}
+				attempt={submitAttempt}
+				referenceId={savedFormData.referenceId ?? ''}
+				onRetry={submitBlocked ? undefined : retrySubmit}
+			/>
+
+			<StepNavigation bind:currentStep onSubmit={handleFinalSubmit} {submitBlocked} />
 		</div>
 	</div>
 
