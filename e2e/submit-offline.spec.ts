@@ -61,6 +61,33 @@ test.describe('Absenden ohne Internetverbindung', () => {
 		await expect(page.locator('[data-testid="field-email"]')).toHaveValue('max@example.com');
 	});
 
+	/**
+	 * Regression: Das Abzeichen rendert online nichts — aber sein Wrapper stand
+	 * dauerhaft im DOM und war in `.navbar-end` (`gap-2`) ein Flex-Item der
+	 * Breite 0. Gemessen waren das 8px toter Abstand auf jeder Seite. Die
+	 * Live-Region liegt jetzt `sr-only` und damit außerhalb des Flusses.
+	 */
+	test('kostet bei bestehender Verbindung keinen Platz in der Navbar', async ({ page }) => {
+		const formPage = new FormPage(page);
+		await formPage.goto();
+
+		const layout = await page.evaluate(() => {
+			const end = document.querySelector('.navbar-end');
+			if (!end) return null;
+			return {
+				inFlowChildren: [...end.children].filter(
+					(el) => getComputedStyle(el).position !== 'absolute'
+				).length,
+				badgeVisible: !!document.querySelector('[data-testid^="connection-badge"]')
+			};
+		});
+
+		expect(layout).not.toBeNull();
+		expect(layout!.badgeVisible).toBe(false);
+		// Menü (Desktop) + Dropdown (Mobil) — kein drittes, leeres Flex-Item.
+		expect(layout!.inFlowChildren).toBe(2);
+	});
+
 	test('gibt das Absenden wieder frei, sobald die Verbindung zurück ist', async ({
 		page,
 		context

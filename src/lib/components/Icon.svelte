@@ -76,6 +76,7 @@
 	import RotateCcw from '~icons/lucide/rotate-ccw';
 	import ZoomIn from '~icons/lucide/zoom-in';
 	import SearchX from '~icons/lucide/search-x';
+	import Wifi from '~icons/lucide/wifi';
 	import WifiOff from '~icons/lucide/wifi-off';
 	import Save from '~icons/lucide/save';
 	import Scale from '~icons/lucide/scale';
@@ -171,6 +172,7 @@
 		'lucide:rotate-ccw': RotateCcw,
 		'lucide:zoom-in': ZoomIn,
 		'lucide:search-x': SearchX,
+		'lucide:wifi': Wifi,
 		'lucide:wifi-off': WifiOff,
 		'lucide:home': Home,
 		'lucide:file-search': FileSearch,

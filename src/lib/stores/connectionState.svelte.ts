@@ -31,6 +31,34 @@ let interfaceUp = $state(true);
 /** Was der letzte echte Request über die Erreichbarkeit gesagt hat. */
 let lastRequest = $state<'unknown' | 'reachable' | 'unreachable'>('unknown');
 
+/**
+ * Wie lange „Wieder online" stehen bleibt.
+ *
+ * Das ist die eine Stelle in diesem Regelwerk, an der ein flüchtiger Hinweis
+ * richtig ist: Er verlangt keine Handlung, er nimmt nur eine Sorge weg. Ein
+ * Dauer-Indikator für „online" dagegen sagt 99 % der Zeit dasselbe und wird
+ * deshalb nicht gelesen.
+ */
+const RECONNECTED_NOTICE_MS = 4000;
+
+let reconnected = $state(false);
+let reconnectedTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** Zeigt „Wieder online", aber nur wenn es vorher wirklich offline war. */
+function noteReconnection(wasOffline: boolean): void {
+	if (!browser || !wasOffline) return;
+
+	reconnected = true;
+	// Gegen `null` prüfen, nicht auf truthy: Der Typ lässt jeden `number` zu, und
+	// `0` wäre falsy. (Die HTML-Spezifikation verlangt zwar einen Handle > 0, aber
+	// der Vertrag hier ist der Typ, nicht die Spezifikation eines Zielsystems.)
+	if (reconnectedTimer !== null) clearTimeout(reconnectedTimer);
+	reconnectedTimer = setTimeout(() => {
+		reconnected = false;
+		reconnectedTimer = null;
+	}, RECONNECTED_NOTICE_MS);
+}
+
 export const connection = {
 	/**
 	 * `true`, wenn abgesendete Daten den Server nicht erreichen würden.
@@ -64,10 +92,22 @@ export const connection = {
 		return !interfaceUp;
 	},
 
+	/**
+	 * `true` für {@link RECONNECTED_NOTICE_MS} nach der Rückkehr aus dem
+	 * Offline-Zustand — und nur dann. Wer nie offline war, sieht nichts.
+	 */
+	get justReconnected(): boolean {
+		return reconnected;
+	},
+
 	/** Ein Request kam durch — überstimmt jedes ältere Signal. */
 	reportReachable(): void {
+		// Kein `this`: Die Methode soll auch nach einer Destrukturierung
+		// (`const { reportReachable } = connection`) funktionieren.
+		const wasOffline = !interfaceUp || lastRequest === 'unreachable';
 		lastRequest = 'reachable';
 		interfaceUp = true;
+		noteReconnection(wasOffline);
 	},
 
 	/** Ein Request scheiterte am Netz (`status: 'offline'` aus `submitSightingForm`). */
@@ -83,6 +123,11 @@ export const connection = {
 	reset(): void {
 		lastRequest = 'unknown';
 		interfaceUp = browser ? navigator.onLine : true;
+		reconnected = false;
+		if (reconnectedTimer !== null) {
+			clearTimeout(reconnectedTimer);
+			reconnectedTimer = null;
+		}
 	}
 };
 
@@ -98,10 +143,12 @@ export function watchConnection(): () => void {
 	interfaceUp = navigator.onLine;
 
 	const handleOnline = (): void => {
+		const wasOffline = connection.isOffline;
 		interfaceUp = true;
 		// Die alte Erfahrung gilt nicht mehr: Es ist eine neue Verbindung, und ob
 		// sie trägt, weiß erst der nächste echte Request.
 		lastRequest = 'unknown';
+		noteReconnection(wasOffline);
 	};
 	const handleOffline = (): void => {
 		interfaceUp = false;

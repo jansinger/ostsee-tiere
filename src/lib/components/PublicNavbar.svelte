@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import ConnectionBadge from '$lib/components/ConnectionBadge.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 
 	import type { PublicUser } from '$lib/types/User';
@@ -69,7 +70,13 @@
 						<span class="text-base-content/70 text-lg font-semibold">Admin</span>
 					{/if}
 				</div>
-				<div class="navbar-end">
+				<div class="navbar-end gap-2">
+					<!--
+						Sichtbar nur ohne Verbindung — im Normalfall rendert die Komponente
+						nichts und kostet keinen Platz.
+					-->
+					<ConnectionBadge compact />
+
 					<!-- Desktop menu -->
 					<div class="hidden lg:flex lg:items-center lg:gap-4">
 						<ul class="menu menu-horizontal px-1">

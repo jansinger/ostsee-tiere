@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ConnectionBadge from '$lib/components/ConnectionBadge.svelte';
 	import { canNavigateToStep } from '$lib/form/validation/stepNavigation';
 	import { getFormContext } from '$lib/report/formContext';
 	import type { FormStep } from '$lib/report/types';
@@ -39,6 +40,21 @@
 		}
 	}
 </script>
+
+<!--
+	Der Verbindungszustand steht im ortsfesten Balken und nicht nur in der
+	Navbar: Auf dem Telefon ist die Navbar beim Ausfüllen längst weggescrollt,
+	der Balken ist die einzige dauerhaft sichtbare Fläche. Hier steht die Zusage
+	zu den Eingaben ausgeschrieben — im Formular ist sie die eigentliche Sorge.
+
+	`announce={false}`, weil die Instanz in der Navbar dieselbe Meldung bereits
+	als Live-Region trägt; zwei davon sagen dem Screenreader „Offline" doppelt.
+
+	Die Layout-Klassen gehen als `class` an die Komponente statt an einen
+	Wrapper: Ein Wrapper mit `mb-2` behielte seinen Abstand auch dann, wenn gar
+	nichts zu sehen ist.
+-->
+<ConnectionBadge announce={false} class="mb-2 md:hidden" />
 
 <nav class="flex items-center gap-3 md:hidden" aria-label="Formular-Schritte">
 	<p class="text-support text-base-content/70 shrink-0">
