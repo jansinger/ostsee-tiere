@@ -6,7 +6,7 @@
 
 	import { browser } from '$app/environment';
 	import Icon from '$lib/components/Icon.svelte';
-	import { submitSightingForm } from '$lib/form/submitSightingForm';
+	import { describeSubmitFailure, submitSightingForm } from '$lib/form/submitSightingForm';
 	import { sightingSchema } from '$lib/form/validation/sightingSchema';
 	import { createLogger } from '$lib/logger';
 	import { findStepForErrors } from '$lib/report/findStepForErrors';
@@ -91,8 +91,15 @@
 
 				const result = await submitSightingForm(submitValues);
 
+				if (result.status !== 'ok') {
+					// Zwischenschritt: Die Oberfläche kann die vier Fehlerarten noch nicht
+					// unterschiedlich darstellen, deshalb wird hier auf eine Meldung
+					// eingedampft. `SubmitStatus` übernimmt den Zustand als Ganzes.
+					throw new Error(describeSubmitFailure(result));
+				}
+
 				// Speichere Benutzer-Kontaktdaten für zukünftige Formulare basierend auf Zustimmung
-				if (result.success) {
+				{
 					const userContactData: UserContactData = {
 						firstName: values.firstName,
 						lastName: values.lastName,
@@ -117,7 +124,11 @@
 
 				submissionError = null;
 				const submitResult = await onSubmit(submitValues);
-				// Reset nur nach erfolgreichem Submit (Fehler in onSubmit soll Formular erhalten)
+				// Reset nur nach erfolgreichem Submit (Fehler in onSubmit soll Formular erhalten).
+				// Diese Stelle ist seither die EINZIGE, die nach einer Übermittlung aufräumt:
+				// `submitSightingForm` rief zuvor zusätzlich `clearStorage()` — und zwar schon
+				// vor `onSubmit`, was den Kommentar oben aushebelte. `clearFormDataOnly()` plus
+				// das Zurücksetzen von CURRENT_STEP deckt denselben Umfang ab.
 				clearFormDataOnly(); // Clears only form data, keeps currentStep and user contact data
 				currentStep = 0;
 				saveToStorage(STORAGE_KEYS.CURRENT_STEP, 0);
