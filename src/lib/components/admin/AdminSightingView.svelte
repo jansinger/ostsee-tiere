@@ -134,7 +134,13 @@
 		// Funktion einmal außerhalb des aktuellen Kontexts wiederverwendet wird.
 		const attachedFileCount = currentSighting.uploadedFiles?.length ?? 0;
 
-		if (isPhotoAnnouncementPending(currentSighting.mediaUpload, attachedFileCount)) {
+		if (
+			isPhotoAnnouncementPending(
+				currentSighting.mediaUpload,
+				attachedFileCount,
+				currentSighting.created
+			)
+		) {
 			return {
 				label: 'Upload',
 				value: PHOTO_ANNOUNCEMENT_LABEL,

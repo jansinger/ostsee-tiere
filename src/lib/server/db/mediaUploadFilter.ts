@@ -8,8 +8,11 @@
  * `approvalFilter.ts`. Beide Aufrufer hängen das Ergebnis an ihre eigene
  * `and(...)`-Bedingungsliste.
  */
-import { and, eq, sql, type SQL } from 'drizzle-orm';
-import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '$lib/utils/media/photoAnnouncement';
+import { and, eq, gte, sql, type SQL } from 'drizzle-orm';
+import {
+	MEDIA_UPLOAD_ANNOUNCED_MISSING,
+	NEW_IOS_CLIENT_LAUNCH_DATE
+} from '$lib/utils/media/photoAnnouncement';
 import { sightingFiles, sightings } from '$lib/server/db/schema';
 
 /**
@@ -41,7 +44,13 @@ export function mediaUploadCondition(mediaUpload: string | null | undefined): SQ
 	if (mediaUpload === MEDIA_UPLOAD_ANNOUNCED_MISSING) {
 		return and(
 			eq(sightings.mediaUpload, 1),
-			sql`NOT EXISTS (SELECT 1 FROM ${sightingFiles} WHERE ${sightingFiles.sightingId} = ${sightings.id})`
+			sql`NOT EXISTS (SELECT 1 FROM ${sightingFiles} WHERE ${sightingFiles.sightingId} = ${sightings.id})`,
+			// `aufnahmeHochladen` trägt 13 Jahre Altbestand über alle
+			// Eingangskanäle (früheste Zeile 2012-07-01) — dort bedeutete das
+			// Flag nur „der Melder hatte ein Foto", nicht „der neue Client
+			// konnte es nicht hochladen". Ohne diese Grenze meldete die
+			// Arbeitsliste 2.539 nie einlösbare „ausstehende" Fotos.
+			gte(sightings.created, NEW_IOS_CLIENT_LAUNCH_DATE)
 		);
 	}
 	return undefined;

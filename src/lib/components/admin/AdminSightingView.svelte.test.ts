@@ -19,13 +19,16 @@ import {
 // Minimales Objekt, wie an anderer Stelle bereits üblich
 // (src/lib/server/export/csvExport.timezone.test.ts) — die Komponente prüft
 // zur Laufzeit nur die tatsächlich gelesenen Felder, nicht das volle Schema.
+// `created` liegt bewusst NACH NEW_IOS_CLIENT_LAUNCH_DATE (2026-07-30): nur
+// Sichtungen ab dann können „wartet auf E-Mail" bedeuten — siehe den
+// eigenen Test unten für Altbestand vor diesem Datum.
 function baseSighting(overrides: Record<string, unknown> = {}): FrontendSighting {
 	return {
 		id: 1,
 		species: 0,
 		totalCount: 1,
-		sightingDate: new Date('2026-07-01T10:00:00Z'),
-		created: new Date('2026-07-01T09:00:00Z'),
+		sightingDate: new Date('2026-07-30T10:00:00Z'),
+		created: new Date('2026-07-30T09:00:00Z'),
 		mediaFile: null,
 		mediaUpload: 0,
 		mediaConsent: 0,
@@ -74,6 +77,23 @@ describe('AdminSightingView — Foto-Ankündigung', () => {
 			})
 		});
 
+		expect(document.body.textContent).not.toContain(PHOTO_ANNOUNCEMENT_LABEL);
+	});
+
+	// Live auf der lokalen DB gefunden: `aufnahmeHochladen` trägt 13 Jahre
+	// Altbestand, dessen Bedeutung nicht „wartet auf E-Mail vom neuen Client"
+	// ist. Eine Sichtung von vor dem Client-Start darf den Hinweis deshalb
+	// trotz gesetztem Flag und fehlender Datei nicht zeigen.
+	it('zeigt keinen Ankündigungs-Hinweis für Altbestand von vor dem Client-Start', async () => {
+		render(AdminSightingView, {
+			sighting: baseSighting({
+				mediaUpload: 1,
+				uploadedFiles: [],
+				created: new Date('2015-03-12T08:00:00Z')
+			})
+		});
+
+		await expect.element(page.getByRole('row', { name: 'Upload Ja' })).toBeVisible();
 		expect(document.body.textContent).not.toContain(PHOTO_ANNOUNCEMENT_LABEL);
 	});
 });

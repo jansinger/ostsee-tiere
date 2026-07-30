@@ -56,4 +56,24 @@ describe('mediaUploadCondition', () => {
 		// sonst träfe die Bedingung jede Sichtung gleichermaßen.
 		expect(text).toContain('sichtung_id');
 	});
+
+	/**
+	 * Live auf der lokalen DB gefunden: `aufnahmeHochladen` trägt 13 Jahre
+	 * Altbestand (früheste Zeile 2012-07-01) über alle Eingangskanäle. Ohne
+	 * Untergrenze meldete dieses Prädikat 2.539 „ausstehende" Fotos — Zeilen,
+	 * für die nie eine E-Mail nachkommen wird, weil das Flag dort historisch
+	 * nur „der Melder hatte ein Foto" bedeutete. Siehe
+	 * `$lib/utils/media/photoAnnouncement.ts`.
+	 */
+	it('grenzt "angekündigt, aber keine Datei" zusätzlich auf den Client-Start ein', () => {
+		const condition = mediaUploadCondition(MEDIA_UPLOAD_ANNOUNCED_MISSING);
+		const text = toSqlText(condition as SQL);
+
+		expect(text).toContain('"created" >=');
+	});
+
+	it('lässt "mit"/"ohne Aufnahme" unverändert — keine Datumsgrenze für diese beiden Werte', () => {
+		expect(toSqlText(mediaUploadCondition('1') as SQL)).not.toContain('"created"');
+		expect(toSqlText(mediaUploadCondition('0') as SQL)).not.toContain('"created"');
+	});
 });
