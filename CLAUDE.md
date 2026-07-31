@@ -20,6 +20,8 @@ Vor der Arbeit mit externen Libraries IMMER den passenden MCP Server für aktuel
 
 Runes (`$state`, `$derived`, `$effect`, `$props`) statt Svelte-4-Syntax; `onclick` statt `on:click`; `$app/state` statt `$app/stores`. Vollständige Patterns inkl. SSR-sicherem State-Management: `.claude/rules/architecture.md` (wird immer geladen).
 
+**Kommentare im Markup werden nicht ausgeliefert.** Svelte entfernt sie beim Kompilieren (`preserveComments` ist nicht gesetzt, Default `false`); im Client- wie im Server-Output entsteht kein `<!--`-Node. Begründungen gehören deshalb ins Markup, direkt neben das, was sie erklären — und nicht „aus Performance-Gründen" in den `<script>`-Block, denn ein JS-Kommentar landet sehr wohl im Bundle. Reviews, die das andersherum vorschlagen, beruhen auf einer falschen Annahme (belegt in PR #669).
+
 ### Test-First Entwicklung — PFLICHT
 
 Jedes Feature und jeder Bugfix beginnt mit einem fehlschlagenden Test. Workflow und Ausnahmen: `.claude/rules/testing.md` (wird immer geladen). Nutze `/tdd <beschreibung>` für den geführten RED→GREEN→REFACTOR-Zyklus.
