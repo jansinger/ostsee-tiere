@@ -7,6 +7,7 @@ import {
 	filterConfigsByUserAccess,
 	canUserAccessConfigKey
 } from '$lib/server/config/accessControl';
+import { isUnchangedSecret, maskSecretConfigValues } from '$lib/config/secretConfigKeys';
 import { requireUserRole } from '$lib/server/auth/auth';
 import { warnIfBodySizeLimitTooLow } from '$lib/server/startup/bodySizeLimit';
 import { json, type RequestEvent } from '@sveltejs/kit';
@@ -43,8 +44,10 @@ export const GET: RequestHandler = async ({ url, locals }: RequestEvent) => {
 			configs = await ConfigRepository.getAll();
 		}
 
-		// Filter configurations based on user access level
-		const accessibleConfigs = filterConfigsByUserAccess(configs, locals.user);
+		// Filter configurations based on user access level, then mask credentials
+		const accessibleConfigs = maskSecretConfigValues(
+			filterConfigsByUserAccess(configs, locals.user)
+		);
 
 		return json(accessibleConfigs);
 	} catch (error) {
@@ -82,6 +85,17 @@ export const PUT: RequestHandler = async ({
 				},
 				{ status: 403 }
 			);
+		}
+
+		// Der Platzhalter aus GET/Seiten-Load kommt unverändert zurück: Niemand hat
+		// etwas eingegeben. Ein Schreibvorgang würde jetzt das echte Passwort durch
+		// die Punkte ersetzen — also stillschweigend nichts tun und Erfolg melden,
+		// denn aus Sicht des Aufrufers ist der gewünschte Zustand hergestellt.
+		// Ein LEERER Wert läuft bewusst weiter unten durch: Das ist das gewollte
+		// Löschen (siehe `secretConfigKeys.ts`).
+		if (isUnchangedSecret(key, value)) {
+			logger.debug({ key }, 'Secret unchanged (placeholder returned), skipping write');
+			return json({ success: true, unchanged: true });
 		}
 
 		// Befund I1: Dieselbe Prüfung wie beim Serverstart (hooks.server.ts),

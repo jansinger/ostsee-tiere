@@ -1,6 +1,7 @@
 import { createLogger } from '$lib/logger.server';
 import { ConfigRepository, type ConfigItem } from '$lib/server/db/configRepository';
 import { filterConfigsByUserAccess } from '$lib/server/config/accessControl';
+import { maskSecretConfigValues } from '$lib/config/secretConfigKeys';
 import {
 	getDefaultConfigurationsByCategory,
 	initializeDefaultConfigurations
@@ -41,8 +42,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				};
 			});
 
-			// Filter configurations based on user access level
-			const accessibleConfigs = filterConfigsByUserAccess(categoryConfigs, locals.user);
+			// Filter configurations based on user access level, then mask credentials.
+			// Reihenfolge ist egal, die Maskierung aber nicht optional: ohne sie
+			// stünde das SMTP-Passwort im SSR-HTML dieser Seite.
+			const accessibleConfigs = maskSecretConfigValues(
+				filterConfigsByUserAccess(categoryConfigs, locals.user)
+			);
 
 			// Only include categories that have accessible configurations
 			if (accessibleConfigs.length > 0) {
@@ -73,8 +78,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				updatedBy: null
 			}));
 
-			// Filter configurations based on user access level
-			const accessibleConfigs = filterConfigsByUserAccess(categoryConfigs, locals.user);
+			// Auch hier maskieren: Der Fallback zeigt zwar nur Vorbelegungen, aber
+			// eine spätere Änderung an dieser Verzweigung soll das Leck nicht
+			// wieder aufreißen.
+			const accessibleConfigs = maskSecretConfigValues(
+				filterConfigsByUserAccess(categoryConfigs, locals.user)
+			);
 
 			// Only include categories that have accessible configurations
 			if (accessibleConfigs.length > 0) {

@@ -6,6 +6,7 @@
 	import { untrack } from 'svelte';
 	import CleanupPanel from './CleanupPanel.svelte';
 	import { ACTIVE_CONFIG_KEYS, getConfigLabel } from './configLabels';
+	import { isSecretConfigKey } from '$lib/config/secretConfigKeys';
 
 	const logger = createLogger('admin:settings');
 
@@ -83,7 +84,12 @@
 		return String(value);
 	}
 
-	function getInputType(value: unknown): string {
+	function getInputType(key: string, value: unknown): string {
+		// Zugangsdaten vor dem Typ-Raten abfangen: Sie sind Strings und liefen
+		// sonst in den generischen Text-Zweig. Der Server liefert hier ohnehin nur
+		// den Platzhalter (`secretConfigKeys.ts`) — das Passwort-Feld verhindert
+		// zusätzlich, dass die eingetippte Neufassung über die Schulter mitlesbar ist.
+		if (isSecretConfigKey(key)) return 'password';
 		if (typeof value === 'boolean') return 'checkbox';
 		if (typeof value === 'number') return 'number';
 		if (Array.isArray(value)) return 'tags';
@@ -414,7 +420,7 @@
 
 					<div class="space-y-6">
 						{#each configs as config (config.key)}
-							{@const inputType = getInputType(config.value)}
+							{@const inputType = getInputType(config.key, config.value)}
 
 							<div
 								class="rounded-lg border p-4 {changedConfigs.has(config.key)
@@ -465,7 +471,23 @@
 
 								<!-- Config Input -->
 								<div class="fieldset w-full">
-									{#if inputType === 'checkbox'}
+									{#if inputType === 'password'}
+										<input
+											type="password"
+											class="input w-full"
+											autocomplete="off"
+											value={String(config.value)}
+											oninput={(e) =>
+												handleInputChange(config, (e.target as HTMLInputElement).value)}
+											placeholder="Nicht gesetzt"
+										/>
+										<div class="label">
+											<span class="text-base-content/70">
+												Der gespeicherte Wert wird nie angezeigt. Punkte bedeuten „gesetzt“ — zum
+												Ändern überschreiben, zum Löschen das Feld leeren.
+											</span>
+										</div>
+									{:else if inputType === 'checkbox'}
 										<label class="flex cursor-pointer items-center justify-start gap-3">
 											<input
 												type="checkbox"
