@@ -50,6 +50,60 @@ test.describe('About Page', () => {
 		).toHaveCount(0);
 	});
 
+	/* Der Betreiber-Abschnitt war der einzige der Seite **ohne** Überschrift — und
+	   stand zugleich an vierter Stelle, hinter Mission und Plattform. „Wer
+	   betreibt das?" ist aber die Frage, die eine Über-uns-Seite zuerst
+	   beantworten muss.
+
+	   Der Test prüft beides: dass er eine eigene Überschrift trägt, und dass er
+	   vor den übrigen Abschnitten steht. Die Reihenfolge über die Position im
+	   DOM, nicht über Pixel — das ist unabhängig vom Layout.
+
+	   `level: 2` und `main h2` sind kein Zierrat: Ohne Ebene würde der Locator
+	   auch eine h3 „… Meeresmuseum" treffen, und ohne `main` zählten Überschriften
+	   aus Navbar und Footer in den Index mit. Beides trifft heute nicht zu — aber
+	   der Test würde dann das Falsche prüfen, ohne rot zu werden. */
+	test('der Betreiber steht mit eigener Überschrift an erster Stelle', async ({ page }) => {
+		const betreiber = page.getByRole('heading', { name: /Meeresmuseum/, level: 2 });
+		await expect(betreiber).toBeVisible();
+
+		const reihenfolge = await page.evaluate(() =>
+			[...document.querySelectorAll('main h2')].map((h) => h.textContent?.trim() ?? '')
+		);
+
+		expect(
+			reihenfolge.findIndex((t) => /Meeresmuseum/.test(t)),
+			`Der Betreiber-Abschnitt muss die erste h2 sein. Gefunden: ${reihenfolge.join(' | ')}`
+		).toBe(0);
+	});
+
+	/* Überschriften-Ebenen dürfen keine Stufe überspringen (WCAG 1.3.1). Auf
+	   dieser Seite ist das keine Formalie: Beim Kürzen fallen ganze Abschnitte
+	   weg, und eine `h4`, deren umgebende `h3` mit verschwindet, hängt danach
+	   ohne Zwischenebene unter einer `h2`. Genau das ist der Fehler, den man beim
+	   Löschen nicht sieht. */
+	test('die Überschriften-Ebenen überspringen keine Stufe', async ({ page }) => {
+		const ebenen = await page.evaluate(() =>
+			[...document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main h6')].map(
+				(h) => ({ level: Number(h.tagName[1]), text: h.textContent?.trim().slice(0, 40) ?? '' })
+			)
+		);
+
+		expect(
+			ebenen.length,
+			'Die Seite rendert keine Überschriften — Selektor prüfen.'
+		).toBeGreaterThan(0);
+		expect(ebenen[0].level, 'Die erste Überschrift muss die h1 sein.').toBe(1);
+
+		const spruenge = ebenen
+			.slice(1)
+			.map((h, i) => ({ von: ebenen[i], zu: h }))
+			.filter(({ von, zu }) => zu.level > von.level + 1)
+			.map(({ von, zu }) => `h${von.level} „${von.text}" → h${zu.level} „${zu.text}"`);
+
+		expect(spruenge, 'Übersprungene Überschriften-Ebene (WCAG 1.3.1)').toEqual([]);
+	});
+
 	/* `/docs` ist die OpenAPI-Dokumentation („Testen Sie alle Endpunkte direkt im
 	   Browser") und damit für die Zielgruppe dieser Schaltflächen das falsche
 	   Ziel. Der Test verbietet es ausdrücklich, statt nur die richtigen Ziele

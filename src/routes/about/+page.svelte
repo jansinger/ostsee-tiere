@@ -36,8 +36,11 @@
 <div class="mx-auto max-w-5xl p-6">
 	<!-- Hero Section -->
 	<div class="mb-16 text-center">
+		<!-- Wortmarke aus: direkt darunter steht „Über Ostsee-Tiere". Mit Text las
+		     das Logo den Namen ein zweites Mal — einmal als Grafik, einmal als
+		     Überschrift. -->
 		<div class="mb-8 flex flex-1 justify-center">
-			<OstseeTiereLogo size="lg" showText={true} />
+			<OstseeTiereLogo size="lg" showText={false} />
 		</div>
 
 		<!-- Größen aus der Rollen-Tabelle in design-system.md, nicht frei gewählt:
@@ -55,6 +58,55 @@
 			<p class="text-base-content/70 text-lg">
 				Gemeinsam schaffen wir wertvolle Daten für die <em>Meeresforschung und den Naturschutz</em>.
 			</p>
+		</div>
+	</div>
+
+	<!-- Betreiber — steht bewusst direkt unter dem Hero (2026-08-02).
+	     Vorher an vierter Stelle hinter Mission und Plattform, und als einziger
+	     Abschnitt der Seite ganz ohne Überschrift. „Wer betreibt das?" ist aber
+	     die Frage, die eine Über-uns-Seite zuerst beantworten muss.
+
+	     Die h2 trägt `text-primary-content`, weil sie auf der Vollton-Fläche
+	     `bg-primary` sitzt — genau der Fall, für den die *-content-Regel aus
+	     design-system.md gedacht ist, kein Tint.
+
+	     „einem der führenden Zentren für Meeresforschung" ist als unbelegter
+	     Superlativ entfallen. „Seit über 70 Jahren" war richtig, aber vage und
+	     altert mit jedem Jahr — 1951 ist eine Jahreszahl, die stehen bleibt. -->
+	<div class="mb-16">
+		<div class="bg-primary text-primary-content rounded-lg p-8 text-center">
+			<h2 class="text-primary-content text-title mb-4 font-bold">
+				Betrieben vom Deutschen Meeresmuseum
+			</h2>
+			<img
+				src="/logo_dmm_negativ.svg"
+				alt="Deutsches Meeresmuseum Logo"
+				class="mx-auto mb-4 w-64 p-4"
+			/>
+			<p class="text-primary-content mx-auto mb-4 max-w-2xl leading-relaxed">
+				Das Meeresmuseum in Stralsund erforscht die Ostsee und ihre Lebensräume seit 1951. Die
+				Sichtungen, die hier gemeldet werden, fließen in diese Arbeit ein.
+			</p>
+			<div class="flex justify-center gap-4">
+				<a
+					href="https://www.deutsches-meeresmuseum.de"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="btn btn-outline btn-sm"
+				>
+					<Icon icon="lucide:globe" width="16" class="mr-1" aria-hidden="true" />
+					Meeresmuseum.de
+				</a>
+				<a
+					href="https://www.deutsches-meeresmuseum.de/wissenschaft/sichtungen"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="btn btn-outline btn-sm"
+				>
+					<Icon icon="lucide:file-text" width="16" class="mr-1" aria-hidden="true" />
+					Mehr über Sichtungen
+				</a>
+			</div>
 		</div>
 	</div>
 
@@ -124,7 +176,7 @@
 				Unsere Plattform
 			</h2>
 			<p class="text-base-content/70 mx-auto max-w-2xl text-lg">
-				Modernste Technologie für einfache Bedienung und maximale wissenschaftliche Relevanz
+				Einfach zu bedienen und auf wissenschaftlich brauchbare Daten ausgelegt
 			</p>
 		</div>
 
@@ -193,42 +245,6 @@
 						<div class="badge badge-accent badge-outline">Open Data</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Partnership Section -->
-	<div class="mb-16">
-		<div class="bg-primary text-primary-content rounded-lg p-8 text-center">
-			<img
-				src="/logo_dmm_negativ.svg"
-				alt="Deutsches Meeresmuseum Logo"
-				class="mx-auto mb-4 w-64 p-4"
-			/>
-			<p class="text-primary-content mx-auto mb-4 max-w-2xl leading-relaxed">
-				Diese Plattform wird vom Deutschen Meeresmuseum in Stralsund betrieben, einem der führenden
-				Zentren für Meeresforschung und -bildung in Deutschland. Seit über 70 Jahren widmen wir uns
-				der Erforschung und dem Schutz der marinen Lebensräume.
-			</p>
-			<div class="flex justify-center gap-4">
-				<a
-					href="https://www.deutsches-meeresmuseum.de"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="btn btn-outline btn-sm"
-				>
-					<Icon icon="lucide:globe" width="16" class="mr-1" />
-					Meeresmuseum.de
-				</a>
-				<a
-					href="https://www.deutsches-meeresmuseum.de/wissenschaft/sichtungen"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="btn btn-outline btn-sm"
-				>
-					<Icon icon="lucide:file-text" width="16" class="mr-1" />
-					Mehr über Sichtungen
-				</a>
 			</div>
 		</div>
 	</div>
