@@ -267,8 +267,16 @@
 	       sie melden." war falsch. `firstName`, `lastName` und `email` sind in
 	       sightingSchema.ts unbedingt `.required()` und im JSDoc als Pflichtfeld
 	       geführt; POST /api/sightings validiert dasselbe Schema, eine Meldung
-	       ohne sie wird also auch serverseitig abgewiesen. Freiwillig sind
-	       Telefon, Anschrift und Fax — das steht jetzt da.
+	       ohne sie wird also auch serverseitig abgewiesen. Freiwillig ist von
+	       den gerenderten Kontaktfeldern nur die Telefonnummer.
+
+	       Anschrift und Fax stehen bewusst NICHT als „freiwillig" da, obwohl
+	       sie im Yup-Schema optional sind: Step4Contact rendert sie nicht,
+	       requestValidation.ts lässt sie nicht durch, und formConfig.ts hält
+	       fest, dass sie seit dem Wegfall der Adressabfrage nicht mehr
+	       gespeichert werden. Erreichbar sind sie nur über die Legacy-REST-API,
+	       die nicht in Betrieb ist. „Freiwillig" hätte suggeriert, es gäbe ein
+	       Feld dafür.
 	     - Der Schlussabsatz sagte zu, in der DMM-Erklärung stehe „vollständig",
 	       auch „wie lange sie gespeichert bleiben". Für Sichtungsmeldungen nennt
 	       sie keine Frist (nur für Tickets, Kontaktformular, Bewerbungen), und im
@@ -310,7 +318,7 @@
 						/>
 						<span>
 							Für Rückfragen zu Ihrer Meldung brauchen wir Name und E-Mail.
-							<strong>Anschrift und Telefonnummer sind freiwillig.</strong>
+							<strong>Die Telefonnummer ist freiwillig</strong>, eine Anschrift fragen wir nicht ab.
 						</span>
 					</li>
 					<li class="flex items-start gap-2">
