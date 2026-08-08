@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.0](https://github.com/jansinger/ostsee-tiere/compare/v2.12.0...v2.13.0) (2026-08-08)
+
+
+### Features
+
+* **admin:** Duplikat-Hinweis auf der Eingangsseite (Spec B2) ([#804](https://github.com/jansinger/ostsee-tiere/issues/804)) ([b6ff365](https://github.com/jansinger/ostsee-tiere/commit/b6ff365db8fedaf75ea25f6c6054d794e1e88a58))
+* **admin:** Freitext-Suche über Sichtungen in der Admin-Tabelle ([#803](https://github.com/jansinger/ostsee-tiere/issues/803)) ([45e01a3](https://github.com/jansinger/ostsee-tiere/commit/45e01a3cdb44c3ccc8d9d3ad7dc4fee955b7b32b))
+* **admin:** gespeicherte Filteransichten für die Sichtungstabelle (Spec B4) ([#806](https://github.com/jansinger/ostsee-tiere/issues/806)) ([bd27501](https://github.com/jansinger/ostsee-tiere/commit/bd27501371a75a252635e2d1800238ab3340cbf5))
+* **admin:** inbox task list with rejection triage ([#793](https://github.com/jansinger/ostsee-tiere/issues/793)) ([7fa08de](https://github.com/jansinger/ostsee-tiere/commit/7fa08de8cf1e8e36d9c719fd8c91b8e0c6cd65d1))
+* **admin:** Jahresfilter und echte Diagramme für die Statistikseite ([#801](https://github.com/jansinger/ostsee-tiere/issues/801)) ([1ea753b](https://github.com/jansinger/ostsee-tiere/commit/1ea753b5f98032f387de8782c8c3a21403c8f79a))
+* **admin:** Rückweg aus der Detailansicht kennt den Eingang ([#807](https://github.com/jansinger/ostsee-tiere/issues/807)) ([32cac3c](https://github.com/jansinger/ostsee-tiere/commit/32cac3ca473350d0b38b2e868a706d7a67f4c39c))
+* **admin:** spam rescore endpoint for deployed environments ([#790](https://github.com/jansinger/ostsee-tiere/issues/790)) ([7b5c7b6](https://github.com/jansinger/ostsee-tiere/commit/7b5c7b649a3442d9e9e7705a4509e12c84acc168))
+* **admin:** Status-Historie pro Sichtung (Spec B3) ([#805](https://github.com/jansinger/ostsee-tiere/issues/805)) ([dfd89f5](https://github.com/jansinger/ostsee-tiere/commit/dfd89f50d095ca83fcf79268c732276fba2d9cb4))
+* **admin:** Tastatur-Triage im Eingang (Spec B1) ([#808](https://github.com/jansinger/ostsee-tiere/issues/808)) ([b565351](https://github.com/jansinger/ostsee-tiere/commit/b565351d5bd96a4df165a2719644c2454b3a0347))
+* **admin:** unify sighting status across inbox, table and detail view ([#797](https://github.com/jansinger/ostsee-tiere/issues/797)) ([8f7ae91](https://github.com/jansinger/ostsee-tiere/commit/8f7ae9103272407481d651a182aa3079cf467fa0))
+* **admin:** usability- und UX-verbesserungen aus dem admin-review ([#802](https://github.com/jansinger/ostsee-tiere/issues/802)) ([336f2f2](https://github.com/jansinger/ostsee-tiere/commit/336f2f2302c90e2f6087613bcc5dfe76ce498f1d))
+* **report:** Dropdown-Optionen nach Wahrscheinlichkeit sortieren, redundantes "Keine Angabe" entfernen ([#796](https://github.com/jansinger/ostsee-tiere/issues/796)) ([fa88c9a](https://github.com/jansinger/ostsee-tiere/commit/fa88c9aee069571fd00d8f07514a7a9120a093b0))
+* **report:** Einstiegsseite mit zwei klickbaren Karten statt Radio + „Weiter" ([#791](https://github.com/jansinger/ostsee-tiere/issues/791)) ([bb64fd2](https://github.com/jansinger/ostsee-tiere/commit/bb64fd293f298d30c945ecee8a8c99e13b05c46d))
+
+
+### Bug Fixes
+
+* **admin:** undo rejections, show them in detail view, correct pending photo count ([#794](https://github.com/jansinger/ostsee-tiere/issues/794)) ([c6d8fee](https://github.com/jansinger/ostsee-tiere/commit/c6d8feefe02fd0666dae84d48cdaf65b0db05612))
+* **admin:** vier Bugs aus dem Admin-Review (Filterverlust, Zähler, Datumsfilter, Statistik) ([#800](https://github.com/jansinger/ostsee-tiere/issues/800)) ([453b1d8](https://github.com/jansinger/ostsee-tiere/commit/453b1d80c98baba43f1011634b0dbabecbbdeb18))
+* **admin:** wrap long reference ids in the mobile sighting card ([#798](https://github.com/jansinger/ostsee-tiere/issues/798)) ([9bb82c7](https://github.com/jansinger/ostsee-tiere/commit/9bb82c7ece5ceb9eb07acd315ad7c708b26270c2))
+* **report:** kein Bestätigungsmail-Versprechen auf der Erfolgsseite ([#795](https://github.com/jansinger/ostsee-tiere/issues/795)) ([473622b](https://github.com/jansinger/ostsee-tiere/commit/473622b7ea87f7fcc90edee0c736a119786cb47f))
+* **report:** UX-Review Runde 2 — Toast-Dedup, Totfund Schritt 2, Politur ([#792](https://github.com/jansinger/ostsee-tiere/issues/792)) ([6173746](https://github.com/jansinger/ostsee-tiere/commit/617374629020101439dbba51b6849b717274298f))
+
+
+### Dependencies
+
+* **deps:** bump js-yaml from 4.3.0 to 4.3.1 ([#788](https://github.com/jansinger/ostsee-tiere/issues/788)) ([806533d](https://github.com/jansinger/ostsee-tiere/commit/806533daf09c00b53f302560395111574e692479))
+
 ## [2.12.0](https://github.com/jansinger/ostsee-tiere/compare/v2.11.0...v2.12.0) (2026-08-07)
 
 
