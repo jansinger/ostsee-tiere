@@ -223,7 +223,7 @@
 		"nameConsent": {
 			"meta": {
 				"type": "checkbox",
-				"helpText": "Ich stimme zu, dass mein Name (Vor- und Nachname) öffentlich auf der Karte angezeigt werden darf.",
+				"helpText": "Ich stimme zu, dass mein Name (Vor- und Nachname) öffentlich auf der Sichtungskarte angezeigt werden darf — sowohl auf der Website ostsee-tiere.de als auch in der zugehörigen App.",
 				"valueText": "Ermöglicht die Würdigung der Beobachtenden auf der Sichtungskarte"
 			},
 			"label": "Namen veröffentlichen"
@@ -317,7 +317,7 @@
 		"shipNameConsent": {
 			"meta": {
 				"type": "checkbox",
-				"helpText": "Ich stimme zu, dass der Schiffsname öffentlich auf der Karte angezeigt werden darf.",
+				"helpText": "Ich stimme zu, dass der Schiffsname öffentlich auf der Sichtungskarte angezeigt werden darf — sowohl auf der Website ostsee-tiere.de als auch in der zugehörigen App.",
 				"valueText": "Ermöglicht die Würdigung der Beobachtenden auf der Sichtungskarte"
 			},
 			"label": "Schiffsname veröffentlichen"

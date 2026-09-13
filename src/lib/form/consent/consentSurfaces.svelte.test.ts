@@ -215,19 +215,19 @@ const PINNED_CONSENT_SURFACES = [
 		field: 'nameConsent',
 		version: NAME_CONSENT_VERSION,
 		mount: mountStep4,
-		hash: '4834302a93036af224c49c33ab6e6014249fd1e04161bce5e454d6726cecf3b9'
+		hash: '52c78ef9327e827938f9086789b77fce9dfa0906215c4969024c315ba006a9cb'
 	},
 	{
 		field: 'shipNameConsent',
 		version: SHIP_NAME_CONSENT_VERSION,
 		mount: mountStep4,
-		hash: '0630ad922d2c2352a35495f212113c6b1356601d0cc870fef3369a10f2587e9a'
+		hash: '1b457c0558173a31510f776bbcddca7f3ff2dc2cfcb270d7dc85ac18abe309dc'
 	},
 	{
 		field: 'mediaConsent',
 		version: MEDIA_CONSENT_VERSION,
 		mount: mountStep4,
-		hash: '447e64482bf0380bae6df7cc953732d61634a00f7a92377a5e7e217153911ec8'
+		hash: 'd2c96dda7071fa5417e92b7e7ba851b01cebd1b98c488c1657b3da942d04f672'
 	},
 	{
 		// Einzige Einwilligung ohne Fassungskennung: Sie erlaubt das Speichern der

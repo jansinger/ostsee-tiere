@@ -41,12 +41,13 @@
  *
  * Auf 2026-09-13 gehoben, obwohl `mediaConsent` selbst inhaltlich unverändert
  * ist: Die gemeinsame Gruppen-Überschrift wurde auf Wunsch der
- * Datenschutzbeauftragten des DMM (E-Mail 2026-09-02) zu „Optionale
- * Veröffentlichung von Namen auf der Sichtungskarte der Website
- * ostsee-tiere.de" geändert (vorher „… von Namen und Aufnahmen") und der
+ * Datenschutzbeauftragten des DMM (E-Mail 2026-09-02) geändert und der
  * Einleitungssatz der Gruppe um das Leerzeichen vor dem Punkt bereinigt
- * („optional ." → „optional."). Die Überschrift gehört zur gelesenen Fläche
- * von `mediaConsent` genauso wie zu `nameConsent`/`shipNameConsent` — siehe
- * `NAME_CONSENT_VERSION` in `consentVersions.ts`.
+ * („optional ." → „optional."). Am selben Tag noch einmal nachgeschärft
+ * (PR-Review #921, siehe `NAME_CONSENT_VERSION` in `consentVersions.ts` für
+ * die Begründung): endgültiger Wortlaut „Optionale Veröffentlichung von Namen
+ * und Aufnahmen auf der Sichtungskarte (Website und App)". Die Überschrift
+ * gehört zur gelesenen Fläche von `mediaConsent` genauso wie zu
+ * `nameConsent`/`shipNameConsent`.
  */
 export const MEDIA_CONSENT_VERSION = '2026-09-13';
