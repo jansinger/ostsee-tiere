@@ -203,28 +203,6 @@ Hosts einzugreifen.
 
 ---
 
-## Abweichung von RELEASE_PIPELINE.md: Pfad auf hawking
-
-[RELEASE_PIPELINE.md](./RELEASE_PIPELINE.md) beschreibt den Staging-Stack
-unter `/opt/ostsee-staging` (`COMPOSE_PROJECT_NAME=ostsee-staging`) mit einem
-Update-Timer, der alle 5 Minuten `docker compose pull && up -d` fährt. Das ist
-auf hawking **nicht** der reale Stand — per SSH verifiziert (2026-09-13):
-
-- Der tatsächliche Pfad ist `/opt/ostsee-tiere` (siehe oben), nicht
-  `/opt/ostsee-staging`.
-- Es existiert kein automatischer Update-Timer: kein passender
-  `systemctl list-timers`-Eintrag, kein Crontab-Eintrag für `docker`/`pull`
-  unter root oder dem SSH-User. `IMAGE_TAG=staging` in der `.env` ist gesetzt,
-  aber niemand zieht neue Images automatisch — ein Update passiert nur bei
-  einem manuellen `docker compose pull && up -d`.
-
-Wer nach `RELEASE_PIPELINE.md` vorgeht und den Stack unter
-`/opt/ostsee-staging` aktualisiert, aktualisiert **nicht** hawking. Diese
-Datei hier gilt für den tatsächlichen Pfad (`/opt/ostsee-tiere`) als
-verbindlich, bis `RELEASE_PIPELINE.md` entsprechend korrigiert ist.
-
----
-
 ## Weiterführende Dokumentation
 
 - [PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md) — generische
@@ -233,4 +211,5 @@ verbindlich, bis `RELEASE_PIPELINE.md` entsprechend korrigiert ist.
 - [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md) — Docker-Referenz
 - [RELEASE_PIPELINE.md](./RELEASE_PIPELINE.md) — `IMAGE_TAG=staging` auf
   hawking folgt jedem neuen Release, aber ungeprüft _und ohne Auto-Pull_
-  (Pfad-Abweichung siehe Abschnitt oben)
+  (Abschnitt „Staging (hawking)" dort beschreibt den tatsächlichen Pfad
+  `/opt/ostsee-tiere` und den Stand ohne Pull-Timer)

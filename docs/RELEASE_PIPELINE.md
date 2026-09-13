@@ -95,28 +95,32 @@ Beide Hosts holen sich das Image selbst ab. GitHub Actions braucht **keinen**
 Zugriff auf die Server, es bewegt nur Tags in der Registry — keine SSH-Keys als
 Repo-Secrets, keine offenen Ports für CI.
 
-Beide Stacks nutzen dieselbe `docker-compose.production.yml`. Der Unterschied
-liegt allein in `.env`.
+Production nutzt `docker-compose.production.yml` aus diesem Repo. **hawking
+nicht** — dort liegt eine eigene, handgepflegte `docker-compose.yml` ohne
+`db`-Service (PostgreSQL läuft nativ auf dem Host, nicht containerisiert).
+Details, Architektur-Unterschiede und ein aktueller Vorfall dazu:
+[PREPROD_HAWKING.md](./PREPROD_HAWKING.md).
 
 ### Staging (hawking)
 
+Tatsächlicher Stand (per SSH verifiziert, 2026-09-13 — dieser Abschnitt war
+zuvor aspirational und beschrieb einen nie umgesetzten Plan):
+
 ```bash
-# /opt/ostsee-staging/.env
+# /opt/ostsee-tiere/.env   (NICHT /opt/ostsee-staging — der Pfad ist historisch
+#                            gewachsen und wurde nie auf den unten genannten
+#                            Plan umgezogen)
 IMAGE_TAG=staging
-COMPOSE_PROJECT_NAME=ostsee-staging
-PUBLIC_SITE_URL=https://staging.ostsee-tiere.example.com
+# COMPOSE_PROJECT_NAME ist nicht gesetzt — Compose leitet den Projektnamen aus
+# dem Verzeichnisnamen ab, hier also ebenfalls "ostsee-tiere".
+PUBLIC_SITE_URL=https://preprod.ostsee-tiere.de
 ```
 
-Update-Lauf, z. B. als systemd-Timer alle 5 Minuten:
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-cd /opt/ostsee-staging
-docker compose pull --quiet
-docker compose up -d
-docker image prune -f --filter "until=168h"
-```
+**Kein Pull-Timer eingerichtet.** `IMAGE_TAG=staging` ist gesetzt, aber es
+zieht niemand automatisch neue Images — weder Cron noch systemd-Timer.
+`docker compose pull && docker compose up -d` läuft nur von Hand. Ein
+Update-Lauf wie unten für Production wäre hierfür ebenso denkbar, ist aber
+(Stand 2026-09-13) nicht eingerichtet.
 
 ### Production (Hetzner)
 
@@ -233,14 +237,17 @@ der Backup-Schritt im Prod-Skript vor `docker compose up -d`.
 - [ ] `promote-production.yml` muss auf `main` liegen, sonst taucht
       _Run workflow_ nicht in der Actions-UI auf (`workflow_dispatch` wird nur
       vom Default-Branch gelesen)
-- [ ] Staging-Host: Stack unter `/opt/ostsee-staging` mit `IMAGE_TAG=staging`,
-      eigener DB und eigenem `uploads`-Volume
+- [x] Staging-Host (hawking): Stack mit `IMAGE_TAG=staging`, eigener DB
+      (nativ, kein `db`-Container) und eigenem `uploads`-Volume — allerdings
+      unter `/opt/ostsee-tiere`, nicht `/opt/ostsee-staging` wie ursprünglich
+      hier geplant. Siehe [PREPROD_HAWKING.md](./PREPROD_HAWKING.md).
 - [ ] Prod-Host: `IMAGE_TAG` in der bestehenden `.env` auf `production` setzen
       (oder digest-genau per `APP_IMAGE=…@sha256:…`, das Vorrang hat)
       (bisheriger Default war `latest`)
 - [ ] Beide Hosts: `docker login ghcr.io` mit einem Read-Token, falls das
       Package privat ist
-- [ ] Pull-Timer auf beiden Hosts einrichten
+- [ ] Pull-Timer auf beiden Hosts einrichten — auf hawking (Stand 2026-09-13)
+      noch nicht vorhanden, Updates laufen dort ausschließlich manuell
 
 ---
 
