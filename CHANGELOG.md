@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.23.3](https://github.com/jansinger/ostsee-tiere/compare/v2.23.2...v2.23.3) (2026-09-13)
+
+
+### Bug Fixes
+
+* **report:** Text zur Kontaktdaten-Speicherung nutzerfreundlicher formulieren ([#924](https://github.com/jansinger/ostsee-tiere/issues/924)) ([89cfcaa](https://github.com/jansinger/ostsee-tiere/commit/89cfcaae05e3da682374144d4472b78ced2a8d69))
+
 ## [2.23.2](https://github.com/jansinger/ostsee-tiere/compare/v2.23.1...v2.23.2) (2026-09-13)
 
 
