@@ -134,7 +134,7 @@
 			     ohne Zustimmung landen die Daten nur in der Session. Die
 			     Datenschutzbeauftragte des DMM (E-Mail 2026-09-02) hat das als
 			     irreführend beanstandet; die tatsächliche Einwilligung steht weiter
-			     unten bei „Dauerhafte Speicherung der Kontaktdaten". Der Hinweis auf
+			     unten bei „Für die nächste Meldung merken". Der Hinweis auf
 			     bereits gespeicherte Daten bleibt, weil er ein reales Angebot ist
 			     (Löschen), keine Behauptung über automatisches Speichern. -->
 			{#if hasSavedContactData}
