@@ -143,8 +143,7 @@ gestartet:
 
 ```bash
 sudo systemctl stop postgresql@18-main
-sudo docker compose -f /opt/ostsee-tiere/docker-compose.yml \
-  --project-directory /opt/ostsee-tiere down
+sudo systemctl stop ostsee-tiere.service   # NICHT `docker compose down`, siehe Warnung unten
 sudo systemctl start postgresql@18-main
 ```
 
@@ -155,6 +154,20 @@ aktiv), die Bridge stand, bevor Postgres seinen Bind-Versuch machte —
 `Cannot assign requested address`-Warnung mehr. Der App-Container kam über
 `ostsee-tiere.service` automatisch mit hoch, `/health` meldete
 `"database":"connected"`.
+
+> **Falle beim Nachstellen: `docker compose down` statt `systemctl stop
+ostsee-tiere.service` verwenden.** `ostsee-tiere.service` ist
+> `Type=oneshot` mit `RemainAfterExit=yes` — systemd merkt sich nur „ExecStart
+> lief erfolgreich durch", nicht den tatsächlichen Zustand von Netzwerk/
+> Container. Ein direkter `docker compose down` am Unit vorbei entfernt Netz
+> und Container, die Unit bleibt aber `active (exited)`. Live nachgestellt:
+> Danach sieht `Wants=ostsee-tiere.service` die Abhängigkeit als bereits
+> erfüllt an, ein nachfolgender `systemctl start postgresql@18-main` löst
+> **kein** erneutes `ExecStart` aus — die Bridge fehlt weiterhin, und Postgres
+> würde exakt wieder mit „Cannot assign requested address" scheitern. Den
+> App-Stack deshalb immer über `systemctl {start,stop,restart}
+ostsee-tiere.service` verwalten, nie mit rohen `docker compose`-Befehlen —
+> sonst hebelt man die gerade eingerichtete Absicherung unbemerkt aus.
 
 ---
 
@@ -190,6 +203,28 @@ Hosts einzugreifen.
 
 ---
 
+## Abweichung von RELEASE_PIPELINE.md: Pfad auf hawking
+
+[RELEASE_PIPELINE.md](./RELEASE_PIPELINE.md) beschreibt den Staging-Stack
+unter `/opt/ostsee-staging` (`COMPOSE_PROJECT_NAME=ostsee-staging`) mit einem
+Update-Timer, der alle 5 Minuten `docker compose pull && up -d` fährt. Das ist
+auf hawking **nicht** der reale Stand — per SSH verifiziert (2026-09-13):
+
+- Der tatsächliche Pfad ist `/opt/ostsee-tiere` (siehe oben), nicht
+  `/opt/ostsee-staging`.
+- Es existiert kein automatischer Update-Timer: kein passender
+  `systemctl list-timers`-Eintrag, kein Crontab-Eintrag für `docker`/`pull`
+  unter root oder dem SSH-User. `IMAGE_TAG=staging` in der `.env` ist gesetzt,
+  aber niemand zieht neue Images automatisch — ein Update passiert nur bei
+  einem manuellen `docker compose pull && up -d`.
+
+Wer nach `RELEASE_PIPELINE.md` vorgeht und den Stack unter
+`/opt/ostsee-staging` aktualisiert, aktualisiert **nicht** hawking. Diese
+Datei hier gilt für den tatsächlichen Pfad (`/opt/ostsee-tiere`) als
+verbindlich, bis `RELEASE_PIPELINE.md` entsprechend korrigiert ist.
+
+---
+
 ## Weiterführende Dokumentation
 
 - [PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md) — generische
@@ -197,4 +232,5 @@ Hosts einzugreifen.
   containerisierter DB)
 - [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md) — Docker-Referenz
 - [RELEASE_PIPELINE.md](./RELEASE_PIPELINE.md) — `IMAGE_TAG=staging` auf
-  hawking folgt jedem neuen Release ungeprüft
+  hawking folgt jedem neuen Release, aber ungeprüft _und ohne Auto-Pull_
+  (Pfad-Abweichung siehe Abschnitt oben)
