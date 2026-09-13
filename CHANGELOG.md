@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.23.2](https://github.com/jansinger/ostsee-tiere/compare/v2.23.1...v2.23.2) (2026-09-13)
+
+
+### Bug Fixes
+
+* **deps:** bump @inlang/paraglide-js to 2.25.2 (fixes broken 2.25.1 CI) ([#923](https://github.com/jansinger/ostsee-tiere/issues/923)) ([9fca98b](https://github.com/jansinger/ostsee-tiere/commit/9fca98b2e9a5351d613b985306093d0bcc7bcded))
+* **report:** Datenschutz-Änderungen des DMM in Schritt 4 umsetzen ([#921](https://github.com/jansinger/ostsee-tiere/issues/921)) ([2a5cb93](https://github.com/jansinger/ostsee-tiere/commit/2a5cb93de5906494d8515f997eb9c30a1059f42b))
+* **report:** translate step navigation button text ([#922](https://github.com/jansinger/ostsee-tiere/issues/922)) ([a5c5651](https://github.com/jansinger/ostsee-tiere/commit/a5c5651e106c69bd2c11706bd3066200f7b3749f))
+
+
+### Documentation
+
+* **docs:** hawking preprod incident und postgres/docker-network fix ([#919](https://github.com/jansinger/ostsee-tiere/issues/919)) ([9a972f9](https://github.com/jansinger/ostsee-tiere/commit/9a972f9670f2b99786bbde0bccd474b539052c8b))
+
+
+### Dependencies
+
+* **deps:** bump @scalar/sveltekit from 0.3.14 to 0.3.16 ([#911](https://github.com/jansinger/ostsee-tiere/issues/911)) ([585013e](https://github.com/jansinger/ostsee-tiere/commit/585013e9a2d561349be6d60d7460b575fb53deff))
+* **deps:** bump fast-uri from 3.1.5 to 3.1.7 ([#914](https://github.com/jansinger/ostsee-tiere/issues/914)) ([b3ffad6](https://github.com/jansinger/ostsee-tiere/commit/b3ffad6bfb498615d7dc49b4c3668b2107eacf81))
+* **deps:** bump github/codeql-action in the github-actions group ([#909](https://github.com/jansinger/ostsee-tiere/issues/909)) ([8905144](https://github.com/jansinger/ostsee-tiere/commit/89051448069f3493d9f84f7507349049db748023))
+* **deps:** bump js-yaml from 4.3.1 to 4.3.2 ([#918](https://github.com/jansinger/ostsee-tiere/issues/918)) ([3327592](https://github.com/jansinger/ostsee-tiere/commit/3327592dcf00708c65ce7ea3aca77aa2920b502f))
+* **deps:** bump nodemailer from 9.0.6 to 9.1.1 ([#916](https://github.com/jansinger/ostsee-tiere/issues/916)) ([0e67107](https://github.com/jansinger/ostsee-tiere/commit/0e671071e92ebe43144ddd134633a15c02ff72c4))
+* **deps:** bump the dev-tooling group across 1 directory with 7 updates ([#915](https://github.com/jansinger/ostsee-tiere/issues/915)) ([2061bc9](https://github.com/jansinger/ostsee-tiere/commit/2061bc90345248c71207eb800fe4a023958f5344))
+* **deps:** bump the production-dependencies group across 1 directory with 4 updates ([#912](https://github.com/jansinger/ostsee-tiere/issues/912)) ([8e9d0fb](https://github.com/jansinger/ostsee-tiere/commit/8e9d0fbc02deff0088e3c460e4c89bb94631c04e))
+* **deps:** bump the svelte-framework group with 3 updates ([#908](https://github.com/jansinger/ostsee-tiere/issues/908)) ([5288b92](https://github.com/jansinger/ostsee-tiere/commit/5288b927cc3667e01b8876787c3c4386215d66b7))
+
 ## [2.23.1](https://github.com/jansinger/ostsee-tiere/compare/v2.23.0...v2.23.1) (2026-08-20)
 
 
