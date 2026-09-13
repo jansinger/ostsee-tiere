@@ -239,7 +239,15 @@ const PINNED_CONSENT_SURFACES = [
 		field: 'persistentDataConsent',
 		version: null,
 		mount: mountStep4,
-		hash: '735a733833d1f00f388cd42c7826a4dcdb2d75316e53f2246603cc55be93bbea'
+		// Gehoben 2026-09-13: Überschrift, Einleitung, Ankreuztext UND Hilfetext auf
+		// UX-Review hin umformuliert ("Dauerhafte Speicherung"/"dauerhaft" klang
+		// nach unumkehrbarer Aufbewahrung, obwohl direkt daneben ein Lösch-Button
+		// steht) — jetzt nutzenorientiert und mit explizitem Lösch-Hinweis, auch im
+		// Hilfetext selbst. Die Einleitung nochmals nachgeschärft: "nicht bei uns"
+		// behauptete fälschlich etwas über die Kontaktdaten insgesamt (die gehen mit
+		// jeder Meldung an den Server) statt nur über diese Autofill-Speicherung;
+		// "vormerken" ersetzt durch das natürlichere "merken" (Echo der Überschrift).
+		hash: '7508422be0e28e4d8c0ef15789956f945d80b1eee0c98c2a3824c2de44d51781'
 	},
 	{
 		field: 'privacyConsent',

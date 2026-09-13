@@ -172,7 +172,7 @@ describe('Step4Contact — Gruppen-Überschrift deckt alle Einwilligungen ab (Re
  * Feststellung prüft, dass `mediaConsent` in derselben Gruppe steht wie die
  * übrigen Nachweis-Einwilligungen — unter derselben Überschrift, nicht
  * irgendwo sonst im Schritt (z. B. bei „Zusätzliche Informationen" oder bei
- * der „Dauerhafte Speicherung"-Gruppe, die ebenfalls `.space-y-4` trägt).
+ * der „Für die nächste Meldung merken"-Gruppe, die ebenfalls `.space-y-4` trägt).
  */
 /**
  * UX-Review (2026-08-06, Punkt 2): `mediaConsent` steht zwei Schritte nach dem
