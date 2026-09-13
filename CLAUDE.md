@@ -215,6 +215,7 @@ Erst der manuelle Workflow **Promote to Production** (mit Approval am Environmen
 | `docs/RELEASE_PIPELINE.md`         | Release → Staging → Production, Image-Tags, Promotion, Rollback                    |
 | `docs/PRODUCTION_DEPLOYMENT.md`    | Production Deployment (Schnellanleitung)                                           |
 | `docs/DOCKER_DEPLOYMENT.md`        | Docker Setup (Vollständige Referenz)                                               |
+| `docs/PREPROD_HAWKING.md`          | Preprod hawking: native PG, Plesk-Host, Postgres/Docker-Netzwerk-Race (Fix)        |
 | `docs/ENVIRONMENT.md`              | Umgebungsvariablen, inkl. Zeitzonen-Konvention (Abschnitt `TZ`)                    |
 | `docs/WORKTREES.md`                | Worktree-Setup, geteilte Ressourcen, Ports                                         |
 | `docs/DATABASE_MIGRATION.md`       | DB Migrationen                                                                     |
