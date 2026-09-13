@@ -1311,7 +1311,7 @@
 	"sighting_otherobservations_meta_placeholder": "Klimawandel-Effekte, Plastikverschmutzung, andere Meerestiere...",
 	"sighting_otherobservations_meta_valuetext": "Auffälligkeiten am Lebensraum helfen, Sichtungen in ihren Umweltkontext einzuordnen",
 	"sighting_persistentdataconsent_label": "Kontaktdaten für später speichern",
-	"sighting_persistentdataconsent_meta_helptext": "Ich stimme zu, dass meine Kontaktdaten auf diesem Gerät gespeichert werden, um sie bei zukünftigen Meldungen automatisch zu verwenden. Ich kann sie jederzeit wieder löschen; ohne diese Zustimmung werden sie beim Schließen des Browsers gelöscht.",
+	"sighting_persistentdataconsent_meta_helptext": "Ich stimme zu, dass meine Kontaktdaten auf diesem Gerät gespeichert werden, um sie bei zukünftigen Meldungen automatisch zu verwenden. Ich kann sie jederzeit wieder löschen; ohne diese Zustimmung werden sie gelöscht, sobald ich diesen Tab schließe.",
 	"sighting_persistentdataconsent_meta_valuetext": "Ermöglicht automatisches Ausfüllen bei zukünftigen Meldungen",
 	"sighting_phone_label": "Telefonnummer",
 	"sighting_phone_max": "Die Telefonnummer darf nicht länger als 64 Zeichen sein.",

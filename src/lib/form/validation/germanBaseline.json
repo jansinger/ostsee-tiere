@@ -248,7 +248,7 @@
 		"persistentDataConsent": {
 			"meta": {
 				"type": "checkbox",
-				"helpText": "Ich stimme zu, dass meine Kontaktdaten auf diesem Gerät gespeichert werden, um sie bei zukünftigen Meldungen automatisch zu verwenden. Ich kann sie jederzeit wieder löschen; ohne diese Zustimmung werden sie beim Schließen des Browsers gelöscht.",
+				"helpText": "Ich stimme zu, dass meine Kontaktdaten auf diesem Gerät gespeichert werden, um sie bei zukünftigen Meldungen automatisch zu verwenden. Ich kann sie jederzeit wieder löschen; ohne diese Zustimmung werden sie gelöscht, sobald ich diesen Tab schließe.",
 				"valueText": "Ermöglicht automatisches Ausfüllen bei zukünftigen Meldungen"
 			},
 			"label": "Kontaktdaten für später speichern"

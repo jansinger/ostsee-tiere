@@ -247,7 +247,12 @@ const PINNED_CONSENT_SURFACES = [
 		// behauptete fälschlich etwas über die Kontaktdaten insgesamt (die gehen mit
 		// jeder Meldung an den Server) statt nur über diese Autofill-Speicherung;
 		// "vormerken" ersetzt durch das natürlichere "merken" (Echo der Überschrift).
-		hash: '7508422be0e28e4d8c0ef15789956f945d80b1eee0c98c2a3824c2de44d51781'
+		// Nach PR-Review (Copilot, #924) nochmals im Hilfetext präzisiert: "beim
+		// Schließen des Browsers" war laut `saveUserContactDataWithConsent`
+		// (`localStorage.ts`, `sessionStorage`-Zweig) und dem dokumentierten
+		// Storage-Vertrag (`.claude/rules/browser-storage.md`) unpräzise — die
+		// Session endet mit dem Tab, nicht zwingend mit dem ganzen Browser.
+		hash: '58cab8e769fbc0aa7b7aa41b167f0dd6f35be88e6e4b3c3ba1d7776e0b0ab877'
 	},
 	{
 		field: 'privacyConsent',
