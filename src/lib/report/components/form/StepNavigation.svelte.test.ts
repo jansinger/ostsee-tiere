@@ -41,6 +41,23 @@ describe('StepNavigation — Validierungs-Toast', () => {
 		clearAllToasts();
 	});
 
+	it('zeigt den englischen Button-Text, wenn die aktive Locale en ist', async () => {
+		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		overwriteGetLocale(() => 'en');
+
+		try {
+			await renderStepNavigation();
+
+			await expect
+				.element(page.getByRole('button', { name: /Next Step/i }))
+				.toHaveTextContent('Next →');
+		} finally {
+			// Auf den echten Default zurückschalten, damit andere Tests im selben
+			// Prozess nicht die englische Locale erben (Muster wie FormHelp.svelte.test.ts).
+			overwriteGetLocale(() => baseLocale);
+		}
+	});
+
 	it('ersetzt den Toast statt sich zu stapeln, wenn mehrfach auf einem invaliden Schritt auf „Weiter" geklickt wird', async () => {
 		await renderStepNavigation();
 

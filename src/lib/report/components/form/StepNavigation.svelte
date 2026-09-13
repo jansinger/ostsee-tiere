@@ -393,7 +393,9 @@
 			{:else if isSubmitBlocked}
 				<Icon icon="lucide:wifi-off" width="16" class="shrink-0" aria-hidden="true" />
 			{/if}
-			{isLastStep ? 'Absenden' : 'Weiter →'}
+			{isLastStep
+				? m.report_components_form_stepnavigation_text_absenden()
+				: m.report_components_form_stepnavigation_text_weiter()}
 		</button>
 	</nav>
 </div>
