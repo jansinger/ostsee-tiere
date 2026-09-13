@@ -39,13 +39,8 @@
 	"components_form_unifieddropzone_text_datei_hier_ablegen": "Drop the file here!",
 	"components_form_unifieddropzone_text_datei_hochgeladen_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "{count} file uploaded",
 				"countPlural=other": "{count} files uploaded"
@@ -58,13 +53,8 @@
 	"components_form_unifieddropzone_text_mb": "MB",
 	"components_form_unifieddropzone_text_und_weitere_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "and {count} more",
 				"countPlural=other": "and {count} more"
@@ -140,14 +130,8 @@
 	"components_map_sightingslistview_text_keine_sichtungen_fuer_die_aktuelle": "There are no sightings available for the current selection.",
 	"components_map_sightingslistview_text_sichtungen_jahr_plural": [
 		{
-			"declarations": [
-				"input count",
-				"input year",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "input year", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "Sightings {year} – {count} entry",
 				"countPlural=other": "Sightings {year} – {count} entries"
@@ -543,13 +527,8 @@
 	"map_popupcontent_text_sichtungen_an_diesem_ort": "{sichtungen} at this location",
 	"map_popupcontent_text_sichtungen_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "{count} sighting",
 				"countPlural=other": "{count} sightings"
@@ -558,13 +537,8 @@
 	],
 	"map_popupcontent_text_tiere_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "{count} animal",
 				"countPlural=other": "{count} animals"
@@ -599,13 +573,8 @@
 	"report_components_form_fields_dropzoneenhanced_text_datei_erfolgreich_hochgeladen": "File uploaded successfully.",
 	"report_components_form_fields_dropzoneenhanced_text_datei_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "{count} file",
 				"countPlural=other": "{count} files"
@@ -740,13 +709,8 @@
 	"report_components_form_stepnavigation_aria_label_vorheriger_schritt": "Previous step",
 	"report_components_form_stepnavigation_aria_label_zu_den_fehlerhaften_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "Jump to the field with an error",
 				"countPlural=other": "Jump to the {count} fields with errors"
@@ -755,36 +719,27 @@
 	],
 	"report_components_form_stepnavigation_text_bitte_beheben_sie_die_fehler_plural": [
 		{
-			"declarations": [
-				"input count",
-				"input step",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "input step", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "Please correct the error in “{step}” before continuing.",
 				"countPlural=other": "Please correct the {count} errors in “{step}” before continuing."
 			}
 		}
 	],
+	"report_components_form_stepnavigation_text_absenden": "Submit",
 	"report_components_form_stepnavigation_text_schritt_step": "Step {step}",
 	"report_components_form_stepnavigation_text_steperrorcount_fehler_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "{count} error",
 				"countPlural=other": "{count} errors"
 			}
 		}
 	],
+	"report_components_form_stepnavigation_text_weiter": "Next →",
 	"report_components_form_stepnavigation_text_zurueck": "← Back",
 	"report_components_form_stepprogresscompact_aria_label_formular_schritte": "Form steps",
 	"report_components_form_stepprogresscompact_text_schritt_current_von_total": "Step {current} of {total}",
@@ -951,13 +906,8 @@
 	"report_components_steps_step4contact_text_gespeicherte_kontaktdaten_loeschen": "Delete saved contact details",
 	"report_components_steps_step4contact_text_hochgeladene_aufnahmen_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "Your uploaded recording:",
 				"countPlural=other": "Your {count} uploaded recordings:"
@@ -1001,13 +951,8 @@
 	"report_components_submissionsuccess_text_tierart": "Species:",
 	"report_components_submissionsuccess_text_totalcount_tier_plural": [
 		{
-			"declarations": [
-				"input count",
-				"local countPlural = count: plural"
-			],
-			"selectors": [
-				"countPlural"
-			],
+			"declarations": ["input count", "local countPlural = count: plural"],
+			"selectors": ["countPlural"],
 			"match": {
 				"countPlural=one": "{count} animal",
 				"countPlural=other": "{count} animals"
