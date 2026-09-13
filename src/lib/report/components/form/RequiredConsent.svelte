@@ -43,7 +43,7 @@
 			<p class="text-base-content/80 text-sm">
 				<strong
 					>{m.report_components_form_requiredconsent_text_diese_zustimmung_ist_erforderlich()}</strong
-				>{m.report_components_form_requiredconsent_text_um_ihre_meldung_zu_speichern_und_fuer()}
+				>
 			</p>
 		</div>
 
@@ -89,9 +89,11 @@
 					Totfund gemeldet. Diese Fläche ist Rahmentext um die Einwilligung, nicht
 					der Ankreuztext selbst — sie hängt trotzdem an der Fassungskennung, und
 					seit dem 2026-08-06 erzwingt consentSurfaces.svelte.test.ts das auch
-					(gepinnter Hash über diese Fläche). PRIVACY_CONSENT_VERSION steht deshalb
-					auf 2026-08-04. Wer hier umformuliert, hebt die Kennung UND trägt den
-					neuen Hash nach — nur den Hash nachzutragen entwertet den Nachweis.
+					(gepinnter Hash über diese Fläche). PRIVACY_CONSENT_VERSION steht in
+					consentVersions.ts — dort auch der Grund der jeweils letzten Hebung
+					(zuletzt 2026-09-13, DMM-Änderungswunsch). Wer hier umformuliert, hebt
+					die Kennung UND trägt den neuen Hash nach — nur den Hash nachzutragen
+					entwertet den Nachweis.
 				-->
 				<strong
 					>{m.report_components_form_requiredconsent_text_ohne_diese_zustimmung_kann_ihre_meldung()}</strong

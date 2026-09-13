@@ -17,11 +17,17 @@
  * stand.
  *
  * **Zur Einwilligungsfläche:** Der Rahmentext in `RequiredConsent.svelte` ist
- * mitgezogen; `PRIVACY_CONSENT_VERSION` steht deshalb auf `2026-08-04`. Der
+ * mitgezogen; `PRIVACY_CONSENT_VERSION` wurde deshalb am 2026-08-04 gehoben
+ * (und seither, aus anderem Anlass — DMM-Änderungswunsch —, erneut; aktueller
+ * Stand und Begründung in `consentVersions.ts`). Der erste Satz des
+ * Rahmentexts ist seit dem DMM-Änderungswunsch ein anderer Wortlaut, sagt
+ * aber weiterhin „Meldung", nicht „Sichtung" — die Prüfung unten (Zeile 72)
+ * bindet sich deshalb nur an dieses eine Wort, nicht an den vollen Satz. Der
  * Ankreuztext selbst (`privacyConsent.helpText`) ist unberührt — er sagt
  * „Sichtungsdaten", und das ist die Bezeichnung der Daten, nicht des Vorgangs.
  * Die drei übrigen gepinnten Texte (`nameConsent`, `shipNameConsent`,
- * `mediaConsent`) sind ebenfalls unverändert.
+ * `mediaConsent`) sind von A5.3 unberührt (wurden aber ebenfalls vom
+ * DMM-Änderungswunsch erfasst, siehe `consentVersions.ts`).
  *
  * Das hat **nichts** mit A5.2 zu tun: A5.2 ist der Datenschutz-Einleitungssatz
  * weiter oben auf demselben Schritt, dessen Ersatzfassung das Museum noch
@@ -69,7 +75,9 @@ test.describe('A5.3 — „Meldung" statt „Sichtung"', () => {
 
 		// Der Rahmen der Pflicht-Einwilligung — die Fläche direkt über dem
 		// Absenden-Knopf, also die letzte, die vor dem Absenden gelesen wird.
-		await expect(page.getByText(/um Ihre Meldung zu speichern/i)).toBeVisible();
+		// Seit dem DMM-Änderungswunsch (2026-09-13) ein anderer Satz; geprüft
+		// wird hier nur, dass er weiterhin „Meldung" statt „Sichtung" sagt.
+		await expect(page.getByText(/Damit Ihre Meldung .*gespeichert und genutzt/i)).toBeVisible();
 		await expect(
 			page.getByText(/Ohne diese Zustimmung kann Ihre Meldung nicht gespeichert werden/i)
 		).toBeVisible();

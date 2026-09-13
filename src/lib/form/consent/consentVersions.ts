@@ -27,38 +27,46 @@
 /**
  * Fassung des Textes zu `nameConsent` (Veröffentlichung von Vor- und Nachname).
  *
- * Auf 2026-08-06 gehoben, obwohl der **Ankreuztext** (`meta.helpText`)
- * unverändert ist: `nameConsent` teilt sich auf Schritt 4 seither eine
- * gemeinsame Überschrift mit `shipNameConsent` und `mediaConsent`
- * (`Step4Contact.svelte`, „Optionale Veröffentlichung von Namen und
- * Aufnahmen" statt vorher „… Ihres Namens"). Der Geltungsbereich der Kennung
- * ist die gelesene Einwilligungsfläche, nicht die Zeichenkette im Schema —
- * wie bei `PRIVACY_CONSENT_VERSION` unten. Seit dem 2026-08-06 ist genau das
- * gepinnt (`consentSurfaces.svelte.test.ts`); zur Zeit dieser Änderung war es
- * nur ein Kommentar, und die Kennung fiel deshalb erst einem Review auf.
+ * Auf 2026-09-13 gehoben (Änderungswunsch der Datenschutzbeauftragten des DMM,
+ * E-Mail 2026-09-02), am selben Tag noch einmal nachgeschärft: Der Ankreuztext
+ * wurde zunächst wörtlich wie von der DMM vorgegeben auf „…öffentlich auf der
+ * Karte angezeigt werden darf." verengt. Das PR-Review (Copilot, #921) fand
+ * dabei einen echten Widerspruch — die Legacy-Endpunkte
+ * `GET /sichtungen/showreports.json` und `GET /rest_sichtungen` liefern `na`
+ * unauthentifiziert, gesteuert über dasselbe Flag, und `rest_sichtungen`
+ * versorgt außerdem die Kartenansicht der bestehenden iOS/Android-Apps (siehe
+ * `docs/LEGACY_API_SPECIFICATION.md`). Die verengte Zusage „nur auf der
+ * Karte der Website" war damit unrichtig, nicht nur unvollständig. Endgültiger
+ * Wortlaut deshalb: „…öffentlich auf der Sichtungskarte angezeigt werden
+ * darf — sowohl auf der Website ostsee-tiere.de als auch in der zugehörigen
+ * App." Die Gruppen-Überschrift folgt derselben Korrektur
+ * („…auf der Sichtungskarte (Website und App)"); „und Aufnahmen" bleibt
+ * weiterhin bewusst stehen (Review-Befund 1, Task 14,
+ * `Step4Contact.svelte.test.ts`). Dem DMM zur Bestätigung vorgelegt. Vorherige
+ * Hebung: 2026-08-06 (gemeinsame Überschrift mit
+ * `shipNameConsent`/`mediaConsent` eingeführt).
  */
-export const NAME_CONSENT_VERSION = '2026-08-06';
+export const NAME_CONSENT_VERSION = '2026-09-13';
 
 /**
  * Fassung des Textes zu `shipNameConsent` (Veröffentlichung des Schiffsnamens).
  *
- * Auf 2026-08-06 gehoben — dieselbe Überschriften-Änderung wie bei
- * `NAME_CONSENT_VERSION` oben, plus: `shipNameConsent` wird seither
- * bedingt ausgeblendet, sobald von Land gemeldet wird (`isFromLand`,
- * `Step4Contact.svelte`). Der Ankreuztext selbst ist unverändert.
+ * Auf 2026-09-13 gehoben und am selben Tag nachgeschärft — dieselbe
+ * Korrektur wie bei `NAME_CONSENT_VERSION` oben (Änderungswunsch DMM,
+ * E-Mail 2026-09-02, nachgeschärft nach PR-Review #921: der Schiffsname
+ * erscheint über dasselbe Legacy-API-Flag ebenfalls in
+ * `showreports.json`/`rest_sichtungen` und der App-Kartenansicht). Vorherige
+ * Hebung: 2026-08-06.
  */
-export const SHIP_NAME_CONSENT_VERSION = '2026-08-06';
+export const SHIP_NAME_CONSENT_VERSION = '2026-09-13';
 
 /**
  * Fassung des Textes zu `privacyConsent` (Pflicht-Einwilligung der Meldung).
  *
- * Auf 2026-08-04 gehoben, obwohl der **Ankreuztext** (`meta.helpText`)
- * unverändert ist: Geändert wurde der Rahmentext in `RequiredConsent.svelte`
- * („um Ihre Meldung zu speichern", „Ohne diese Zustimmung kann Ihre Meldung
- * nicht gespeichert werden" — vorher jeweils „Sichtung", Änderungswunsch A5.3).
- * Der Geltungsbereich der Kennung ist die gelesene Einwilligungsfläche, nicht
- * die Zeichenkette im Schema. Seit dem 2026-08-06 deckt der gepinnte Hash in
- * `consentSurfaces.svelte.test.ts` genau diese Fläche ab; der frühere Hash über
- * den bloßen `helpText` hätte diese Änderung nicht bemerkt.
+ * Auf 2026-09-13 gehoben (Änderungswunsch der Datenschutzbeauftragten des DMM,
+ * E-Mail 2026-09-02): Der erste Satz in `RequiredConsent.svelte` wurde ersetzt
+ * durch „Damit Ihre Meldung für die Forschung des Deutschen Meeresmuseums
+ * gespeichert und genutzt werden kann, benötigen wir Ihre Zustimmung."
+ * Vorherige Hebung: 2026-08-04.
  */
-export const PRIVACY_CONSENT_VERSION = '2026-08-04';
+export const PRIVACY_CONSENT_VERSION = '2026-09-13';
