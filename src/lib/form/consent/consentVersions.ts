@@ -27,38 +27,38 @@
 /**
  * Fassung des Textes zu `nameConsent` (Veröffentlichung von Vor- und Nachname).
  *
- * Auf 2026-08-06 gehoben, obwohl der **Ankreuztext** (`meta.helpText`)
- * unverändert ist: `nameConsent` teilt sich auf Schritt 4 seither eine
- * gemeinsame Überschrift mit `shipNameConsent` und `mediaConsent`
- * (`Step4Contact.svelte`, „Optionale Veröffentlichung von Namen und
- * Aufnahmen" statt vorher „… Ihres Namens"). Der Geltungsbereich der Kennung
- * ist die gelesene Einwilligungsfläche, nicht die Zeichenkette im Schema —
- * wie bei `PRIVACY_CONSENT_VERSION` unten. Seit dem 2026-08-06 ist genau das
- * gepinnt (`consentSurfaces.svelte.test.ts`); zur Zeit dieser Änderung war es
- * nur ein Kommentar, und die Kennung fiel deshalb erst einem Review auf.
+ * Auf 2026-09-13 gehoben (Änderungswunsch der Datenschutzbeauftragten des DMM,
+ * E-Mail 2026-09-02): Die Gruppen-Überschrift ergänzt jetzt den Bezug auf
+ * ostsee-tiere.de („Optionale Veröffentlichung von Namen und Aufnahmen auf der
+ * Sichtungskarte der Website ostsee-tiere.de"), und der Ankreuztext selbst ist
+ * auf die Karte verengt — „…öffentlich auf der Karte angezeigt werden darf."
+ * statt vorher „…angezeigt wird und in Berichten genannt werden darf." „Und
+ * Aufnahmen" bleibt in der Überschrift bewusst stehen, obwohl die DMM-Vorlage
+ * das nicht erwähnt: Die Gruppe trägt weiterhin `mediaConsent` mit, und eine
+ * Überschrift, die das verschweigt, gäbe Screenreader-Nutzenden und
+ * Überfliegenden den falschen Rahmen (Review-Befund 1, Task 14,
+ * `Step4Contact.svelte.test.ts`). Vorherige Hebung: 2026-08-06 (gemeinsame
+ * Überschrift mit `shipNameConsent`/`mediaConsent` eingeführt).
  */
-export const NAME_CONSENT_VERSION = '2026-08-06';
+export const NAME_CONSENT_VERSION = '2026-09-13';
 
 /**
  * Fassung des Textes zu `shipNameConsent` (Veröffentlichung des Schiffsnamens).
  *
- * Auf 2026-08-06 gehoben — dieselbe Überschriften-Änderung wie bei
- * `NAME_CONSENT_VERSION` oben, plus: `shipNameConsent` wird seither
- * bedingt ausgeblendet, sobald von Land gemeldet wird (`isFromLand`,
- * `Step4Contact.svelte`). Der Ankreuztext selbst ist unverändert.
+ * Auf 2026-09-13 gehoben — dieselbe Änderung wie bei `NAME_CONSENT_VERSION`
+ * oben (Änderungswunsch DMM, E-Mail 2026-09-02): Ankreuztext auf die Karte
+ * verengt, gemeinsame Gruppen-Überschrift geändert. Vorherige Hebung:
+ * 2026-08-06.
  */
-export const SHIP_NAME_CONSENT_VERSION = '2026-08-06';
+export const SHIP_NAME_CONSENT_VERSION = '2026-09-13';
 
 /**
  * Fassung des Textes zu `privacyConsent` (Pflicht-Einwilligung der Meldung).
  *
- * Auf 2026-08-04 gehoben, obwohl der **Ankreuztext** (`meta.helpText`)
- * unverändert ist: Geändert wurde der Rahmentext in `RequiredConsent.svelte`
- * („um Ihre Meldung zu speichern", „Ohne diese Zustimmung kann Ihre Meldung
- * nicht gespeichert werden" — vorher jeweils „Sichtung", Änderungswunsch A5.3).
- * Der Geltungsbereich der Kennung ist die gelesene Einwilligungsfläche, nicht
- * die Zeichenkette im Schema. Seit dem 2026-08-06 deckt der gepinnte Hash in
- * `consentSurfaces.svelte.test.ts` genau diese Fläche ab; der frühere Hash über
- * den bloßen `helpText` hätte diese Änderung nicht bemerkt.
+ * Auf 2026-09-13 gehoben (Änderungswunsch der Datenschutzbeauftragten des DMM,
+ * E-Mail 2026-09-02): Der erste Satz in `RequiredConsent.svelte` wurde ersetzt
+ * durch „Damit Ihre Meldung für die Forschung des Deutschen Meeresmuseums
+ * gespeichert und genutzt werden kann, benötigen wir Ihre Zustimmung."
+ * Vorherige Hebung: 2026-08-04.
  */
-export const PRIVACY_CONSENT_VERSION = '2026-08-04';
+export const PRIVACY_CONSENT_VERSION = '2026-09-13';

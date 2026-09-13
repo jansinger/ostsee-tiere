@@ -43,7 +43,7 @@
 			<p class="text-base-content/80 text-sm">
 				<strong
 					>{m.report_components_form_requiredconsent_text_diese_zustimmung_ist_erforderlich()}</strong
-				>{m.report_components_form_requiredconsent_text_um_ihre_meldung_zu_speichern_und_fuer()}
+				>
 			</p>
 		</div>
 

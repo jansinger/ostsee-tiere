@@ -38,5 +38,15 @@
  * Dateinamen sind Nutzerdaten, kein Wortlaut, dem jemand zustimmt. Der Satz,
  * der sie einleitet, ändert sich mit ihnen — im Hash stünde damit die Fixture
  * der Testdatei.
+ *
+ * Auf 2026-09-13 gehoben, obwohl `mediaConsent` selbst inhaltlich unverändert
+ * ist: Die gemeinsame Gruppen-Überschrift wurde auf Wunsch der
+ * Datenschutzbeauftragten des DMM (E-Mail 2026-09-02) zu „Optionale
+ * Veröffentlichung von Namen auf der Sichtungskarte der Website
+ * ostsee-tiere.de" geändert (vorher „… von Namen und Aufnahmen") und der
+ * Einleitungssatz der Gruppe um das Leerzeichen vor dem Punkt bereinigt
+ * („optional ." → „optional."). Die Überschrift gehört zur gelesenen Fläche
+ * von `mediaConsent` genauso wie zu `nameConsent`/`shipNameConsent` — siehe
+ * `NAME_CONSENT_VERSION` in `consentVersions.ts`.
  */
-export const MEDIA_CONSENT_VERSION = '2026-08-06';
+export const MEDIA_CONSENT_VERSION = '2026-09-13';

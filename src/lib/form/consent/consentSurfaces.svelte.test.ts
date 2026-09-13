@@ -215,19 +215,19 @@ const PINNED_CONSENT_SURFACES = [
 		field: 'nameConsent',
 		version: NAME_CONSENT_VERSION,
 		mount: mountStep4,
-		hash: 'ae40179764bc28f0893993379ef1638820386d06c3fe9520a1968b4b4716031e'
+		hash: '4834302a93036af224c49c33ab6e6014249fd1e04161bce5e454d6726cecf3b9'
 	},
 	{
 		field: 'shipNameConsent',
 		version: SHIP_NAME_CONSENT_VERSION,
 		mount: mountStep4,
-		hash: '2f041f3d65c67637c75289eff37957b64b28c345f63dfe936eb4809c819773ff'
+		hash: '0630ad922d2c2352a35495f212113c6b1356601d0cc870fef3369a10f2587e9a'
 	},
 	{
 		field: 'mediaConsent',
 		version: MEDIA_CONSENT_VERSION,
 		mount: mountStep4,
-		hash: 'f33cf518f1701359eb1922918414aeffda34799dff471561ae962d0b7870780f'
+		hash: '447e64482bf0380bae6df7cc953732d61634a00f7a92377a5e7e217153911ec8'
 	},
 	{
 		// Einzige Einwilligung ohne Fassungskennung: Sie erlaubt das Speichern der
@@ -245,7 +245,7 @@ const PINNED_CONSENT_SURFACES = [
 		field: 'privacyConsent',
 		version: PRIVACY_CONSENT_VERSION,
 		mount: mountRequiredConsent,
-		hash: '2e281d78eac3a7af157d330092b2790674d29f96785bddaf2f3ba526795bc915'
+		hash: '0f10fb576c8de53edc6e5c771d97c02b4e6d16a876e58cd99e26f99c0ffe2061'
 	}
 ] as const;
 

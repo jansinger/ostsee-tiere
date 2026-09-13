@@ -128,33 +128,30 @@
 				</li>
 			</ul>
 
-			<div class="alert alert-info mt-4">
-				<div class="text-xs">
-					<p class="mb-2 flex items-center gap-2 font-medium">
-						<Icon icon="lucide:save" width="16" class="text-info-strong" />
-						{m.report_components_steps_step4contact_text_automatische_speicherung_fuer_komfort()}
-					</p>
-					<p>
-						{m.report_components_steps_step4contact_text_ihre_kontaktdaten_werden_nach_erfolgreic()}
-					</p>
-
-					{#if hasSavedContactData}
-						<div class="mt-3 flex items-center justify-between">
-							<span class="text-success-strong font-medium"
-								>{m.report_components_steps_step4contact_text_gespeicherte_kontaktdaten_gefunden()}</span
-							>
-							<button
-								type="button"
-								class="btn btn-outline btn-error btn-sm"
-								onclick={() => (zeigeBestaetigung = true)}
-							>
-								<Icon icon="lucide:trash-2" width="14" />
-								{m.report_components_steps_step4contact_text_kontaktdaten_loeschen()}
-							</button>
-						</div>
-					{/if}
+			<!-- Die frühere „Automatische Speicherung für Komfort"-Box beschrieb das
+			     Speichern als unbedingt, obwohl `saveUserContactDataWithConsent`
+			     (`localStorage.ts`) es schon immer an `persistentDataConsent` band —
+			     ohne Zustimmung landen die Daten nur in der Session. Die
+			     Datenschutzbeauftragte des DMM (E-Mail 2026-09-02) hat das als
+			     irreführend beanstandet; die tatsächliche Einwilligung steht weiter
+			     unten bei „Dauerhafte Speicherung der Kontaktdaten". Der Hinweis auf
+			     bereits gespeicherte Daten bleibt, weil er ein reales Angebot ist
+			     (Löschen), keine Behauptung über automatisches Speichern. -->
+			{#if hasSavedContactData}
+				<div class="mt-4 flex items-center justify-between">
+					<span class="text-success-strong font-medium"
+						>{m.report_components_steps_step4contact_text_gespeicherte_kontaktdaten_gefunden()}</span
+					>
+					<button
+						type="button"
+						class="btn btn-outline btn-error btn-sm"
+						onclick={() => (zeigeBestaetigung = true)}
+					>
+						<Icon icon="lucide:trash-2" width="14" />
+						{m.report_components_steps_step4contact_text_kontaktdaten_loeschen()}
+					</button>
 				</div>
-			</div>
+			{/if}
 		</div>
 
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -216,8 +213,12 @@
 			</h4>
 			<p class="text-base-content/70 mb-4 text-sm">
 				{m.report_components_steps_step4contact_text_diese_einverstaendniserklaerungen_sind()}
-				<strong>{m.report_components_steps_step4contact_text_optional()}</strong>
-				{m.report_components_steps_step4contact_text_ihre_meldung_wird_auch_ohne()}
+				<!-- Kein Whitespace zwischen `</strong>` und der nächsten Interpolation:
+				     Ein Zeilenumbruch hier rendert als Leerzeichen vor dem Punkt
+				     („optional .") — von der Datenschutzbeauftragten des DMM
+				     beanstandet (E-Mail 2026-09-02). -->
+				<strong>{m.report_components_steps_step4contact_text_optional()}</strong
+				>{m.report_components_steps_step4contact_text_ihre_meldung_wird_auch_ohne()}
 			</p>
 
 			<div class="space-y-3">
