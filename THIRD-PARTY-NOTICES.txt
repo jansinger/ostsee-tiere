@@ -1,7 +1,7 @@
 THIRD-PARTY SOFTWARE NOTICES AND LICENSE TERMS
 ===============================================
 
-Generated on: 2026-08-14 (UTC)
+Generated on: 2026-09-18 (UTC)
 
 This project uses the following third-party software components:
 

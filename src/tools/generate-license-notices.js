@@ -121,7 +121,7 @@ License compliance is validated using:
 - The \`Compliance Check\` job in \`.github/workflows/ci.yml\`, which runs \`license-checker\` on
   pull requests that change dependencies (label \`dependencies\` or a \`dependabot/\` branch).
   Pull requests that do not touch dependencies skip this job.
-- \`npm run license:audit\` locally — fails on any license outside the allowlist in \`package.json\`
+- \`npm run license:audit\` locally — fails on any license outside the allowlist in \`scripts/licenseAudit.ts\`
 - Manual review for major dependency updates
 
 ## Questions or Concerns
