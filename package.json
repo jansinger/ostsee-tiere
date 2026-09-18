@@ -52,7 +52,7 @@
 		"db:studio": "drizzle-kit studio",
 		"generate:licenses": "node src/tools/generate-license-notices.js",
 		"license:check": "license-checker --summary",
-		"license:audit": "node scripts/licenseAudit.ts",
+		"license:audit": "vite-node scripts/licenseAuditCli.ts",
 		"db:migrate-timestamps-utc": "node src/tools/migrate-timestamps-to-utc.js",
 		"db:migrate-timestamps-utc:dry-run": "node src/tools/migrate-timestamps-to-utc.js --dry-run --verbose",
 		"db:fix-land-boat-drive": "node src/tools/fix-land-boat-drive.js",

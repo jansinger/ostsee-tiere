@@ -16,21 +16,32 @@ import {
  * das Feld im package.json schlicht weg (verifiziert gegen
  * https://github.com/opral/lix/blob/main/LICENSE). Eine versionsgepinnte
  * Ausnahme (--excludePackages von license-checker kennt nur name@version)
- * würde bei jedem lix-Release erneut brechen — deshalb die Namensmuster-
- * Ausnahme hier statt in package.json.
+ * würde bei jedem lix-Release erneut brechen — deshalb die Namensausnahme
+ * hier statt in package.json, und zusätzlich nur wirksam, wenn die gemeldete
+ * Lizenz tatsächlich die Metadaten-Lücke (UNKNOWN) ist.
  */
 describe('isKnownMissingLicenseMetadata', () => {
-	it('erkennt die lix-Plattformpakete unabhängig von der Version', () => {
-		expect(isKnownMissingLicenseMetadata('@lix-js/sdk-linux-x64@0.16.1')).toBe(true);
-		expect(isKnownMissingLicenseMetadata('@lix-js/sdk-darwin-arm64@0.17.1')).toBe(true);
+	it('erkennt die bekannten lix-Plattformpakete unabhängig von der Version', () => {
+		expect(isKnownMissingLicenseMetadata('@lix-js/sdk-linux-x64@0.16.1', 'UNKNOWN')).toBe(true);
+		expect(isKnownMissingLicenseMetadata('@lix-js/sdk-darwin-arm64@0.17.1', 'UNKNOWN')).toBe(true);
 	});
 
 	it('lässt das Haupt-SDK-Paket unberührt — es trägt "license": "MIT" korrekt', () => {
-		expect(isKnownMissingLicenseMetadata('@lix-js/sdk@0.16.1')).toBe(false);
+		expect(isKnownMissingLicenseMetadata('@lix-js/sdk@0.16.1', 'MIT')).toBe(false);
 	});
 
 	it('greift bei keinem anderen Scoped-Paket', () => {
-		expect(isKnownMissingLicenseMetadata('@inlang/paraglide-js@2.25.2')).toBe(false);
+		expect(isKnownMissingLicenseMetadata('@inlang/paraglide-js@2.25.2', 'UNKNOWN')).toBe(false);
+	});
+
+	it('greift bei einem unbekannten lix-Plattformnamen NICHT — neue Plattformen fallen bewusst durch', () => {
+		expect(isKnownMissingLicenseMetadata('@lix-js/sdk-freebsd-x64@0.18.0', 'UNKNOWN')).toBe(false);
+	});
+
+	it('greift NICHT, wenn ein bekanntes lix-Paket ausnahmsweise eine echte, unzulässige Lizenz meldet', () => {
+		// Die Namensliste allein darf kein Freibrief sein — nur die tatsächliche
+		// Metadaten-Lücke (UNKNOWN/leer) wird entschuldigt, keine andere Lizenz.
+		expect(isKnownMissingLicenseMetadata('@lix-js/sdk-linux-x64@0.16.1', 'GPL-3.0')).toBe(false);
 	});
 });
 
@@ -66,18 +77,41 @@ describe('findDisallowedPackages', () => {
 		expect(violations).toEqual([{ name: 'irgendein-paket@1.0.0', licenses: 'UNKNOWN' }]);
 	});
 
-	it('behandelt ein Lizenz-Array wie license-checker es liefert', () => {
-		// Dieselbe Teilstring-Semantik wie das bisherige --onlyAllow: eine
-		// erlaubte Lizenz irgendwo im String reicht, auch neben einer nicht
-		// erlaubten — das galt vorher schon so und wird hier nicht verschärft.
+	it('meldet ein bekanntes lix-Paket trotzdem, falls es echt GPL wäre (fail closed)', () => {
+		const violations = findDisallowedPackages({
+			'@lix-js/sdk-linux-x64@0.16.1': { licenses: 'GPL-3.0' }
+		});
+		expect(violations).toEqual([{ name: '@lix-js/sdk-linux-x64@0.16.1', licenses: 'GPL-3.0' }]);
+	});
+
+	it('meldet ein unbekanntes zukünftiges lix-Plattformpaket trotz UNKNOWN (fail closed statt fail open)', () => {
+		const violations = findDisallowedPackages({
+			'@lix-js/sdk-freebsd-x64@0.18.0': { licenses: 'UNKNOWN' }
+		});
+		expect(violations).toEqual([{ name: '@lix-js/sdk-freebsd-x64@0.18.0', licenses: 'UNKNOWN' }]);
+	});
+
+	it('erkennt ein Array mit einem exakt erlaubten Element als erlaubt', () => {
+		// license-checker prüft bei einem Array per Array.prototype.indexOf, also
+		// exaktes Element — "MIT" als eigenes Element reicht, egal was daneben steht.
 		const violations = findDisallowedPackages({
 			'multi@1.0.0': { licenses: ['MIT', 'GPL-3.0'] }
 		});
 		expect(violations).toEqual([]);
 	});
 
-	it('nutzt dieselbe Teilstring-Semantik wie license-checker selbst', () => {
-		// license-checker prüft per String.indexOf, nicht per exaktem Vergleich —
+	it('lässt ein Array NICHT über einen bloßen Teilstring durch (anders als bei einem String)', () => {
+		// "The MIT License" enthält "MIT" als Teilstring, ist aber als Array-Element
+		// kein exaktes "MIT" — license-checkers Array.indexOf('MIT') wäre hier -1.
+		// Ein join(', ').includes(...) würde das fälschlich als erlaubt behandeln.
+		const violations = findDisallowedPackages({
+			'multi@1.0.0': { licenses: ['GPL-3.0', 'The MIT License'] }
+		});
+		expect(violations).toEqual([{ name: 'multi@1.0.0', licenses: 'GPL-3.0, The MIT License' }]);
+	});
+
+	it('nutzt bei einem String weiterhin Teilstring-Semantik wie license-checker selbst', () => {
+		// license-checker prüft bei einem String per String.indexOf —
 		// "BSD" in der Allow-Liste matcht deshalb auch "BSD-3-Clause".
 		const violations = findDisallowedPackages({
 			'foo@1.0.0': { licenses: 'BSD-3-Clause' }

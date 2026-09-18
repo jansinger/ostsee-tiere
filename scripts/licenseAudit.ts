@@ -14,10 +14,25 @@
  * license-checkers eigene `--excludePackages` kennt nur `name@version` —
  * eine damit gepinnte Ausnahme würde bei jedem lix-Release (Dependabot bumpt
  * diese Pakete regelmäßig) wieder brechen, also exakt das Symptom erneut
- * auslösen. Deshalb hier ein Namensmuster statt einer Versions-Ausnahme.
+ * auslösen. Deshalb hier eine namentliche Ausnahme statt einer Versions-
+ * Ausnahme — und zusätzlich an die Bedingung geknüpft, dass die gemeldete
+ * Lizenz tatsächlich die Metadaten-Lücke ist (UNKNOWN/leer), nicht eine
+ * andere, echt unzulässige Lizenz.
+ *
+ * Aufruf über `vite-node` statt bloßem `node`: `package.json` unterstützt
+ * laut `engines` auch Node 20.19/22.12, die `.ts`-Dateien ohne zusätzlichen
+ * Runner nicht ausführen können (native Type-Stripping gibt es erst ab
+ * Node 22.18/24 durchgängig) — `vite-node` ist bereits Dev-Dependency und
+ * läuft auf jeder unterstützten Version.
+ *
+ * Der CLI-Einstieg steht bewusst nicht hier, sondern in licenseAuditCli.ts:
+ * unter vite-node ist `process.argv[1]` der vite-node-Loader, nie diese
+ * Datei (derselbe Fall wie in import-legacy-inbox-cli.js beschrieben) — ein
+ * `isDirectRun`-Guard hier wäre nie wahr. Die Trennung hält diese Datei
+ * außerdem frei vom Nebeneffekt "license-checker läuft beim Import", der
+ * sonst auch licenseAudit.test.ts träfe.
  */
 import { init } from 'license-checker';
-import { pathToFileURL } from 'node:url';
 
 export const ALLOWED_LICENSES = [
 	'MIT',
@@ -47,7 +62,23 @@ export const ALLOWED_LICENSES = [
 	'MIT AND BSD-3-Clause'
 ] as const;
 
-const KNOWN_MISSING_LICENSE_METADATA = [/^@lix-js\/sdk-[a-z0-9-]+$/];
+/**
+ * Explizite Liste statt `^@lix-js\/sdk-[a-z0-9-]+$` — ein Muster auf den
+ * Namens-Präfix allein würde auch ein hypothetisches `@lix-js/sdk-cli` mit
+ * echter GPL- oder UNKNOWN-Lizenz durchlassen. Ein neues lix-Release mit
+ * einer weiteren Plattform (Stand jetzt: darwin-arm64, linux-arm64,
+ * linux-x64, win32-x64, siehe package-lock.json) fällt hier bewusst
+ * **durch** die Prüfung, statt automatisch akzeptiert zu werden — die Liste
+ * ergänzen ist der Preis für "fail closed" statt "fail open".
+ */
+const KNOWN_LIX_NATIVE_PACKAGES = new Set([
+	'@lix-js/sdk-darwin-arm64',
+	'@lix-js/sdk-darwin-x64',
+	'@lix-js/sdk-linux-arm64',
+	'@lix-js/sdk-linux-x64',
+	'@lix-js/sdk-win32-arm64',
+	'@lix-js/sdk-win32-x64'
+]);
 
 export interface PackageLicenseInfo {
 	licenses?: string | string[];
@@ -59,9 +90,26 @@ function packageNameOf(packageNameAtVersion: string): string {
 	return atIndex > 0 ? packageNameAtVersion.slice(0, atIndex) : packageNameAtVersion;
 }
 
-export function isKnownMissingLicenseMetadata(packageNameAtVersion: string): boolean {
+/** license-checker meldet eine fehlende `license`-Angabe im package.json als diesen Literal. */
+function isMissingLicenseMetadata(licenses: string | string[] | undefined): boolean {
+	if (licenses === undefined) return true;
+	const values = Array.isArray(licenses) ? licenses : [licenses];
+	return values.every((value) => value.trim() === '' || value === 'UNKNOWN');
+}
+
+/**
+ * Nur wahr, wenn BEIDES zutrifft: das Paket steht auf der lix-Namensliste
+ * UND die gemeldete Lizenz ist tatsächlich die Metadaten-Lücke (UNKNOWN/leer)
+ * — nicht irgendeine andere, echt unzulässige Lizenz. Sonst würde die
+ * Namens-Ausnahme allein auch ein zukünftiges Paket mit expliziter GPL-
+ * Lizenz durchlassen.
+ */
+export function isKnownMissingLicenseMetadata(
+	packageNameAtVersion: string,
+	licenses?: string | string[]
+): boolean {
 	const name = packageNameOf(packageNameAtVersion);
-	return KNOWN_MISSING_LICENSE_METADATA.some((pattern) => pattern.test(name));
+	return KNOWN_LIX_NATIVE_PACKAGES.has(name) && isMissingLicenseMetadata(licenses);
 }
 
 export interface LicenseViolation {
@@ -70,11 +118,27 @@ export interface LicenseViolation {
 }
 
 /**
- * Dieselbe Teilstring-Semantik wie license-checkers `--onlyAllow`
- * (`licenses.indexOf(k) !== -1`), damit dieses Skript nichts strenger oder
- * lockerer prüft als der bisherige CLI-Aufruf — nur die lix-Ausnahme kommt
- * neu dazu.
+ * Dieselbe Unterscheidung wie license-checkers `--onlyAllow`
+ * (`restricted[item].licenses.indexOf(k)`): bei einem Array prüft
+ * `indexOf` auf ein exaktes Element, bei einem String auf einen Teilstring.
+ * `['GPL-3.0', 'The MIT License']` enthält kein Element, das exakt "MIT"
+ * ist — anders als der String "MIT License", der "MIT" als Teilstring
+ * enthält. Wer beides über `join(', ').includes(...)` prüft, verwischt
+ * diesen Unterschied und lässt Arrays lockerer durch als das Original.
  */
+function matchesAllowedLicense(licenses: string | string[], allowed: string): boolean {
+	// `.includes()` resolves to Array.prototype (exaktes Element) oder
+	// String.prototype (Teilstring) je nach Laufzeittyp — genau die
+	// Unterscheidung, die license-checkers eigenes `indexOf` trifft.
+	if (Array.isArray(licenses)) return licenses.includes(allowed);
+	return licenses.includes(allowed);
+}
+
+function formatLicenses(licenses: string | string[] | undefined): string {
+	if (licenses === undefined) return '';
+	return Array.isArray(licenses) ? licenses.join(', ') : licenses;
+}
+
 export function findDisallowedPackages(
 	packages: Record<string, PackageLicenseInfo>,
 	allowedLicenses: readonly string[] = ALLOWED_LICENSES
@@ -82,13 +146,13 @@ export function findDisallowedPackages(
 	const violations: LicenseViolation[] = [];
 
 	for (const [name, info] of Object.entries(packages)) {
-		if (isKnownMissingLicenseMetadata(name)) continue;
+		const licenses = info.licenses ?? '';
+		const isAllowed = allowedLicenses.some((allowed) => matchesAllowedLicense(licenses, allowed));
+		if (isAllowed) continue;
 
-		const licenses = Array.isArray(info.licenses)
-			? info.licenses.join(', ')
-			: (info.licenses ?? '');
-		const isAllowed = allowedLicenses.some((allowed) => licenses.includes(allowed));
-		if (!isAllowed) violations.push({ name, licenses });
+		if (isKnownMissingLicenseMetadata(name, info.licenses)) continue;
+
+		violations.push({ name, licenses: formatLicenses(info.licenses) });
 	}
 
 	return violations;
@@ -106,7 +170,7 @@ function readPackages(): Promise<Record<string, PackageLicenseInfo>> {
 	});
 }
 
-async function main(): Promise<void> {
+export async function runLicenseAudit(): Promise<void> {
 	const packages = await readPackages();
 	const violations = findDisallowedPackages(packages);
 
@@ -121,14 +185,4 @@ async function main(): Promise<void> {
 	}
 
 	console.log('✅ Alle Lizenzen erlaubt (oder als bekannte Metadaten-Lücke bestätigt)');
-}
-
-const isDirectRun =
-	typeof process.argv[1] === 'string' && import.meta.url === pathToFileURL(process.argv[1]).href;
-
-if (isDirectRun) {
-	main().catch((error: unknown) => {
-		console.error(error instanceof Error ? error.message : String(error));
-		process.exitCode = 1;
-	});
 }

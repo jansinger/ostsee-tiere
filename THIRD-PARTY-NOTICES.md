@@ -2,7 +2,7 @@
 
 This project uses third-party software components. The following is a list of these components and their respective licenses.
 
-Generated on: 2026-08-14 (UTC), from the installed production dependency tree
+Generated on: 2026-09-18 (UTC), from the installed production dependency tree
 
 ## License Summary
 
@@ -132,7 +132,7 @@ Generated on: 2026-08-14 (UTC), from the installed production dependency tree
   - Repository: https://github.com/handlebars-lang/handlebars.js
   - Publisher: Yehuda Katz
 
-- **html-to-text@10.0.0**
+- **html-to-text@10.0.1**
   - Repository: https://github.com/html-to-text/node-html-to-text
   - Publisher: Malte Legenhausen
 
@@ -163,7 +163,7 @@ Generated on: 2026-08-14 (UTC), from the installed production dependency tree
   - Repository: https://github.com/panva/jose
   - Publisher: Filip Skokan
 
-- **jose@6.2.8**
+- **jose@6.2.10**
   - Repository: https://github.com/panva/jose
   - Publisher: Filip Skokan
 
@@ -377,7 +377,7 @@ Generated on: 2026-08-14 (UTC), from the installed production dependency tree
 
 **Compatibility**: ✅ Fully Compatible
 
-- **nodemailer@9.0.5**
+- **nodemailer@9.1.1**
   - Repository: https://github.com/nodemailer/nodemailer
   - Publisher: Andris Reinman
 
@@ -417,7 +417,7 @@ Generated on: 2026-08-14 (UTC), from the installed production dependency tree
 
 **Compatibility**: ✅ Fully Compatible
 
-- **deepmerge-ts@7.1.6**
+- **deepmerge-ts@8.0.2**
   - Repository: https://github.com/RebeccaStevens/deepmerge-ts
   - Publisher: Rebecca Stevens
 
@@ -580,7 +580,7 @@ License compliance is validated using:
 - The `Compliance Check` job in `.github/workflows/ci.yml`, which runs `license-checker` on
   pull requests that change dependencies (label `dependencies` or a `dependabot/` branch).
   Pull requests that do not touch dependencies skip this job.
-- `npm run license:audit` locally — fails on any license outside the allowlist in `package.json`
+- `npm run license:audit` locally — fails on any license outside the allowlist in `scripts/licenseAudit.ts`
 - Manual review for major dependency updates
 
 ## Questions or Concerns
