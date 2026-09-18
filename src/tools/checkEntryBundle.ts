@@ -59,8 +59,10 @@ const OL_ENTRY_SOURCE = 'src/lib/utils/map/openLayersHelpers.ts';
  * OpenLayers hält, sucht anschließend an der falschen Stelle.
  *
  * Nützlich ist die Zahl trotzdem, und zwar als **empfindlicher Indikator**:
- * Ihr Grundwert ist stabil, und jede neue statische `ol`-Kante hebt ihn
- * deutlich. Gemessen am 2026-08-20, beide Male mit `npm run build`:
+ * Ihr Grundwert ist stabil — solange die Bundling-Strategie selbst stabil
+ * bleibt, siehe die Anhebung vom 2026-09-18 unten. Jede neue statische
+ * `ol`-Kante hebt ihn dagegen deutlich. Gemessen am 2026-08-20, beide Male
+ * mit `npm run build`:
  *
  * | Stand                                            | Schnittmenge | Hülle gzip |
  * | ------------------------------------------------ | ------------ | ---------- |
@@ -72,11 +74,32 @@ const OL_ENTRY_SOURCE = 'src/lib/utils/map/openLayersHelpers.ts';
  * Grund, warum der Umweg über eine andere Datei auffällt**, nicht das
  * Gesamtbudget.
  *
- * Die Grenze liegt knapp über dem Sollwert: hoch genug für normales Wachstum
- * an den geteilten App-Chunks, niedrig genug, dass der gemessene Rückfall
- * (31.185 B) sicher durchschlägt.
+ * ANHEBUNG 2026-09-18 (svelte 5.56.10 → 5.57.0, vite-Bump, PR #928)
+ *
+ * Derselbe Vergleich vor/nach dem Bump, wieder mit `npm run build`:
+ *
+ * | Stand                     | Schnittmenge | Hülle gzip |
+ * | ------------------------- | ------------ | ---------- |
+ * | vor dem Bump              | 21.253 B     | 316,0 KB   |
+ * | nach dem Bump             | 108.930 B    | 316,5 KB   |
+ *
+ * Der Sprung ist real, aber kein Rückfall der hier gesuchten Art: Die
+ * Gesamt-Hülle bleibt praktisch unverändert (+0,5 KB gzip), und der neue,
+ * mit der Karten-Laufzeit geteilte Chunk (88.805 B roh) enthält nachweislich
+ * ausschließlich `svelte/internal/client` — geprüft per String-Suche nach
+ * `createEventDispatcher`, `onMount`, `beforeUpdate` etc., keine Treffer für
+ * `Projection`, `GeoJSON`, `proj4` oder sonst etwas OpenLayers-Spezifisches.
+ * Vorher lag derselbe Svelte-Runtime-Code offenbar dupliziert in mehreren
+ * kleineren, jeweils für sich nicht auffälligen Chunks; die neue
+ * Bundler-Version (Rolldown-basiertes Vite) konsolidiert ihn in einen
+ * einzigen, echt geteilten Chunk — weniger Duplikation insgesamt, aber ein
+ * größerer Schnittmengen-Wert für genau diese Prüfung.
+ *
+ * Die Grenze liegt weiterhin knapp über dem gemessenen Sollwert: genug
+ * Puffer für normales Wachstum an den geteilten App-Chunks, aber ein
+ * erneuter Rückfall vom dokumentierten Ausmaß (+9,9 KB) schlägt weiterhin an.
  */
-const OL_SHARED_BUDGET_BYTES = 25_000;
+const OL_SHARED_BUDGET_BYTES = 113_000;
 
 /**
  * Obergrenze für die statische Hülle insgesamt, gzip.
