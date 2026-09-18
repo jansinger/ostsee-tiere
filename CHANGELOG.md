@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.23.4](https://github.com/jansinger/ostsee-tiere/compare/v2.23.3...v2.23.4) (2026-09-18)
+
+
+### Bug Fixes
+
+* **ci:** exempt lix native-binary packages from license audit ([#932](https://github.com/jansinger/ostsee-tiere/issues/932)) ([2542943](https://github.com/jansinger/ostsee-tiere/commit/254294382130da71be2be8280bedccfa94521885))
+
+
+### Dependencies
+
+* **deps:** bump @scalar/sveltekit from 0.3.16 to 0.3.18 ([#931](https://github.com/jansinger/ostsee-tiere/issues/931)) ([cbaf19f](https://github.com/jansinger/ostsee-tiere/commit/cbaf19ffc9b392af3c9148d1f92c8ca466813694))
+* **deps:** bump daisyui from 5.7.16 to 5.7.38 ([#930](https://github.com/jansinger/ostsee-tiere/issues/930)) ([6b8dfcb](https://github.com/jansinger/ostsee-tiere/commit/6b8dfcbe17291d86ebe012bbeac092bd2707d0b6))
+* **deps:** bump github/codeql-action ([#929](https://github.com/jansinger/ostsee-tiere/issues/929)) ([74a9c8c](https://github.com/jansinger/ostsee-tiere/commit/74a9c8c2d8baee225e39b8a73af33ecbd66a1064))
+* **deps:** bump the dev-tooling group across 1 directory with 6 updates ([#927](https://github.com/jansinger/ostsee-tiere/issues/927)) ([efd828a](https://github.com/jansinger/ostsee-tiere/commit/efd828a5a5e790b6c8cc4d101036cacaacb28bb3))
+* **deps:** bump the production-dependencies group across 1 directory with 2 updates ([#934](https://github.com/jansinger/ostsee-tiere/issues/934)) ([7c41d62](https://github.com/jansinger/ostsee-tiere/commit/7c41d6289056c6b63e8d2d5b2b826c7495d4f222))
+* **deps:** bump the svelte-framework group across 1 directory with 2 updates ([#928](https://github.com/jansinger/ostsee-tiere/issues/928)) ([4a50e98](https://github.com/jansinger/ostsee-tiere/commit/4a50e98f5e809f7d25f87cfb39cec8606cfa990c))
+
 ## [2.23.3](https://github.com/jansinger/ostsee-tiere/compare/v2.23.2...v2.23.3) (2026-09-13)
 
 
