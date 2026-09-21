@@ -4,7 +4,7 @@ Betriebs-Notizen zur alten Domain `schweinswalsichtung.de` (Plesk-Host
 `hawking`, `ssh hawking`, Vhost-Config unter
 `/var/www/vhosts/system/schweinswalsichtung.de/conf/vhost_nginx.conf`).
 
-> **Stand:** 2026-09-18, nach dem Produktions-Umzug von `ostsee-sichtung.de`
+> **Stand:** 2026-09-21 (Befunde ab 2026-09-18), nach dem Produktions-Umzug von `ostsee-sichtung.de`
 > auf `dmm` (interner Traefik-Hostname zuvor `dmm-prod-ostsee.ha.gecko.de`,
 > jetzt `ostsee-tiere.de`).
 
@@ -79,7 +79,7 @@ dokumentiert. Zwei voneinander unabhängige Befunde bestätigen sie:
    Ein Live-Proxy über `hawking` lässt alle drei Mobile-Clients unter der
    **einen** IP von `hawking` bei der Produktion ankommen (sofern Traefik
    `X-Forwarded-For` für diesen zusätzlichen Hop nicht explizit korrekt
-   durchreicht — nicht geprüft, siehe „Offen" unten). Ein Nutzer, der wie am
+   durchreicht; laut „Offen" unten getestet nur für `GET`, ein echter `POST` wurde nie gesendet — dabei wird die `hawking`-IP geloggt). Ein Nutzer, der wie am
    2026-08-12 beobachtet 60 Nachmeldungen auf einmal schickt, würde damit
    **alle** Mobile-Clients für den Rest der Stunde blockieren — exakt die
    Fehlerklasse, die am 09.08. schon einmal 187 Meldungen gekostet hat, nur
@@ -97,6 +97,15 @@ Der lokale Posteingang-Sync (`legacy-inbox-sync`, alle 15 Min,
 `legacy-inbox-report` täglich 07:20) bleibt deshalb **aktiv**. Details zum
 Sync, den Rechten und der Störungsmeldung: `legacy-inbox/README.md`,
 Abschnitt „Betrieb als Zeitplan".
+
+**Der Sync braucht die neue Ziel-URL auch in der Server-Config.** Die Config
+`legacy-sync/config` auf `hawking` liegt außerhalb des Repos (nur
+`legacy-inbox/deploy/config.example` ist versioniert) und zeigte am
+2026-09-21 noch auf den toten Host `dmm-prod-ostsee.ha.gecko.de`
+(`ZIEL_URL`). Ein neuer `POST` wäre dann nie bei Produktion angekommen; der
+leere Posteingang hat das nur verdeckt. `ZIEL_URL` muss dort
+`https://ostsee-tiere.de` lauten, und nach jedem Host-Wechsel gehört diese
+Datei zur Checkliste, nicht nur `vhost_nginx.conf`.
 
 ### Bewusst nicht angefasst: `antworten.json` und `inBaltic.json`
 

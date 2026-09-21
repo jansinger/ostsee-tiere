@@ -7,7 +7,7 @@
 # Nach jeder Änderung genügt das Speichern; der nächste Lauf zieht sie.
 
 # Zielinstanz, an die POST /rest_sichtungen geht.
-ZIEL_URL="https://dmm-prod-ostsee.ha.gecko.de"
+ZIEL_URL="https://ostsee-tiere.de"
 
 # Datenverzeichnis des Posteingang-Dienstes (enthält posteingang/ und importiert/).
 DATEN_DIR="/var/www/vhosts/schweinswalsichtung.de/legacy-inbox-data"

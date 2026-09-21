@@ -4,7 +4,7 @@
  * Aufruf: npm run send:legacy-inbox -- <ziel-url> [--ssh=host:/pfad | --dir=/pfad]
  *
  * Beispiel (Produktion, Posteingang auf dem Plesk-Server):
- *   npm run send:legacy-inbox -- https://dmm-prod-ostsee.ha.gecko.de
+ *   npm run send:legacy-inbox -- https://ostsee-tiere.de
  *
  * Der Einstieg steht wie in import-legacy-inbox-cli.js auf der obersten Ebene
  * und nicht hinter einer `import.meta.url`-Bedingung — unter einem Loader ist

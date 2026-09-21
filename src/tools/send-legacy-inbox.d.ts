@@ -17,7 +17,7 @@ export interface Speicher {
 }
 
 export interface SendeOptionen {
-	/** Basis-URL der Zielinstanz, z. B. `https://dmm-prod-ostsee.ha.gecko.de`. */
+	/** Basis-URL der Zielinstanz, z. B. `https://ostsee-tiere.de`. */
 	basisUrl: string;
 	speicher: Speicher;
 	/** Nur zum Testen. Default: globales `fetch`. */
