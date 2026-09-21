@@ -200,7 +200,7 @@ bestand hier nicht.
   Melder gemeinsam. Herleitung und Testmethode: Projekt-Memory
   `prod-client-ip-nicht-durchgereicht-2026-09-18`.
 - **IP über den `hawking`-Hop (getestet 2026-09-21).** Bei Requests über den
-  Proxy loggt die App die Ausgangs-IP von `hawking` (`135.181.92.191`), nicht
+  Proxy loggt die App die Ausgangs-IP von `hawking`, nicht
   die des Melders: Die Kette ist einen Eintrag länger als bei Direktzugriff,
   und `XFF_DEPTH` greift genau diesen Eintrag heraus. Betroffen sind nur
   `GET /rest_sichtungen` und `showreports.json`, die die IP ausschließlich
