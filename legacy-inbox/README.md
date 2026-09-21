@@ -280,7 +280,7 @@ angelegt.
 
 ### Über HTTP an eine laufende Instanz (Produktion)
 
-    npm run send:legacy-inbox -- https://dmm-prod-ostsee.ha.gecko.de
+    npm run send:legacy-inbox -- https://ostsee-tiere.de
 
 Ohne weitere Angabe holt der Lauf die Dateien per SSH von
 `hawking:/var/www/vhosts/schweinswalsichtung.de/legacy-inbox-data` und
