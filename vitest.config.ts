@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
-import { worktreeBrowserApiPort } from './src/tools/dev-server-identity';
+import { worktreeBrowserApiPort } from './src/tools/dev-server-identity.ts';
 
 export default defineConfig({
 	test: {

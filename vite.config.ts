@@ -7,16 +7,28 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import { existsSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Icons from 'unplugin-icons/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import {
 	devPortFromEnv,
 	devServerIdentity,
 	worktreeWatchIgnore
-} from './src/tools/dev-server-identity';
-import { stableDepHash } from './src/tools/vite-stable-dep-hash';
-import { OL_OPTIMIZE_DEPS } from './src/tools/olOptimizeDeps';
+} from './src/tools/dev-server-identity.ts';
+import { stableDepHash } from './src/tools/vite-stable-dep-hash.ts';
+import { OL_OPTIMIZE_DEPS } from './src/tools/olOptimizeDeps.ts';
+
+/**
+ * Im Git-Worktree löst Node `node_modules` aus dem Haupt-Repo auf — außerhalb des
+ * Worktree-Roots. Ohne Freigabe blockt `server.fs.allow` dort alles, was per `/@fs/`
+ * ausgeliefert wird (sichtbar zuerst an den `@fontsource`-Schriften: 403). Gleiche
+ * Ermittlung wie in vite.config.ci.ts, Hintergrund in docs/WORKTREES.md.
+ */
+const nodeModulesDir = path.dirname(
+	path.dirname(createRequire(import.meta.url).resolve('vite/package.json'))
+);
 
 const certFile = fileURLToPath(new URL('./certs/localhost.pem', import.meta.url));
 const keyFile = fileURLToPath(new URL('./certs/localhost-key.pem', import.meta.url));
@@ -94,6 +106,10 @@ export default defineConfig({
 		...(devCert ? { https: devCert } : {}),
 		hmr: {
 			overlay: true
+		},
+		fs: {
+			// fs.allow ersetzt Vites Default (Workspace-Root) — daher beides angeben
+			allow: [searchForWorkspaceRoot(process.cwd()), nodeModulesDir]
 		},
 		/**
 		 * Git-Worktrees liegen unter `.claude/worktrees/` *innerhalb* des Repo-Roots.

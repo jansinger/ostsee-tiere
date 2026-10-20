@@ -53,6 +53,12 @@ Behoben in [`vite.config.ci.ts`](../vite.config.ci.ts) (wird von den Client-Test
 mit `searchForWorkspaceRoot(process.cwd())` in `server.fs.allow` eingetragen —
 `fs.allow` ersetzt Vites Default (Workspace-Root), deshalb müssen beide Einträge rein.
 
+Seit 2026-10-20 steht dieselbe Freigabe auch in [`vite.config.ts`](../vite.config.ts) für
+`npm run dev`. Dort fehlte sie: Alles, was per `/@fs/` aus dem Haupt-Repo kommt, bekam
+403 — zuerst sichtbar an den `@fontsource`-Schriften („is outside of Vite serving allow
+list" im Terminal). Dateien außerhalb der beiden Einträge (etwa `.env` im Haupt-Repo)
+bleiben gesperrt.
+
 Zwei Stolperfallen für künftige Änderungen an dieser Stelle:
 
 - Ein bloßer Existenz-Check per Verzeichnis-Aufstieg findet das **falsche**
