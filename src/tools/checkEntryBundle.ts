@@ -98,8 +98,29 @@ const OL_ENTRY_SOURCE = 'src/lib/utils/map/openLayersHelpers.ts';
  * Die Grenze liegt weiterhin knapp über dem gemessenen Sollwert: genug
  * Puffer für normales Wachstum an den geteilten App-Chunks, aber ein
  * erneuter Rückfall vom dokumentierten Ausmaß (+9,9 KB) schlägt weiterhin an.
+ *
+ * ANHEBUNG 2026-10-20 (pino 10.3.1 → 10.4.0, Dependabot-Gruppe
+ * production-dependencies, PR #971)
+ *
+ * Gemessen mit `npm run build` auf `main`, je eine Abhängigkeit getauscht:
+ *
+ * | Stand                        | Schnittmenge (roh)    | Hülle gzip |
+ * | ---------------------------- | --------------------- | ---------- |
+ * | `main` (ol 10.10, pino 10.3) | 106,4 KB              | 317,1 KB   |
+ * | nur ol 10.11                 | 106,5 KB              | 317,1 KB   |
+ * | ol 10.11 + pino 10.4         | 111,9 KB (114.634 B)  | 318,7 KB   |
+ *
+ * OpenLayers ist es nicht (+0,1 KB). Der Zuwachs kommt vollständig aus pino:
+ * dessen Browser-Build (`pino/browser.js`) bindet ab 10.4 `@pinojs/redact`
+ * ein, und der Logger liegt in einem Chunk, den Einstiegsseite und
+ * Karten-Laufzeit teilen — derselbe Mechanismus, den der Kommentar oben
+ * („Logger, Karten-Tokens, übersetzte Meldungen") als harmlosen Anteil der
+ * Schnittmenge beschreibt. Kein neuer statischer `ol`-Import.
+ *
+ * Neue Grenze mit demselben Puffer wie zuvor (~4 KB über dem Messwert); ein
+ * Rückfall vom dokumentierten Ausmaß (+9,9 KB) schlägt weiterhin an.
  */
-const OL_SHARED_BUDGET_BYTES = 113_000;
+const OL_SHARED_BUDGET_BYTES = 118_500;
 
 /**
  * Obergrenze für die statische Hülle insgesamt, gzip.
