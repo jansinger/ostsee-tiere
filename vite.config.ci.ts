@@ -9,9 +9,9 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig, searchForWorkspaceRoot } from 'vite';
-import { CI_DEV_HOST, ciDevPort, devServerIdentity } from './src/tools/dev-server-identity';
-import { stableDepHash } from './src/tools/vite-stable-dep-hash';
-import { OL_OPTIMIZE_DEPS } from './src/tools/olOptimizeDeps';
+import { CI_DEV_HOST, ciDevPort, devServerIdentity } from './src/tools/dev-server-identity.ts';
+import { stableDepHash } from './src/tools/vite-stable-dep-hash.ts';
+import { OL_OPTIMIZE_DEPS } from './src/tools/olOptimizeDeps.ts';
 
 /**
  * In Git-Worktrees liegt das installierte node_modules außerhalb des
