@@ -36,7 +36,7 @@
 		// Task 8: nur im Admin-Kontext gesetzt — die öffentliche Karte kennt keine
 		// Bearbeitungszustände und zeigt diesen Abschnitt deshalb nie.
 		showStatusLegend = false
-	} = $props<{
+	}: {
 		translations: MapTranslations;
 		counts: CountData;
 		toggleHidden?: boolean;
@@ -45,7 +45,7 @@
 		colorVisibility?: Record<string, boolean>;
 		onSeamarkToggle?: (visible: boolean) => void;
 		showStatusLegend?: boolean;
-	}>();
+	} = $props();
 
 	// CountManager via typisiertem Svelte Context (Symbol-Key, siehe mapContext.ts)
 	const countManager = getMapCountManager();
@@ -155,7 +155,7 @@
 	panelId="legend-panel"
 	titleId="legend-title"
 	title={m.components_map_panel_legendpanel_title_legende()}
-	toggleText="LEGENDE"
+	toggleText={m.components_map_panel_legendpanel_title_legende().toLocaleUpperCase()}
 	icon="lucide:list"
 	togglePositionClass="top-52"
 	accentBorderClass="border-secondary/20"

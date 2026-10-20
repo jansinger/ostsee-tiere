@@ -10,10 +10,13 @@
 	import { localizeHref } from '$lib/paraglide/runtime';
 
 	// Success state management
-	let { submittedData, handleNewReport } = $props<{
+	let {
+		submittedData,
+		handleNewReport
+	}: {
 		submittedData: SightingFormValues | null;
 		handleNewReport: () => void;
-	}>();
+	} = $props();
 </script>
 
 <!-- Success Page -->

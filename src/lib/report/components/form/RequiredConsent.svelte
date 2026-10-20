@@ -5,9 +5,11 @@
 	import { getFormSteps } from '$lib/report/formConfig';
 	import { getFormContext } from '$lib/report/formContext';
 
-	let { currentStep } = $props<{
+	let {
+		currentStep
+	}: {
 		currentStep: number;
-	}>();
+	} = $props();
 
 	// Die Komponente steht ohnehin nur unterhalb von `<Form>` — `FormField`
 	// unten wirft ohne Context.

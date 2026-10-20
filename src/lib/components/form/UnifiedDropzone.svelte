@@ -11,7 +11,7 @@
 		config,
 		files = $bindable<File[]>([]),
 		onFilesAdded = (_newFiles: File[]) => {},
-		onFileRemoved = (_index: number) => {},
+		onFileRemoved = (_name: string) => {},
 		onClear = () => {},
 		multiple = true,
 		title = m.components_form_unifieddropzone_text_dateien_hochladen(),
@@ -57,7 +57,7 @@
 		 * in `UnifiedDropzone.svelte.test.ts` → „compact".
 		 */
 		compact = false
-	} = $props<{
+	}: {
 		config: ValidationPreset;
 		files?: File[];
 		onFilesAdded?: (files: File[]) => void;
@@ -72,9 +72,9 @@
 		isAnalyzing?: boolean;
 		loadingText?: string;
 		showPreview?: boolean;
-		actionLabel?: string;
+		actionLabel?: string | undefined;
 		compact?: boolean;
-	}>();
+	} = $props();
 
 	// Der Titel darf nur weichen, wenn der Button den Namen trägt — siehe Prop.
 	const showZoneTitle = $derived(!(compact && actionLabel));

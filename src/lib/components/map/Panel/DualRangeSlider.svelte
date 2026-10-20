@@ -20,7 +20,7 @@
 	 * ihr State unabhängig von der Listener-Reihenfolge konsistent bleibt —
 	 * der Manager clampt danach denselben Wert als No-op.
 	 */
-	let { min = 0, max, year } = $props<{ min?: number; max: number; year: number }>();
+	let { min = 0, max, year }: { min?: number; max: number; year: number } = $props();
 
 	let startEl: HTMLInputElement | undefined = $state();
 	let endEl: HTMLInputElement | undefined = $state();

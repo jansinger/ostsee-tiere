@@ -90,6 +90,28 @@ function getColorCheckbox(value: string): HTMLInputElement {
 	return checkbox;
 }
 
+describe('LegendPanel — Umschalter folgt der Locale', () => {
+	afterEach(async () => {
+		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		overwriteGetLocale(() => baseLocale);
+	});
+
+	// WCAG 2.5.3 (Label in Name): Der sichtbare Text muss im zugänglichen Namen
+	// stehen. Der Name kam schon aus den Messages, der Text war fest „LEGENDE" —
+	// auf /en hieß der Knopf „Legend" und zeigte „LEGENDE" (axe-core 4.14:
+	// label-content-name-mismatch).
+	it('zeigt auf Englisch „LEGEND" und nicht das deutsche „LEGENDE"', async () => {
+		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		overwriteGetLocale(() => 'en');
+
+		await render(LegendPanel, { translations, counts });
+
+		const toggle = document.querySelector('button[aria-controls="legend-panel"]');
+		expect(toggle?.getAttribute('aria-label')).toBe('Legend');
+		expect(toggle?.textContent?.trim()).toBe('LEGEND');
+	});
+});
+
 describe('LegendPanel', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();

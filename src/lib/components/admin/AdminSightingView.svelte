@@ -20,6 +20,7 @@
 	import type { FrontendSighting } from '$lib/types';
 	import { formatLocalDateTime } from '$lib/utils/format/dateTime';
 	import { formatLocation } from '$lib/utils/format/formatLocation';
+	import { toCoordinate } from '$lib/report/components/form/coordinateValue';
 	import {
 		BALTIC_SEA_STATUS_PRESENTATION,
 		getBalticSeaStatus,
@@ -61,7 +62,7 @@
 		statusLogFailed = false,
 		reporterHistory = null,
 		reporterHistoryFailed = false
-	} = $props<{
+	}: {
 		sighting: FrontendSighting;
 		loading?: boolean;
 		onStatusChange?: ((verdict: SightingVerdict) => void) | undefined;
@@ -74,11 +75,15 @@
 		reporterHistory?: ReporterHistory | null;
 		/** Die Abfrage ist fehlgeschlagen — von „keine Vorgeschichte" zu unterscheiden. */
 		reporterHistoryFailed?: boolean;
-	}>();
+	} = $props();
 
 	// State für die aktuellen Sichtungsdaten mit reaktiver Wetterdaten-Aktualisierung
 	// eslint-disable-next-line svelte/prefer-writable-derived
 	let currentSighting = $state(untrack(() => sighting));
+
+	// `gps_breite`/`gps_laenge` sind `numeric` — Drizzle liefert sie als String.
+	const latitude = $derived(toCoordinate(currentSighting.latitude));
+	const longitude = $derived(toCoordinate(currentSighting.longitude));
 
 	// Sync currentSighting when sighting prop changes
 	$effect(() => {
@@ -195,7 +200,9 @@
 	 */
 	function BooleanDataRow(
 		label: string,
-		value: boolean | null | undefined,
+		// Die Einwilligungs-Spalten sind `smallint`/`integer` (0/1) — `Boolean()` unten
+		// wertet beides gleich aus.
+		value: boolean | number | null | undefined,
 		condition: boolean = true
 	): DataRowType | undefined {
 		if (!condition) return undefined;
@@ -479,7 +486,7 @@
 	// Ortsangaben
 	const locationRows = $derived(
 		[
-			DataRow('Position', formatLocation(currentSighting.longitude, currentSighting.latitude)),
+			DataRow('Position', formatLocation(longitude, latitude)),
 			DataRow('Fahrwasser', currentSighting.waterway, hasValue(currentSighting.waterway)),
 			DataRow('Seezeichen', currentSighting.seaMark, hasValue(currentSighting.seaMark)),
 			// Die fachliche Aussage — derselbe Wert und dasselbe Label wie in der
@@ -732,8 +739,8 @@
 							weatherData={currentSighting.weatherData as StoredWeatherData}
 							sightingId={currentSighting.id}
 							sightingDate={currentSighting.sightingDate}
-							latitude={currentSighting.latitude}
-							longitude={currentSighting.longitude}
+							latitude={latitude ?? null}
+							longitude={longitude ?? null}
 							canRefresh={true}
 							onWeatherRefresh={handleWeatherRefresh}
 						/>
@@ -805,11 +812,7 @@
 						</h3>
 						<div class="relative mt-2 h-[400px] w-full">
 							<div class="absolute inset-0">
-								<OLMap
-									latitude={currentSighting.latitude}
-									longitude={currentSighting.longitude}
-									readonly={true}
-								/>
+								<OLMap {latitude} {longitude} readonly={true} />
 							</div>
 						</div>
 					</div>
@@ -945,7 +948,7 @@
 								<tbody>
 									<DataTableRow
 										label="Kommentar"
-										value={currentSighting.internalComment}
+										value={currentSighting.internalComment ?? undefined}
 										isPreformatted={true}
 									/>
 								</tbody>

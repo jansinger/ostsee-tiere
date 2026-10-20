@@ -58,9 +58,9 @@
 		hasPosition = true,
 		hintOverride = undefined,
 		onchange = () => {}
-	} = $props<{
-		latitude?: number;
-		longitude?: number;
+	}: {
+		latitude?: number | undefined;
+		longitude?: number | undefined;
 		zoom?: number;
 		readonly?: boolean;
 		enableGPS?: boolean;
@@ -79,9 +79,9 @@
 		 * Überschreibt die Marker-Erklärung. Ohne Wert bleibt der bisherige Wortlaut —
 		 * Admin-Ansicht und Foto-EXIF-Karte ändern sich dadurch nicht.
 		 */
-		hintOverride?: string;
+		hintOverride?: string | undefined;
 		onchange?: (longitude: number, latitude: number) => void;
-	}>();
+	} = $props();
 
 	let mapElement: HTMLElement;
 	let map: Map | null = null;

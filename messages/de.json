@@ -246,7 +246,7 @@
 	"components_media_mediathumbnail_text_video": "Video",
 	"components_ostseetierelogo_alt_ostsee_tiere_logo_springender_delfin": "Ostsee-Tiere Logo - Springender Delfin über Wellen",
 	"components_ostseetierelogo_alt_ostsee_tiere_logo_springender_delfin_2": "Ostsee-Tiere Logo - Springender Delfin über Wellen",
-	"components_ostseetierelogo_aria_label_ostsee_tiere_startseite": "Ostsee-Tiere Startseite",
+	"components_ostseetierelogo_aria_label_ostsee_tiere_startseite": "Ostsee-Tiere.de – Startseite",
 	"components_ostseetierelogo_text_ostsee_tiere_de": "OSTSEE-TIERE.DE",
 	"components_ostseetierelogo_text_ostsee_tiere_de_2": "OSTSEE-TIERE.DE",
 	"components_publicfooter_text_barrierefreiheit": "Barrierefreiheit",
@@ -705,8 +705,8 @@
 	"report_components_form_requiredconsent_text_um_ihre_meldung_zu_speichern_und_fuer": ", um Ihre Meldung zu speichern und für die wissenschaftliche Forschung zu nutzen.",
 	"report_components_form_stepnavigation_aria_label_formular_absenden": "Formular absenden",
 	"report_components_form_stepnavigation_aria_label_formular_navigation": "Formular Navigation",
-	"report_components_form_stepnavigation_aria_label_naechster_schritt": "Nächster Schritt",
-	"report_components_form_stepnavigation_aria_label_vorheriger_schritt": "Vorheriger Schritt",
+	"report_components_form_stepnavigation_aria_label_naechster_schritt": "Weiter – nächster Schritt",
+	"report_components_form_stepnavigation_aria_label_vorheriger_schritt": "Zurück – vorheriger Schritt",
 	"report_components_form_stepnavigation_aria_label_zu_den_fehlerhaften_plural": [
 		{
 			"declarations": ["input count", "local countPlural = count: plural"],

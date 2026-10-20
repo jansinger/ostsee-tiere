@@ -19,7 +19,7 @@
 		required = false,
 		mapHintOverride = undefined,
 		onchange = () => {}
-	} = $props<{
+	}: {
 		mode?: 'dms' | 'dm' | 'dd';
 		/** Echter Formularwert — bleibt undefined, solange keine Position gewählt wurde. */
 		latitude?: number | undefined;
@@ -79,7 +79,7 @@
 		 */
 		mapHintOverride?: string;
 		onchange?: EventListener | null;
-	}>();
+	} = $props();
 
 	// Hydrations-sichere id für die Verknüpfung Hinweis ↔ Koordinaten-Gruppe.
 	// `$props.id()` liefert auf Server und Client denselben Wert; ein selbst

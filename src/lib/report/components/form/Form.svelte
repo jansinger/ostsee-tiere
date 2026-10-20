@@ -16,30 +16,28 @@
 		children,
 		context = $bindable({} as FormContext),
 		...formAndRestProps
-	} = $props<
-		Omit<FormProps, 'onSubmit' | 'validationSchema'> &
-			HTMLFormAttributes & {
-				children: Snippet;
-				context?: FormContext;
-				// Intentionally wide: callers pass typed onSubmit (e.g. (values: SightingFormData) => void).
-				// TypeScript can't infer the T→SightingFormData chain without a generic component,
-				// but at runtime createForm always calls onSubmit with the correctly-typed values.
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				onSubmit?: (...args: any[]) => unknown;
-				// Same reason, one step further: since `validationSchema` may be a resolver
-				// (`(values) => schema`, see `ValidationSchemaOption` in createForm.ts), it
-				// carries the same T in its PARAMETER — and a parameter is contravariant, so
-				// a `(values: SightingFormData) => …` resolver is not assignable to the
-				// `Record<string, unknown>` fallback that this non-generic component pins T to.
-				//
-				// Widened at the parameter TYPE, not at the parameter LIST: `createForm`
-				// calls the resolver with exactly one argument. A `(...args: any[])` here
-				// would type-check a resolver that reads a second one, which is `undefined`
-				// at runtime. A single `any` escapes the variance check just as well.
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				validationSchema?: AnyObjectSchema | ((values: any) => AnyObjectSchema) | null;
-			}
-	>();
+	}: Omit<FormProps, 'onSubmit' | 'validationSchema'> &
+		HTMLFormAttributes & {
+			children: Snippet;
+			context?: FormContext;
+			// Intentionally wide: callers pass typed onSubmit (e.g. (values: SightingFormData) => void).
+			// TypeScript can't infer the T→SightingFormData chain without a generic component,
+			// but at runtime createForm always calls onSubmit with the correctly-typed values.
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			onSubmit?: (...args: any[]) => unknown;
+			// Same reason, one step further: since `validationSchema` may be a resolver
+			// (`(values) => schema`, see `ValidationSchemaOption` in createForm.ts), it
+			// carries the same T in its PARAMETER — and a parameter is contravariant, so
+			// a `(values: SightingFormData) => …` resolver is not assignable to the
+			// `Record<string, unknown>` fallback that this non-generic component pins T to.
+			//
+			// Widened at the parameter TYPE, not at the parameter LIST: `createForm`
+			// calls the resolver with exactly one argument. A `(...args: any[])` here
+			// would type-check a resolver that reads a second one, which is `undefined`
+			// at runtime. A single `any` escapes the variance check just as well.
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			validationSchema?: AnyObjectSchema | ((values: any) => AnyObjectSchema) | null;
+		} = $props();
 
 	// Plain destructuring via untrack - avoids state_referenced_locally warnings
 	const {

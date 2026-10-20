@@ -416,12 +416,16 @@ export class SichtungenMap {
 		// Hover-Event nur für Desktop (nicht Touch-Geräte)
 		if (!isTouchDevice) {
 			this.map.on('pointermove', (event) => {
+				// Ab ol 10.11 typisiert als `HTMLElement | null | undefined`; ohne Ziel
+				// gibt es weder Cursor noch Info-Element zu positionieren.
+				const mapContainer = this.map.getTargetElement();
+				if (!mapContainer) return;
 				const infoElement = document.getElementById('info');
 
 				// Hover ausblenden wenn ein Popup offen ist
 				if (this.popup.getPosition()) {
 					if (infoElement) infoElement.style.display = 'none';
-					this.map.getTargetElement().style.cursor = '';
+					mapContainer.style.cursor = '';
 					return;
 				}
 
@@ -454,19 +458,18 @@ export class SichtungenMap {
 					// Positioniere das Info-Element relativ zur Maus
 					const pixel = this.map.getPixelFromCoordinate(coordinates);
 					if (pixel && Array.isArray(pixel)) {
-						const mapContainer = this.map.getTargetElement();
 						this.positionInfoElement(mapContainer, pixel, infoElement);
 					}
 
 					// Ändere Cursor
-					this.map.getTargetElement().style.cursor = 'pointer';
+					mapContainer.style.cursor = 'pointer';
 				} else {
 					const infoElement = document.getElementById('info');
 					if (infoElement) {
 						// Verstecke Info-Element
 						infoElement.style.display = 'none';
 					}
-					this.map.getTargetElement().style.cursor = '';
+					mapContainer.style.cursor = '';
 				}
 			});
 		}

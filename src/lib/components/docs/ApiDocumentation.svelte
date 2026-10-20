@@ -10,14 +10,14 @@
 		showDownloadButton = true,
 		showNavButtons = true,
 		containerClass = 'mx-auto max-w-full'
-	} = $props<{
+	}: {
 		title?: string;
 		description?: string;
 		showQuickStart?: boolean;
 		showDownloadButton?: boolean;
 		showNavButtons?: boolean;
 		containerClass?: string;
-	}>();
+	} = $props();
 
 	let isLoading = $state(true);
 	let hasError = $state(false);

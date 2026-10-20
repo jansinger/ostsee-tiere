@@ -3,7 +3,7 @@
 
 	interface Props {
 		label: string;
-		value?: string;
+		value?: string | undefined;
 		isBoolean?: boolean;
 		booleanValue?: boolean;
 		isPreformatted?: boolean;
