@@ -22,7 +22,7 @@
 		showStatusFilter = false,
 		statuses = ['approved'],
 		onStatusChange
-	} = $props<{
+	}: {
 		years?: number[];
 		defaultYear?: number;
 		yearCounts?: Record<number, number>;
@@ -33,7 +33,7 @@
 		showStatusFilter?: boolean;
 		statuses?: SightingStatus[];
 		onStatusChange?: (statuses: SightingStatus[]) => void;
-	}>();
+	} = $props();
 
 	/* Beschriftungen aus Paraglide statt aus SIGHTING_STATUS_PRESENTATION:
 	   Jene Konstante trägt deutsche Literale für die Admin-Oberfläche, die

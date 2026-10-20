@@ -165,7 +165,7 @@
 		 * `actionLabel` und einer eigenen Überschrift über der Fläche.
 		 */
 		compact = false
-	} = $props<{
+	}: {
 		referenceId: string;
 		maxFiles?: number;
 		config: ValidationPreset;
@@ -177,7 +177,7 @@
 		showPositionMap?: boolean;
 		actionLabel?: string;
 		compact?: boolean;
-	}>();
+	} = $props();
 
 	// Lokaler State für Dropzone-Dateien (temporär während des Drag & Drop)
 	let dropzoneFiles = $state<File[]>([]);

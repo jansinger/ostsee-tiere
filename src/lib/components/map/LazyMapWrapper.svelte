@@ -12,14 +12,14 @@
 		showLogo = true,
 		containerClass = 'relative h-screen w-screen overflow-hidden',
 		titleClass = 'bg-base-100 text-base-content text-sm z-raised rounded-lg px-3 py-1.5 font-bold shadow-floating flex items-center gap-2'
-	} = $props<{
+	}: {
 		mapContainerId?: string;
 		showTitle?: boolean;
 		title?: string;
 		showLogo?: boolean;
 		containerClass?: string;
 		titleClass?: string;
-	}>();
+	} = $props();
 
 	let MapComponent: Component | null = $state(null);
 	let isLoading = $state(true);

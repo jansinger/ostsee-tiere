@@ -10,10 +10,13 @@
 	 * Forward navigation requires all intermediate steps to be valid
 	 * Backward navigation is always allowed
 	 */
-	let { steps, currentStep = $bindable(0) } = $props<{
+	let {
+		steps,
+		currentStep = $bindable(0)
+	}: {
 		steps: FormStep[];
 		currentStep?: number;
-	}>();
+	} = $props();
 
 	const { form } = getFormContext();
 

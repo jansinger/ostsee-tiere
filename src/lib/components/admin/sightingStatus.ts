@@ -53,14 +53,16 @@ export const SIGHTING_STATUS_ORDER = [
  *
  * `string` neben `Date`, weil die Zeitstempel über `+page.server.ts` als JSON
  * serialisiert im Client ankommen können. `undefined` zusätzlich zu `null`,
- * weil `FrontendSighting` die beiden Felder optional führt — die
+ * weil `FrontendSighting` die beiden Felder optional führt (deshalb auch `?`:
+ * unter `exactOptionalPropertyTypes` ist ein optionales Feld nicht einem
+ * Pflichtfeld vom Typ `… | undefined` zuweisbar) — die
  * Truthiness-Prüfungen unten in `getSightingStatus` behandeln `undefined`
  * bereits wie `null`, ein `?? null` an den Aufrufstellen war deshalb
  * überflüssige Normalisierung.
  */
 export interface SightingStatusSource {
-	approvedAt: Date | string | null | undefined;
-	rejectedAt: Date | string | null | undefined;
+	approvedAt?: Date | string | null | undefined;
+	rejectedAt?: Date | string | null | undefined;
 }
 
 export interface SightingStatusPresentation {

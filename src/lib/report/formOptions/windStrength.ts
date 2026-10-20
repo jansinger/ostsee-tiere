@@ -88,7 +88,8 @@ export function getWindStrengthOptions(
  * @returns Das zugehörige Label oder einen Fallback-Text
  */
 export function getWindStrengthLabel(
-	value: WindStrengthEnum | number | null | undefined,
+	// `string`: die Spalte `windstaerke` ist `varchar` — der Body parst ihn bereits.
+	value: WindStrengthEnum | number | string | null | undefined,
 	locale: Locale = getLocale()
 ): string {
 	if (value === null || value === undefined)

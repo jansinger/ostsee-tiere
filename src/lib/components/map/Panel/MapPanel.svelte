@@ -20,7 +20,7 @@
 		// den State steuern können statt über DOM-Queries.
 		isOpen = $bindable(false),
 		children
-	} = $props<{
+	}: {
 		panelId: string;
 		titleId: string;
 		title: string;
@@ -32,7 +32,7 @@
 		toggleHidden?: boolean;
 		isOpen?: boolean;
 		children: Snippet;
-	}>();
+	} = $props();
 
 	// Element-Referenzen für das Fokus-Management (H5)
 	let panelEl = $state<HTMLDivElement>();

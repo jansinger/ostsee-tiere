@@ -26,11 +26,11 @@
 		sighting = {} as FrontendSighting,
 		onSave = (_sighting: FrontendSighting) => {},
 		onCancel = () => {}
-	} = $props<{
+	}: {
 		sighting: FrontendSighting;
 		onSave?: (sighting: FrontendSighting) => void;
 		onCancel?: () => void;
-	}>();
+	} = $props();
 
 	let formContext: FormContext = $state({}) as FormContext;
 
