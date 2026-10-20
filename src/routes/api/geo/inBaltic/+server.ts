@@ -37,9 +37,7 @@ export async function GET(event: RequestEvent) {
 	// Prüfen, ob die Parameter vorhanden sind
 	if (!longitudeParam || !latitudeParam) {
 		logger.warn({ ip: clientIp }, 'Fehlende Parameter');
-		throw error(400, {
-			message: m.api_geo_inbaltic_text_parameter_longitude_latitude_angegeben()
-		});
+		throw error(400, m.api_geo_inbaltic_text_parameter_longitude_latitude_angegeben());
 	}
 
 	// Parameter in Zahlen umwandeln
@@ -57,9 +55,7 @@ export async function GET(event: RequestEvent) {
 			'Ungültige Zahlenformate'
 		);
 
-		throw error(400, {
-			message: m.api_geo_inbaltic_text_parameter_longitude_latitude_zahlen()
-		});
+		throw error(400, m.api_geo_inbaltic_text_parameter_longitude_latitude_zahlen());
 	}
 
 	// Bereichsprüfung
@@ -69,9 +65,7 @@ export async function GET(event: RequestEvent) {
 			'Longitude außerhalb des gültigen Bereichs'
 		);
 
-		throw error(400, {
-			message: m.api_geo_inbaltic_text_parameter_longitude_bereich()
-		});
+		throw error(400, m.api_geo_inbaltic_text_parameter_longitude_bereich());
 	}
 
 	if (normalizedLatitude < -90 || normalizedLatitude > 90) {
@@ -80,9 +74,7 @@ export async function GET(event: RequestEvent) {
 			'Latitude außerhalb des gültigen Bereichs'
 		);
 
-		throw error(400, {
-			message: m.api_geo_inbaltic_text_parameter_latitude_bereich()
-		});
+		throw error(400, m.api_geo_inbaltic_text_parameter_latitude_bereich());
 	}
 
 	try {
@@ -112,7 +104,5 @@ export async function GET(event: RequestEvent) {
 		);
 	}
 
-	throw error(500, {
-		message: m.api_geo_inbaltic_text_fehler_bei_der_geo_pruefung()
-	});
+	throw error(500, m.api_geo_inbaltic_text_fehler_bei_der_geo_pruefung());
 }

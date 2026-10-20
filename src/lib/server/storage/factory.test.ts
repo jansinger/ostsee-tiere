@@ -9,7 +9,7 @@ const mockEnv: Record<string, string> = {
 };
 
 // Mock the app environment
-vi.mock('$app/environment', () => ({
+vi.mock('$app/env', () => ({
 	dev: false
 }));
 
@@ -106,7 +106,7 @@ describe('Storage Factory', () => {
 
 		test('should create LocalStorageProvider in development', async () => {
 			// Mock development environment
-			vi.doMock('$app/environment', () => ({
+			vi.doMock('$app/env', () => ({
 				dev: true
 			}));
 
@@ -272,7 +272,7 @@ describe('Storage Factory', () => {
 
 		test('should return local in development mode', async () => {
 			// Mock development environment
-			vi.doMock('$app/environment', () => ({
+			vi.doMock('$app/env', () => ({
 				dev: true
 			}));
 
@@ -464,7 +464,7 @@ describe('Storage Factory', () => {
 
 		test('should work correctly in simulated development environment', async () => {
 			// Mock development environment
-			vi.doMock('$app/environment', () => ({
+			vi.doMock('$app/env', () => ({
 				dev: true
 			}));
 

@@ -1,7 +1,7 @@
 /**
  * Client-side configuration store for dynamic settings
  */
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import {
 	PUBLIC_UPLOAD_ACCEPT,
 	PUBLIC_UPLOAD_ALLOWED_TYPES,

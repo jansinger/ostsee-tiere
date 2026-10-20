@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { createLogger } from '$lib/logger';
 import { ConfigRepository } from '$lib/server/db/configRepository';
 import type { ConfigValue } from '$lib/server/db/configRepository';

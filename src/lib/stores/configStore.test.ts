@@ -16,7 +16,7 @@ vi.mock('$lib/logger', () => ({
 
 // browser-Flag steuert ob fetch aufgerufen wird oder der SSR-Fallback greift
 // Wird pro Test über vi.doMock / vi.resetModules variiert
-vi.mock('$app/environment', () => ({ browser: false }));
+vi.mock('$app/env', () => ({ browser: false }));
 
 describe('configStore', () => {
 	beforeEach(() => {
@@ -44,7 +44,7 @@ describe('configStore', () => {
 	describe('getUploadConfig() — Browser-Seite (browser = true)', () => {
 		beforeEach(() => {
 			// Für jeden Test in dieser Gruppe browser = true setzen
-			vi.doMock('$app/environment', () => ({ browser: true }));
+			vi.doMock('$app/env', () => ({ browser: true }));
 		});
 
 		it('ruft fetch mit korrekter URL auf', async () => {
@@ -161,7 +161,7 @@ describe('configStore', () => {
 
 	describe('clearUploadConfigCache()', () => {
 		it('erzwingt nach clearCache() einen neuen fetch', async () => {
-			vi.doMock('$app/environment', () => ({ browser: true }));
+			vi.doMock('$app/env', () => ({ browser: true }));
 
 			vi.mocked(fetch).mockResolvedValue({
 				ok: true,

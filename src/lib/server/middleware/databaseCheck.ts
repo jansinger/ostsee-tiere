@@ -140,16 +140,12 @@ export const databaseCheck: Handle = async ({ event, resolve }) => {
 
 		// For API requests, return JSON error
 		if (pathname.startsWith('/api/')) {
-			throw error(503, {
-				message: 'Datenbank nicht verfügbar. Bitte versuchen Sie es später erneut.'
-			});
+			throw error(503, 'Datenbank nicht verfügbar. Bitte versuchen Sie es später erneut.');
 		}
 
 		// For page requests, redirect to error page
 		// Use error() instead of redirect to show the error properly
-		throw error(503, {
-			message: 'Die Datenbank ist nicht erreichbar. Bitte versuchen Sie es später erneut.'
-		});
+		throw error(503, 'Die Datenbank ist nicht erreichbar. Bitte versuchen Sie es später erneut.');
 	}
 
 	return resolve(event);

@@ -12,7 +12,7 @@ import {
 // Ausfall-Tests unten muss der Browser-Zweig genommen werden — sonst wäre jede
 // dieser Funktionen schon durch die SSR-Wache ein No-op und der Test bewiese
 // nichts.
-vi.mock('$app/environment', () => ({ browser: true }));
+vi.mock('$app/env', () => ({ browser: true }));
 
 describe('positionFileOrigin — reine Mengen-Regeln', () => {
 	it('nimmt eine uid auf', () => {
