@@ -24,8 +24,8 @@
 
 // `isDeadFinding` lebt in `formConfig.ts` — Begründung und Herkunft der Regel
 // stehen dort an der Definition.
-import * as m from '$lib/paraglide/messages';
-import { isDeadFinding } from '$lib/report/formConfig';
+import * as m from '#lib/paraglide/messages.js';
+import { isDeadFinding } from '#lib/report/formConfig.ts';
 
 /** Beschriftung des Artfeldes auf Schritt 2. */
 export function speciesQuestion(isDead: unknown): string {

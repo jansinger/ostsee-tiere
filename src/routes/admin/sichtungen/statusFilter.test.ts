@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { PgDialect } from 'drizzle-orm/pg-core';
 import type { SQLWrapper } from 'drizzle-orm';
 import { statusCondition } from './statusFilter';
-import { approvedOnly, openOnly, rejectedOnly } from '$lib/server/db/approvalFilter';
+import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
 
 // Die von statusCondition() zurückgegebenen SQL-Objekte enthalten das
 // vollständige Drizzle-Tabellenschema und referenzieren sich dabei selbst

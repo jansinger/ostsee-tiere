@@ -3,7 +3,7 @@
  * Checks if the actual file content matches the declared MIME type
  */
 
-import { createLogger } from '$lib/logger.server';
+import { createLogger } from '#lib/logger.server.ts';
 
 const logger = createLogger('MagicBytesValidator');
 

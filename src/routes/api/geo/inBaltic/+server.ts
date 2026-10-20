@@ -1,7 +1,7 @@
-import * as m from '$lib/paraglide/messages';
-import { createLogger } from '$lib/logger.server';
-import { checkBalticSeaFile } from '$lib/server/geo/checkBalticSeaFile';
-import { getClientIp } from '$lib/server/utils/getClientIp';
+import * as m from '#lib/paraglide/messages.js';
+import { createLogger } from '#lib/logger.server.ts';
+import { checkBalticSeaFile } from '#lib/server/geo/checkBalticSeaFile.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
 import { error, json, type RequestEvent } from '@sveltejs/kit';
 
 const logger = createLogger('api:geo:inBaltic');

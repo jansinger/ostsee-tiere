@@ -1,19 +1,19 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
 	import StepProgressCompact from './StepProgressCompact.svelte';
 	import { SUBMIT_STATUS_OFFLINE_ID } from './submitStatusIds';
-	import { validateStep } from '$lib/form/validation/stepValidation';
-	import { createLogger } from '$lib/logger';
-	import { getFormContext } from '$lib/report/formContext';
-	import { toast } from '$lib/stores/toastState.svelte';
+	import { validateStep } from '#lib/form/validation/stepValidation.ts';
+	import { createLogger } from '#lib/logger.ts';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { toast } from '#lib/stores/toastState.svelte.ts';
 	import {
 		getErrorCount,
 		scrollToElement,
 		scrollToFirstError,
 		scrollToStepHeader
-	} from '$lib/utils/fieldNavigation';
-	import { formStepsConfig, getFormSteps } from '$lib/report/formConfig';
+	} from '#lib/utils/fieldNavigation.ts';
+	import { formStepsConfig, getFormSteps } from '#lib/report/formConfig.ts';
 	import {
 		getStepAlertMessages,
 		shouldShowStepAlert,

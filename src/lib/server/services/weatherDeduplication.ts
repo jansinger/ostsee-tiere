@@ -5,11 +5,11 @@
  * and reuse existing weather data for nearby sightings.
  */
 
-import { createLogger } from '$lib/logger.server';
-import { db } from '$lib/server/db';
-import { sightings } from '$lib/server/db/schema';
-import { berlinCalendarDate } from '$lib/server/db/sqlTimeZone';
-import type { StoredWeatherData } from '$lib/services/weatherService';
+import { createLogger } from '#lib/logger.server.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightings } from '#lib/server/db/schema.ts';
+import { berlinCalendarDate } from '#lib/server/db/sqlTimeZone.ts';
+import type { StoredWeatherData } from '#lib/services/weatherService.ts';
 import { and, eq, isNotNull, sql } from 'drizzle-orm';
 
 const logger = createLogger('server:weatherDeduplication');

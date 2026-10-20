@@ -13,7 +13,7 @@
  * PATCHes wäre eine Lastspitze ohne Gegenwert. Der Preis ist Wartezeit, die die
  * Fortschrittsanzeige sichtbar macht.
  */
-import type { SightingVerdict } from '$lib/components/admin/sightingVerdict';
+import type { SightingVerdict } from '#lib/components/admin/sightingVerdict.ts';
 
 export interface BulkVerdictOutcome {
 	/** Die einzige Grundlage für „Rückgängig" — ein `reset` auf eine nie

@@ -21,7 +21,7 @@
  * Rechnung schon anstellen? Drei Gründe, jeder für sich ausreichend:
  *
  * 1. `buildFilterChips` liegt in `src/routes/admin/sichtungen/` — ein Import
- *    von hier aus wäre eine Abhängigkeit von `$lib` auf eine Route.
+ *    von hier aus wäre eine Abhängigkeit von `#lib` auf eine Route.
  * 2. Die Eingaben sind verschiedene Typen. Die Chips lesen `FilterParams`, wo
  *    jeder Schlüssel als String existiert und „nicht gesetzt" `''` heißt; hier
  *    kommt ein loses `Record<string, string | boolean | undefined>` an, wie es
@@ -39,9 +39,12 @@
  * Statusreiter über der Tabelle — und in derselben `Feld: Wert`-Form wie die
  * sechs übrigen Einträge dieser Liste.
  */
-import { formatWallClockDateTime } from '$lib/utils/format/formatWallClockDateTime';
-import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '$lib/utils/media/photoAnnouncement';
-import { BALTIC_SEA_STATUS_PRESENTATION, isBalticSeaStatus } from '$lib/utils/geo/balticSeaStatus';
+import { formatWallClockDateTime } from '#lib/utils/format/formatWallClockDateTime.ts';
+import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '#lib/utils/media/photoAnnouncement.ts';
+import {
+	BALTIC_SEA_STATUS_PRESENTATION,
+	isBalticSeaStatus
+} from '#lib/utils/geo/balticSeaStatus.ts';
 import {
 	AUFNAHME_LABEL,
 	isAufnahmeFilterWert,
@@ -49,9 +52,9 @@ import {
 	kanalLabel,
 	MELDEART_LABEL,
 	type AufnahmeFilterWert
-} from '$lib/components/admin/filterLabels';
-import { SIGHTING_STATUS_PRESENTATION } from '$lib/components/admin/sightingStatus';
-import { normalizeStatusParam } from '$lib/components/admin/sightingStatusFilter';
+} from '#lib/components/admin/filterLabels.ts';
+import { SIGHTING_STATUS_PRESENTATION } from '#lib/components/admin/sightingStatus.ts';
+import { normalizeStatusParam } from '#lib/components/admin/sightingStatusFilter.ts';
 
 /**
  * Der Aufnahme-Filter als Satz. „Mit"/„Ohne" stehen in `AUFNAHME_LABEL` als

@@ -8,7 +8,7 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({ env: { LOG_LEVEL: 'info' } }));
+vi.mock('#lib/server/env.ts', () => ({ env: { LOG_LEVEL: 'info' } }));
 
 type PinoOptions = {
 	serializers: Record<string, unknown>;

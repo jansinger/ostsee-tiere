@@ -10,40 +10,40 @@ const { mockLogAuditEvent, mockSelect, mockTransaction, mockSchema, mockStorage 
 	})
 );
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: mockLogAuditEvent
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/form/validation/sightingSchema', () => ({
+vi.mock('#lib/form/validation/sightingSchema.ts', () => ({
 	// PUT validiert gegen das Admin-Schema (Bestandssichtungen), POST gegen das
 	// strenge — beide mocken, sonst hängt der Test am Import.
 	getSightingSchema: vi.fn(() => ({ validate: vi.fn().mockResolvedValue(true) })),
 	getAdminSightingSchema: vi.fn(() => ({ validate: vi.fn().mockResolvedValue(true) }))
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: { select: mockSelect, transaction: mockTransaction }
 }));
 
-vi.mock('$lib/server/db/schema', () => mockSchema);
+vi.mock('#lib/server/db/schema.ts', () => mockSchema);
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getStorageProvider: vi.fn(() => mockStorage)
 }));
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	loadSightingFiles: vi.fn().mockResolvedValue([]),
 	saveSightingFiles: vi.fn().mockResolvedValue(undefined),
 	updateSighting: vi.fn().mockResolvedValue({ id: 42, referenceId: 'ref-42' })
@@ -54,7 +54,7 @@ vi.mock('drizzle-orm', () => ({
 }));
 
 import { PUT, DELETE } from './+server';
-import * as sightingRepository from '$lib/server/db/sightingRepository';
+import * as sightingRepository from '#lib/server/db/sightingRepository.ts';
 
 function makeSelectChain(records: unknown[]) {
 	const mockLimit = vi.fn().mockResolvedValue(records);

@@ -1,5 +1,5 @@
-import * as m from '$lib/paraglide/messages';
-import { baseLocale, type Locale } from '$lib/paraglide/runtime';
+import * as m from '#lib/paraglide/messages.js';
+import { baseLocale, type Locale } from '#lib/paraglide/runtime.js';
 /**
  * Zentrale Zeitzonenverwaltung für die Ostsee-Tiere Anwendung
  *

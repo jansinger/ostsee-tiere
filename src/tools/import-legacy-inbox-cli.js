@@ -15,7 +15,7 @@
  * Der npm-Eintrag setzt `TEST=true` vor den vite-node-Aufruf. Das ist kein
  * Test-Schalter im üblichen Sinn, sondern deaktiviert einen Guard im
  * Vite-Plugin von @sveltejs/kit: Er prüft, ob Client-Code versehentlich
- * Server-Code über `$lib/server/*` hereinzieht, und verfolgt dafür den
+ * Server-Code über `#lib/server/*` hereinzieht, und verfolgt dafür den
  * Importgraphen zu einem bekannten Einstiegspunkt zurück. Außerhalb von
  * `vite dev`/`vite build` — also hier beim Laden über vite-node — existiert
  * dieser Graph nicht, und der Guard scheitert mit "An impossible situation

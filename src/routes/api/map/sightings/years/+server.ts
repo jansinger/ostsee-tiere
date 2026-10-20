@@ -1,8 +1,8 @@
-import { createLogger } from '$lib/logger.server';
-import { db } from '$lib/server/db';
-import { sightings as sightingsTable } from '$lib/server/db/schema';
-import { berlinDatePart } from '$lib/server/db/sqlTimeZone';
-import { isAdminUser } from '$lib/server/auth/auth';
+import { createLogger } from '#lib/logger.server.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
+import { berlinDatePart } from '#lib/server/db/sqlTimeZone.ts';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
 import { json } from '@sveltejs/kit';
 import { and, sql } from 'drizzle-orm';
 import { mapSightingConditions } from '../publicMapConditions';

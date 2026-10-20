@@ -1,4 +1,4 @@
-import type { FrontendSighting } from '$lib/types/index';
+import type { FrontendSighting } from '#lib/types/index.ts';
 import { describe, expect, it } from 'vitest';
 import { generateKmlData } from './kmlExport';
 

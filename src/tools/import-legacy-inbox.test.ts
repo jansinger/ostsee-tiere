@@ -19,7 +19,7 @@ import { fehlerText, importiere } from './import-legacy-inbox.js';
  * call EmailService, so this alone is enough to keep every test in this file
  * off the network — no EmailService mock is needed on top of it.
  */
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		getEmailConfig: vi.fn().mockResolvedValue({ enabled: false, recipient: null })
 	}

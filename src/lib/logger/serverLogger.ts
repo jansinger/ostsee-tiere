@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { env } from '#lib/server/env.ts';
 import pino from 'pino';
 import { LOG_REDACTION } from './redaction';
 import { LOG_SERIALIZERS } from './serializers';
@@ -20,7 +20,7 @@ export const createServerLogger = (context: string) => {
 		// aufzählbaren Eigenschaften zusammen und verliert `message` und
 		// `stack` — siehe `serializers.ts`.
 		serializers: LOG_SERIALIZERS,
-		// Siehe `redaction.ts` — geteilt mit dem Server-Zweig von `$lib/logger`.
+		// Siehe `redaction.ts` — geteilt mit dem Server-Zweig von `#lib/logger.js`.
 		redact: LOG_REDACTION
 	});
 };

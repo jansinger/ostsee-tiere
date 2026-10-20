@@ -1,7 +1,7 @@
 /**
  * Reine Auswahl-Logik für verwaiste Uploads.
  *
- * Bewusst frei von `$lib`-Aliassen, Drizzle und SvelteKit: Das CLI-Werkzeug
+ * Bewusst frei von `#lib`-Aliassen, Drizzle und SvelteKit: Das CLI-Werkzeug
  * `src/tools/cleanup-orphaned-uploads.ts` lädt dieses Modul unter Node-Type-
  * Stripping über einen relativen `.ts`-Import und muss ohne Anwendungslaufzeit
  * auskommen. Die Anbindung an Datenbank und Storage steht im Aufrufer.

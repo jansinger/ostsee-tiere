@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { NOT_YET_TRACKED, isBoatSightingFrom, shouldResetBoatDrive } from './boatDriveReset';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
 
 /**
  * Regressionstest für den stillen Datenverlust im Admin-Formular:

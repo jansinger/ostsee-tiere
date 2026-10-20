@@ -9,7 +9,7 @@
  * Anzeigestelle baut, ruft diese Funktion auf und baut die Flag-Logik nicht nach
  * — genau daran ist die Mail auseinandergelaufen.
  *
- * **Nicht nach `$lib/server/` verschieben:** Die Admin-Übersicht ist eine
+ * **Nicht nach `#lib/server/` verschieben:** Die Admin-Übersicht ist eine
  * Client-Komponente. Die Funktion ist reine Logik über die Flags plus
  * Koordinaten und hat keine Server-Abhängigkeiten.
  *

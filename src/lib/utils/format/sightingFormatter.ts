@@ -1,15 +1,19 @@
 import {
 	getAnimalBehaviorLabel,
 	type AnimalBehaviorEnum
-} from '$lib/report/formOptions/animalBehavior';
+} from '#lib/report/formOptions/animalBehavior.ts';
 import {
 	getAnimalConditionLabel,
 	type AnimalConditionEnum
-} from '$lib/report/formOptions/animalCondition';
-import { getDistanceLabel, type DistanceEnum } from '$lib/report/formOptions/distance';
-import { getSpeciesLabel, isValidSpecies, type SpeciesEnum } from '$lib/report/formOptions/species';
-import { getLocale, type Locale } from '$lib/paraglide/runtime';
-import type { SightingFormValues } from '$lib/types/Form';
+} from '#lib/report/formOptions/animalCondition.ts';
+import { getDistanceLabel, type DistanceEnum } from '#lib/report/formOptions/distance.ts';
+import {
+	getSpeciesLabel,
+	isValidSpecies,
+	type SpeciesEnum
+} from '#lib/report/formOptions/species.ts';
+import { getLocale, type Locale } from '#lib/paraglide/runtime.js';
+import type { SightingFormValues } from '#lib/types/Form.ts';
 import { formatLocalDateTime } from './dateTime';
 import { formatLocation } from './formatLocation';
 

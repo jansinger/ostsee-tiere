@@ -9,14 +9,14 @@
  * dieselbe Quelle.
  *
  * Seit `TRANSLATION_ROLLOUT_COMPLETE = true` (2026-08-13,
- * `$lib/i18n/translationRolloutStage.ts`) zeigen diese Links auf eine
+ * `#lib/i18n/translationRolloutStage.ts`) zeigen diese Links auf eine
  * tatsächlich indexierbare `/en`-Fassung: `noindexEnglishPages.ts` setzt den
  * `X-Robots-Tag: noindex, follow` nur noch bei `false`. Der frühere
  * Zwischenzustand — fertige Mechanik, die auf eine ausgeschlossene Seite zeigt
  * — ist damit aufgelöst. Wird die Konstante je zurückgedreht, entsteht er
  * wieder; das ist dort als Folge vermerkt.
  */
-import { locales, baseLocale, localizeHref, type Locale } from '$lib/paraglide/runtime';
+import { locales, baseLocale, localizeHref, type Locale } from '#lib/paraglide/runtime.js';
 
 export interface HreflangLink {
 	/** Sprachkürzel (`de`, `en`) oder `x-default`. */

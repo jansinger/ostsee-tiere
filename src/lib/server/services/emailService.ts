@@ -1,30 +1,29 @@
-import { env } from '$env/dynamic/private';
-import { env as publicEnv } from '$env/dynamic/public';
-import { createLogger } from '$lib/logger.server';
-import { detectSpamIndicators } from '$lib/server/spam/spamDetector';
-import { HIGH_RISK_THRESHOLD, type SpamCheckResult } from '$lib/types/spam';
-import { db } from '$lib/server/db';
+import { env, publicEnv } from '#lib/server/env.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { detectSpamIndicators } from '#lib/server/spam/spamDetector.ts';
+import { HIGH_RISK_THRESHOLD, type SpamCheckResult } from '#lib/types/spam.ts';
+import { db } from '#lib/server/db/index.ts';
 
 // Helper to get PUBLIC_SITE_URL dynamically (runtime, not build-time)
 const getPublicSiteUrl = () => publicEnv.PUBLIC_SITE_URL ?? 'http://localhost:3000';
-import { sightings } from '$lib/server/db/schema';
-import type { SightingFormValues } from '$lib/types/Form';
-import { formatLocalDateTime } from '$lib/utils/format/dateTime';
-import { formatSightingForDisplay } from '$lib/utils/format/sightingFormatter';
-import { baseLocale } from '$lib/paraglide/runtime';
+import { sightings } from '#lib/server/db/schema.ts';
+import type { SightingFormValues } from '#lib/types/Form.ts';
+import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
+import { formatSightingForDisplay } from '#lib/utils/format/sightingFormatter.ts';
+import { baseLocale } from '#lib/paraglide/runtime.js';
 import { eq } from 'drizzle-orm';
 import Handlebars from 'handlebars';
 import { htmlToText as htmlToPlainText } from 'html-to-text';
 import nodemailer, { type SendMailOptions, type Transporter } from 'nodemailer';
-import { ConfigRepository } from '$lib/server/db/configRepository';
+import { ConfigRepository } from '#lib/server/db/configRepository.ts';
 import {
 	balticSeaEmailContext,
 	type BalticSeaEmailContext
-} from '$lib/server/templates/balticSeaEmailContext';
-import { emailColorContext } from '$lib/server/templates/emailTokens';
-import { NOTIFICATION_EMAIL_DEFAULT_TEMPLATE } from '$lib/server/templates/notificationEmailDefault';
-import { countFilesForSighting } from '$lib/server/db/sightingFilesRepository';
-import { isPhotoAnnouncementPending } from '$lib/utils/media/photoAnnouncement';
+} from '#lib/server/templates/balticSeaEmailContext.ts';
+import { emailColorContext } from '#lib/server/templates/emailTokens.ts';
+import { NOTIFICATION_EMAIL_DEFAULT_TEMPLATE } from '#lib/server/templates/notificationEmailDefault.ts';
+import { countFilesForSighting } from '#lib/server/db/sightingFilesRepository.ts';
+import { isPhotoAnnouncementPending } from '#lib/utils/media/photoAnnouncement.ts';
 import { SMTP_CA_BUNDLE } from './smtpRootCertificates';
 
 // Dynamic environment variables for Docker runtime
@@ -401,7 +400,7 @@ export class EmailService {
 				// Aus der **Rohzeile**, nicht aus `sightingFormValues`: das `!!` oben
 				// verliert den Altsystem-Wert 2 und macht `noPosition` unerreichbar.
 				// Derselbe Aufruf wie in der Admin-Übersicht — der Status entsteht
-				// genau einmal (`$lib/utils/geo/balticSeaStatus.ts`).
+				// genau einmal (`#lib/utils/geo/balticSeaStatus.ts`).
 				balticSea: balticSeaEmailContext(sighting),
 				// Spam-Bewertung zum Meldezeitpunkt (inkl. Token-Kontext, den eine
 				// Neuberechnung hier nicht mehr hätte). NULL = Altbestand → der

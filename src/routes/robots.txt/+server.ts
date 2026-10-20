@@ -1,10 +1,10 @@
-import { buildRobotsTxt } from '$lib/seo/robotsTxt';
+import { buildRobotsTxt } from '#lib/seo/robotsTxt.ts';
 import type { RequestHandler } from './$types';
 
 /**
  * Route statt Datei unter `static/`, weil der Inhalt am Host der Anfrage hängt
  * (Staging darf nicht indexiert werden). Die Begründung im Detail steht in
- * `$lib/seo/robotsTxt.ts`.
+ * `#lib/seo/robotsTxt.ts`.
  *
  * `prerender = false` ist der Kern davon und darf nicht auf `true` wechseln:
  * Vorgerendert stünde das Ergebnis eines einzigen Hosts in allen Umgebungen.

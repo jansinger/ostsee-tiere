@@ -19,6 +19,7 @@ import {
 } from './src/tools/dev-server-identity.ts';
 import { stableDepHash } from './src/tools/vite-stable-dep-hash.ts';
 import { OL_OPTIMIZE_DEPS } from './src/tools/olOptimizeDeps.ts';
+import { SVELTEKIT_OPTIONS } from './sveltekit.options.ts';
 
 /**
  * Im Git-Worktree löst Node `node_modules` aus dem Haupt-Repo auf — außerhalb des
@@ -65,7 +66,9 @@ export default defineConfig({
 			// Übereinstimmung ab.
 			outputStructure: 'message-modules'
 		}),
-		sveltekit(),
+
+		sveltekit(SVELTEKIT_OPTIONS),
+
 		Icons({
 			compiler: 'svelte',
 			autoInstall: true,
@@ -104,9 +107,7 @@ export default defineConfig({
 		 */
 		strictPort: true,
 		...(devCert ? { https: devCert } : {}),
-		hmr: {
-			overlay: true
-		},
+		hmr: { overlay: true },
 		fs: {
 			// fs.allow ersetzt Vites Default (Workspace-Root) — daher beides angeben
 			allow: [searchForWorkspaceRoot(process.cwd()), nodeModulesDir]

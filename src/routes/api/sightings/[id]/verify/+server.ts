@@ -1,10 +1,10 @@
-import { createLogger } from '$lib/logger.server';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { db } from '$lib/server/db';
-import { isSightingApproved, isSightingRejected } from '$lib/server/db/approvalFilter';
-import { sightings, sightingStatusLog } from '$lib/server/db/schema';
+import { createLogger } from '#lib/logger.server.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { db } from '#lib/server/db/index.ts';
+import { isSightingApproved, isSightingRejected } from '#lib/server/db/approvalFilter.ts';
+import { sightings, sightingStatusLog } from '#lib/server/db/schema.ts';
 import type { RequestHandler } from '@sveltejs/kit';
 import { error, isHttpError, json } from '@sveltejs/kit';
 import { asc, eq } from 'drizzle-orm';

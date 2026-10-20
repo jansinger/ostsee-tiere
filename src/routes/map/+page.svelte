@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import HreflangHead from '$lib/components/seo/HreflangHead.svelte';
-	import LazyMapWrapper from '$lib/components/map/LazyMapWrapper.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import HreflangHead from '#lib/components/seo/HreflangHead.svelte';
+	import LazyMapWrapper from '#lib/components/map/LazyMapWrapper.svelte';
 </script>
 
 <svelte:head>

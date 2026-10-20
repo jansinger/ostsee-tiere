@@ -11,7 +11,7 @@
  * Bootsantrieb") überschrieben wird.
  */
 
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
 
 /** Formularwert für "Sichtung erfolgte von" - String (HTML-Select) oder Number (Yup-Schema) */
 export type SightingFromValue = string | number | undefined | null;

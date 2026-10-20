@@ -1,6 +1,6 @@
-import { baseLocale, deLocalizeUrl, toLocale } from '$lib/paraglide/runtime';
-import { istAusgeschlossen, stripLegacyLanguagePrefix } from '$lib/legacy-api/languagePrefix';
-import type { Reroute } from '@sveltejs/kit';
+import type { Reroute } from '@sveltejs/kit/hooks';
+import { baseLocale, deLocalizeUrl, toLocale } from '#lib/paraglide/runtime.js';
+import { istAusgeschlossen, stripLegacyLanguagePrefix } from '#lib/legacy-api/languagePrefix.ts';
 
 /**
  * Drei Schritte, und die Reihenfolge ist nicht beliebig.

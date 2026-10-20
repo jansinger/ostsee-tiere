@@ -1,4 +1,4 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * Konsolidierte "Kontaktdaten löschen"-Logik.
  *
@@ -7,10 +7,10 @@ import * as m from '$lib/paraglide/messages';
  * (Toast vs. nur Logger). Diese Datei bündelt beides zu einer Implementierung
  * mit einem Text und einem Feedback-Weg (Toast).
  */
-import { USER_CONTACT_FIELDS } from '$lib/report/formConfig';
-import { clearUserContactData } from '$lib/storage/localStorage';
-import { createToast } from '$lib/stores/toastState.svelte';
-import type { SightingFormData } from '$lib/types/Form';
+import { USER_CONTACT_FIELDS } from '#lib/report/formConfig.ts';
+import { clearUserContactData } from '#lib/storage/localStorage.ts';
+import { createToast } from '#lib/stores/toastState.svelte.ts';
+import type { SightingFormData } from '#lib/types/Form.ts';
 
 /**
  * Signatur von `updateField` aus dem Form-Context (`FormApi<SightingFormData>`).

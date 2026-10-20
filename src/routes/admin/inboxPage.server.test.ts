@@ -24,8 +24,8 @@
 import type { SQL, SQLWrapper } from 'drizzle-orm';
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { openOnly } from '$lib/server/db/approvalFilter';
-import { INBOX_FIELDS } from '$lib/server/db/inboxColumns';
+import { openOnly } from '#lib/server/db/approvalFilter.ts';
+import { INBOX_FIELDS } from '#lib/server/db/inboxColumns.ts';
 
 const dialect = new PgDialect();
 const toSqlText = (condition: SQLWrapper): string => dialect.sqlToQuery(condition.getSQL()).sql;
@@ -64,7 +64,7 @@ function createRecordingBuilder(record: RecordedSelect) {
 	return builder;
 }
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: (columns?: Record<string, unknown>) => {
 			const record: RecordedSelect = { columns };
@@ -81,7 +81,7 @@ vi.mock('$lib/server/db', () => ({
 const findDuplicateCandidates = vi
 	.fn<(ids: number[]) => Promise<Record<number, unknown[]>>>()
 	.mockResolvedValue({});
-vi.mock('$lib/server/db/duplicateCandidates', () => ({
+vi.mock('#lib/server/db/duplicateCandidates.ts', () => ({
 	findDuplicateCandidates: (ids: number[]) => findDuplicateCandidates(ids)
 }));
 
@@ -100,7 +100,7 @@ const findReporterHistory = vi
 		>
 	>()
 	.mockResolvedValue({});
-vi.mock('$lib/server/db/reporterHistory', () => ({
+vi.mock('#lib/server/db/reporterHistory.ts', () => ({
 	findReporterHistory: (rows: { id: number; email: string | null }[]) => findReporterHistory(rows)
 }));
 

@@ -1,5 +1,5 @@
 import { resolveMx as dnsResolveMx } from 'node:dns/promises';
-import { createLogger } from '$lib/logger.server';
+import { createLogger } from '#lib/logger.server.ts';
 
 const logger = createLogger('spam:mxCheck');
 

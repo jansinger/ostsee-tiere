@@ -1,6 +1,6 @@
-import { hasCoordinates } from '$lib/report/components/form/coordinateValue';
-import type { FrontendSighting } from '$lib/types/FrontendSighting';
-import { splitDateTime } from '$lib/utils/format/dateTime';
+import { hasCoordinates } from '#lib/report/components/form/coordinateValue.ts';
+import type { FrontendSighting } from '#lib/types/FrontendSighting.ts';
+import { splitDateTime } from '#lib/utils/format/dateTime.ts';
 
 /**
  * Baut die Startwerte des Admin-Bearbeitungsformulars aus einer gespeicherten

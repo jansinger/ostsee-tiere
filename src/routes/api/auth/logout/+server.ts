@@ -1,7 +1,6 @@
-import { env } from '$env/dynamic/private';
-import { env as publicEnv } from '$env/dynamic/public';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { destroySession } from '$lib/server/auth/sessionRepository';
+import { env, publicEnv } from '#lib/server/env.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { destroySession } from '#lib/server/auth/sessionRepository.ts';
 import { redirect, type Cookies } from '@sveltejs/kit';
 
 export async function GET({ cookies, locals }: { cookies: Cookies; locals: App.Locals }) {
@@ -19,8 +18,10 @@ export async function GET({ cookies, locals }: { cookies: Cookies; locals: App.L
 	});
 
 	const publicSiteUrl = publicEnv.PUBLIC_SITE_URL ?? 'http://localhost:3000';
+
 	return redirect(
 		302,
-		`https://${env.AUTH0_DOMAIN}/logout?client_id=${env.AUTH0_CLIENT_ID}&returnTo=${publicSiteUrl}`
+		`https://${env.AUTH0_DOMAIN}/logout?client_id=${env.AUTH0_CLIENT_ID}&returnTo=${publicSiteUrl}`,
+		{ external: true }
 	);
 }

@@ -36,8 +36,8 @@ import { vi } from 'vitest';
 const DIVERGED_INVALID = 'TEST-ONLY-DIVERGED-INVALID-DATE';
 const DIVERGED_MISSING = 'TEST-ONLY-DIVERGED-NOT-SPECIFIED';
 
-vi.mock('$lib/paraglide/messages', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/paraglide/messages')>();
+vi.mock('#lib/paraglide/messages.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/paraglide/messages.js')>();
 	const diverge =
 		(original: (i?: Record<string, never>, o?: { locale?: 'de' | 'en' }) => string, en: string) =>
 		(inputs?: Record<string, never>, options?: { locale?: 'de' | 'en' }) =>
@@ -56,7 +56,7 @@ vi.mock('$lib/paraglide/messages', async (importOriginal) => {
 });
 
 const { formatLocalDateTime, formatForKmlExport, formatForXmlExport } = await import('./dateTime');
-const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 
 /** Ein Wert, den `new Date(...)` zuverlässig als ungültig meldet. */
 const INVALID = 'kein-datum';

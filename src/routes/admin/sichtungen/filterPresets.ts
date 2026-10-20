@@ -10,6 +10,7 @@
  * misszuinterpretieren.
  */
 
+import type { ReadonlyURL } from '$app/state';
 import { TABELLEN_PARAMETER } from '../[id]/tableReturnUrl';
 
 export const FILTER_PRESETS_STORAGE_KEY = 'admin.sichtungen.filterPresets';
@@ -41,7 +42,7 @@ interface GespeichertesFormat {
 }
 
 /** Liest die speicherbaren Filter aus einer URL. Leere Werte zählen als nicht gesetzt. */
-export function capturePresetParams(url: URL): Record<string, string> {
+export function capturePresetParams(url: ReadonlyURL): Record<string, string> {
 	const params: Record<string, string> = {};
 	for (const param of PRESET_PARAMETER) {
 		const wert = url.searchParams.get(param);
@@ -59,7 +60,7 @@ export function capturePresetParams(url: URL): Record<string, string> {
  * Freitext-Suche) heimlich stehen, und die angezeigte Menge wäre eine andere
  * als die, auf deren Chip man geklickt hat.
  */
-export function presetUrl(preset: FilterPreset, currentUrl: URL): string {
+export function presetUrl(preset: FilterPreset, currentUrl: ReadonlyURL): string {
 	const zielUrl = new URL('/admin/sichtungen', currentUrl.origin);
 	for (const [key, wert] of Object.entries(preset.params)) {
 		zielUrl.searchParams.set(key, wert);
@@ -69,7 +70,7 @@ export function presetUrl(preset: FilterPreset, currentUrl: URL): string {
 }
 
 /** Markiert ein Preset als aktiv, wenn die URL exakt seine Filtermenge trägt. */
-export function matchesPreset(preset: FilterPreset, url: URL): boolean {
+export function matchesPreset(preset: FilterPreset, url: ReadonlyURL): boolean {
 	const aktuell = capturePresetParams(url);
 	const gespeichert = preset.params;
 	const schluessel = Object.keys(gespeichert);

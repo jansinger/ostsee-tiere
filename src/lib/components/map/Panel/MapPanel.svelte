@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import type { Snippet } from 'svelte';
-	import Icon from '$lib/components/Icon.svelte';
-	import { focusPanelHeading, returnFocusToToggle } from '$lib/map/panelFocus';
+	import Icon from '#lib/components/Icon.svelte';
+	import { focusPanelHeading, returnFocusToToggle } from '#lib/map/panelFocus.ts';
 
 	let {
 		panelId,

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import OstseeTiereLogo from '$lib/components/OstseeTiereLogo.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import OstseeTiereLogo from '#lib/components/OstseeTiereLogo.svelte';
 
 	let { data } = $props();
 

@@ -2,7 +2,7 @@
  * @fileoverview Aufgabe 2.5 — hreflang-Alternates und og:locale je Route.
  *
  * `buildHreflangLinks` teilt sich `localizeHref` mit `LanguageSwitcher.svelte`
- * (`$lib/paraglide/runtime`), damit Sprachumschalter und der
+ * (`#lib/paraglide/runtime.js`), damit Sprachumschalter und der
  * Suchmaschinen-Hinweis nie auseinanderlaufen — dieselbe Quelle, zwei
  * Verbraucher.
  */

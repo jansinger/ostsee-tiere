@@ -98,7 +98,7 @@ describe('isDynamicOnly — die Frage, die der Wächter stellt', () => {
 	 *
 	 * Niemand fasst `OLMap.svelte` an. Stattdessen importiert ein anderer Chunk
 	 * der Einstiegsseite (hier `_shared.js`) etwas, das seinerseits statisch an
-	 * der Karten-Laufzeit hängt — im echten Baum wäre das `$lib/map/extentUtils`
+	 * der Karten-Laufzeit hängt — im echten Baum wäre das `#lib/map/extentUtils.js`
 	 * mit seinem `import { fromLonLat } from 'ol/proj'`. Die Laufzeit ist damit
 	 * wieder eager, und keine `ol`-Zeile steht in `OLMap.svelte`.
 	 */

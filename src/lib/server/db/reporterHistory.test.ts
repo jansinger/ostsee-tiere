@@ -18,12 +18,12 @@
 import { PgDialect } from 'drizzle-orm/pg-core';
 import type { SQL } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.ts';
 import { findReporterHistory, normalizeReporterKey } from './reporterHistory';
 
-vi.mock('$lib/server/db', () => ({ db: { execute: vi.fn() } }));
+vi.mock('#lib/server/db/index.ts', () => ({ db: { execute: vi.fn() } }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({ info: vi.fn(), debug: vi.fn(), warn: vi.fn(), error: vi.fn() }))
 }));
 

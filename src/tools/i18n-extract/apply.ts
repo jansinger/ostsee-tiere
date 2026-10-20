@@ -69,7 +69,7 @@ function svelteReplacement(site: ExtractionSite): string {
 	return `${site.aspect}={${svelteMessageCall(site.key, site.params)}}`;
 }
 
-const PARAGLIDE_IMPORT = `import * as m from '$lib/paraglide/messages';`;
+const PARAGLIDE_IMPORT = `import * as m from '#lib/paraglide/messages';`;
 
 /**
  * Öffnendes `<script>`-Tag des INSTANZ-Blocks — bewusst nicht `<script
@@ -85,13 +85,13 @@ const PARAGLIDE_IMPORT = `import * as m from '$lib/paraglide/messages';`;
 const INSTANCE_SCRIPT_TAG = /<script(?![^>]*\bmodule\b)[^>]*>/;
 
 /**
- * Stellt sicher, dass `$lib/paraglide/messages` als `m` importiert ist —
+ * Stellt sicher, dass `#lib/paraglide/messages` als `m` importiert ist —
  * direkt nach dem öffnenden Instanz-`<script>`-Tag, sofern noch nicht
  * vorhanden.
  *
  * Ohne diesen Schritt referenziert jede Ersetzung eine Bezeichnung, die es in
  * der Datei nicht gibt: Anders als bei Schicht A/B (Schema, formOptions), wo
- * `import * as m from '$lib/paraglide/messages'` schon vor der Extraktion
+ * `import * as m from '#lib/paraglide/messages'` schon vor der Extraktion
  * vorhanden war, hatten die meisten Markup-Dateien `m` bisher nie importiert.
  * svelte-check meldet das erst beim Typ-Check ("Cannot find name 'm'") — ein
  * reines Neu-Parsen (Aufgabe 2.2) findet das nicht, weil `m.foo()` ohne

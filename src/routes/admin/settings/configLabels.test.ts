@@ -7,7 +7,7 @@
  * Einstellung wieder auseinanderläuft.
  */
 import { describe, expect, it } from 'vitest';
-import { getAvailableConfigurationKeys } from '$lib/server/services/configInitializer';
+import { getAvailableConfigurationKeys } from '#lib/server/services/configInitializer.ts';
 import { ACTIVE_CONFIG_KEYS, configLabels, getConfigLabel } from './configLabels';
 
 describe('Konfigurations-Labels', () => {

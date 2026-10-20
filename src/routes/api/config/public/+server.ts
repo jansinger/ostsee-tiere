@@ -1,5 +1,5 @@
-import { createLogger } from '$lib/logger.server';
-import { ServerConfigService, DEFAULT_CONFIG_VALUES } from '$lib/services/configService';
+import { createLogger } from '#lib/logger.server.ts';
+import { ServerConfigService, DEFAULT_CONFIG_VALUES } from '#lib/services/configService.ts';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

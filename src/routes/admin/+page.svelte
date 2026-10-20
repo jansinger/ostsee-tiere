@@ -1,22 +1,22 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import InboxShortcutHelp from '$lib/components/admin/InboxShortcutHelp.svelte';
-	import SightingInboxCard from '$lib/components/admin/SightingInboxCard.svelte';
-	import { inboxAnchor } from '$lib/components/admin/adminReturn';
-	import { createInboxPoller } from '$lib/components/admin/inboxPoller';
+	import InboxShortcutHelp from '#lib/components/admin/InboxShortcutHelp.svelte';
+	import SightingInboxCard from '#lib/components/admin/SightingInboxCard.svelte';
+	import { inboxAnchor } from '#lib/components/admin/adminReturn.ts';
+	import { createInboxPoller } from '#lib/components/admin/inboxPoller.ts';
 	import { navigiereZuSessionEnde } from './inboxSessionEnde';
 	import {
 		nextActionableIndex,
 		resolveInboxShortcut,
 		shiftFocusIndex
-	} from '$lib/components/admin/adminTriageShortcuts';
-	import { submitVerdict, type SightingVerdict } from '$lib/components/admin/sightingVerdict';
+	} from '#lib/components/admin/adminTriageShortcuts.ts';
+	import { submitVerdict, type SightingVerdict } from '#lib/components/admin/sightingVerdict.ts';
 	import {
 		SIGHTING_STATUS_PRESENTATION,
 		SIGHTING_STATUS_UNDO_MS,
 		verdictToStatus
-	} from '$lib/components/admin/sightingStatus';
+	} from '#lib/components/admin/sightingStatus.ts';
 	import { onDestroy, tick } from 'svelte';
 	import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 	import ArrowDown from '~icons/lucide/arrow-down';
@@ -323,9 +323,9 @@
 
 	function sortierungUmschalten() {
 		const ziel = data.order === 'asc' ? 'desc' : 'asc';
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('order', ziel);
-		goto(url, { keepFocus: true, noScroll: true });
+		goto(url, { reset: false });
 	}
 </script>
 

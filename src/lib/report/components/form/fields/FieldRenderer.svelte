@@ -3,9 +3,9 @@
   Independent of form context, accepts fieldConfig and value props
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import type { FieldOption, FieldSize, FieldVariant } from '$lib/types';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import type { FieldOption, FieldSize, FieldVariant } from '#lib/types/index.ts';
 	import * as yup from 'yup';
 	import BaseCheckbox from './BaseCheckbox.svelte';
 	import BaseInput from './BaseInput.svelte';

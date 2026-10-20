@@ -29,19 +29,19 @@ Regeln für CSV, JSON, KML und XML Export.
 **Query-Parameter:** `fromDate`, `toDate`, `verified`, `entryChannel`, `mediaUpload`, `balticSea`, `deadFinding`, `q`
 
 `balticSea` nimmt einen der vier Werte aus `BalticSeaStatus` (`baltic`, `edge`,
-`outside`, `noPosition`) und übersetzt ihn über `$lib/server/db/balticSeaFilter`
+`outside`, `noPosition`) und übersetzt ihn über `#lib/server/db/balticSeaFilter`
 — dieselbe Fallunterscheidung, die die Admin-Liste anzeigt. Die Flag-Logik nicht
 hier nachbauen, sondern von dort importieren.
 
 `q` ist die Freitext-Suche der Admin-Tabelle und läuft über
-`$lib/server/db/sightingSearchFilter` — parametrisiertes `ILIKE '%…%'` über
+`#lib/server/db/sightingSearchFilter` — parametrisiertes `ILIKE '%…%'` über
 Referenz-ID, E-Mail, Vor-/Nachname und Fahrwasser. Der Export **muss** sie
 mitfiltern: Sonst enthielte die Datei mehr Zeilen, als der Nutzer gesehen hat.
 Die Index-Entscheidung (kein `pg_trgm`, mit Messwerten und Schwelle) steht im
 Docblock des Moduls.
 
 `deadFinding` (`1`=Totfund, `0`=Lebendsichtung) läuft über
-`$lib/server/db/deadFindingFilter` — Totfund heißt dort `totfund <> 0`, dieselbe
+`#lib/server/db/deadFindingFilter` — Totfund heißt dort `totfund <> 0`, dieselbe
 Boolean-Semantik wie das Badge (`isDeadFinding()`).
 
 ---

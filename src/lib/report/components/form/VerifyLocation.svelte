@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import { browser } from '$app/env';
-	import Icon from '$lib/components/Icon.svelte';
-	import { outsideBalticNotice, outsideBalticSeverity } from '$lib/report/wording';
+	import Icon from '#lib/components/Icon.svelte';
+	import { outsideBalticNotice, outsideBalticSeverity } from '#lib/report/wording.ts';
 
 	import { SvelteMap } from 'svelte/reactivity';
 	import { slide } from 'svelte/transition';

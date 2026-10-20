@@ -1,12 +1,12 @@
 import { isValidDateParam } from '../../../admin/sichtungen/dateParam';
 import { eq, gte, lt } from 'drizzle-orm';
-import { berlinDayRangeUtc } from '$lib/server/datetime/berlinDayRange';
-import { sightings as sightingsTable } from '$lib/server/db/schema';
-import { mediaUploadCondition } from '$lib/server/db/mediaUploadFilter';
-import { balticSeaCondition } from '$lib/server/db/balticSeaFilter';
-import { deadFindingCondition } from '$lib/server/db/deadFindingFilter';
+import { berlinDayRangeUtc } from '#lib/server/datetime/berlinDayRange.ts';
+import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
+import { mediaUploadCondition } from '#lib/server/db/mediaUploadFilter.ts';
+import { balticSeaCondition } from '#lib/server/db/balticSeaFilter.ts';
+import { deadFindingCondition } from '#lib/server/db/deadFindingFilter.ts';
 import { statusCondition } from '../../../admin/sichtungen/statusFilter';
-import { searchCondition } from '$lib/server/db/sightingSearchFilter';
+import { searchCondition } from '#lib/server/db/sightingSearchFilter.ts';
 
 export function xmlEscape(str: string | null | undefined): string {
 	if (!str) return '';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import StepNavigation from './form/StepNavigation.svelte';
 
 	import FormActions from './form/FormActions.svelte';
@@ -9,25 +9,25 @@
 
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
-	import { connection, watchConnection } from '$lib/stores/connectionState.svelte';
-	import { describeSubmitFailure, submitSightingForm } from '$lib/form/submitSightingForm';
-	import { getSightingSchema } from '$lib/form/validation/sightingSchema';
-	import { createLogger } from '$lib/logger';
+	import { connection, watchConnection } from '#lib/stores/connectionState.svelte.ts';
+	import { describeSubmitFailure, submitSightingForm } from '#lib/form/submitSightingForm.ts';
+	import { getSightingSchema } from '#lib/form/validation/sightingSchema.ts';
+	import { createLogger } from '#lib/logger.ts';
 	import {
 		fieldsOutsideReportKind,
 		reportKindClearedNotice
-	} from '$lib/report/fieldsOutsideReportKind';
-	import { findStepForErrors } from '$lib/report/findStepForErrors';
-	import { hasMeaningfulSavedData } from '$lib/report/hasMeaningfulSavedData';
-	import { resolveServerFieldErrors } from '$lib/report/serverFieldErrors';
+	} from '#lib/report/fieldsOutsideReportKind.ts';
+	import { findStepForErrors } from '#lib/report/findStepForErrors.ts';
+	import { hasMeaningfulSavedData } from '#lib/report/hasMeaningfulSavedData.ts';
+	import { resolveServerFieldErrors } from '#lib/report/serverFieldErrors.ts';
 	import {
 		getFormSteps,
 		hasUploadedMedia,
 		hiddenFormFields,
 		initialFormState,
 		isDeadFinding
-	} from '$lib/report/formConfig';
-	import { toast } from '$lib/stores/toastState.svelte';
+	} from '#lib/report/formConfig.ts';
+	import { toast } from '#lib/stores/toastState.svelte.ts';
 	import {
 		clearFormDataOnly,
 		clearStorage,
@@ -36,14 +36,14 @@
 		saveToStorage,
 		saveUserContactDataWithConsent,
 		STORAGE_KEYS
-	} from '$lib/storage/localStorage';
-	import type { FormContext, SightingFormData, UserContactData } from '$lib/types';
-	import type { SightingFormValues } from '$lib/types/Form';
-	import { discardFormUploads } from '$lib/report/discardFormUploads';
-	import { isNotIFrame } from '$lib/utils/client/isNotIFrame';
-	import { scrollToFirstError } from '$lib/utils/fieldNavigation';
+	} from '#lib/storage/localStorage.ts';
+	import type { FormContext, SightingFormData, UserContactData } from '#lib/types/index.ts';
+	import type { SightingFormValues } from '#lib/types/Form.ts';
+	import { discardFormUploads } from '#lib/report/discardFormUploads.ts';
+	import { isNotIFrame } from '#lib/utils/client/isNotIFrame.ts';
+	import { scrollToFirstError } from '#lib/utils/fieldNavigation.ts';
 	import { createId } from '@paralleldrive/cuid2';
-	import { formStepsConfig } from '$lib/report/formConfig';
+	import { formStepsConfig } from '#lib/report/formConfig.ts';
 	import { tick, untrack } from 'svelte';
 	import { ValidationError } from 'yup';
 	import Form from './form/Form.svelte';

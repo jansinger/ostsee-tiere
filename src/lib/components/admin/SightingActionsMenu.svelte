@@ -24,8 +24,8 @@
 	die Aufrufstellen prefixen deshalb pro Ansicht.
 -->
 <script lang="ts">
-	import Icon from '$lib/components/Icon.svelte';
-	import { TEST_EMAIL_HINT } from '$lib/components/admin/sightingActions';
+	import Icon from '#lib/components/Icon.svelte';
+	import { TEST_EMAIL_HINT } from '#lib/components/admin/sightingActions.ts';
 
 	interface Props {
 		/** Dokumentweit eindeutige id des Popover-Elements (siehe Kopfkommentar). */

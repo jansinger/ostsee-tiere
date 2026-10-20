@@ -5,13 +5,14 @@ import {
 	MAX_MESSAGE_LENGTH,
 	MAX_REQUEST_HEADER_LENGTH,
 	buildErrorLogEntry,
+	caughtErrorOutcome,
 	buildErrorLogFields,
 	describeErrorCauses,
 	redactSecrets,
 	serializeErrorChain,
 	type ErrorLogEntryInput,
 	type SerializedError
-} from '$lib/server/utils/errorChain';
+} from '#lib/server/utils/errorChain.ts';
 
 /**
  * Ein Glied der Kette, das es geben MUSS — wirft sonst mit klarer Meldung.
@@ -495,7 +496,9 @@ describe('buildErrorLogEntry — Referer ohne Query', () => {
  */
 describe('buildErrorLogEntry — Client-IP', () => {
 	it('kürzt eine überlange Client-IP', () => {
-		const entry = buildErrorLogEntry(input({ clientIp: 'x'.repeat(MAX_REQUEST_HEADER_LENGTH + 50) }));
+		const entry = buildErrorLogEntry(
+			input({ clientIp: 'x'.repeat(MAX_REQUEST_HEADER_LENGTH + 50) })
+		);
 
 		expect(entry.fields.clientIp).toContain('[gekürzt]');
 	});
@@ -532,5 +535,46 @@ describe('buildErrorLogEntry — Referer ohne Query, Fallback-Pfad', () => {
 		expect(buildErrorLogEntry(input({ referer: '?suche=Mustermann' })).fields).not.toHaveProperty(
 			'referer'
 		);
+	});
+});
+
+/**
+ * SvelteKit 3 ruft `handleError` für JEDEN Fehler auf — auch für die mit
+ * `error(400, '…')` bewusst geworfenen (`kind: 'app'`). SvelteKit 2 tat das nicht:
+ * Dort kam deren Meldung unverändert beim Client an. Ohne diese Unterscheidung
+ * ersetzte der Hook jede gezielte API-Fehlermeldung (auch die der Legacy-API)
+ * durch seinen generischen Text und loggte erwartete 400er als Fehler.
+ */
+describe('caughtErrorOutcome', () => {
+	it('lässt bewusst geworfene App-Fehler unangetastet (null)', () => {
+		expect(
+			caughtErrorOutcome({
+				kind: 'app',
+				error: { status: 400, message: 'Reference ID is required' }
+			})
+		).toBeNull();
+	});
+
+	it('übernimmt Status und Meldung von Framework-Fehlern (etwa 404)', () => {
+		expect(
+			caughtErrorOutcome({ kind: 'framework', error: { status: 404, message: 'Not Found' } })
+		).toEqual({ status: 404, message: 'Not Found' });
+	});
+
+	it('behandelt unbekannte Fehler als 500 Internal Error', () => {
+		expect(caughtErrorOutcome({ kind: 'unknown', error: new Error('boom') })).toEqual({
+			status: 500,
+			message: 'Internal Error'
+		});
+	});
+
+	it('übernimmt Status und Meldung von Validierungsfehlern', () => {
+		expect(
+			caughtErrorOutcome({
+				kind: 'validation',
+				error: { status: 400, message: 'Bad Request' },
+				issues: []
+			})
+		).toEqual({ status: 400, message: 'Bad Request' });
 	});
 });

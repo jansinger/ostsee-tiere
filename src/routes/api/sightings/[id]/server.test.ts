@@ -2,28 +2,28 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ValidationError } from 'yup';
 
 // Mock all external dependencies
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn(),
 		delete: vi.fn()
 	}
 }));
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	updateSighting: vi.fn(),
 	loadSightingFiles: vi.fn(),
 	saveSightingFiles: vi.fn()
 }));
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/form/validation/sightingSchema', () => {
+vi.mock('#lib/form/validation/sightingSchema.ts', () => {
 	// Stabile Objektreferenz je Schema — `getAdminSightingSchema()` wird von
 	// `+server.ts` mehrfach aufgerufen und muss jedes Mal dasselbe gemockte
 	// `validate` liefern, sonst greift `vi.mocked(...).mockRejectedValueOnce`
@@ -37,7 +37,7 @@ vi.mock('$lib/form/validation/sightingSchema', () => {
 	};
 });
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -46,7 +46,7 @@ vi.mock('$lib/logger.server', () => ({
 	}))
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: vi.fn(() => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -55,12 +55,12 @@ vi.mock('$lib/logger', () => ({
 	}))
 }));
 
-import { db } from '$lib/server/db';
-import { getAdminSightingSchema } from '$lib/form/validation/sightingSchema';
+import { db } from '#lib/server/db/index.ts';
+import { getAdminSightingSchema } from '#lib/form/validation/sightingSchema.ts';
 
 const adminSightingSchema = getAdminSightingSchema();
-import { updateSighting } from '$lib/server/db/sightingRepository';
-import { logAuditEvent } from '$lib/server/audit/auditService';
+import { updateSighting } from '#lib/server/db/sightingRepository.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
 import { PUT } from './+server';
 
 /**

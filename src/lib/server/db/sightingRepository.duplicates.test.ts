@@ -8,11 +8,11 @@
  * - Fail-open: DB-Fehler → { sameEmail: 0, sameNotes: 0 }, kein Throw
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.ts';
 import { countRecentDuplicateSignals } from './sightingRepository';
 
 // Mock-Set analog zu sightingRepository.test.ts: db + Module mit Seiteneffekten
-vi.mock('$lib/server/db', () => {
+vi.mock('#lib/server/db/index.ts', () => {
 	const db: Record<string, any> = {
 		insert: vi.fn(),
 		update: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock('./mapFormToSighting', () => ({
 	mapFormToSighting: vi.fn()
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	isCloudStorage: vi.fn(() => false),
 	getStorageProvider: vi.fn(() => ({
 		getUrl: vi.fn((path: string) => `/uploads/${path}`),
@@ -36,12 +36,12 @@ vi.mock('$lib/server/storage/factory', () => ({
 	}))
 }));
 
-vi.mock('$lib/server/media/exifUtils', () => ({
+vi.mock('#lib/server/media/exifUtils.ts', () => ({
 	isImageFile: vi.fn(),
 	readImageExifData: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({
 		info: vi.fn(),
 		debug: vi.fn(),
@@ -50,7 +50,7 @@ vi.mock('$lib/logger.server', () => ({
 	}))
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: vi.fn(() => ({
 		info: vi.fn(),
 		debug: vi.fn(),

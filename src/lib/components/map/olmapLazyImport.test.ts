@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
  *
  * `OLMap.svelte` hängt über `LocationInput` an der Einstiegsseite
  * (`src/routes/+page.svelte`). Solange die Komponente OpenLayers statisch
- * importiert — `$lib/utils/map/openLayersHelpers` und `ol/proj` —, liegt die
+ * importiert — `#lib/utils/map/openLayersHelpers` und `ol/proj` —, liegt die
  * gesamte Bibliothek (~276 KB roh / ~80 KB gzip) im Initial-Bundle, und zwar
  * auch für Melder, die die Karte nie berühren. Das Formular wird an Deck und am
  * Strand ausgefüllt, oft über Mobilfunk; dieses Gewicht ist dort real spürbar.
@@ -22,7 +22,7 @@ import { describe, expect, it } from 'vitest';
  * Beleg für die Bundle-Zusage, und das ist wichtig zu wissen:
  *
  * **Er sieht nur die direkten Importe DIESER Datei.** Wer OpenLayers über einen
- * Umweg zurückholt — ein `import … from '$lib/map/extentUtils'` etwa, das
+ * Umweg zurückholt — ein `import … from '#lib/map/extentUtils'` etwa, das
  * seinerseits `ol/proj` statisch importiert —, kommt an ihm vorbei. Nachgemessen
  * am 2026-08-20: In genau diesem Fall bleibt dieser Test grün, während die
  * Karten-Laufzeit wieder eager in der Einstiegsseite liegt.
@@ -121,14 +121,14 @@ describe('OLMap.svelte — OpenLayers wird nachgeladen, nicht statisch importier
 	it('erkennt statische OL-Importe überhaupt und lässt Typ-Importe durch', () => {
 		const beispiel = [
 			"import { fromLonLat } from 'ol/proj';",
-			"import { createMap } from '$lib/utils/map/openLayersHelpers';",
+			"import { createMap } from '#lib/utils/map/openLayersHelpers.ts';",
 			"import type { Map } from 'ol';",
 			"import type { Coordinate } from 'ol/coordinate';",
 			// Inline-Schreibweise: ebenfalls reiner Typ-Import.
 			"import { type Point } from 'ol/geom';",
 			// Gemischt: zieht Laufzeitcode nach sich, zählt deshalb als Wert-Import.
 			"import { type View, Map as OLMap } from 'ol/Map';",
-			"import * as m from '$lib/paraglide/messages';"
+			"import * as m from '#lib/paraglide/messages.js';"
 		].join('\n');
 
 		const werteImporte = staticImports(beispiel).filter(
@@ -138,7 +138,7 @@ describe('OLMap.svelte — OpenLayers wird nachgeladen, nicht statisch importier
 
 		expect(werteImporte.map((entry) => entry.specifier)).toEqual([
 			'ol/proj',
-			'$lib/utils/map/openLayersHelpers',
+			'#lib/utils/map/openLayersHelpers.ts',
 			'ol/Map'
 		]);
 		expect(typImporte.map((entry) => entry.specifier)).toEqual(['ol', 'ol/coordinate', 'ol/geom']);

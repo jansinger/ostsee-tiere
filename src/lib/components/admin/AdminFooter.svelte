@@ -1,7 +1,7 @@
 <script lang="ts">
 	// BuildInfo liegt unter $lib/types (nicht $lib/server/startup/versionInfo): Module
 	// unter $lib/server/** sind für Client-Code gesperrt, auch bei reinen Typ-Importen.
-	import type { BuildInfo } from '$lib/types/BuildInfo';
+	import type { BuildInfo } from '#lib/types/BuildInfo.ts';
 
 	let { buildInfo }: { buildInfo: BuildInfo } = $props();
 </script>

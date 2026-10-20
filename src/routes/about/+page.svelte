@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import HreflangHead from '$lib/components/seo/HreflangHead.svelte';
-	import OstseeTiereLogo from '$lib/components/OstseeTiereLogo.svelte';
-	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
-	import { resolveDisplayLocale } from '$lib/utils/format/dateTime';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import HreflangHead from '#lib/components/seo/HreflangHead.svelte';
+	import OstseeTiereLogo from '#lib/components/OstseeTiereLogo.svelte';
+	import { getLocale, localizeHref } from '#lib/paraglide/runtime.js';
+	import { resolveDisplayLocale } from '#lib/utils/format/dateTime.ts';
 
 	let { data } = $props();
 

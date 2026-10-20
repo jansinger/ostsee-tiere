@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import type { SightingFormData } from '$lib/types';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 import FormActions from './FormActions.svelte';
 
 /**
@@ -74,8 +74,7 @@ function renderMitReset(onReset = vi.fn()): ReturnType<typeof vi.fn> {
 	return onReset;
 }
 
-const zuruecksetzenKnopf = () =>
-	page.getByRole('button', { name: /^Formular zurücksetzen$/i });
+const zuruecksetzenKnopf = () => page.getByRole('button', { name: /^Formular zurücksetzen$/i });
 const bestaetigenKnopf = () => page.getByRole('button', { name: /endgültig zurücksetzen/i });
 
 describe('FormActions — Bestätigungsdialog statt window.confirm', () => {
@@ -127,9 +126,7 @@ describe('FormActions — Bestätigungsdialog statt window.confirm', () => {
 		await page.getByRole('button', { name: /^Abbrechen$/i }).click();
 
 		expect(onReset).not.toHaveBeenCalled();
-		await vi.waitFor(() =>
-			expect(document.querySelector('dialog')?.open ?? false).toBe(false)
-		);
+		await vi.waitFor(() => expect(document.querySelector('dialog')?.open ?? false).toBe(false));
 	});
 
 	it('setzt beim Schließen per ESC nicht zurück', async () => {

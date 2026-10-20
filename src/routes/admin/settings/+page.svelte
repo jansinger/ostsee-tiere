@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { createLogger } from '$lib/logger';
-	import type { ConfigItem, ConfigValue } from '$lib/server/db/configRepository';
-	import Icon from '$lib/components/Icon.svelte';
+	import { createLogger } from '#lib/logger.ts';
+	import type { ConfigItem, ConfigValue } from '#lib/server/db/configRepository.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 	import { untrack } from 'svelte';
 	import CleanupPanel from './CleanupPanel.svelte';

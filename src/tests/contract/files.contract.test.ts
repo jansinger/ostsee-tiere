@@ -9,12 +9,12 @@ const { mockIsAdmin, mockSelectLimit } = vi.hoisted(() => {
 	return { mockIsAdmin, mockSelectLimit };
 });
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	isAdminUser: mockIsAdmin,
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -26,9 +26,9 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', async () => {
+vi.mock('#lib/server/db/schema.ts', async () => {
 	const { strictModuleMock } = await import('./helpers/strictModuleMock');
-	return strictModuleMock('$lib/server/db/schema', {
+	return strictModuleMock('#lib/server/db/schema.ts', {
 		sightingFiles: {
 			id: 'id',
 			sightingId: 'sightingId',
@@ -41,15 +41,15 @@ vi.mock('$lib/server/db/schema', async () => {
 // `auditService` gegen die db-Attrappe, scheiterte still in seinem eigenen
 // catch und zöge `auditLogs` aus der Schema-Attrappe — dort fehlte es
 // unbemerkt, bis `strictModuleMock` es meldete.
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/db/sightingFilesRepository', () => ({
+vi.mock('#lib/server/db/sightingFilesRepository.ts', () => ({
 	deleteFileByPath: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getStorageProvider: vi.fn().mockReturnValue({
 		delete: vi.fn().mockResolvedValue(undefined)
 	})
@@ -62,11 +62,11 @@ vi.mock('drizzle-orm', async () => {
 	});
 });
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

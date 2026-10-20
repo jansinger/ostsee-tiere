@@ -18,7 +18,7 @@ import type { RequestEvent } from '@sveltejs/kit';
  * `./+server` und die Paraglide-Runtime bewusst statisch am Dateikopf, nicht per
  * `await import()` im Testkörper: Der Modulgraph hinter `+server.ts` zieht über
  * `formOptions/species.ts` den kompletten Paraglide-Barrel
- * (`$lib/paraglide/messages` → 1.306 Einzelmodule) nach. Dessen Transform kostet
+ * (`#lib/paraglide/messages.js` → 1.306 Einzelmodule) nach. Dessen Transform kostet
  * hier isoliert ~2,3 s und im vollen `test:quick`-Lauf 4,6–5,2 s, weil 340
  * Testdateien parallel um dieselben Kerne konkurrieren. Im Testkörper fällt das
  * unter Vitests 5000-ms-Grenze pro Test — der Test lief damit unter Last
@@ -30,13 +30,13 @@ import type { RequestEvent } from '@sveltejs/kit';
  * Aufruf (`getSpeciesLabel(..., baseLocale)`), nicht beim Import. Der Test bleibt
  * also scharf — `vi.mock` wird ohnehin über alle Importe gehoben.
  */
-import { baseLocale, overwriteGetLocale } from '$lib/paraglide/runtime';
+import { baseLocale, overwriteGetLocale } from '#lib/paraglide/runtime.js';
 import { GET } from './+server';
 
 const DIVERGED_EN_LABEL = 'TEST-ONLY-DIVERGED-ENGLISH-LABEL';
 
-vi.mock('$lib/paraglide/messages', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/paraglide/messages')>();
+vi.mock('#lib/paraglide/messages.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/paraglide/messages.js')>();
 	return {
 		...actual,
 		formoptions_species_harbor_porpoise: (
@@ -69,7 +69,7 @@ const mockSightingData = [
 	}
 ];
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn(() => ({
 			from: vi.fn(() => ({

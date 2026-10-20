@@ -1,14 +1,14 @@
-import { db } from '$lib/server/db';
-import { openOnly } from '$lib/server/db/approvalFilter';
-import { findDuplicateCandidates } from '$lib/server/db/duplicateCandidates';
-import { INBOX_COLUMNS } from '$lib/server/db/inboxColumns';
+import { db } from '#lib/server/db/index.ts';
+import { openOnly } from '#lib/server/db/approvalFilter.ts';
+import { findDuplicateCandidates } from '#lib/server/db/duplicateCandidates.ts';
+import { INBOX_COLUMNS } from '#lib/server/db/inboxColumns.ts';
 import {
 	MEDIA_UPLOAD_ANNOUNCED_MISSING,
 	mediaUploadCondition
-} from '$lib/server/db/mediaUploadFilter';
-import { openQueueOrderBy, resolveQueueOrder } from '$lib/server/db/openQueueOrder';
-import { findReporterHistory } from '$lib/server/db/reporterHistory';
-import { sightingFiles, sightings } from '$lib/server/db/schema';
+} from '#lib/server/db/mediaUploadFilter.ts';
+import { openQueueOrderBy, resolveQueueOrder } from '#lib/server/db/openQueueOrder.ts';
+import { findReporterHistory } from '#lib/server/db/reporterHistory.ts';
+import { sightingFiles, sightings } from '#lib/server/db/schema.ts';
 import { redirect } from '@sveltejs/kit';
 import { and, inArray, like, sql } from 'drizzle-orm';
 import { istTabellenUrl } from './tableRedirect';

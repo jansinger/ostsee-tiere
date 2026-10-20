@@ -19,7 +19,7 @@ vi.mock('drizzle-orm', () => ({
 	ilike: vi.fn((column, value) => ({ op: 'ilike', column, value }))
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: {
 		sightingDate: 'sightingDate',
 		verified: 'verified',
@@ -41,7 +41,7 @@ vi.mock('$lib/server/db/schema', () => ({
 }));
 
 import { buildExportConditions, parseExportFilterParams } from './exportFilterParams';
-import { normalizeStatusParam } from '$lib/components/admin/sightingStatusFilter';
+import { normalizeStatusParam } from '#lib/components/admin/sightingStatusFilter.ts';
 
 type Condition = { op: string; column: string; value?: Date; from?: Date; to?: Date };
 
@@ -192,7 +192,7 @@ describe('buildExportConditions — Datumsfilter meint Berliner Kalendertage', (
 });
 
 /**
- * Der Ostsee-Filter selbst ist in `$lib/server/db/balticSeaFilter.test.ts` gegen
+ * Der Ostsee-Filter selbst ist in `#lib/server/db/balticSeaFilter.test.ts` gegen
  * `getBalticSeaStatus()` abgesichert. Hier geht es nur um die Verdrahtung: dass
  * `?balticSea=…` gelesen wird und die Bedingung im Export tatsächlich ankommt.
  * Ohne das könnte der Export stillschweigend mehr Zeilen liefern als die
@@ -255,7 +255,7 @@ describe('Export-Filter — Ostsee-Status', () => {
 
 /**
  * Wie beim Ostsee-Status: Die Bedingung selbst ist in
- * `$lib/server/db/deadFindingFilter.test.ts` abgesichert, hier zählt nur die
+ * `#lib/server/db/deadFindingFilter.test.ts` abgesichert, hier zählt nur die
  * Verdrahtung — sonst zeigte die Admin-Liste gefiltert Totfunde, der Export
  * lieferte aber still alles.
  */
@@ -322,7 +322,7 @@ describe('Export-Filter — Status', () => {
  * Die Freitext-Suche der Tabelle (`?q=`) muss der Export mitfiltern — sonst
  * enthielte die Datei mehr Zeilen, als der Nutzer gesehen hat. Dieselbe Falle
  * wie bei `mediaUpload` und `balticSea`; die Bedingung selbst ist in
- * `$lib/server/db/sightingSearchFilter.test.ts` abgesichert.
+ * `#lib/server/db/sightingSearchFilter.test.ts` abgesichert.
  */
 describe('Export-Filter — Freitext-Suche', () => {
 	const noFilters = {

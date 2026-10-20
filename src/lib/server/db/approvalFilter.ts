@@ -34,7 +34,7 @@
  * 3. Eine Statistikzahl ohne erkennbaren Freigabebezug soll es nicht geben.
  */
 
-import { sightings } from '$lib/server/db/schema';
+import { sightings } from '#lib/server/db/schema.ts';
 import { and, isNotNull, isNull, type SQL } from 'drizzle-orm';
 
 /**

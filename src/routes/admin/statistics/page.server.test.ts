@@ -17,10 +17,10 @@
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { gte, sql, type SQL, type SQLWrapper } from 'drizzle-orm';
 import { describe, expect, it, vi } from 'vitest';
-import { sightings } from '$lib/server/db/schema';
-import { berlinCalendarDate } from '$lib/server/db/sqlTimeZone';
-import { openOnly } from '$lib/server/db/approvalFilter';
-import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '$lib/server/db/sightingRepository';
+import { sightings } from '#lib/server/db/schema.ts';
+import { berlinCalendarDate } from '#lib/server/db/sqlTimeZone.ts';
+import { openOnly } from '#lib/server/db/approvalFilter.ts';
+import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '#lib/server/db/sightingRepository.ts';
 
 const dialect = new PgDialect();
 const toSqlText = (expression: SQLWrapper): string => dialect.sqlToQuery(expression.getSQL()).sql;
@@ -71,7 +71,7 @@ function createRecordingBuilder(eintrag: { columns: Record<string, unknown>; whe
 	return builder;
 }
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: (columns?: Record<string, unknown>) => {
 			if (columns) recordedSelectColumns.push(columns);
@@ -82,7 +82,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

@@ -1,5 +1,5 @@
-import { createLogger } from '$lib/logger.server';
-import type { UploadedFileInfo } from '$lib/types';
+import { createLogger } from '#lib/logger.server.ts';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 import { count, eq, sum } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { db } from '.';
@@ -73,7 +73,7 @@ export async function sumFileSizesForReference(referenceId: string): Promise<num
  *
  * Aufrufer ist die Benachrichtigungs-Mail: Sie entscheidet damit, ob der
  * Hinweis „Foto angekündigt, kommt per E-Mail nach" überhaupt zutrifft
- * (`$lib/utils/media/photoAnnouncement.ts`). Bewusst nicht `loadSightingFiles`
+ * (`#lib/utils/media/photoAnnouncement.ts`). Bewusst nicht `loadSightingFiles`
  * — das lädt EXIF-Daten und baut URLs, für eine Zahl ist das der falsche Weg.
  */
 export async function countFilesForSighting(sightingId: number): Promise<number> {

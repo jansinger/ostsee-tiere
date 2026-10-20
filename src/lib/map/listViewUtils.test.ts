@@ -5,7 +5,7 @@ import {
 	toListEntries,
 	type ListFilterState,
 	type SightingListProperties
-} from '$lib/map/listViewUtils';
+} from '#lib/map/listViewUtils.ts';
 
 /**
  * Tests für die Listenansicht-Utilities der Sichtungskarte (Befund K3):
@@ -250,12 +250,12 @@ describe('formatEntryDate', () => {
 			// overwriteGetLocale() überschreibt die Modul-Funktion dauerhaft ohne
 			// eingebauten Reset — auf den echten Default zurückschalten, damit
 			// andere Tests im selben Prozess nicht die englische Locale erben.
-			const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+			const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 			overwriteGetLocale(() => baseLocale);
 		});
 
 		it('formatiert deutsch (TT.MM.JJJJ), wenn die aktive Locale de ist', async () => {
-			const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+			const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 			overwriteGetLocale(() => 'de');
 			const ts = Date.UTC(2025, 5, 15, 12, 0, 0) / 1000;
 
@@ -263,7 +263,7 @@ describe('formatEntryDate', () => {
 		});
 
 		it('formatiert britisch (TT/MM/JJJJ), wenn die aktive Locale en ist', async () => {
-			const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+			const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 			overwriteGetLocale(() => 'en');
 			const ts = Date.UTC(2025, 5, 15, 12, 0, 0) / 1000;
 

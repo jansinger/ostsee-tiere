@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import type { SightingFormData } from '$lib/types';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 import AnimalInfo from './AnimalInfo.svelte';
 
 /**
@@ -108,7 +108,7 @@ describe('sections/AnimalInfo — Totfund prominent platziert (PR 2, Teil a)', (
 /**
  * „Welche Tierart haben Sie gefunden?" — Wunsch des Museums für den Totfund.
  * Das Artfeld liegt in derselben Karte wie der Totfund-Schalter und kann ihm
- * deshalb folgen; die Zuordnung selbst steht in `$lib/report/wording`.
+ * deshalb folgen; die Zuordnung selbst steht in `#lib/report/wording.js`.
  *
  * Geprüft wird das gerenderte `<label>`, nicht das Schema-`.label()`: Der
  * Wortlaut kommt hier über den `label`-Override an `FormField` (derselbe Weg,

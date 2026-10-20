@@ -21,9 +21,13 @@
  */
 import { describe, expect, it, vi } from 'vitest';
 import type * as yup from 'yup';
-import { getSpeciesLabel, getSpeciesOptions, SpeciesEnum } from '$lib/report/formOptions/species';
-import { getSeaStateLabel, SeaStateEnum } from '$lib/report/formOptions/seaState';
-import { getSightingSchema } from '$lib/form/validation/sightingSchema';
+import {
+	getSpeciesLabel,
+	getSpeciesOptions,
+	SpeciesEnum
+} from '#lib/report/formOptions/species.ts';
+import { getSeaStateLabel, SeaStateEnum } from '#lib/report/formOptions/seaState.ts';
+import { getSightingSchema } from '#lib/form/validation/sightingSchema.ts';
 
 const DIVERGED_EN_LABEL = 'TEST-ONLY-DIVERGED-ENGLISH-LABEL';
 
@@ -34,8 +38,8 @@ function divergeInEnglish(
 		options?.locale === 'en' ? DIVERGED_EN_LABEL : actualFn(inputs, options);
 }
 
-vi.mock('$lib/paraglide/messages', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/paraglide/messages')>();
+vi.mock('#lib/paraglide/messages.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/paraglide/messages.js')>();
 	return {
 		...actual,
 		// Zwingt die englischen Botschaften auseinander, egal was

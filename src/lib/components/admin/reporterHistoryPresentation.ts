@@ -11,10 +11,10 @@
  * kennt, kann sie eintragen. Deshalb ausschließlich Anzeige (Abgrenzung und
  * Messwerte in `docs/SPAM_DETECTION.md`).
  *
- * Client-sicher: nur der Typ aus `$lib/types/reporterHistory`, kein Import aus
- * `$lib/server/**`.
+ * Client-sicher: nur der Typ aus `#lib/types/reporterHistory.js`, kein Import aus
+ * `#lib/server/**`.
  */
-import type { ReporterHistory } from '$lib/types/reporterHistory';
+import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 
 export type ReporterLevel = 'first' | 'pending' | 'new' | 'known' | 'established' | 'flagged';
 
@@ -89,7 +89,7 @@ export interface ReporterLevelPresentation {
 	 * `badge-success` im Projekt unter AA.
 	 */
 	badgeClass: string;
-	/** Icon-Name für `$lib/components/Icon.svelte` — die farbunabhängige Unterscheidung. */
+	/** Icon-Name für `#lib/components/Icon.svelte` — die farbunabhängige Unterscheidung. */
 	icon: string;
 	/** Was die Stufe bedeutet — als `title` und für Screenreader. */
 	description: string;

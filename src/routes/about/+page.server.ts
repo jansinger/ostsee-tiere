@@ -1,9 +1,9 @@
 import { version } from '../../../package.json';
-import { createLogger } from '$lib/logger.server';
-import { db } from '$lib/server/db';
-import { approvedOnly } from '$lib/server/db/approvalFilter';
-import { sightings } from '$lib/server/db/schema';
-import { berlinDatePart } from '$lib/server/db/sqlTimeZone';
+import { createLogger } from '#lib/logger.server.ts';
+import { db } from '#lib/server/db/index.ts';
+import { approvedOnly } from '#lib/server/db/approvalFilter.ts';
+import { sightings } from '#lib/server/db/schema.ts';
+import { berlinDatePart } from '#lib/server/db/sqlTimeZone.ts';
 import { and, count, countDistinct, isNotNull, ne, sql } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { HERKUNFT_EINGANG, HERKUNFT_PARAMETER } from '$lib/components/admin/adminReturn';
+import { HERKUNFT_EINGANG, HERKUNFT_PARAMETER } from '#lib/components/admin/adminReturn.ts';
 import {
 	TABELLEN_PARAMETER,
 	carryReturnParams,

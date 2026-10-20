@@ -3,15 +3,15 @@ import { NICHT_LOKALISIERT, stripLegacyLanguagePrefix } from '../src/lib/legacy-
 
 /**
  * Name des Locale-Cookies — bewusst als Literal und nicht importiert aus
- * `$lib/i18n/localeCookie.ts`: Kein anderer Spec in diesem Verzeichnis
- * importiert aus `$lib` (Playwright läuft hier ohne den Vite-Alias-Resolver
+ * `#lib/i18n/localeCookie.ts`: Kein anderer Spec in diesem Verzeichnis
+ * importiert aus `#lib` (Playwright läuft hier ohne den Vite-Alias-Resolver
  * der Anwendung), und ein Import wäre ungetesteter Neuboden. Einzige
  * verlässliche Quelle bleibt `LOCALE_COOKIE` in `localeCookie.ts` — dessen
  * eigener Kommentar verbietet, den Wert zu raten; er ist hier deshalb
  * abgeschrieben, nicht neu erfunden.
  *
  * `NICHT_LOKALISIERT` dagegen wird importiert, per relativem Pfad
- * (`../src/lib/...`) statt über den `$lib`-Alias — derselbe Weg, den andere
+ * (`../src/lib/...`) statt über den `#lib`-Alias — derselbe Weg, den andere
  * Specs in diesem Verzeichnis bereits für Quellcode-Konstanten nutzen (z. B.
  * `SightingFromEnum` in `horizontal-overflow.spec.ts`). Der Alias ist ohne
  * Vite-Resolver das Problem, nicht der Import als solcher.

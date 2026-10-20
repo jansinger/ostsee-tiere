@@ -14,7 +14,7 @@ import OLMap from './OLMap.svelte';
  *
  * Verankert wird der Ladezustand an `data-testid="map-loading"` und
  * `role="status"`, nicht am Wortlaut: Die Texte kommen aus
- * `$lib/paraglide/messages` und sind übersetzbar.
+ * `#lib/paraglide/messages.js` und sind übersetzbar.
  *
  * Die Karte entsteht in einem `$effect` — auf `.ol-viewport` wird deshalb
  * gepollt statt sie synchron zu erwarten (dasselbe Muster wie in

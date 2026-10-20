@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { get } from 'svelte/store';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import { getSightingSchema } from '$lib/form/validation/sightingSchema';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import { getSightingSchema } from '#lib/form/validation/sightingSchema.ts';
 
 // Testet weiterhin den deutschen Ist-Zustand (Default-Locale) — unveraendert
 // gegenueber der frueheren Modulkonstante.
 const sightingSchema = getSightingSchema();
-import { getPublicBoatDriveOptions } from '$lib/report/formOptions/boatDrive';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import type { SightingFormData } from '$lib/types';
+import { getPublicBoatDriveOptions } from '#lib/report/formOptions/boatDrive.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 import SightingDetails from './SightingDetails.svelte';
 
 /**
@@ -153,7 +153,7 @@ describe('sections/SightingDetails — der gewählte Antrieb übersteht den Weg 
 /**
  * „Statt Sichtungsdetails ‚Funddetails' einfügen" — Wunsch des Museums für den
  * Totfund. Die Karte reagiert auf den Totfund-Schalter, der auf Schritt 2 über
- * ihr steht; die Zuordnung selbst liegt in `$lib/report/wording`.
+ * ihr steht; die Zuordnung selbst liegt in `#lib/report/wording.js`.
  *
  * Gilt auch in der Admin-Maske: Dort kommt `isDead` aus dem geladenen
  * Datensatz, und ein Totfund heißt auch dort ein Fund.
@@ -186,7 +186,7 @@ describe('sections/SightingDetails — Kartentitel folgt dem Totfund-Schalter', 
  * UX-Review 2026-08-07, Befund A: Die Karte hieß beim Totfund bereits
  * „Funddetails", das erste Feld darunter fragte aber weiter „Von wo aus wurde
  * die Sichtung gemacht?" — das Schema-Label kennt nur den Lebend-Zweig. Die
- * Zuordnung liegt wie alle Zweigtexte in `$lib/report/wording`.
+ * Zuordnung liegt wie alle Zweigtexte in `#lib/report/wording.js`.
  */
 describe('sections/SightingDetails — die Herkunftsfrage folgt dem Zweig', () => {
 	it('fragt im Lebend-Zweig unverändert nach der Sichtung', () => {

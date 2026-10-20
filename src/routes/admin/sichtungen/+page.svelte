@@ -1,36 +1,36 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import ExportModal from '$lib/components/admin/ExportModal.svelte';
-	import { DEAD_FINDING_PRESENTATION } from '$lib/components/admin/deadFinding';
-	import { deleteSighting, sendTestEmail } from '$lib/components/admin/sightingActions';
-	import DeleteDialog from '$lib/components/ui/Dialog/DeleteDialog.svelte';
-	import { createLogger } from '$lib/logger';
+	import ExportModal from '#lib/components/admin/ExportModal.svelte';
+	import { DEAD_FINDING_PRESENTATION } from '#lib/components/admin/deadFinding.ts';
+	import { deleteSighting, sendTestEmail } from '#lib/components/admin/sightingActions.ts';
+	import DeleteDialog from '#lib/components/ui/Dialog/DeleteDialog.svelte';
+	import { createLogger } from '#lib/logger.ts';
 	import { SvelteSet } from 'svelte/reactivity';
-	import { submitVerdict, type SightingVerdict } from '$lib/components/admin/sightingVerdict';
+	import { submitVerdict, type SightingVerdict } from '#lib/components/admin/sightingVerdict.ts';
 	import {
 		SIGHTING_STATUS_PRESENTATION,
 		SIGHTING_STATUS_UNDO_MS,
 		verdictToStatus,
 		type SightingStatus
-	} from '$lib/components/admin/sightingStatus';
-	import { getEntryChannelOptions } from '$lib/report/formOptions/entryChannel';
-	import { toast } from '$lib/stores/toastState.svelte';
+	} from '#lib/components/admin/sightingStatus.ts';
+	import { getEntryChannelOptions } from '#lib/report/formOptions/entryChannel.ts';
+	import { toast } from '#lib/stores/toastState.svelte.ts';
 	import type { PageData } from './$types';
 	import type { SichtungenListRow } from './listColumns';
-	import type { SpamCheckResponse } from '$lib/types/spam';
-	import SpamFinding from '$lib/components/admin/SpamFinding.svelte';
+	import type { SpamCheckResponse } from '#lib/types/spam.ts';
+	import SpamFinding from '#lib/components/admin/SpamFinding.svelte';
 	import {
 		getSpamDrift,
 		getSpamRisk,
 		getSpamRiskFromResult,
 		SPAM_DRIFT_PRESENTATION
-	} from '$lib/components/admin/spamScorePresentation';
-	import Icon from '$lib/components/Icon.svelte';
-	import StatusBlock from '$lib/components/StatusBlock.svelte';
-	import { BALTIC_SEA_STATUS_PRESENTATION } from '$lib/utils/geo/balticSeaStatus';
-	import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '$lib/utils/media/photoAnnouncement';
-	import { AUFNAHME_LABEL, MELDEART_LABEL } from '$lib/components/admin/filterLabels';
+	} from '#lib/components/admin/spamScorePresentation.ts';
+	import Icon from '#lib/components/Icon.svelte';
+	import StatusBlock from '#lib/components/StatusBlock.svelte';
+	import { BALTIC_SEA_STATUS_PRESENTATION } from '#lib/utils/geo/balticSeaStatus.ts';
+	import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '#lib/utils/media/photoAnnouncement.ts';
+	import { AUFNAHME_LABEL, MELDEART_LABEL } from '#lib/components/admin/filterLabels.ts';
 	import { readFilterParams, type FilterParams } from './activeFilters';
 	import { buildFilterChips, removeFilterParam } from './filterChips';
 	import SichtungenCards from './SichtungenCards.svelte';
@@ -130,7 +130,7 @@
 	   kurzes Umspringen der Spaltenauswahl im ersten Frame im Browser ist dabei
 	   bewusst in Kauf genommen.
 
-	   Direkter `localStorage`-Zugriff statt `$lib/storage/localStorage`: Dessen
+	   Direkter `localStorage`-Zugriff statt `#lib/storage/localStorage.js`: Dessen
 	   Helfer gehören zum Lebenszyklus des Meldeformulars — `STORAGE_KEYS` trägt
 	   den `sichtungen_`-Namespace und `clearStorage()` räumt diese Schlüssel
 	   beim Verwerfen des Formulars ab. Eine Admin-UI-Präferenz darf daran nicht
@@ -359,7 +359,7 @@
 	});
 
 	function applyFilters(): void {
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 
 		// Datum-Filter
 		if (fromDate) url.searchParams.set('fromDate', fromDate);
@@ -426,7 +426,7 @@
 		deadFinding = '';
 		searchTerm = '';
 
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.delete('fromDate');
 		url.searchParams.delete('toDate');
 		url.searchParams.delete('verified');
@@ -446,7 +446,7 @@
 	 * Status springt und man sonst auf einer leeren Seite 7 landete.
 	 */
 	function selectStatus(value: StatusTabValue): void {
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		if (value) url.searchParams.set('verified', value);
 		else url.searchParams.delete('verified');
 		url.searchParams.set('page', '1');
@@ -464,13 +464,13 @@
 	}
 
 	function changePage(newPage: number): void {
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('page', newPage.toString());
 		goto(url);
 	}
 
 	function changeItemsPerPage(newPerPage: number): void {
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('perPage', newPerPage.toString());
 		url.searchParams.set('page', '1');
 		goto(url);

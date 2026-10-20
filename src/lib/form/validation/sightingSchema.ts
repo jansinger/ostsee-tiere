@@ -13,36 +13,42 @@
  * @since 1.0.0
  */
 
-import { memoizePerLocale } from '$lib/i18n/localeMemo';
-import * as m from '$lib/paraglide/messages';
-import type { Locale } from '$lib/paraglide/runtime';
+import { memoizePerLocale } from '#lib/i18n/localeMemo.ts';
+import * as m from '#lib/paraglide/messages.js';
+import type { Locale } from '#lib/paraglide/runtime.js';
 import {
 	getAnimalBehaviorOptions,
 	isValidAnimalBehavior
-} from '$lib/report/formOptions/animalBehavior';
+} from '#lib/report/formOptions/animalBehavior.ts';
 import {
 	getAnimalConditionOptions,
 	isValidAnimalCondition
-} from '$lib/report/formOptions/animalCondition';
-import { getBoatDriveOptions, isValidBoatDrive } from '$lib/report/formOptions/boatDrive';
+} from '#lib/report/formOptions/animalCondition.ts';
+import { getBoatDriveOptions, isValidBoatDrive } from '#lib/report/formOptions/boatDrive.ts';
 import {
 	DISTANCE_UNSPECIFIED,
 	getDistanceOptions,
 	isValidDistance
-} from '$lib/report/formOptions/distance';
-import { getDistributionOptions, isValidDistribution } from '$lib/report/formOptions/distribution';
-import { getEntryChannelOptions, isValidEntryChannel } from '$lib/report/formOptions/entryChannel';
-import { getSeaStateOptions, isValidSeaState } from '$lib/report/formOptions/seaState';
-import { getSexOptions, isValidSex } from '$lib/report/formOptions/sex';
+} from '#lib/report/formOptions/distance.ts';
+import {
+	getDistributionOptions,
+	isValidDistribution
+} from '#lib/report/formOptions/distribution.ts';
+import {
+	getEntryChannelOptions,
+	isValidEntryChannel
+} from '#lib/report/formOptions/entryChannel.ts';
+import { getSeaStateOptions, isValidSeaState } from '#lib/report/formOptions/seaState.ts';
+import { getSexOptions, isValidSex } from '#lib/report/formOptions/sex.ts';
 import {
 	getSightingFromOptions,
 	isValidSightingFrom,
 	SightingFromEnum
-} from '$lib/report/formOptions/sightingFrom';
-import { getSpeciesOptions, isValidSpecies } from '$lib/report/formOptions/species';
-import { getVisibilityOptions, isValidVisibility } from '$lib/report/formOptions/visibility';
-import { getWindDirectionOptions } from '$lib/report/formOptions/windDirection';
-import { getWindStrengthOptions } from '$lib/report/formOptions/windStrength';
+} from '#lib/report/formOptions/sightingFrom.ts';
+import { getSpeciesOptions, isValidSpecies } from '#lib/report/formOptions/species.ts';
+import { getVisibilityOptions, isValidVisibility } from '#lib/report/formOptions/visibility.ts';
+import { getWindDirectionOptions } from '#lib/report/formOptions/windDirection.ts';
+import { getWindStrengthOptions } from '#lib/report/formOptions/windStrength.ts';
 import * as yup from 'yup';
 
 /**

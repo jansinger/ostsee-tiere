@@ -1,8 +1,8 @@
 import { render } from 'vitest-browser-svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
-import type { CountData } from '$lib/map/countManager';
-import type { MapTranslations } from '$lib/map/mapUtils';
+import type { CountData } from '#lib/map/countManager.ts';
+import type { MapTranslations } from '#lib/map/mapUtils.ts';
 import LegendPanel from './LegendPanel.svelte';
 
 const mockCountManager = {
@@ -10,7 +10,7 @@ const mockCountManager = {
 	setColorVisibility: vi.fn()
 };
 
-vi.mock('$lib/map/mapContext', () => ({
+vi.mock('#lib/map/mapContext.ts', () => ({
 	getMapCountManager: () => mockCountManager
 }));
 
@@ -92,7 +92,7 @@ function getColorCheckbox(value: string): HTMLInputElement {
 
 describe('LegendPanel — Umschalter folgt der Locale', () => {
 	afterEach(async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => baseLocale);
 	});
 
@@ -101,7 +101,7 @@ describe('LegendPanel — Umschalter folgt der Locale', () => {
 	// auf /en hieß der Knopf „Legend" und zeigte „LEGENDE" (axe-core 4.14:
 	// label-content-name-mismatch).
 	it('zeigt auf Englisch „LEGEND" und nicht das deutsche „LEGENDE"', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		await render(LegendPanel, { translations, counts });

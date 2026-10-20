@@ -17,7 +17,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const MB = 1024 * 1024;
 const mockEnv: Record<string, string> = {};
 
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: new Proxy({} as Record<string, string>, {
 		get: (_target, prop: string) => mockEnv[prop] ?? undefined
 	})
@@ -27,15 +27,15 @@ const { mockLogAuditEvent } = vi.hoisted(() => ({
 	mockLogAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: mockLogAuditEvent
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
@@ -43,7 +43,7 @@ const { mockUpsert } = vi.hoisted(() => ({
 	mockUpsert: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/db/configRepository', () => ({
+vi.mock('#lib/server/db/configRepository.ts', () => ({
 	ConfigRepository: {
 		upsert: mockUpsert,
 		clearCache: vi.fn(),
@@ -53,7 +53,7 @@ vi.mock('$lib/server/db/configRepository', () => ({
 	}
 }));
 
-vi.mock('$lib/server/config/accessControl', () => ({
+vi.mock('#lib/server/config/accessControl.ts', () => ({
 	filterConfigsByUserAccess: vi.fn().mockImplementation((configs: unknown[]) => configs),
 	canUserAccessConfigKey: vi.fn().mockReturnValue(true)
 }));

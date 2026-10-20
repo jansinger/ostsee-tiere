@@ -19,19 +19,19 @@
  * Antwort weder zumutbar noch sinnvoll. `done: false` heißt: nochmal aufrufen.
  * Idempotent, weil nur Zeilen mit `spam_score IS NULL` geladen werden.
  */
-import { env } from '$env/dynamic/private';
-import { createLogger } from '$lib/logger.server';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { isAdminUser } from '$lib/server/auth/auth';
-import { isValidCleanupToken, MIN_TOKEN_LENGTH } from '$lib/server/media/cleanupAuth';
+import { env } from '#lib/server/env.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
+import { isValidCleanupToken, MIN_TOKEN_LENGTH } from '#lib/server/media/cleanupAuth.ts';
 import {
 	buildRateLimitHeaders,
 	createRateLimitIdentifier,
 	enforceRateLimit,
 	RATE_LIMITS
-} from '$lib/server/middleware/rateLimit';
-import { rescoreSightings } from '$lib/server/spam/rescoreSightings';
-import { getClientIp } from '$lib/server/utils/getClientIp';
+} from '#lib/server/middleware/rateLimit.ts';
+import { rescoreSightings } from '#lib/server/spam/rescoreSightings.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

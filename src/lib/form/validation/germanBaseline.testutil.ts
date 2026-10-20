@@ -12,8 +12,8 @@
 import type { CustomSchemaMetadata, SchemaDescription } from 'yup';
 import { ValidationError } from 'yup';
 import { getAdminSightingSchema, getSightingSchema } from './sightingSchema';
-import { baseLocale } from '$lib/paraglide/runtime';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
+import { baseLocale } from '#lib/paraglide/runtime.js';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
 
 // Der deutsche Schnappschuss ist bewusst an `baseLocale` festgenagelt — er
 // friert genau den deutschen Wortlaut ein, nicht "die gerade aktive Locale".
@@ -23,35 +23,51 @@ const adminSightingSchema = getAdminSightingSchema(baseLocale);
 import {
 	getAnimalBehaviorLabel,
 	getAnimalBehaviorOptions
-} from '$lib/report/formOptions/animalBehavior';
+} from '#lib/report/formOptions/animalBehavior.ts';
 import {
 	getAnimalConditionLabel,
 	getAnimalConditionOptions
-} from '$lib/report/formOptions/animalCondition';
-import { getBoatDriveLabel, getBoatDriveOptions } from '$lib/report/formOptions/boatDrive';
-import { getBoatTypeLabel, getBoatTypeOptions } from '$lib/report/formOptions/boatType';
-import { getDistanceLabel, getDistanceOptions } from '$lib/report/formOptions/distance';
-import { getDistributionLabel, getDistributionOptions } from '$lib/report/formOptions/distribution';
-import { getEntryChannelLabel, getEntryChannelOptions } from '$lib/report/formOptions/entryChannel';
-import { getMediaTypeLabel, getMediaTypeOptions } from '$lib/report/formOptions/mediaType';
+} from '#lib/report/formOptions/animalCondition.ts';
+import { getBoatDriveLabel, getBoatDriveOptions } from '#lib/report/formOptions/boatDrive.ts';
+import { getBoatTypeLabel, getBoatTypeOptions } from '#lib/report/formOptions/boatType.ts';
+import { getDistanceLabel, getDistanceOptions } from '#lib/report/formOptions/distance.ts';
+import {
+	getDistributionLabel,
+	getDistributionOptions
+} from '#lib/report/formOptions/distribution.ts';
+import {
+	getEntryChannelLabel,
+	getEntryChannelOptions
+} from '#lib/report/formOptions/entryChannel.ts';
+import { getMediaTypeLabel, getMediaTypeOptions } from '#lib/report/formOptions/mediaType.ts';
 import {
 	getReactionToBoatLabel,
 	getReactionToBoatOptions
-} from '$lib/report/formOptions/reactionToBoat';
-import { getSeaStateLabel, getSeaStateOptions } from '$lib/report/formOptions/seaState';
-import { getSexLabel, getSexOptions } from '$lib/report/formOptions/sex';
-import { getSightingFromLabel, getSightingFromOptions } from '$lib/report/formOptions/sightingFrom';
-import { getSpeciesLabel, getSpeciesOptions, speciesGroups } from '$lib/report/formOptions/species';
+} from '#lib/report/formOptions/reactionToBoat.ts';
+import { getSeaStateLabel, getSeaStateOptions } from '#lib/report/formOptions/seaState.ts';
+import { getSexLabel, getSexOptions } from '#lib/report/formOptions/sex.ts';
+import {
+	getSightingFromLabel,
+	getSightingFromOptions
+} from '#lib/report/formOptions/sightingFrom.ts';
+import {
+	getSpeciesLabel,
+	getSpeciesOptions,
+	speciesGroups
+} from '#lib/report/formOptions/species.ts';
 import {
 	getFrequencyLabels,
 	getObservabilityLabels
-} from '$lib/report/formOptions/speciesIdentification';
-import { getVisibilityLabel, getVisibilityOptions } from '$lib/report/formOptions/visibility';
+} from '#lib/report/formOptions/speciesIdentification.ts';
+import { getVisibilityLabel, getVisibilityOptions } from '#lib/report/formOptions/visibility.ts';
 import {
 	getWindDirectionLabel,
 	getWindDirectionOptions
-} from '$lib/report/formOptions/windDirection';
-import { getWindStrengthLabel, getWindStrengthOptions } from '$lib/report/formOptions/windStrength';
+} from '#lib/report/formOptions/windDirection.ts';
+import {
+	getWindStrengthLabel,
+	getWindStrengthOptions
+} from '#lib/report/formOptions/windStrength.ts';
 
 // -----------------------------------------------------------------------
 // Schicht A: Schema-Beschriftungen und meta

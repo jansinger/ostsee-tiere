@@ -11,7 +11,7 @@
  * The npm script sets `TEST=true` before the vite-node call. This is not a
  * test flag in the usual sense, but rather disables a guard in @sveltejs/kit's
  * Vite plugin: the guard checks whether client-side code accidentally pulls in
- * server-side code when importing `$lib/server/*` modules, and traces the
+ * server-side code when importing `#lib/server/*` modules, and traces the
  * import graph back to a known entry point. Outside of `vite dev`/`vite build`
  * — as here when loading via vite-node — this graph does not exist, and the
  * guard fails with "An impossible situation occurred." `TEST=true` is the

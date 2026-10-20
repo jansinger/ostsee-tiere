@@ -18,7 +18,7 @@ export interface PageData {
 	/**
 	 * Arbeitslisten-Zähler „Foto angekündigt, fehlt noch" — Sichtungen mit
 	 * `mediaUpload` gesetzt, aber ohne angehängte Datei
-	 * (`$lib/utils/media/photoAnnouncement.ts`). Unabhängig vom aktiven
+	 * (`#lib/utils/media/photoAnnouncement.ts`). Unabhängig vom aktiven
 	 * Filter, damit er im Dashboard-Kopf immer sichtbar ist.
 	 */
 	pendingPhotoAnnouncements?: number;

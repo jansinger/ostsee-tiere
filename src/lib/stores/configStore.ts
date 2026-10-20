@@ -7,10 +7,10 @@ import {
 	PUBLIC_UPLOAD_ALLOWED_TYPES,
 	PUBLIC_UPLOAD_MAX_FILE_SIZE_BYTES,
 	PUBLIC_UPLOAD_MAX_VIDEO_FILE_SIZE_BYTES
-} from '$lib/constants/uploadDefaults';
-import { UPLOAD_LIMITS } from '$lib/constants/upload';
-import { createLogger } from '$lib/logger';
-import type { ValidationPreset } from '$lib/types';
+} from '#lib/constants/uploadDefaults.ts';
+import { UPLOAD_LIMITS } from '#lib/constants/upload.ts';
+import { createLogger } from '#lib/logger.ts';
+import type { ValidationPreset } from '#lib/types/index.ts';
 
 const logger = createLogger('configStore');
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { formatEntryDate, type SightingListEntry } from '$lib/map/listViewUtils';
+	import * as m from '#lib/paraglide/messages.js';
+	import { formatEntryDate, type SightingListEntry } from '#lib/map/listViewUtils.ts';
 	import {
 		SIGHTING_STATUS_PRESENTATION,
 		type SightingStatus
-	} from '$lib/components/admin/sightingStatus';
+	} from '#lib/components/admin/sightingStatus.ts';
 
 	// Barrierefreie Tabellen-Alternative zur Kartendarstellung (Befund K3).
 	// Zeigt exakt die aktuell auf der Karte sichtbaren Sichtungen.

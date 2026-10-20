@@ -86,7 +86,7 @@ Die DB-Verbindung nutzt Lazy Initialization via Proxy (`src/lib/server/db/index.
 
 ```typescript
 // Verbindung wird erst bei erstem Zugriff hergestellt
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.ts';
 
 // Vorteile:
 // - E2E Tests laufen ohne DB
@@ -182,7 +182,7 @@ Namen legen die Bedeutungen **verkehrt herum** nahe:
 
 Das „geo" sitzt an der _groben_ Prüfung. Deren Rechteck umfasst Jütland, Schonen,
 Nordostdeutschland, Polen und das Baltikum. Die Kanten stehen in
-`BALTIC_SEA_BBOX` (`$lib/utils/geo/checkBalticSea`) und werden seit dem
+`BALTIC_SEA_BBOX` (`#lib/utils/geo/checkBalticSea`) und werden seit dem
 2026-07-30 aus der Geometrie abgeleitet — hier bewusst keine Zahlen, sie würden
 veralten.
 Fachliche Aussagen („liegt in der Ostsee") gehören deshalb ausschließlich auf
@@ -225,7 +225,7 @@ vermischt** — getrennt ausweisen („19.262 geprüft / 615 offen").
 Scope wäre ein Widerspruch zur Regel in `api.md` und darf nicht entstehen.
 
 ```typescript
-import { approvedOnly, pendingOnly, approvalFilter } from '$lib/server/db/approvalFilter';
+import { approvedOnly, pendingOnly, approvalFilter } from '#lib/server/db/approvalFilter.ts';
 
 // Öffentlich: nur freigegebene
 .where(approvedOnly())
@@ -288,7 +288,7 @@ sql`ST_AsGeoJSON(location)`;
 
 ```typescript
 // Vor dem Speichern Baltic Sea Grenzen validieren
-import { checkBalticSeaFile } from '$lib/server/geo/checkBalticSeaFile';
+import { checkBalticSeaFile } from '#lib/server/geo/checkBalticSeaFile.ts';
 
 if (!checkBalticSeaFile(lng, lat).inBaltic) {
 	throw new Error('Position außerhalb der Ostsee');

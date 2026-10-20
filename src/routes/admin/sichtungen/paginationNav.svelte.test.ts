@@ -27,7 +27,7 @@
  */
 import { render } from 'vitest-browser-svelte';
 import { describe, expect, it, vi } from 'vitest';
-import type { SightingSelect } from '$lib/server/db/schema';
+import type { SightingSelect } from '#lib/server/db/schema.ts';
 import type { PageData } from './$types';
 
 vi.mock('$app/navigation', () => ({

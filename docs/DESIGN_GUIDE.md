@@ -119,7 +119,7 @@ Testabdeckung dieser Pipeline: `src/lib/report/components/form/fields/FieldRende
 
 ### Persistenz
 
-`ModernReportForm` speichert über `$lib/storage/localStorage` (`saveToStorage`/`loadFromStorage`). Formulardaten und aktueller Schritt liegen in `sessionStorage`; Kontaktdaten landen nur bei erteilter Einwilligung (`persistentDataConsent`) in `localStorage`, sonst ebenfalls in `sessionStorage`. Wiederhergestellte Eingaben werden per Toast angekündigt. Details: `.claude/rules/browser-storage.md`.
+`ModernReportForm` speichert über `#lib/storage/localStorage` (`saveToStorage`/`loadFromStorage`). Formulardaten und aktueller Schritt liegen in `sessionStorage`; Kontaktdaten landen nur bei erteilter Einwilligung (`persistentDataConsent`) in `localStorage`, sonst ebenfalls in `sessionStorage`. Wiederhergestellte Eingaben werden per Toast angekündigt. Details: `.claude/rules/browser-storage.md`.
 
 ### Progressive Disclosure im Bestand
 

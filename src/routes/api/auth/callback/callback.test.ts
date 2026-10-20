@@ -18,23 +18,23 @@ const {
 	mockLoggerWarn: vi.fn()
 }));
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: mockLogAuditEvent
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: mockLoggerWarn, error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: mockLoggerWarn, error: vi.fn() })
 }));
 
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: { API_AUDIENCE: 'https://api.test', COOKIE_NAME: 'auth-cookie' }
 }));
 
-vi.mock('$lib/server/auth/auth.js', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	getPKCEVerifierFromCookie: mockGetPKCEVerifier,
 	getToken: mockGetToken,
 	getTokenClaims: mockGetTokenClaims,
@@ -42,12 +42,12 @@ vi.mock('$lib/server/auth/auth.js', () => ({
 }));
 
 /* Seit dem Session-Store legt der Callback eine Zeile an, statt ein JWT zu signieren (#635). */
-vi.mock('$lib/server/auth/sessionRepository', () => ({
+vi.mock('#lib/server/auth/sessionRepository.ts', () => ({
 	createSession: mockCreateSession
 }));
 
 import { GET } from './+server';
-import { sanitizeReturnUrl } from '$lib/server/auth/returnUrl';
+import { sanitizeReturnUrl } from '#lib/server/auth/returnUrl.ts';
 
 function makeCookies() {
 	return {

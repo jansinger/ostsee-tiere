@@ -1,11 +1,11 @@
-import { createLogger } from '$lib/logger.server';
-import { ConfigRepository, type ConfigItem } from '$lib/server/db/configRepository';
-import { filterConfigsByUserAccess } from '$lib/server/config/accessControl';
+import { createLogger } from '#lib/logger.server.ts';
+import { ConfigRepository, type ConfigItem } from '#lib/server/db/configRepository.ts';
+import { filterConfigsByUserAccess } from '#lib/server/config/accessControl.ts';
 import {
 	getDefaultConfigurationsByCategory,
 	initializeDefaultConfigurations
-} from '$lib/server/services/configInitializer';
-import { isSuperAdminUser, requireUserRole } from '$lib/server/auth/auth';
+} from '#lib/server/services/configInitializer.ts';
+import { isSuperAdminUser, requireUserRole } from '#lib/server/auth/auth.ts';
 import type { PageServerLoad } from './$types';
 
 const logger = createLogger('admin:settings:page');

@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { ADMIN_BEREICHE, aktiverAdminBereich } from '$lib/config/adminNav';
-	import AdminFooter from '$lib/components/admin/AdminFooter.svelte';
+	import { ADMIN_BEREICHE, aktiverAdminBereich } from '#lib/config/adminNav.ts';
+	import AdminFooter from '#lib/components/admin/AdminFooter.svelte';
 	import type { LayoutData } from './$types';
 
 	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
 
-	/* Liste und Zuordnung liegen in `$lib/config/adminNav` — dieselbe Quelle,
+	/* Liste und Zuordnung liegen in `#lib/config/adminNav.js` — dieselbe Quelle,
 	   aus der die Gruppe „Verwaltung" in der TopBar entsteht. Zwei Listen von
 	   Hand zu pflegen hieße, dass eine neue Sektion an einer der beiden
 	   Stellen fehlt, ohne dass es auffällt. */

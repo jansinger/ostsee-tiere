@@ -4,8 +4,8 @@
   Modernized with Svelte 5 $effect rune
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
 
 	let {
 		type = 'info',

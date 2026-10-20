@@ -36,7 +36,7 @@ describe('applySitesToSource', () => {
 // Gefunden bei der ersten echten Ausführung von --write-sources (Welle 1,
 // Aufgabe 2.3a): `applySvelteSitesToSource` ersetzte Textknoten/Attribute
 // zwar korrekt durch `m.key()`, setzte aber nie den Namespace-Import
-// `import * as m from '$lib/paraglide/messages';` — anders als bei
+// `import * as m from '#lib/paraglide/messages';` — anders als bei
 // Schema/formOptions (Schicht A/B), wo der Import schon vor der Extraktion
 // vorhanden war. svelte-check meldete das erst beim Typ-Check ("Cannot find
 // name 'm'"), nicht beim reinen Neu-Parsen aus Aufgabe 2.2 — ein fehlender
@@ -47,18 +47,18 @@ describe('applySvelteSitesToSource — Paraglide-Import', () => {
 		const { sites } = collectSvelteSites(source, 'probe.svelte', createKeyRegistry());
 		const result = applySvelteSitesToSource(source, sites);
 
-		expect(result).toContain(`import * as m from '$lib/paraglide/messages';`);
+		expect(result).toContain(`import * as m from '#lib/paraglide/messages';`);
 		expect(result).toContain('{m.probe_text_hallo_welt()}');
 		// Der Import steht VOR der ersten Verwendung.
 		expect(result.indexOf(`import * as m`)).toBeLessThan(result.indexOf('m.probe_text_hallo_welt'));
 	});
 
 	it('fügt den Import nicht doppelt ein, wenn er schon vorhanden ist', () => {
-		const source = `<script lang="ts">\n\timport * as m from '$lib/paraglide/messages';\n\tlet x = 1;\n</script>\n\n<p>Hallo Welt</p>\n`;
+		const source = `<script lang="ts">\n\timport * as m from '#lib/paraglide/messages';\n\tlet x = 1;\n</script>\n\n<p>Hallo Welt</p>\n`;
 		const { sites } = collectSvelteSites(source, 'probe.svelte', createKeyRegistry());
 		const result = applySvelteSitesToSource(source, sites);
 
-		expect(result.split(`import * as m from '$lib/paraglide/messages';`)).toHaveLength(2);
+		expect(result.split(`import * as m from '#lib/paraglide/messages';`)).toHaveLength(2);
 	});
 
 	it('fügt keinen Import ein, wenn es keine Fundstellen gibt', () => {
@@ -78,7 +78,7 @@ describe('applySvelteSitesToSource — Paraglide-Import', () => {
 		const result = applySvelteSitesToSource(source, sites);
 
 		const moduleScriptEnd = result.indexOf('</script>');
-		const importIndex = result.indexOf(`import * as m from '$lib/paraglide/messages';`);
+		const importIndex = result.indexOf(`import * as m from '#lib/paraglide/messages';`);
 		expect(importIndex).toBeGreaterThan(moduleScriptEnd);
 	});
 });

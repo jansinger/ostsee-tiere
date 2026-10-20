@@ -1,15 +1,15 @@
-import { env } from '$env/dynamic/private';
-import { createLogger } from '$lib/logger.server';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { ConfigRepository } from '$lib/server/db/configRepository';
+import { env } from '#lib/server/env.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { ConfigRepository } from '#lib/server/db/configRepository.ts';
 import {
 	filterConfigsByUserAccess,
 	canUserAccessConfigKey
-} from '$lib/server/config/accessControl';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { EmailService } from '$lib/server/services/emailService';
-import { warnIfBodySizeLimitTooLow } from '$lib/server/startup/bodySizeLimit';
+} from '#lib/server/config/accessControl.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { EmailService } from '#lib/server/services/emailService.ts';
+import { warnIfBodySizeLimitTooLow } from '#lib/server/startup/bodySizeLimit.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

@@ -39,7 +39,7 @@ Schreibe den Test **bevor** du die Implementierung anfasst.
 ```typescript
 // Unit Test für Utility
 import { describe, it, expect } from 'vitest';
-import { functionName } from '$lib/utils/module';
+import { functionName } from '#lib/utils/module';
 
 describe('functionName', () => {
 	it('gibt korrektes Ergebnis für Normalfall', () => {

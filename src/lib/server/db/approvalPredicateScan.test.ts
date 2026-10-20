@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { collectHits, sourceFiles, stripComments } from '$lib/testing/sourceScan.testutil';
-import type { SourceHit } from '$lib/testing/sourceScan.testutil';
+import { collectHits, sourceFiles, stripComments } from '#lib/testing/sourceScan.testutil.ts';
+import type { SourceHit } from '#lib/testing/sourceScan.testutil.ts';
 
 /**
  * @fileoverview Das Freigabe-Prädikat darf nur in `approvalFilter.ts` stehen
@@ -41,7 +41,7 @@ import type { SourceHit } from '$lib/testing/sourceScan.testutil';
 /** Was der Entwickler stattdessen tun soll — erscheint in jeder Fehlermeldung. */
 const REMEDIATION = [
 	'Das Freigabe-Prädikat wird nicht selbst gebaut, sondern importiert:',
-	"  import { approvedOnly, pendingOnly } from '$lib/server/db/approvalFilter';",
+	"  import { approvedOnly, pendingOnly } from '#lib/server/db/approvalFilter';",
 	'  .where(approvedOnly())   // öffentlich: nur freigegebene Sichtungen',
 	'  .where(pendingOnly())    // Admin: nur noch nicht freigegebene',
 	'  .where(openOnly())       // Eingangsseite: weder freigegeben noch abgelehnt',
@@ -49,7 +49,7 @@ const REMEDIATION = [
 	'Die Ablehnung ist eine Triage-Dimension, kein dritter Freigabe-Zustand (api.md).',
 	'',
 	'Über einer bereits geladenen Zeile gilt derselbe Helper in JavaScript:',
-	"  import { isSightingApproved, isSightingRejected } from '$lib/server/db/approvalFilter';",
+	"  import { isSightingApproved, isSightingRejected } from '#lib/server/db/approvalFilter';",
 	'  if (!isSightingApproved(file)) { /* nicht freigegeben */ }',
 	'  if (isSightingRejected(sighting)) { /* abgelehnt */ }'
 ].join('\n');
@@ -135,7 +135,7 @@ const PATTERNS = [SQL_ORDER, FUNCTION_ORDER, JS_ORDER] as const;
  * Meldet jedes selbstgebaute Freigabe-Prädikat in `source`.
  *
  * Kommentar-Ausblendung und Trefferbildung stehen seit dem Guard gegen
- * `geprueft` in `$lib/testing/sourceScan.testutil` — beide Regeln brauchen sie,
+ * `geprueft` in `#lib/testing/sourceScan.testutil.js` — beide Regeln brauchen sie,
  * und zwei Verfahren im selben Repo altern getrennt. Die Begründungen zu den
  * URL- und Glob-Fallen sind mit dorthin gewandert.
  *
@@ -181,7 +181,7 @@ const SOURCE_ROOT = 'src';
 /**
  * Alle gescannten Dateien.
  *
- * `.svelte` fehlt: Das Prädikat braucht `sightings` aus `$lib/server/db/schema`,
+ * `.svelte` fehlt: Das Prädikat braucht `sightings` aus `#lib/server/db/schema.js`,
  * und diesen Import lässt SvelteKit in Client-Code nicht zu. Eine Komponente
  * kann die Regel also nicht verletzen, ohne vorher am Server-Import zu
  * scheitern. Testdateien sind ausdrücklich dabei (siehe `ALLOWED_FILES`).
@@ -190,7 +190,7 @@ const SOURCE_ROOT = 'src';
  * Nachlässigkeit.** `scripts/seed-e2e.ts` baut in seiner Abschlussprüfung ein
  * `COUNT(*) FILTER (WHERE freigegeben_am IS NOT NULL)` — die verbotene Form,
  * knapp außerhalb. Das Skript verbindet sich direkt über `postgres`, ohne
- * Drizzle und ohne `$lib`-Alias; `approvedOnly()` liefert ein `SQL`-Objekt und
+ * Drizzle und ohne `#lib`-Alias; `approvedOnly()` liefert ein `SQL`-Objekt und
  * ist in einem `postgres`-Tagged-Template nicht verwendbar. Eine Meldung dort
  * hätte also wieder keine Antwort — derselbe Grund wie bei der JS-Prüfung
  * weiter unten. Wer das Skript auf Drizzle umstellt, zieht `SOURCE_ROOT` mit.
@@ -297,7 +297,7 @@ describe('Gegenproben', () => {
 	   befolgt — und ist danach schlechter als keine. */
 
 	it.each([
-		"import { approvedOnly, pendingOnly } from '$lib/server/db/approvalFilter';",
+		"import { approvedOnly, pendingOnly } from '#lib/server/db/approvalFilter';",
 		'.where(approvedOnly())',
 		'.where(and(approvedOnly(), isNotNull(sightings.sightingDate)))',
 		'const approval = approvalFilter(scope);'
@@ -438,7 +438,7 @@ describe('JavaScript-Schreibweisen', () => {
 	/* Der Ersatz muss durchkommen, sonst ist die Regel unerfüllbar — und der
 	   Import gleich mit, sonst meldet die Regel ihre eigene Lösung. */
 	it.each([
-		"import { isSightingApproved } from '$lib/server/db/approvalFilter';",
+		"import { isSightingApproved } from '#lib/server/db/approvalFilter';",
 		'if (!isSightingApproved(file)) throw error(403);',
 		'const isApproved = isSightingApproved(file);'
 	])('lässt den vorgeschriebenen Weg %s durch', (code) => {
@@ -447,7 +447,7 @@ describe('JavaScript-Schreibweisen', () => {
 
 	/* Derselbe Ersatz für die Ablehnungs-Spalte. */
 	it.each([
-		"import { isSightingRejected } from '$lib/server/db/approvalFilter';",
+		"import { isSightingRejected } from '#lib/server/db/approvalFilter';",
 		'if (isSightingRejected(sighting)) return;',
 		'const isRejected = isSightingRejected(sighting);'
 	])('lässt den vorgeschriebenen Weg %s durch', (code) => {

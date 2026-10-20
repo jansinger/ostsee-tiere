@@ -1,9 +1,9 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import ConnectionBadge from '$lib/components/ConnectionBadge.svelte';
-	import { canNavigateToStep } from '$lib/form/validation/stepNavigation';
-	import { getFormContext } from '$lib/report/formContext';
-	import type { FormStep } from '$lib/report/types';
+	import * as m from '#lib/paraglide/messages.js';
+	import ConnectionBadge from '#lib/components/ConnectionBadge.svelte';
+	import { canNavigateToStep } from '#lib/form/validation/stepNavigation.ts';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import type { FormStep } from '#lib/report/types.ts';
 	import { stepNavigationLabel } from './stepLabels';
 
 	/**

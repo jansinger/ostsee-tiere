@@ -1,4 +1,4 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /** Datum wie es das Formular liefert: "YYYY-MM-DD". */
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 

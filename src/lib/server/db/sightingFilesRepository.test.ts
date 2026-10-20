@@ -1,7 +1,7 @@
 /**
  * Unit Tests für sightingFilesRepository.ts
  */
-import type { UploadedFileInfo } from '$lib/types';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { sightingFiles } from './schema';
 import {
@@ -26,7 +26,7 @@ vi.mock('.', () => {
 	return { db };
 });
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({
 		info: vi.fn(),
 		debug: vi.fn(),

@@ -1,6 +1,6 @@
 import Handlebars from 'handlebars';
 import { describe, expect, it } from 'vitest';
-import { getDefaultConfigurationsByCategory } from '$lib/server/services/configInitializer';
+import { getDefaultConfigurationsByCategory } from '#lib/server/services/configInitializer.ts';
 import { EMAIL_COLORS, emailColorContext } from './emailTokens';
 
 /**

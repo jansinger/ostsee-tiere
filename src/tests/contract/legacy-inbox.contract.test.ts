@@ -22,11 +22,11 @@ import { GET as inBalticRoute } from '../../routes/rest_sichtungen/inBaltic.json
 // main app's pino logger so it doesn't spam the terminal on every invocation
 // of the real GET handlers. Does not affect the comparisons below — those
 // only touch response bodies/status codes, never the logger.
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

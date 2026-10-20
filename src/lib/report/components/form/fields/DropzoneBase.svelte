@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { dropzoneBaseClass } from '$lib/form/fields/dropzone';
-	import type { DropzoneProps } from '$lib/types';
+	import { dropzoneBaseClass } from '#lib/form/fields/dropzone.ts';
+	import type { DropzoneProps } from '#lib/types/index.ts';
 	import type { ChangeEventHandler, DragEventHandler } from 'svelte/elements';
 
 	type HTMLInputElementWithFiles = HTMLInputElement & { files: FileList | null };

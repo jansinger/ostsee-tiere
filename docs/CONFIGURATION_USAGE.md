@@ -17,7 +17,7 @@ import {
 	ServerConfigService,
 	ClientConfigService,
 	ConfigService
-} from '$lib/services/configService';
+} from '#lib/services/configService.ts';
 
 // Server-side (in +page.server.ts, API routes, etc.)
 const maxFileSize = await ServerConfigService.getNumber('security.maxFileSize');
@@ -68,7 +68,7 @@ const perPage = Number(url.searchParams.get('perPage')) || paginationConfig.defa
 
 `getUploadConfig()` liefert alle drei Größen (jeweils als MB-Zahl und als
 `*Bytes`-Variante). Welche der beiden Einzelgrenzen für eine konkrete Datei
-gilt, entscheidet `maxUploadSizeFor(mimeType, limits)` (`$lib/constants/uploadLimits`)
+gilt, entscheidet `maxUploadSizeFor(mimeType, limits)` (`#lib/constants/uploadLimits.js`)
 anhand des MIME-Typs — dieselbe Funktion speist sowohl `POST /api/files/upload`
 als auch `GET /api/config/upload` und damit die Dropzone. `maxTotalUploadSize`
 wird separat gegen die Summe aller Dateien einer Meldung geprüft. `BODY_SIZE_LIMIT`
@@ -142,7 +142,7 @@ Die Sichtbarkeit der öffentlichen Karte hängt ausschließlich am Datenbankfilt
 **In +page.server.ts oder API routes:**
 
 ```typescript
-import { ServerConfigService } from '$lib/services/configService';
+import { ServerConfigService } from '#lib/services/configService.ts';
 
 export const load: PageServerLoad = async () => {
 	const config = await ServerConfigService.getPaginationConfig();
@@ -155,7 +155,7 @@ export const load: PageServerLoad = async () => {
 **In .svelte Komponenten:**
 
 ```typescript
-import { ClientConfigService } from '$lib/services/configService';
+import { ClientConfigService } from '#lib/services/configService.ts';
 
 // Asynchron laden
 onMount(async () => {

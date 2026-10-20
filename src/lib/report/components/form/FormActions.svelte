@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { getFormContext } from '$lib/report/formContext';
-	import ConfirmDialog from '$lib/components/ui/Dialog/ConfirmDialog.svelte';
-	import ReportKindFeedback from '$lib/report/components/ReportKindFeedback.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import ConfirmDialog from '#lib/components/ui/Dialog/ConfirmDialog.svelte';
+	import ReportKindFeedback from '#lib/report/components/ReportKindFeedback.svelte';
 
 	// `onCancel` bleibt Teil der Props für Abwärtskompatibilität mit
 	// ModernReportForm.svelte, das den Wert weiterreicht. Der bisherige

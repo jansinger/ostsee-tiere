@@ -12,8 +12,8 @@
  *    Stapel: Sie ist ein Vertragsbruch des Endpunkts.
  */
 import { describe, expect, it, vi } from 'vitest';
-import type { SightingQueue } from '$lib/components/admin/sightingQueue';
-import type { SightingStatusLogEntry } from '$lib/components/admin/sightingStatusLog';
+import type { SightingQueue } from '#lib/components/admin/sightingQueue.ts';
+import type { SightingStatusLogEntry } from '#lib/components/admin/sightingStatusLog.ts';
 import { load } from './+page';
 
 const QUEUE_BODY = {

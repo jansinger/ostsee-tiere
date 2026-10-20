@@ -4,7 +4,7 @@ import {
 	resolveYearsUpdate,
 	type YearsFetchResult
 } from './yearsRequestSequencer';
-import type { YearWithCount } from '$lib/utils/date/defaultYear';
+import type { YearWithCount } from '#lib/utils/date/defaultYear.ts';
 
 /**
  * Review-Befund 1/T7.2: `loadAvailableYears` (SightingsMapView.svelte) hatte

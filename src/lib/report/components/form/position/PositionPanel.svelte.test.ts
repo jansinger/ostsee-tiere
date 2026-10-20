@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import type { SightingFormData } from '$lib/types';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 import PositionPanel from './PositionPanel.svelte';
 
 /**
@@ -67,7 +67,7 @@ describe('PositionPanel — Pflicht-Markierung der Koordinaten', () => {
 });
 
 /**
- * Review Task 6, Befund 1 (Nachreview): `positionQuestion` (`$lib/report/wording.ts`)
+ * Review Task 6, Befund 1 (Nachreview): `positionQuestion` (`#lib/report/wording.ts`)
  * ändert die Frage über der Positionsangabe am Totfund-Zweig. Abgedeckt war bisher
  * nur die reine Funktion (`wording.test.ts`) — kein Test rendert, was der Melder auf
  * Schritt 1 tatsächlich liest. Ein an die falsche Stelle verdrahteter Text wäre der

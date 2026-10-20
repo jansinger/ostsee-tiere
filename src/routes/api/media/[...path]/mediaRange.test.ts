@@ -1,12 +1,12 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { GET } from './+server';
-import { resetByteBudgets } from '$lib/server/middleware/byteBudget';
+import { resetByteBudgets } from '#lib/server/middleware/byteBudget.ts';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	isAdminUser: vi.fn().mockReturnValue(false)
 }));
 
@@ -22,7 +22,7 @@ const fileRecord = {
 	verified: 1
 };
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: () => ({
 			from: () => ({
@@ -37,7 +37,7 @@ vi.mock('$lib/server/db', () => ({
 const getFileStream = vi.fn();
 const getMetadata = vi.fn();
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getStorageProvider: () => ({ getFileStream, getMetadata })
 }));
 

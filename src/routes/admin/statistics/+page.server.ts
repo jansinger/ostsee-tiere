@@ -1,9 +1,14 @@
-import { createLogger } from '$lib/logger.server';
-import { db } from '$lib/server/db';
-import { approvedOnly, openOnly, pendingOnly, rejectedOnly } from '$lib/server/db/approvalFilter';
-import { sightings } from '$lib/server/db/schema';
-import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '$lib/server/db/sightingRepository';
-import { berlinCalendarDate, berlinDatePart } from '$lib/server/db/sqlTimeZone';
+import { createLogger } from '#lib/logger.server.ts';
+import { db } from '#lib/server/db/index.ts';
+import {
+	approvedOnly,
+	openOnly,
+	pendingOnly,
+	rejectedOnly
+} from '#lib/server/db/approvalFilter.ts';
+import { sightings } from '#lib/server/db/schema.ts';
+import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '#lib/server/db/sightingRepository.ts';
+import { berlinCalendarDate, berlinDatePart } from '#lib/server/db/sqlTimeZone.ts';
 import { and, eq, gte, isNotNull, ne, sql, type SQL } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import { YEAR_PARAM, parseYearParam, plausibleYearRange } from './yearFilter';
@@ -419,7 +424,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		// 15.070 von 19.253 geprüften Zeilen).
 		//
 		// Eine wiederbelebte Kennzahl zählt `ostsee` (das Polygon) und geht über
-		// `getBalticSeaStatus()` aus `$lib/utils/geo/balticSeaStatus.ts` — dieselbe
+		// `getBalticSeaStatus()` aus `#lib/utils/geo/balticSeaStatus.ts` — dieselbe
 		// Funktion, an der Übersicht, Detailansicht und Benachrichtigungs-Mail
 		// hängen. Sie muss außerdem die vier Zustände abbilden statt zweier: ohne
 		// Koordinaten ist auch `ostsee = 1` keine Aussage.

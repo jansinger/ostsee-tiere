@@ -36,7 +36,7 @@ const {
 	};
 });
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -59,9 +59,9 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', async () => {
+vi.mock('#lib/server/db/schema.ts', async () => {
 	const { strictModuleMock } = await import('./helpers/strictModuleMock');
-	return strictModuleMock('$lib/server/db/schema', {
+	return strictModuleMock('#lib/server/db/schema.ts', {
 		sightings: {
 			id: 'id',
 			approvedAt: 'approvedAt',
@@ -87,19 +87,19 @@ vi.mock('drizzle-orm', async () => {
 	});
 });
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
@@ -142,7 +142,7 @@ describe('Contract: PATCH /api/sightings/{id}/verify', () => {
 	});
 
 	it('schreibt bei verified=1 verified UND approvedAt in EINEM einzigen db.update(...).set(...)-Aufruf', async () => {
-		const { db } = await import('$lib/server/db');
+		const { db } = await import('#lib/server/db/index.ts');
 		const event = createEvent('/api/sightings/1/verify', {
 			method: 'PATCH',
 			params: { id: '1' },
@@ -163,7 +163,7 @@ describe('Contract: PATCH /api/sightings/{id}/verify', () => {
 	});
 
 	it('schreibt bei verified=0 approvedAt=null in DEMSELBEN update-Aufruf wie verified', async () => {
-		const { db } = await import('$lib/server/db');
+		const { db } = await import('#lib/server/db/index.ts');
 		const event = createEvent('/api/sightings/1/verify', {
 			method: 'PATCH',
 			params: { id: '1' },
@@ -214,7 +214,7 @@ describe('Contract: PATCH /api/sightings/{id}/verify', () => {
 	});
 
 	it('protokolliert das Audit-Event sighting.verify mit verified und approved=true', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/1/verify', {
 			method: 'PATCH',
 			params: { id: '1' },
@@ -233,7 +233,7 @@ describe('Contract: PATCH /api/sightings/{id}/verify', () => {
 	});
 
 	it('protokolliert das Audit-Event sighting.verify mit verified und approved=false', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/1/verify', {
 			method: 'PATCH',
 			params: { id: '1' },
@@ -252,7 +252,7 @@ describe('Contract: PATCH /api/sightings/{id}/verify', () => {
 	});
 
 	it('protokolliert den Vorzustand im Audit-Event', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		mockSelectLimit.mockResolvedValueOnce([
 			{ id: 1, verified: 1, approvedAt: new Date('2026-01-01T00:00:00.000Z') }
 		]);
@@ -280,7 +280,7 @@ describe('Contract: PATCH /api/sightings/{id}/verify', () => {
 		// Gegenstück zum Test darüber: Der Vorzustand muss auch dann korrekt im
 		// Audit-Log stehen, wenn `freigegeben_am` NULL ist. Dieser Zweig war vor
 		// der Zentralisierung der Freigabeprüfung nicht abgedeckt.
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		mockSelectLimit.mockResolvedValueOnce([{ id: 1, verified: 0, approvedAt: null }]);
 		const event = createEvent('/api/sightings/1/verify', {
 			method: 'PATCH',
@@ -352,7 +352,7 @@ describe('Contract: PATCH /api/sightings/{id}/verify', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -371,7 +371,7 @@ describe('Contract: PATCH /api/sightings/{id}/verify', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -458,7 +458,7 @@ describe('Contract: GET /api/sightings/{id}/verify', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -475,7 +475,7 @@ describe('Contract: GET /api/sightings/{id}/verify', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});

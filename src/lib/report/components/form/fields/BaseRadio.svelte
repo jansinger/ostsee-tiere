@@ -8,7 +8,7 @@
   derselbe Blitz untereinander.
 -->
 <script lang="ts">
-	import type { FieldOption, FieldSize } from '$lib/types';
+	import type { FieldOption, FieldSize } from '#lib/types/index.ts';
 
 	interface Props {
 		value?: string | number;

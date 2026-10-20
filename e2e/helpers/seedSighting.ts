@@ -13,9 +13,9 @@ import postgres from 'postgres';
  * steht — sonst ist er entweder grün ohne Aussage oder rot ohne Ursache im
  * Code.
  *
- * **Warum ein eigener `postgres`-Client** statt `$lib/server/db`: dieselbe
+ * **Warum ein eigener `postgres`-Client** statt `#lib/server/db/index.js`: dieselbe
  * Begründung wie in `adminSession.ts` — Playwright läuft als gewöhnliches
- * Node-Programm ohne SvelteKit-Bundler, also ohne `$lib`-Alias und ohne
+ * Node-Programm ohne SvelteKit-Bundler, also ohne `#lib`-Alias und ohne
  * `$env/dynamic/private`.
  *
  * **Pflichtfelder:** In `sichtungen` sind nur `sichtungsdatum` und `created`

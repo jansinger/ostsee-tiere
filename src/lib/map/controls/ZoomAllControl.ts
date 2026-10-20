@@ -1,6 +1,6 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 import { Control } from 'ol/control';
-import type { MapController } from '$lib/map/optimizedMapController';
+import type { MapController } from '#lib/map/optimizedMapController.ts';
 
 /**
  * Control zum Zoomen auf alle Features

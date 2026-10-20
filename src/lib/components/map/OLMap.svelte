@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import { createLogger } from '$lib/logger';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import { createLogger } from '#lib/logger.ts';
 	import { untrack } from 'svelte';
 	import type { Map, MapBrowserEvent } from 'ol';
 	import type { Coordinate } from 'ol/coordinate';
@@ -28,7 +28,7 @@
 	 * und `updateMarker` prüfen zusätzlich auf `markerFeature` bzw. `map`.
 	 */
 	type OLProj = typeof import('ol/proj');
-	type OLHelpers = typeof import('$lib/utils/map/openLayersHelpers');
+	type OLHelpers = typeof import('#lib/utils/map/openLayersHelpers.ts');
 
 	let fromLonLat: OLProj['fromLonLat'] | null = null;
 	let toLonLat: OLProj['toLonLat'] | null = null;
@@ -205,7 +205,7 @@
 		loadError = false;
 
 		void (async () => {
-			const helpers = await import('$lib/utils/map/openLayersHelpers');
+			const helpers = await import('#lib/utils/map/openLayersHelpers.ts');
 			// Kein zweiter Netz-Roundtrip: `openLayersHelpers` importiert `ol/proj`
 			// selbst, das Modul steckt also schon im Graphen des Imports darüber.
 			const proj = await import('ol/proj');

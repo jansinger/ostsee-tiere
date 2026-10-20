@@ -27,7 +27,7 @@
  * niemand mehr schicken wird — auf der lokalen DB drei von vier Treffern.
  */
 import { describe, expect, it } from 'vitest';
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
 import {
 	isPhotoAnnouncementPending,
 	MEDIA_UPLOAD_ANNOUNCED_MISSING,

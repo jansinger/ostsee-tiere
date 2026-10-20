@@ -1,6 +1,6 @@
+import type { Handle } from '@sveltejs/kit/hooks';
 import { describe, it, expect } from 'vitest';
-import type { Handle } from '@sveltejs/kit';
-import { noindexEnglishPages } from '$lib/server/middleware/noindexEnglishPages';
+import { noindexEnglishPages } from '#lib/server/middleware/noindexEnglishPages.ts';
 
 function createMockEvent(pathname: string) {
 	return {
@@ -27,7 +27,7 @@ async function runHandler(pathname: string): Promise<Response> {
 
 /**
  * Seit `TRANSLATION_ROLLOUT_COMPLETE = true` (2026-08-13,
- * `$lib/i18n/translationRolloutStage.ts`) setzt die Middleware den Header nie
+ * `#lib/i18n/translationRolloutStage.ts`) setzt die Middleware den Header nie
  * mehr — die Bedingung `!TRANSLATION_ROLLOUT_COMPLETE` greift nie. Diese
  * Suite prüfte vorher das Gegenteil (Header gesetzt); siehe Git-Historie für
  * den vorherigen Wortlaut. Die Middleware selbst bleibt für einen möglichen

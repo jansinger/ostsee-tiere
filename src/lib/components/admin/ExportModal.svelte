@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { createToast } from '$lib/stores/toastState.svelte';
-	import { createLogger } from '$lib/logger';
-	import { downloadHandlers, createTimestampedFilename } from '$lib/utils/download';
-	import type { FrontendSighting } from '$lib/types';
-	import { formatFileSize } from '$lib/utils/file/fileSize';
-	import { getActiveFiltersDisplay } from '$lib/components/admin/exportFilterDisplay';
-	import Icon from '$lib/components/Icon.svelte';
+	import { createToast } from '#lib/stores/toastState.svelte.ts';
+	import { createLogger } from '#lib/logger.ts';
+	import { downloadHandlers, createTimestampedFilename } from '#lib/utils/download.ts';
+	import type { FrontendSighting } from '#lib/types/index.ts';
+	import { formatFileSize } from '#lib/utils/file/fileSize.ts';
+	import { getActiveFiltersDisplay } from '#lib/components/admin/exportFilterDisplay.ts';
+	import Icon from '#lib/components/Icon.svelte';
 
 	const logger = createLogger('ExportModal');
 

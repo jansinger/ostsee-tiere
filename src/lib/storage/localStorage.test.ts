@@ -1,4 +1,4 @@
-import type { UserContactData } from '$lib/types';
+import type { UserContactData } from '#lib/types/index.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	clearStorage,

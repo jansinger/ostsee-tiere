@@ -11,11 +11,11 @@
  * Formular mehr Sichtungen, als die Karte Marker zeigt.
  */
 
-import { createLogger } from '$lib/logger.server';
-import { getSightingStatistics } from '$lib/server/db/sightingRepository';
+import { createLogger } from '#lib/logger.server.ts';
+import { getSightingStatistics } from '#lib/server/db/sightingRepository.ts';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import type { SightingStatistics } from '$lib/server/db/sightingRepository';
+import type { SightingStatistics } from '#lib/server/db/sightingRepository.ts';
 
 const logger = createLogger('api:statistics');
 

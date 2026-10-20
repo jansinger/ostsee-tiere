@@ -1,7 +1,7 @@
-import type { BrowserFileMetadata, ExifData, UploadedFileInfo } from '$lib/types';
+import type { BrowserFileMetadata, ExifData, UploadedFileInfo } from '#lib/types/index.ts';
 import { createId } from '@paralleldrive/cuid2';
-import { analyzeClientFile } from '$lib/utils/client/fileAnalysis';
-import { uploadFileDirect } from '$lib/utils/uploadUtils';
+import { analyzeClientFile } from '#lib/utils/client/fileAnalysis.ts';
+import { uploadFileDirect } from '#lib/utils/uploadUtils.ts';
 
 export class MediaFile {
 	uid: string;

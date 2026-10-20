@@ -1,7 +1,7 @@
-import * as m from '$lib/paraglide/messages';
-import { createLogger } from '$lib/logger';
-import { getLocale } from '$lib/paraglide/runtime';
-import { resolveDisplayLocale } from '$lib/utils/format/dateTime';
+import * as m from '#lib/paraglide/messages.js';
+import { createLogger } from '#lib/logger.ts';
+import { getLocale } from '#lib/paraglide/runtime.js';
+import { resolveDisplayLocale } from '#lib/utils/format/dateTime.ts';
 import { Feature, Geolocation, Map, Overlay, View } from 'ol';
 import type { Control } from 'ol/control';
 import { defaults as defaultControls } from 'ol/control';
@@ -23,8 +23,8 @@ import { Circle, Fill, Stroke, Style } from 'ol/style';
 import { LocationControl } from './controls/LocationControl.js';
 import { geolocationErrorMessage } from './controls/locationControlState.js';
 import { ZoomAllControl } from './controls/ZoomAllControl.js';
-import { getDefaultSightingYear } from '$lib/utils/date/defaultYear';
-import { isNotIFrame } from '$lib/utils/client/isNotIFrame';
+import { getDefaultSightingYear } from '#lib/utils/date/defaultYear.ts';
+import { isNotIFrame } from '#lib/utils/client/isNotIFrame.ts';
 import { clampExtentToBaltic, type Extent } from './extentUtils';
 import { areExtentsColocated, type MapTranslations } from './mapUtils';
 import {
@@ -43,7 +43,7 @@ import {
 	createSightingPopupContent,
 	type SightingPopupProperties as SightingProperties
 } from './popupContent';
-import type { SightingStatus } from '$lib/components/admin/sightingStatus';
+import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
 import { buildSightingsQuery, DEFAULT_MAP_STATUSES } from './statusRequestParams';
 
 const logger = createLogger('map:optimized-controller');

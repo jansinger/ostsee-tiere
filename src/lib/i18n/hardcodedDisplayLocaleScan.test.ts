@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { collectHits, sourceFiles, stripComments } from '$lib/testing/sourceScan.testutil';
-import type { SourceHit } from '$lib/testing/sourceScan.testutil';
+import { collectHits, sourceFiles, stripComments } from '#lib/testing/sourceScan.testutil.ts';
+import type { SourceHit } from '#lib/testing/sourceScan.testutil.ts';
 
 /**
  * @fileoverview Ein hartcodiertes `'de-DE'`/`'en-US'`/`'en-GB'` in einem
@@ -44,7 +44,7 @@ import type { SourceHit } from '$lib/testing/sourceScan.testutil';
  * auf (siehe `dateTime.ts`), auch das ist ein hartcodierter Sprach-Tag statt
  * der Zuordnung.
  *
- * Textaufbereitung und Dateisuche kommen aus `$lib/testing/sourceScan.testutil`
+ * Textaufbereitung und Dateisuche kommen aus `#lib/testing/sourceScan.testutil.js`
  * — dieselbe getestete `stripComments()` wie die vier bestehenden Guards
  * (`approvalPredicateScan`, `verifiedReadScan`, `statusLogWriteScan`,
  * `openQueueOrderScan`) und der jüngste (`hardcodedStringScan`).
@@ -56,8 +56,8 @@ import type { SourceHit } from '$lib/testing/sourceScan.testutil';
 const REMEDIATION = [
 	'Hartcodierter Sprach-Tag in einem Intl-/toLocale*-Aufruf des öffentlichen Codes.',
 	'Statt des Literals:',
-	"  import { getLocale } from '$lib/paraglide/runtime';",
-	"  import { resolveDisplayLocale } from '$lib/utils/format/dateTime';",
+	"  import { getLocale } from '#lib/paraglide/runtime';",
+	"  import { resolveDisplayLocale } from '#lib/utils/format/dateTime';",
 	'  date.toLocaleDateString(resolveDisplayLocale(getLocale()), { … })',
 	'',
 	'Muss die Ausgabe unabhängig von der Anzeigesprache deutsch bleiben (Export,',

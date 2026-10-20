@@ -1,8 +1,8 @@
 import { browser } from '$app/env';
-import { createLogger } from '$lib/logger';
-import { ConfigRepository } from '$lib/server/db/configRepository';
-import type { ConfigValue } from '$lib/server/db/configRepository';
-import { normalizeUploadSize } from '$lib/constants/uploadLimits';
+import { createLogger } from '#lib/logger.ts';
+import { ConfigRepository } from '#lib/server/db/configRepository.ts';
+import type { ConfigValue } from '#lib/server/db/configRepository.ts';
+import { normalizeUploadSize } from '#lib/constants/uploadLimits.ts';
 
 const logger = createLogger('configService');
 
@@ -131,7 +131,7 @@ export class ServerConfigService {
 	 * Get file upload configuration
 	 *
 	 * Die drei Größen werden hier zentral normalisiert (`normalizeUploadSize()`,
-	 * `$lib/constants/uploadLimits.ts`): `getNumber()` liefert rohes
+	 * `#lib/constants/uploadLimits.ts`): `getNumber()` liefert rohes
 	 * `Number(dbValue)` ohne Prüfung, und ein kaputter DB-Wert (NaN, negativ,
 	 * Infinity — z. B. durch `PUT /api/config` mit ungültiger Eingabe) lief
 	 * sonst bis zu den Aufrufern durch. Für die Gesamtgrößen-Prüfung in

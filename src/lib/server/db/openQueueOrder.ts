@@ -18,19 +18,19 @@
  * Gleiche Bauart und gleicher Zweck wie `approvalFilter.ts`: eine Regel, die an
  * zwei Stellen nachgebaut wird, driftet.
  */
-import { sightings } from '$lib/server/db/schema';
+import { sightings } from '#lib/server/db/schema.ts';
 import { asc, desc, sql, type SQL } from 'drizzle-orm';
 
 /**
- * `QueueOrder` und `resolveQueueOrder` sind in `$lib/components/admin/queueOrder`
+ * `QueueOrder` und `resolveQueueOrder` sind in `#lib/components/admin/queueOrder.js`
  * definiert und werden hier nur durchgereicht: Der universelle Loader der
  * Detailansicht (`/admin/[id]/+page.ts`) läuft auch im Browser und darf dieses
  * Modul nicht importieren (`schema.ts` hängt dran) — die reine Auswertung
  * durfte deshalb nicht hier bleiben. Bestehende Importe von hier bleiben
  * gültig, damit der Umbau kein Aufrufer-Update erzwingt.
  */
-export { type QueueOrder, resolveQueueOrder } from '$lib/components/admin/queueOrder';
-import type { QueueOrder } from '$lib/components/admin/queueOrder';
+export { type QueueOrder, resolveQueueOrder } from '#lib/components/admin/queueOrder.ts';
+import type { QueueOrder } from '#lib/components/admin/queueOrder.ts';
 
 /** Die Position einer Sichtung im Stapel, so weit die Ordnung sie braucht. */
 export interface QueueAnchor {

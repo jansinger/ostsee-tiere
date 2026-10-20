@@ -76,7 +76,7 @@ icon, … })` auch die komplette Feld-Darstellung. `formConfig.ts` liest es per
 
 Konsequenz: **Ein neues Feld entsteht im Schema, nicht in einer Komponente.** Label,
 Typ, Options und Hilfetext gehören in `.meta()`, nicht ins Markup. Ein Typ ist nicht zu
-pflegen — `SightingFormData` ist `yup.InferType<typeof sightingSchema>` (`$lib/types/Form.ts`).
+pflegen — `SightingFormData` ist `yup.InferType<typeof sightingSchema>` (`#lib/types/Form.ts`).
 
 ### Feldnamen — keine Abkürzungen
 
@@ -310,7 +310,7 @@ gegen iOS-Auto-Zoom. Details und die übrigen bewussten Overrides:
 ## Auto-Save
 
 ```typescript
-import { saveToStorage, loadFromStorage, STORAGE_KEYS } from '$lib/storage/localStorage';
+import { saveToStorage, loadFromStorage, STORAGE_KEYS } from '#lib/storage/localStorage.ts';
 
 // Auto-Save via $effect (reaktiv)
 $effect(() => {
@@ -324,7 +324,7 @@ if (savedData) {
 }
 ```
 
-**Hinweis:** Nutze immer `saveToStorage`/`loadFromStorage` aus `$lib/storage/localStorage` statt direktem `localStorage`-Zugriff. Siehe `.claude/rules/browser-storage.md` für GDPR-Details.
+**Hinweis:** Nutze immer `saveToStorage`/`loadFromStorage` aus `#lib/storage/localStorage` statt direktem `localStorage`-Zugriff. Siehe `.claude/rules/browser-storage.md` für GDPR-Details.
 
 ---
 

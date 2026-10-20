@@ -7,8 +7,8 @@
 	 * Der Dialog war hier bis zur Dialog-Konsolidierung eine wörtliche Kopie von
 	 * `DeleteDialog.svelte`; beide teilen sich jetzt `ConfirmDialog.svelte`.
 	 */
-	import Icon from '$lib/components/Icon.svelte';
-	import ConfirmDialog from '$lib/components/ui/Dialog/ConfirmDialog.svelte';
+	import Icon from '#lib/components/Icon.svelte';
+	import ConfirmDialog from '#lib/components/ui/Dialog/ConfirmDialog.svelte';
 
 	let { onReset }: { onReset: () => void } = $props();
 

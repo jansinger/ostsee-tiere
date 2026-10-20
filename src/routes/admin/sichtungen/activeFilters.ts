@@ -1,7 +1,8 @@
+import type { ReadonlyURLSearchParams } from '$app/state';
 import {
 	normalizeStatusParam,
 	type SightingStatusFilter
-} from '$lib/components/admin/sightingStatusFilter';
+} from '#lib/components/admin/sightingStatusFilter.ts';
 
 /**
  * Der Filterzustand der Sichtungstabelle, gelesen aus der URL.
@@ -37,7 +38,7 @@ export type FilterParams = {
 	q: string;
 };
 
-export function readFilterParams(searchParams: URLSearchParams): FilterParams {
+export function readFilterParams(searchParams: ReadonlyURLSearchParams): FilterParams {
 	const lies = (name: string): string => searchParams.get(name) ?? '';
 
 	return {

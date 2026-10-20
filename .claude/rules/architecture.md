@@ -132,16 +132,29 @@ const newSighting = {
 
 ## Imports
 
-Immer `$lib` mit vollständigen Pfaden verwenden:
+Immer `#lib` mit vollständigem Pfad **und der tatsächlichen Dateiendung** verwenden:
 
 ```typescript
 // Korrekt
-import { formatDate } from '$lib/utils/date';
-import { sightingSchema } from '$lib/form/validation/sightingSchema';
+import { formatDate } from '#lib/utils/date.ts';
+import { sightingSchema } from '#lib/form/validation/sightingSchema.ts';
+import * as m from '#lib/paraglide/messages.js'; // generiert, echte .js-Datei
 
 // Falsch
+import { formatDate } from '$lib/utils/date'; // $lib gibt es seit SvelteKit 3 nicht mehr
+import { formatDate } from '#lib/utils/date.js'; // .js auf eine .ts-Datei, s. u.
 import { formatDate } from '../../../lib/utils/date';
 ```
+
+`#lib` ist seit SvelteKit 3 ein Node-Subpath-Import (`imports` in `package.json`).
+Die Endung muss die der **Zieldatei** sein: Vite und TypeScript lösen `.js` → `.ts`
+zwar stillschweigend auf, Node selbst aber nicht. Playwright lädt die E2E-Specs samt
+der importierten `src/lib`-Module über Node — mit `.js` auf eine `.ts`-Datei bricht dort
+das Laden aller Specs ab („Cannot find module …/localeMemo.js"). Das
+Migrationswerkzeug `sv migrate sveltekit-3` schreibt `.js`; das wurde beim Umstieg
+korrigiert.
+
+Gleiches gilt für `vi.mock('#lib/…')`: Der Pfad muss exakt dem Import entsprechen.
 
 ---
 

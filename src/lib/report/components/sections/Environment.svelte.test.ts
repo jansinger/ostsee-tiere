@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
 import Environment from './Environment.svelte';
 
 /**

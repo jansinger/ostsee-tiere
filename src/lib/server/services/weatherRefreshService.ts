@@ -1,16 +1,16 @@
-import { createLogger } from '$lib/logger.server';
+import { createLogger } from '#lib/logger.server.ts';
 import {
 	convertToStoredWeatherData,
 	type StoredWeatherData,
 	type WeatherData
-} from '$lib/services/weatherService';
+} from '#lib/services/weatherService.ts';
 import {
 	degreesToCardinal,
 	getWeatherDescription,
 	calculateSeaState
-} from '$lib/constants/weather';
-import { hourIndexFromLocalTime } from '$lib/server/weather/hourIndex';
-import { berlinCalendarDayIso } from '$lib/utils/format/dateTime';
+} from '#lib/constants/weather.ts';
+import { hourIndexFromLocalTime } from '#lib/server/weather/hourIndex.ts';
+import { berlinCalendarDayIso } from '#lib/utils/format/dateTime.ts';
 
 const logger = createLogger('service:weather-refresh');
 

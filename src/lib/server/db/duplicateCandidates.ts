@@ -16,8 +16,8 @@
  * Query je Karte kostete 50 Roundtrips für eine Nebeninformation.
  */
 import { sql } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { createLogger } from '$lib/logger.server';
+import { db } from '#lib/server/db/index.ts';
+import { createLogger } from '#lib/logger.server.ts';
 
 const logger = createLogger('duplicateCandidates');
 

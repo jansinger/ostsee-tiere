@@ -6,7 +6,7 @@
  * pflegten bisher zwei unabhängige, wortgleiche `if (mediaUpload === '1') …`-
  * Verzweigungen. Für den neuen Wert `announced_missing` — Foto laut App
  * angekündigt (`aufnahmeHochladen = 1`), aber keine Datei in
- * `sichtungen_dateien` angehängt (siehe `$lib/utils/media/photoAnnouncement.ts`)
+ * `sichtungen_dateien` angehängt (siehe `#lib/utils/media/photoAnnouncement.ts`)
  * — reicht ein einfacher Spaltenvergleich nicht mehr; die beiden Kopien hier
  * ebenfalls zu duplizieren liefe demselben Auseinanderlaufen entgegen, das
  * `getBalticSeaStatus()` an anderer Stelle beheben sollte.
@@ -63,7 +63,7 @@ describe('mediaUploadCondition', () => {
 	 * Untergrenze meldete dieses Prädikat 2.539 „ausstehende" Fotos — Zeilen,
 	 * für die nie eine E-Mail nachkommen wird, weil das Flag dort historisch
 	 * nur „der Melder hatte ein Foto" bedeutete. Siehe
-	 * `$lib/utils/media/photoAnnouncement.ts`.
+	 * `#lib/utils/media/photoAnnouncement.ts`.
 	 */
 	it('grenzt "angekündigt, aber keine Datei" zusätzlich auf den Client-Start ein', () => {
 		const condition = mediaUploadCondition(MEDIA_UPLOAD_ANNOUNCED_MISSING);
@@ -80,7 +80,7 @@ describe('mediaUploadCondition', () => {
 	 * vorliegt. Drei von vier Treffern der Arbeitsliste waren genau das —
 	 * Meldungen, für die nie jemand etwas nachreichen wird. Dieselbe
 	 * Einschränkung wie `isPhotoAnnouncementPending()`
-	 * (`$lib/utils/media/photoAnnouncement.ts`), hier in SQL.
+	 * (`#lib/utils/media/photoAnnouncement.ts`), hier in SQL.
 	 */
 	it('grenzt "angekündigt, aber keine Datei" zusätzlich auf den App-Eingangskanal ein', () => {
 		const text = toSqlText(mediaUploadCondition(MEDIA_UPLOAD_ANNOUNCED_MISSING) as SQL);

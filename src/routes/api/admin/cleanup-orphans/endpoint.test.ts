@@ -2,8 +2,8 @@
  * Der Aufräum-Endpunkt ist über HTTP löschend — die Zugangs- und
  * Klemmungsregeln aus dem Entwurf (§ 4, § 5) sind hier festgeschrieben.
  */
-import { ORPHAN_RETENTION_HOURS } from '$lib/constants/uploadRetention';
-import { MIN_TOKEN_LENGTH } from '$lib/server/media/cleanupAuth';
+import { ORPHAN_RETENTION_HOURS } from '#lib/constants/uploadRetention.ts';
+import { MIN_TOKEN_LENGTH } from '#lib/server/media/cleanupAuth.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const TOKEN = 'z'.repeat(MIN_TOKEN_LENGTH);
@@ -16,10 +16,10 @@ const { cleanupOrphans, logAuditEvent, mockEnv } = vi.hoisted(() => ({
 	mockEnv: { CLEANUP_TOKEN: 'z'.repeat(32) }
 }));
 
-vi.mock('$lib/server/media/orphanCleanup', () => ({ cleanupOrphans }));
-vi.mock('$lib/server/media/cleanupPorts', () => ({ createDbPorts: () => ({}) }));
-vi.mock('$lib/server/audit/auditService', () => ({ logAuditEvent }));
-vi.mock('$env/dynamic/private', () => ({ env: mockEnv }));
+vi.mock('#lib/server/media/orphanCleanup.ts', () => ({ cleanupOrphans }));
+vi.mock('#lib/server/media/cleanupPorts.ts', () => ({ createDbPorts: () => ({}) }));
+vi.mock('#lib/server/audit/auditService.ts', () => ({ logAuditEvent }));
+vi.mock('#lib/server/env.ts', () => ({ env: mockEnv }));
 
 import { POST } from './+server';
 

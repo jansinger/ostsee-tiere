@@ -68,7 +68,7 @@ vi.mock('ol/style', () => {
 
 import { Feature } from 'ol';
 import type { Geometry } from 'ol/geom';
-import type { SightingStatus } from '$lib/components/admin/sightingStatus';
+import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
 import {
 	aggregateClusterStatus,
 	clearStyleCache,

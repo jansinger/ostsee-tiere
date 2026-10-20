@@ -7,8 +7,8 @@ const toastMock = vi.hoisted(() => ({
 	remove: vi.fn()
 }));
 
-vi.mock('$lib/stores/toastState.svelte', () => ({ toast: toastMock }));
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/stores/toastState.svelte.ts', () => ({ toast: toastMock }));
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })
 }));
 

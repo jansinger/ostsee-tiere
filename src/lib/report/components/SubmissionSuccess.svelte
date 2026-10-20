@@ -1,13 +1,13 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { getSpeciesLabel } from '$lib/report/formOptions/species';
-	import type { SightingFormValues } from '$lib/types/Form';
-	import { formatWallClockDateTime } from '$lib/utils/format/formatWallClockDateTime';
-	import { formatLocation } from '$lib/utils/format/formatLocation';
-	import { maskEmail } from '$lib/utils/privacy/emailMask';
-	import { MEDIA_FALLBACK_EMAIL } from '$lib/constants/contact';
-	import Icon from '$lib/components/Icon.svelte';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '#lib/paraglide/messages.js';
+	import { getSpeciesLabel } from '#lib/report/formOptions/species.ts';
+	import type { SightingFormValues } from '#lib/types/Form.ts';
+	import { formatWallClockDateTime } from '#lib/utils/format/formatWallClockDateTime.ts';
+	import { formatLocation } from '#lib/utils/format/formatLocation.ts';
+	import { maskEmail } from '#lib/utils/privacy/emailMask.ts';
+	import { MEDIA_FALLBACK_EMAIL } from '#lib/constants/contact.ts';
+	import Icon from '#lib/components/Icon.svelte';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 
 	// Success state management
 	let {

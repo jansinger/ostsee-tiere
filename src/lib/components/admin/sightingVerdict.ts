@@ -5,8 +5,8 @@
  * (die Karte verschwindet), ein Erfolgs-Toast pro abgearbeiteter Meldung
  * wäre bei einer Task-Liste Dauerrauschen.
  */
-import { createLogger } from '$lib/logger';
-import { toast } from '$lib/stores/toastState.svelte';
+import { createLogger } from '#lib/logger.ts';
+import { toast } from '#lib/stores/toastState.svelte.ts';
 
 const logger = createLogger('adminInboxVerdict');
 

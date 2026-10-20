@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import type { CountData } from '$lib/map/countManager';
-	import { getMapCountManager } from '$lib/map/mapContext';
-	import type { MapTranslations } from '$lib/map/mapUtils';
+	import * as m from '#lib/paraglide/messages.js';
+	import type { CountData } from '#lib/map/countManager.ts';
+	import { getMapCountManager } from '#lib/map/mapContext.ts';
+	import type { MapTranslations } from '#lib/map/mapUtils.ts';
 	import {
 		clusterStyleSteps,
 		legendGroups,
@@ -12,9 +12,9 @@
 		STATUS_LINE_CAP,
 		STATUS_LINE_DASH,
 		TOTFUND_RING_COLOR
-	} from '$lib/map/styleUtils';
-	import type { SightingStatus } from '$lib/components/admin/sightingStatus';
-	import Icon from '$lib/components/Icon.svelte';
+	} from '#lib/map/styleUtils.ts';
+	import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import MapPanel from './MapPanel.svelte';
 
 	let {

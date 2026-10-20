@@ -10,7 +10,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '$lib/server/db/sightingRepository';
+import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '#lib/server/db/sightingRepository.ts';
 import { ALL_YEARS_VALUE, YEAR_PARAM, parseYearParam, plausibleYearRange } from './yearFilter';
 
 const BEREICH = { min: 2002, max: 2026 };

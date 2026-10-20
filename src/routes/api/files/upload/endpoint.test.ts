@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { POST } from './+server';
-import { resetByteBudgets } from '$lib/server/middleware/byteBudget';
+import { resetByteBudgets } from '#lib/server/middleware/byteBudget.ts';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -11,7 +11,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -22,16 +22,16 @@ vi.mock('$lib/logger', () => ({
 
 const sumFileSizesForReference = vi.fn().mockResolvedValue(0);
 
-vi.mock('$lib/server/db/sightingFilesRepository', () => ({
+vi.mock('#lib/server/db/sightingFilesRepository.ts', () => ({
 	saveUploadedFile: vi.fn().mockResolvedValue({ id: 1 }),
 	sumFileSizesForReference: (...args: [string]) => sumFileSizesForReference(...args)
 }));
 
-vi.mock('$lib/server/media/exifUtils', () => ({
+vi.mock('#lib/server/media/exifUtils.ts', () => ({
 	readImageExifData: vi.fn().mockResolvedValue(null)
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getStorageProvider: () => ({
 		upload: vi.fn().mockResolvedValue({
 			uid: 'test-uid',
@@ -45,7 +45,7 @@ vi.mock('$lib/server/storage/factory', () => ({
 	})
 }));
 
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		getUploadConfig: vi.fn().mockResolvedValue({
 			allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'video/mp4'],
@@ -59,7 +59,7 @@ vi.mock('$lib/services/configService', () => ({
 	}
 }));
 
-vi.mock('$lib/server/validation/magicBytes', () => ({
+vi.mock('#lib/server/validation/magicBytes.ts', () => ({
 	validateMagicBytes: vi.fn().mockReturnValue({ isValid: true }),
 	isDangerousFileType: vi.fn().mockReturnValue(false)
 }));

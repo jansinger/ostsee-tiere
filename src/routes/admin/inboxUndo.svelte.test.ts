@@ -1,6 +1,6 @@
 import { render } from 'vitest-browser-svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { SightingSelect } from '$lib/server/db/schema';
+import type { SightingSelect } from '#lib/server/db/schema.ts';
 import type { PageData } from './$types';
 
 const invalidateAll = vi.fn(() => Promise.resolve());
@@ -13,7 +13,7 @@ vi.mock('$app/navigation', () => ({
 vi.mock('$app/state', () => ({
 	page: { url: new URL('https://localhost:4000/admin') }
 }));
-vi.mock('$lib/components/admin/sightingVerdict', () => ({
+vi.mock('#lib/components/admin/sightingVerdict.ts', () => ({
 	submitVerdict
 }));
 

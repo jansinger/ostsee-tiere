@@ -1,18 +1,18 @@
-import { createLogger } from '$lib/logger.server';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { isAdminUser } from '$lib/server/auth/auth';
-import { db } from '$lib/server/db';
-import { isSightingApproved } from '$lib/server/db/approvalFilter';
-import { sightingFiles, sightings } from '$lib/server/db/schema';
-import { getStorageProvider } from '$lib/server/storage/factory';
-import { isRangeHeaderSyntaxValid, parseRangeHeader } from '$lib/server/media/rangeHeader';
+import { createLogger } from '#lib/logger.server.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
+import { db } from '#lib/server/db/index.ts';
+import { isSightingApproved } from '#lib/server/db/approvalFilter.ts';
+import { sightingFiles, sightings } from '#lib/server/db/schema.ts';
+import { getStorageProvider } from '#lib/server/storage/factory.ts';
+import { isRangeHeaderSyntaxValid, parseRangeHeader } from '#lib/server/media/rangeHeader.ts';
 import {
 	RATE_LIMITS,
 	enforceRateLimit,
 	createRateLimitIdentifier,
 	buildRateLimitHeaders
-} from '$lib/server/middleware/rateLimit';
-import { consumeByteBudget, type ByteBudget } from '$lib/server/middleware/byteBudget';
+} from '#lib/server/middleware/rateLimit.ts';
+import { consumeByteBudget, type ByteBudget } from '#lib/server/middleware/byteBudget.ts';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 

@@ -34,8 +34,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 const DIVERGED_EN = 'TEST-ONLY-DIVERGED-ENGLISH-WEATHER';
 
-vi.mock('$lib/paraglide/messages', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/paraglide/messages')>();
+vi.mock('#lib/paraglide/messages.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/paraglide/messages.js')>();
 	return {
 		...actual,
 		constants_weather_text_bedeckt: (
@@ -49,7 +49,7 @@ vi.mock('$lib/paraglide/messages', async (importOriginal) => {
 });
 
 const { getWeatherDescription } = await import('./weather');
-const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 
 describe('getWeatherDescription — Locale-Pinnung', () => {
 	it('liefert Deutsch, obwohl die aktive Locale Englisch ist und die englische Botschaft nachweislich abweicht', () => {

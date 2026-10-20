@@ -1,7 +1,7 @@
 import { render } from 'vitest-browser-svelte';
 import { describe, expect, it, vi } from 'vitest';
 import { goto } from '$app/navigation';
-import type { SightingSelect } from '$lib/server/db/schema';
+import type { SightingSelect } from '#lib/server/db/schema.ts';
 import type { PageData } from './$types';
 
 /**
@@ -28,7 +28,7 @@ vi.mock('$app/state', () => ({
 		)
 	}
 }));
-vi.mock('$lib/components/admin/sightingVerdict', () => ({
+vi.mock('#lib/components/admin/sightingVerdict.ts', () => ({
 	submitVerdict: vi.fn(() => Promise.resolve(true))
 }));
 

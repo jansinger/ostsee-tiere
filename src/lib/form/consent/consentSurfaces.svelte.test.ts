@@ -57,12 +57,12 @@
  * eine Kennung, hinter der ein anderer Wortlaut steht.
  */
 import { describe, expect, it } from 'vitest';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import { formStepsConfig } from '$lib/report/formConfig';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import RequiredConsent from '$lib/report/components/form/RequiredConsent.svelte';
-import Step4Contact from '$lib/report/components/steps/Step4Contact.svelte';
-import type { UploadedFileInfo } from '$lib/types';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import { formStepsConfig } from '#lib/report/formConfig.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import RequiredConsent from '#lib/report/components/form/RequiredConsent.svelte';
+import Step4Contact from '#lib/report/components/steps/Step4Contact.svelte';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 import { MEDIA_CONSENT_VERSION } from './mediaConsentVersion';
 import {
 	NAME_CONSENT_VERSION,

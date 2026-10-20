@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { BrowserFileMetadata, UploadedFileInfo } from '$lib/types';
-import type { UploadHandle } from '$lib/utils/uploadUtils';
+import type { BrowserFileMetadata, UploadedFileInfo } from '#lib/types/index.ts';
+import type { UploadHandle } from '#lib/utils/uploadUtils.ts';
 
 /**
  * `MediaFile` ist eine `$state`-tragende Klasse (`uploadPercent`) und lebt
@@ -19,8 +19,8 @@ import type { UploadHandle } from '$lib/utils/uploadUtils';
 const analyzeClientFile = vi.hoisted(() => vi.fn<(file: File) => Promise<BrowserFileMetadata>>());
 const uploadFileDirect = vi.hoisted(() => vi.fn<(...args: unknown[]) => UploadHandle>());
 
-vi.mock('$lib/utils/client/fileAnalysis', () => ({ analyzeClientFile }));
-vi.mock('$lib/utils/uploadUtils', () => ({ uploadFileDirect }));
+vi.mock('#lib/utils/client/fileAnalysis.ts', () => ({ analyzeClientFile }));
+vi.mock('#lib/utils/uploadUtils.ts', () => ({ uploadFileDirect }));
 
 const { MediaFile } = await import('./MediaFile.svelte');
 

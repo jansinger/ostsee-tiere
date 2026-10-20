@@ -2,18 +2,18 @@ import { render } from 'vitest-browser-svelte';
 import { afterEach, describe, it, expect, vi, beforeEach } from 'vitest';
 import { page } from 'vitest/browser';
 import UnifiedDropzone from './UnifiedDropzone.svelte';
-import type { ValidationPreset } from '$lib/types';
+import type { ValidationPreset } from '#lib/types/index.ts';
 
-vi.mock('$lib/stores/toastState.svelte', () => ({
+vi.mock('#lib/stores/toastState.svelte.ts', () => ({
 	createToast: vi.fn()
 }));
 
-vi.mock('$lib/utils', () => ({
+vi.mock('#lib/utils/index.ts', () => ({
 	validateFiles: vi.fn()
 }));
 
-import { createToast } from '$lib/stores/toastState.svelte';
-import { validateFiles } from '$lib/utils';
+import { createToast } from '#lib/stores/toastState.svelte.ts';
+import { validateFiles } from '#lib/utils/index.ts';
 
 const mockConfig: ValidationPreset = {
 	allowedTypes: ['image/jpeg', 'image/png'],
@@ -240,12 +240,12 @@ describe('UnifiedDropzone', () => {
 		 */
 		describe('Plural folgt der Locale (Muster B)', () => {
 			afterEach(async () => {
-				const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+				const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 				overwriteGetLocale(() => baseLocale);
 			});
 
 			it('zeigt den deutschen Singular bei 1 Datei', async () => {
-				const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+				const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 				overwriteGetLocale(() => 'de');
 
 				await render(UnifiedDropzone, {
@@ -258,7 +258,7 @@ describe('UnifiedDropzone', () => {
 			});
 
 			it('zeigt den deutschen Plural bei 2 Dateien', async () => {
-				const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+				const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 				overwriteGetLocale(() => 'de');
 
 				await render(UnifiedDropzone, {
@@ -271,7 +271,7 @@ describe('UnifiedDropzone', () => {
 			});
 
 			it('zeigt den englischen Singular bei 1 Datei', async () => {
-				const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+				const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 				overwriteGetLocale(() => 'en');
 
 				await render(UnifiedDropzone, {
@@ -284,7 +284,7 @@ describe('UnifiedDropzone', () => {
 			});
 
 			it('zeigt den englischen Plural bei 2 Dateien', async () => {
-				const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+				const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 				overwriteGetLocale(() => 'en');
 
 				await render(UnifiedDropzone, {
@@ -447,7 +447,11 @@ describe('UnifiedDropzone', () => {
 		 * Flackern und traf den unteren Bereich praktisch nicht.
 		 */
 		it('bleibt bereit, wenn der Zeiger von der Fläche auf eine ihrer Textzeilen wechselt', async () => {
-			await render(UnifiedDropzone, { config: mockConfig, title: 'Foto hochladen', multiple: false });
+			await render(UnifiedDropzone, {
+				config: mockConfig,
+				title: 'Foto hochladen',
+				multiple: false
+			});
 
 			const zone = document.querySelector<HTMLElement>('.border-dashed');
 			if (!zone) throw new Error('Dropzone-Fläche nicht im DOM');
@@ -465,7 +469,11 @@ describe('UnifiedDropzone', () => {
 		});
 
 		it('gibt die Fläche wieder frei, wenn der Zeiger sie wirklich verlässt', async () => {
-			await render(UnifiedDropzone, { config: mockConfig, title: 'Foto hochladen', multiple: false });
+			await render(UnifiedDropzone, {
+				config: mockConfig,
+				title: 'Foto hochladen',
+				multiple: false
+			});
 
 			const zone = document.querySelector<HTMLElement>('.border-dashed');
 			if (!zone) throw new Error('Dropzone-Fläche nicht im DOM');

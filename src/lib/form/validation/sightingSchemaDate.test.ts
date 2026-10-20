@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { TEST_TIME_ZONES, withTimeZone } from '$lib/server/datetime/withTimeZone.testutil';
+import { TEST_TIME_ZONES, withTimeZone } from '#lib/server/datetime/withTimeZone.testutil.ts';
 import { getSightingSchema } from './sightingSchema';
 
 // Testet weiterhin den deutschen Ist-Zustand (Default-Locale) — unveraendert

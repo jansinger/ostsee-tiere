@@ -174,7 +174,7 @@ bilden hieße, mit einer Null zu rechnen, die keine ist.
 
 ## Backfill bestehender Daten
 
-Die Bewertungslogik steht einmal in `$lib/server/spam/rescoreSightings.ts` und
+Die Bewertungslogik steht einmal in `#lib/server/spam/rescoreSightings.ts` und
 wird von beiden Wegen benutzt. Sie lädt ausschließlich Zeilen mit
 `spam_score IS NULL` und ist damit idempotent — ein abgebrochener Lauf macht
 beim nächsten Aufruf dort weiter.

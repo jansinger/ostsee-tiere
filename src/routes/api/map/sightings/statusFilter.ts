@@ -9,8 +9,8 @@
  * abgeleiteten Bearbeitungszustände (`sightingStatus.ts`); öffentlich ist
  * unverändert genau `freigegeben_am IS NOT NULL` — siehe `.claude/rules/api.md`.
  */
-import type { SightingStatus } from '$lib/components/admin/sightingStatus';
-import { SIGHTING_STATUS_ORDER } from '$lib/components/admin/sightingStatus';
+import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
+import { SIGHTING_STATUS_ORDER } from '#lib/components/admin/sightingStatus.ts';
 
 /** Die Menge, die ohne Parameter (und damit für jeden Besucher) gilt. */
 export const PUBLIC_MAP_STATUSES: readonly SightingStatus[] = ['approved'];

@@ -2,20 +2,20 @@ import {
 	NAME_CONSENT_VERSION,
 	PRIVACY_CONSENT_VERSION,
 	SHIP_NAME_CONSENT_VERSION
-} from '$lib/form/consent/consentVersions';
-import { MEDIA_CONSENT_VERSION } from '$lib/form/consent/mediaConsentVersion';
-import { toCoordinate } from '$lib/report/components/form/coordinateValue';
-import { AnimalBehaviorEnum } from '$lib/report/formOptions/animalBehavior';
-import { BoatDriveEnum } from '$lib/report/formOptions/boatDrive';
-import { DISTANCE_UNSPECIFIED } from '$lib/report/formOptions/distance';
-import { DistributionEnum } from '$lib/report/formOptions/distribution';
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import type { SightingFormValues } from '$lib/types/Form';
-import type { NewSighting } from '$lib/types/sighting';
+} from '#lib/form/consent/consentVersions.ts';
+import { MEDIA_CONSENT_VERSION } from '#lib/form/consent/mediaConsentVersion.ts';
+import { toCoordinate } from '#lib/report/components/form/coordinateValue.ts';
+import { AnimalBehaviorEnum } from '#lib/report/formOptions/animalBehavior.ts';
+import { BoatDriveEnum } from '#lib/report/formOptions/boatDrive.ts';
+import { DISTANCE_UNSPECIFIED } from '#lib/report/formOptions/distance.ts';
+import { DistributionEnum } from '#lib/report/formOptions/distribution.ts';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import type { SightingFormValues } from '#lib/types/Form.ts';
+import type { NewSighting } from '#lib/types/sighting.ts';
 import { sql } from 'drizzle-orm';
-import { berlinWallClockToUtc } from '$lib/server/datetime/berlinWallClockToUtc';
-import { checkBalticSeaFile } from '$lib/server/geo/checkBalticSeaFile';
+import { berlinWallClockToUtc } from '#lib/server/datetime/berlinWallClockToUtc.ts';
+import { checkBalticSeaFile } from '#lib/server/geo/checkBalticSeaFile.ts';
 
 /**
  * Prüft, ob für ein numerisches Auswahlfeld eine verwertbare Angabe vorliegt.

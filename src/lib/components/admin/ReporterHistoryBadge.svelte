@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Icon from '$lib/components/Icon.svelte';
-	import type { ReporterHistory } from '$lib/types/reporterHistory';
+	import Icon from '#lib/components/Icon.svelte';
+	import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 	import {
 		REPORTER_LEVEL_PRESENTATION,
 		getReporterLevel,
