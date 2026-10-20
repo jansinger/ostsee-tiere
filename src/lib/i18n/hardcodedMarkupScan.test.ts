@@ -209,8 +209,15 @@ const OPEN_SKIP_LEDGER: Readonly<Record<string, number>> = {
 	 * ICU-Plural).
 	 */
 	'dynamic-attribute': 6,
-	/** Reine Satzzeichen, Symbole, Zahlen — Struktur, wird nie übersetzt. */
-	'no-letter-group': 45,
+	/**
+	 * Reine Satzzeichen, Symbole, Zahlen — Struktur, wird nie übersetzt.
+	 *
+	 * 45 → 44 am 2026-10-20: Das „?" am Tastatur-Hilfe-Knopf der Karte
+	 * (`SightingsMapView`) ist durch ein Icon ersetzt — axe-core 4.14 konnte es
+	 * unter WCAG 2.5.3 nicht gegen den zugänglichen Namen prüfen. Entfernt, nicht
+	 * übersetzt; es gab nichts zu übersetzen.
+	 */
+	'no-letter-group': 44,
 	/**
 	 * Attributwert ohne jeden statischen Text (`title={file.name}`) — nie
 	 * Übersetzungsarbeit.

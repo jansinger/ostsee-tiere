@@ -1213,14 +1213,21 @@
 		showStatusLegend={isAdmin}
 	/>
 
-	<!-- Tastatur-Hilfe Button -->
+	<!-- Tastatur-Hilfe Button
+
+	     Icon statt eines „?"-Zeichens. Ein sichtbares Zeichen ist für WCAG 2.5.3
+	     (Label in Name) Text, der im zugänglichen Namen „Tastatur-Hilfe anzeigen"
+	     stehen müsste; axe-core ab 4.14 kann das bei einem reinen Satzzeichen nicht
+	     entscheiden und meldet es als offen. `aria-hidden` am Zeichen hilft nicht:
+	     axe ermittelt den sichtbaren Text dieser Regel ausdrücklich ohne
+	     Rücksicht auf den Accessibility-Tree. Ein SVG trägt keinen Text. -->
 	<button
 		onclick={() => (showKeyboardHelp = true)}
 		class="bg-info text-info-content hover:bg-info/80 z-raised shadow-floating duration-instant fixed bottom-4 left-4 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full transition-colors"
 		aria-label={m.components_map_sightingsmapview_aria_label_tastatur_hilfe_anzeigen()}
 		title={m.components_map_sightingsmapview_title_tastaturkuerzel_anzeigen_h_oder()}
 	>
-		<span class="text-lg font-bold">?</span>
+		<Icon icon="lucide:circle-help" width="24" height="24" aria-hidden="true" />
 	</button>
 
 	<!-- Logo (unten rechts) - optional -->
