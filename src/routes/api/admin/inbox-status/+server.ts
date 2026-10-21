@@ -12,10 +12,10 @@
  * der Poller merkte vom Sitzungsende nichts. Dieselbe Begründung wie bei
  * `/api/admin/spam-rescore` und `/api/admin/cleanup-orphans`.
  */
-import { isAdminUser } from '$lib/server/auth/auth';
-import { db } from '$lib/server/db';
-import { openOnly } from '$lib/server/db/approvalFilter';
-import { sightings } from '$lib/server/db/schema';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
+import { db } from '#lib/server/db/index.ts';
+import { openOnly } from '#lib/server/db/approvalFilter.ts';
+import { sightings } from '#lib/server/db/schema.ts';
 import { json } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';
 import type { RequestHandler } from './$types';

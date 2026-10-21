@@ -13,7 +13,7 @@ import { ConfigRepository, type ConfigItem } from './configRepository';
 // Mock dependencies - siehe sightingRepository.test.ts für das Grundpattern.
 // Hier zusätzlich isDatabaseAvailable und getDb, da configRepository beide nutzt.
 // configRepository.ts importiert relativ aus './index' - daher wird hier
-// derselbe Modulspezifizierer gemockt (kein zusätzlicher '$lib/server/db'-Mock nötig).
+// derselbe Modulspezifizierer gemockt (kein zusätzlicher '#lib/server/db/index.ts'-Mock nötig).
 vi.mock('./index', () => {
 	const db: Record<string, any> = {
 		select: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock('./index', () => {
 	};
 });
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({
 		info: vi.fn(),
 		debug: vi.fn(),
@@ -641,14 +641,11 @@ describe('ConfigRepository', () => {
 				}
 			);
 
-			it.each(['true', 'True', '1', 'yes', 'on'])(
-				'liest %o als true',
-				async (stored) => {
-					mockGetOnce(stored);
-					const result = await ConfigRepository.getBoolean('present', false);
-					expect(result).toBe(true);
-				}
-			);
+			it.each(['true', 'True', '1', 'yes', 'on'])('liest %o als true', async (stored) => {
+				mockGetOnce(stored);
+				const result = await ConfigRepository.getBoolean('present', false);
+				expect(result).toBe(true);
+			});
 
 			it('fällt bei unverständlichen Werten auf den Default zurück', async () => {
 				// Weder wahr noch falsch: „irgendwas" als `true` zu lesen wäre die

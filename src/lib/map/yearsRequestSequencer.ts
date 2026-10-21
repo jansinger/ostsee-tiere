@@ -31,7 +31,7 @@
  * `loadAvailableYears`) — hier ist bewusst keine Sonderbehandlung für den
  * ersten Aufruf nötig.
  */
-import type { YearWithCount } from '$lib/utils/date/defaultYear';
+import type { YearWithCount } from '#lib/utils/date/defaultYear.ts';
 
 /** Vergibt aufsteigende Anfrage-IDs; nur die zuletzt vergebene ist „aktuell". */
 export interface YearsRequestSequencer {

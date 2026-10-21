@@ -6,7 +6,7 @@
  *
  * Siehe docs/archive/MEDIENEINWILLIGUNG_ANALYSE_2026-07-28.md, Abschnitt 9.4.
  */
-import { ORPHAN_RETENTION_HOURS } from '$lib/constants/uploadRetention';
+import { ORPHAN_RETENTION_HOURS } from '#lib/constants/uploadRetention.ts';
 import { describe, expect, it } from 'vitest';
 import { uploadNotice } from './uploadNotice';
 

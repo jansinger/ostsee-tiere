@@ -5,7 +5,7 @@
  * Nutzt In-Memory-Storage mit automatischer Cleanup-Funktionalität.
  */
 
-import { createLogger } from '$lib/logger.server';
+import { createLogger } from '#lib/logger.server.ts';
 import { error } from '@sveltejs/kit';
 
 const logger = createLogger('middleware:rateLimit');
@@ -106,7 +106,7 @@ export const RATE_LIMITS = {
 	// öffentliche Karte lädt viele Fotos, ein Melder oder Admin sieht sich
 	// mehrere Videos an — und trotzdem zwei bis drei Größenordnungen unter dem,
 	// was die reine Anfragenzahl heute zulässt. Wirkt über `consumeByteBudget()`
-	// (`$lib/server/middleware/byteBudget.ts`), verbucht die tatsächlich
+	// (`#lib/server/middleware/byteBudget.ts`), verbucht die tatsächlich
 	// ausgelieferte Menge (bei einer Teilanfrage die Bereichslänge, nicht die
 	// Dateigröße) und greift vor dem Streamen.
 	MEDIA_BYTES_ANONYMOUS: {

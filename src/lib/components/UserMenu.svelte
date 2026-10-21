@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import type { PublicUser } from '$lib/types/User';
-	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import type { PublicUser } from '#lib/types/User.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import LanguageSwitcher from './LanguageSwitcher.svelte';
 
 	/* `isAdmin` ist hier bewusst weggefallen: Das Menü führte einen Eintrag

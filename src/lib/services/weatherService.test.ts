@@ -9,7 +9,7 @@ import {
 	type OpenMeteoRawData
 } from './weatherService';
 
-vi.mock('$lib/constants/weather', () => ({
+vi.mock('#lib/constants/weather.ts', () => ({
 	calculateSeaState: vi.fn((speed: number) => Math.min(12, Math.floor(speed / 10))),
 	degreesToCardinal: vi.fn(() => 'N'),
 	getWeatherDescription: vi.fn(() => 'Klarer Himmel')

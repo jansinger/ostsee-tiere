@@ -93,8 +93,8 @@ export function getFileExtension(fileNameOrMimeType: string): string {
  * kennen „JPG") und aus `video/quicktime` „QUICKTIME" statt „MOV".
  *
  * Einzige Quelle für diese Zuordnung — vormals dupliziert in
- * `$lib/constants/upload.ts` (`describeFormats`) und
- * `$lib/utils/validation/fileValidation.ts` (`getFileTypeDescription`).
+ * `#lib/constants/upload.ts` (`describeFormats`) und
+ * `#lib/utils/validation/fileValidation.ts` (`getFileTypeDescription`).
  * Diese Datei importiert selbst nichts, ist also für beide zyklusfrei
  * erreichbar.
  */

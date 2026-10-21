@@ -3,17 +3,17 @@
   Optional detailed information that enhances research value
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { createLogger } from '$lib/logger';
-	import Behavior from '$lib/report/components/sections/Behavior.svelte';
-	import BoatInfo from '$lib/report/components/sections/BoatInfo.svelte';
-	import Environment from '$lib/report/components/sections/Environment.svelte';
-	import { getFormContext } from '$lib/report/formContext';
-	import { isDeadFinding } from '$lib/report/formConfig';
-	import { scrollToElement } from '$lib/utils/fieldNavigation';
-	import { step3ObservationsIntro } from '$lib/report/wording';
+	import * as m from '#lib/paraglide/messages.js';
+	import { createLogger } from '#lib/logger.ts';
+	import Behavior from '#lib/report/components/sections/Behavior.svelte';
+	import BoatInfo from '#lib/report/components/sections/BoatInfo.svelte';
+	import Environment from '#lib/report/components/sections/Environment.svelte';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { isDeadFinding } from '#lib/report/formConfig.ts';
+	import { scrollToElement } from '#lib/utils/fieldNavigation.ts';
+	import { step3ObservationsIntro } from '#lib/report/wording.ts';
 
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 
 	const logger = createLogger('report:Step3Observations');
 	const formContext = getFormContext();

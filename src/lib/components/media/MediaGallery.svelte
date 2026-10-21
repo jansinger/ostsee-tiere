@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import type { UploadedFileInfo } from '$lib/types';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import type { UploadedFileInfo } from '#lib/types/index.ts';
 	import MediaModal from './MediaModal.svelte';
 	import MediaThumbnail from './MediaThumbnail.svelte';
 

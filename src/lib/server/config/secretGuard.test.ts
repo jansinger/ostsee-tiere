@@ -4,7 +4,7 @@ import {
 	PLACEHOLDER_ENCRYPTION_KEY,
 	validateEncryptionKey,
 	assertProductionSecrets
-} from '$lib/server/config/secretGuard';
+} from '#lib/server/config/secretGuard.ts';
 
 describe('validateEncryptionKey', () => {
 	const valid = 'a3f1'.repeat(16); // 64 Hex-Zeichen = 32 Byte
@@ -99,9 +99,9 @@ describe('assertProductionSecrets', () => {
 	it.each(['Production', ' production ', 'PRODUCTION'])(
 		'greift auch bei der Schreibweise NODE_ENV=%j',
 		(nodeEnv) => {
-			expect(() =>
-				assertProductionSecrets({ NODE_ENV: nodeEnv, ENCRYPTION_KEY: '' })
-			).toThrow(/ENCRYPTION_KEY/);
+			expect(() => assertProductionSecrets({ NODE_ENV: nodeEnv, ENCRYPTION_KEY: '' })).toThrow(
+				/ENCRYPTION_KEY/
+			);
 		}
 	);
 
@@ -109,8 +109,6 @@ describe('assertProductionSecrets', () => {
 	   und die Skripte dieses Projekts setzen durchgehend "production" — eine Zusatzbedeutung
 	   für "prod" zu erfinden wäre eine eigene Entscheidung, die der Guard nicht treffen soll. */
 	it('behandelt NODE_ENV="prod" NICHT als Produktion', () => {
-		expect(() =>
-			assertProductionSecrets({ NODE_ENV: 'prod', ENCRYPTION_KEY: '' })
-		).not.toThrow();
+		expect(() => assertProductionSecrets({ NODE_ENV: 'prod', ENCRYPTION_KEY: '' })).not.toThrow();
 	});
 });

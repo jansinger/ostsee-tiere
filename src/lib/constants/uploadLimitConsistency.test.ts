@@ -15,15 +15,15 @@ import {
 	PUBLIC_UPLOAD_MAX_FILE_SIZE_BYTES,
 	PUBLIC_UPLOAD_MAX_VIDEO_FILE_SIZE_BYTES
 } from './uploadDefaults';
-import { getDefaultConfigurationsByCategory } from '$lib/server/services/configInitializer';
-import { hasMagicByteSignature } from '$lib/server/validation/magicBytes';
-import { DEFAULT_CONFIG_VALUES } from '$lib/services/configService';
+import { getDefaultConfigurationsByCategory } from '#lib/server/services/configInitializer.ts';
+import { hasMagicByteSignature } from '#lib/server/validation/magicBytes.ts';
+import { DEFAULT_CONFIG_VALUES } from '#lib/services/configService.ts';
 import { UPLOAD_LIMITS } from './upload';
 
 // Beide importierten Module hängen über ConfigRepository bzw. direkt an
-// `$lib/logger.server`. Ohne Mock zieht der Test die Server-Logger-Einrichtung
+// `#lib/logger.server.js`. Ohne Mock zieht der Test die Server-Logger-Einrichtung
 // mit in die Node-Umgebung — jeder andere Server-Test im Projekt mockt ihn.
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

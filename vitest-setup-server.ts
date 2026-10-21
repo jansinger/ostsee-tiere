@@ -25,7 +25,7 @@ afterEach(() => {
 });
 
 // Global mock for EmailService to prevent any real email sending during tests
-vi.mock('$lib/server/services/emailService', () => ({
+vi.mock('#lib/server/services/emailService.ts', () => ({
 	EmailService: {
 		sendNewSightingNotification: vi.fn().mockResolvedValue(true),
 		sendTestEmail: vi.fn().mockResolvedValue(true),

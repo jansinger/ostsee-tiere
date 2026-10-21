@@ -17,11 +17,11 @@ const { mockWhere, mockSet, mockUpdate, mockLimit, mockOrderBy, mockLogValues, m
 		return { mockWhere, mockSet, mockUpdate, mockLimit, mockOrderBy, mockLogValues, mockLogInsert };
 	});
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -30,7 +30,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -39,11 +39,11 @@ vi.mock('$lib/logger', () => ({
 	})
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -63,7 +63,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: {
 		id: 'id',
 		verified: 'verified',
@@ -81,7 +81,7 @@ vi.mock('$lib/server/db/schema', () => ({
 	}
 }));
 
-// `$lib/server/db/approvalFilter` wird bewusst NICHT gemockt: Ein nachgebautes
+// `#lib/server/db/approvalFilter.js` wird bewusst NICHT gemockt: Ein nachgebautes
 // `!!s.approvedAt` wäre genau das Inline-Prädikat, das
 // `approvalPredicateScan.test.ts` im gesamten Quelltext verbietet — und ein
 // abweichender Nachbau in der Testhilfe erzeugt die Divergenz, gegen die die
@@ -172,7 +172,7 @@ describe('/api/sightings/[id]/verify PATCH endpoint', () => {
 	});
 
 	it('ruft logAuditEvent mit action sighting.verify und resourceType sighting auf', async () => {
-		const { logAuditEvent } = await import('$lib/server/audit/auditService');
+		const { logAuditEvent } = await import('#lib/server/audit/auditService.ts');
 		const event = createMockEvent('42', { verified: 1 });
 
 		await PATCH(event as Parameters<typeof PATCH>[0]);
@@ -188,7 +188,7 @@ describe('/api/sightings/[id]/verify PATCH endpoint', () => {
 	});
 
 	it('übergibt userEmail an logAuditEvent wenn vorhanden', async () => {
-		const { logAuditEvent } = await import('$lib/server/audit/auditService');
+		const { logAuditEvent } = await import('#lib/server/audit/auditService.ts');
 		const event = createMockEvent('5', { verified: 1 }, { userEmail: 'pruefer@test.com' });
 
 		await PATCH(event as Parameters<typeof PATCH>[0]);
@@ -201,7 +201,7 @@ describe('/api/sightings/[id]/verify PATCH endpoint', () => {
 	});
 
 	it('übergibt ipAddress an logAuditEvent wenn x-forwarded-for vorhanden', async () => {
-		const { logAuditEvent } = await import('$lib/server/audit/auditService');
+		const { logAuditEvent } = await import('#lib/server/audit/auditService.ts');
 		const event = createMockEvent('7', { verified: 0 }, { ip: '10.0.0.1' });
 
 		await PATCH(event as Parameters<typeof PATCH>[0]);
@@ -214,7 +214,7 @@ describe('/api/sightings/[id]/verify PATCH endpoint', () => {
 	});
 
 	it('übergibt verified-Wert in details an logAuditEvent', async () => {
-		const { logAuditEvent } = await import('$lib/server/audit/auditService');
+		const { logAuditEvent } = await import('#lib/server/audit/auditService.ts');
 		const event = createMockEvent('3', { verified: 1 });
 
 		await PATCH(event as Parameters<typeof PATCH>[0]);
@@ -309,7 +309,7 @@ describe('PATCH mit verdict', () => {
 	});
 
 	it('hält den Vorzustand previouslyRejected im Audit fest', async () => {
-		const { logAuditEvent } = await import('$lib/server/audit/auditService');
+		const { logAuditEvent } = await import('#lib/server/audit/auditService.ts');
 		mockLimit.mockResolvedValueOnce([
 			{ id: 1, verified: 0, approvedAt: null, rejectedAt: new Date('2026-01-01') }
 		]);
@@ -413,7 +413,7 @@ describe('PATCH schreibt die Status-Historie', () => {
 	});
 
 	it('schreibt Spalten und Historie in derselben Transaktion', async () => {
-		const { db } = await import('$lib/server/db');
+		const { db } = await import('#lib/server/db/index.ts');
 		await PATCH(patchEvent('1', { verdict: 'approve' }));
 
 		expect(db.transaction).toHaveBeenCalledOnce();

@@ -1,14 +1,14 @@
-import { AnimalBehaviorEnum } from '$lib/report/formOptions/animalBehavior';
-import { BoatDriveEnum } from '$lib/report/formOptions/boatDrive';
-import { DistributionEnum } from '$lib/report/formOptions/distribution';
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import { SpeciesEnum } from '$lib/report/formOptions/species';
-import { mapLegacyToCurrentSchema } from '$lib/legacy-api/field-mapping';
-import type { LegacySightingRequest } from '$lib/legacy-api/types';
-import type { SightingFormData } from '$lib/report/types';
-import type { SightingFormValues } from '$lib/types/Form';
-import { TEST_TIME_ZONES, withTimeZone } from '$lib/server/datetime/withTimeZone.testutil';
+import { AnimalBehaviorEnum } from '#lib/report/formOptions/animalBehavior.ts';
+import { BoatDriveEnum } from '#lib/report/formOptions/boatDrive.ts';
+import { DistributionEnum } from '#lib/report/formOptions/distribution.ts';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import { SpeciesEnum } from '#lib/report/formOptions/species.ts';
+import { mapLegacyToCurrentSchema } from '#lib/legacy-api/field-mapping.ts';
+import type { LegacySightingRequest } from '#lib/legacy-api/types.ts';
+import type { SightingFormData } from '#lib/report/types.ts';
+import type { SightingFormValues } from '#lib/types/Form.ts';
+import { TEST_TIME_ZONES, withTimeZone } from '#lib/server/datetime/withTimeZone.testutil.ts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mapFormToSighting } from './mapFormToSighting';
 

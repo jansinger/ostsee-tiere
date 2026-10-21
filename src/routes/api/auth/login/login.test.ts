@@ -5,19 +5,16 @@ const { mockSetCsrfCookie, mockSetPKCECookie } = vi.hoisted(() => ({
 	mockSetPKCECookie: vi.fn().mockReturnValue('pkce-challenge')
 }));
 
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: {
 		AUTH0_CLIENT_ID: 'client-id',
 		AUTH0_DOMAIN: 'id.test',
 		API_AUDIENCE: 'https://api.test'
-	}
+	},
+	publicEnv: { PUBLIC_SITE_URL: 'https://test-site.com' }
 }));
 
-vi.mock('$env/dynamic/public', () => ({
-	env: { PUBLIC_SITE_URL: 'https://test-site.com' }
-}));
-
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	setCsrfCookie: mockSetCsrfCookie,
 	setPKCECookie: mockSetPKCECookie
 }));

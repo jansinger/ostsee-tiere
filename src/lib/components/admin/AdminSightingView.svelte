@@ -1,37 +1,37 @@
 <script lang="ts">
-	import DataTableRow from '$lib/components/admin/DataTableRow.svelte';
-	import OLMap from '$lib/components/map/OLMap.svelte';
-	import MediaGallery from '$lib/components/media/MediaGallery.svelte';
-	import WeatherDataDisplay from '$lib/components/admin/weather/WeatherDataDisplay.svelte';
-	import type { StoredWeatherData } from '$lib/services/weatherService';
-	import { getAnimalBehaviorLabel } from '$lib/report/formOptions/animalBehavior';
-	import { getAnimalConditionLabel } from '$lib/report/formOptions/animalCondition';
-	import { getBoatDriveLabel } from '$lib/report/formOptions/boatDrive';
-	import { getDistanceLabel } from '$lib/report/formOptions/distance';
-	import { getDistributionLabel } from '$lib/report/formOptions/distribution';
-	import { getEntryChannelLabel } from '$lib/report/formOptions/entryChannel';
-	import { getSeaStateLabel } from '$lib/report/formOptions/seaState';
-	import { getSexLabel } from '$lib/report/formOptions/sex';
-	import { getSightingFromLabel } from '$lib/report/formOptions/sightingFrom';
-	import { getSpeciesLabel } from '$lib/report/formOptions/species';
-	import { getVisibilityLabel } from '$lib/report/formOptions/visibility';
-	import { getWindDirectionLabel } from '$lib/report/formOptions/windDirection';
-	import { getWindStrengthLabel } from '$lib/report/formOptions/windStrength';
-	import type { FrontendSighting } from '$lib/types';
-	import { formatLocalDateTime } from '$lib/utils/format/dateTime';
-	import { formatLocation } from '$lib/utils/format/formatLocation';
-	import { toCoordinate } from '$lib/report/components/form/coordinateValue';
+	import DataTableRow from '#lib/components/admin/DataTableRow.svelte';
+	import OLMap from '#lib/components/map/OLMap.svelte';
+	import MediaGallery from '#lib/components/media/MediaGallery.svelte';
+	import WeatherDataDisplay from '#lib/components/admin/weather/WeatherDataDisplay.svelte';
+	import type { StoredWeatherData } from '#lib/services/weatherService.ts';
+	import { getAnimalBehaviorLabel } from '#lib/report/formOptions/animalBehavior.ts';
+	import { getAnimalConditionLabel } from '#lib/report/formOptions/animalCondition.ts';
+	import { getBoatDriveLabel } from '#lib/report/formOptions/boatDrive.ts';
+	import { getDistanceLabel } from '#lib/report/formOptions/distance.ts';
+	import { getDistributionLabel } from '#lib/report/formOptions/distribution.ts';
+	import { getEntryChannelLabel } from '#lib/report/formOptions/entryChannel.ts';
+	import { getSeaStateLabel } from '#lib/report/formOptions/seaState.ts';
+	import { getSexLabel } from '#lib/report/formOptions/sex.ts';
+	import { getSightingFromLabel } from '#lib/report/formOptions/sightingFrom.ts';
+	import { getSpeciesLabel } from '#lib/report/formOptions/species.ts';
+	import { getVisibilityLabel } from '#lib/report/formOptions/visibility.ts';
+	import { getWindDirectionLabel } from '#lib/report/formOptions/windDirection.ts';
+	import { getWindStrengthLabel } from '#lib/report/formOptions/windStrength.ts';
+	import type { FrontendSighting } from '#lib/types/index.ts';
+	import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
+	import { formatLocation } from '#lib/utils/format/formatLocation.ts';
+	import { toCoordinate } from '#lib/report/components/form/coordinateValue.ts';
 	import {
 		BALTIC_SEA_STATUS_PRESENTATION,
 		getBalticSeaStatus,
 		type BalticSeaStatus
-	} from '$lib/utils/geo/balticSeaStatus';
+	} from '#lib/utils/geo/balticSeaStatus.ts';
 	import {
 		isPhotoAnnouncementPending,
 		PHOTO_ANNOUNCEMENT_LABEL,
 		PHOTO_ANNOUNCEMENT_TITLE
-	} from '$lib/utils/media/photoAnnouncement';
-	import Icon from '$lib/components/Icon.svelte';
+	} from '#lib/utils/media/photoAnnouncement.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import { DEAD_FINDING_PRESENTATION, isDeadFinding } from './deadFinding';
 	import { untrack } from 'svelte';
 	import { getSightingStatus, SIGHTING_STATUS_PRESENTATION } from './sightingStatus';
@@ -39,7 +39,7 @@
 	import SightingStatusControl from './SightingStatusControl.svelte';
 	import SightingStatusTimeline from './SightingStatusTimeline.svelte';
 	import type { SightingStatusLogEntry } from './sightingStatusLog';
-	import type { ReporterHistory } from '$lib/types/reporterHistory';
+	import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 	import ReporterHistoryBadge from './ReporterHistoryBadge.svelte';
 	import { getReporterLevel } from './reporterHistoryPresentation';
 
@@ -151,7 +151,7 @@
 	 * `{#if currentSighting.uploadedFiles?.length}`-Weiche im Markup) — „keine
 	 * Datei" ist an dieser Stelle also bereits sichergestellt. Ist zusätzlich
 	 * `mediaUpload` gesetzt, kommt das Foto laut App per E-Mail nach
-	 * (`$lib/utils/media/photoAnnouncement.ts`); die reine Ja/Nein-Anzeige wäre
+	 * (`#lib/utils/media/photoAnnouncement.ts`); die reine Ja/Nein-Anzeige wäre
 	 * hier nicht von einem defekten Datensatz zu unterscheiden.
 	 *
 	 * Zeigt wie zuvor gar keine Zeile, wenn `mediaUpload` keinen Wert trägt

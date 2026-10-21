@@ -18,6 +18,8 @@
  * Mapping, statt still auf das Sichtungsdatum zurückzufallen.
  */
 
+import type { ReadonlyURLSearchParams } from '$app/state';
+
 export const SORTABLE_COLUMNS = [
 	'sightingDate',
 	'created',
@@ -61,7 +63,7 @@ function isSortColumn(value: string | null): value is SortColumn {
  * demselben Grund steht der Ausdruck hier nicht als Beispiel im Kommentar — er
  * landete sonst als eigener „Parameter" im Ergebnis.
  */
-export function resolveSort(searchParams: URLSearchParams): SortState {
+export function resolveSort(searchParams: ReadonlyURLSearchParams): SortState {
 	const column = searchParams.get('sort');
 	const order = searchParams.get('order');
 

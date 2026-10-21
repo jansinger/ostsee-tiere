@@ -84,7 +84,7 @@ createSecurityHeadersHandler(nodeEnv: string): Handle
 Setzt: `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `COOP`, `CORP`, `HSTS`.
 Dev-CORS nur wenn `nodeEnv === 'development'`.
 
-**Hinweis:** CSP wird in `svelte.config.js` konfiguriert, nicht hier.
+**Hinweis:** CSP wird in `sveltekit.options.ts` konfiguriert, nicht hier.
 
 ---
 

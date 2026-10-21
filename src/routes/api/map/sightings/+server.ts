@@ -1,10 +1,10 @@
-import { createLogger } from '$lib/logger.server';
-import { sightingsToGeoJSON, type DBSighting } from '$lib/map/mapUtils';
-import { db } from '$lib/server/db';
-import { sightings as sightingsTable } from '$lib/server/db/schema';
-import { berlinDayRangeUtc } from '$lib/server/datetime/berlinDayRange';
-import { consentGatedNameSearch, containsPattern } from '$lib/server/db/consentGatedSearch';
-import { isAdminUser } from '$lib/server/auth/auth';
+import { createLogger } from '#lib/logger.server.ts';
+import { sightingsToGeoJSON, type DBSighting } from '#lib/map/mapUtils.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
+import { berlinDayRangeUtc } from '#lib/server/datetime/berlinDayRange.ts';
+import { consentGatedNameSearch, containsPattern } from '#lib/server/db/consentGatedSearch.ts';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
 import { json } from '@sveltejs/kit';
 import { and, gte, lt, sql } from 'drizzle-orm';
 import { mapSightingConditions } from './publicMapConditions';

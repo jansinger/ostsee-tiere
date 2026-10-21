@@ -3,8 +3,8 @@
   Independent of form context, accepts all props directly
 -->
 <script lang="ts">
-	import type { FieldOption, FieldSize } from '$lib/types';
-	import Icon from '$lib/components/Icon.svelte';
+	import type { FieldOption, FieldSize } from '#lib/types/index.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
 	type InputType = 'text' | 'email' | 'tel' | 'number' | 'url' | 'password' | 'date' | 'time';

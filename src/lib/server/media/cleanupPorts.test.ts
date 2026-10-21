@@ -12,12 +12,12 @@ const { getCurrentStorageProvider, scanLocalUploads } = vi.hoisted(() => ({
 	scanLocalUploads: vi.fn()
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getCurrentStorageProvider,
 	getStorageProvider: () => ({ delete: vi.fn() })
 }));
 vi.mock('./scanLocalUploads', () => ({ scanLocalUploads }));
-vi.mock('$lib/server/db', () => ({ db: {} }));
+vi.mock('#lib/server/db/index.ts', () => ({ db: {} }));
 
 import { createDbPorts } from './cleanupPorts';
 

@@ -38,7 +38,7 @@ const { mockSelectLimit, mockDeleteWhere, mockSighting, mockUpdateSighting, mock
 		return { mockSelectLimit, mockDeleteWhere, mockSighting, mockUpdateSighting, mockSchema };
 	});
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -69,20 +69,20 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', async () => {
+vi.mock('#lib/server/db/schema.ts', async () => {
 	const { strictModuleMock } = await import('./helpers/strictModuleMock');
-	return strictModuleMock('$lib/server/db/schema', mockSchema);
+	return strictModuleMock('#lib/server/db/schema.ts', mockSchema);
 });
 
 // PUT und DELETE schreiben einen Audit-Eintrag. Ohne diese Attrappe liefe der
 // echte `auditService` gegen die db-Attrappe, scheiterte still in seinem
 // eigenen catch und zöge `auditLogs` aus der Schema-Attrappe — dort fehlte es
 // unbemerkt, bis `strictModuleMock` es meldete.
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getStorageProvider: vi.fn(() => ({ delete: vi.fn().mockResolvedValue(undefined) }))
 }));
 
@@ -93,27 +93,27 @@ vi.mock('drizzle-orm', async () => {
 	});
 });
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	loadSightingFiles: vi.fn().mockResolvedValue([]),
 	saveSightingFiles: vi.fn().mockResolvedValue(undefined),
 	updateSighting: mockUpdateSighting
 }));
 
-vi.mock('$lib/form/validation/sightingSchema', () => ({
+vi.mock('#lib/form/validation/sightingSchema.ts', () => ({
 	getSightingSchema: vi.fn(() => ({ validate: vi.fn().mockResolvedValue(undefined) })),
 	// PUT validiert gegen das Admin-Schema (siehe +server.ts).
 	getAdminSightingSchema: vi.fn(() => ({ validate: vi.fn().mockResolvedValue(undefined) }))
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
@@ -184,7 +184,7 @@ describe('Contract: GET /api/sightings/{id}', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -201,7 +201,7 @@ describe('Contract: GET /api/sightings/{id}', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -270,7 +270,7 @@ describe('Contract: DELETE /api/sightings/{id}', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -288,7 +288,7 @@ describe('Contract: DELETE /api/sightings/{id}', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -360,7 +360,7 @@ describe('Contract: PUT /api/sightings/{id}', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -379,7 +379,7 @@ describe('Contract: PUT /api/sightings/{id}', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});

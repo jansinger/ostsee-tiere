@@ -34,13 +34,13 @@
  * hat zwei Schwächen: Ein Kommentar wie „früher: orderBy(desc(sightings.created))“
  * würde den Guard fälschlich rot färben, und eine bloße Kommentar-Erwähnung von
  * `openQueueOrder` hielte den Import-Test grün, obwohl der Import fehlt.
- * `$lib/testing/sourceScan.testutil` blendet Kommentare aus — dieselbe Begründung
+ * `#lib/testing/sourceScan.testutil.js` blendet Kommentare aus — dieselbe Begründung
  * wie in `approvalPredicateScan.test.ts`.
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { collectHits, stripComments } from '$lib/testing/sourceScan.testutil';
+import { collectHits, stripComments } from '#lib/testing/sourceScan.testutil.ts';
 
 /**
  * `(asc|desc)(sightings.created` irgendwo in der Datei — bewusst ohne
@@ -64,7 +64,7 @@ const SQL_TEMPLATE_SORTIERUNG = /sql`(?=[^`]*\bcreated\b)(?=[^`]*\b(?:asc|desc)\
 
 /**
  * `=== 'asc' ? 'asc' : 'desc'` — der Ternary-Körper von `resolveQueueOrder`
- * selbst (`$lib/components/admin/queueOrder.ts`), lokal nachgebaut statt
+ * selbst (`#lib/components/admin/queueOrder.ts`), lokal nachgebaut statt
  * importiert. Nur für den universellen Loader relevant (siehe unten): Der
  * baut keine SQL, sein Regressionsrisiko ist eine eigene Auswertung des
  * `order`-Parameters statt eines Aufrufs von `resolveQueueOrder`.
@@ -80,21 +80,21 @@ const EIGENBAU_MUSTER_ORDER_PARAM = [EIGENE_ORDER_TERNARY] as const;
  * Zwei bauen die `created`-Sortierung tatsächlich in SQL, die dritte reicht
  * nur den ausgewerteten `order`-Parameter weiter — deshalb unterscheiden sich
  * sowohl der erwartete Importpfad als auch das gesuchte Eigenbau-Muster
- * (Docblock in `$lib/components/admin/queueOrder.ts` begründet, warum der
- * universelle Loader nicht `$lib/server/db/openQueueOrder` importieren darf:
+ * (Docblock in `#lib/components/admin/queueOrder.ts` begründet, warum der
+ * universelle Loader nicht `#lib/server/db/openQueueOrder.js` importieren darf:
  * das Modul zieht das DB-Schema mit, der Loader läuft auch im Browser).
  */
 const QUELLEN = [
 	{
 		name: 'src/routes/admin/+page.server.ts',
 		path: '../../../routes/admin/+page.server.ts',
-		importPattern: /from ['"]\$lib\/server\/db\/openQueueOrder['"]/,
+		importPattern: /from ['"][$#]lib\/server\/db\/openQueueOrder(?:\.(?:js|ts))?['"]/,
 		eigenbauMuster: EIGENBAU_MUSTER_SQL
 	},
 	{
 		name: 'src/routes/api/sightings/[id]/queue/+server.ts',
 		path: '../../../routes/api/sightings/[id]/queue/+server.ts',
-		importPattern: /from ['"]\$lib\/server\/db\/openQueueOrder['"]/,
+		importPattern: /from ['"][$#]lib\/server\/db\/openQueueOrder(?:\.(?:js|ts))?['"]/,
 		eigenbauMuster: EIGENBAU_MUSTER_SQL
 	},
 	/* Dritte Stelle, die dieselbe Ordnung kennen muss: `resolveQueueOrder` in
@@ -106,7 +106,7 @@ const QUELLEN = [
 	{
 		name: 'src/routes/admin/[id]/+page.ts',
 		path: '../../../routes/admin/[id]/+page.ts',
-		importPattern: /from ['"]\$lib\/components\/admin\/queueOrder['"]/,
+		importPattern: /from ['"][$#]lib\/components\/admin\/queueOrder(?:\.(?:js|ts))?['"]/,
 		eigenbauMuster: EIGENBAU_MUSTER_ORDER_PARAM
 	}
 ] as const;

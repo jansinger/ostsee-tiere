@@ -1,11 +1,11 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { createToast } from '$lib/stores/toastState.svelte';
-	import type { ValidationPreset } from '$lib/types';
-	import { validateFiles } from '$lib/utils';
-	import { getFileTypeDescription } from '$lib/utils/validation/fileValidation';
+	import * as m from '#lib/paraglide/messages.js';
+	import { createToast } from '#lib/stores/toastState.svelte.ts';
+	import type { ValidationPreset } from '#lib/types/index.ts';
+	import { validateFiles } from '#lib/utils/index.ts';
+	import { getFileTypeDescription } from '#lib/utils/validation/fileValidation.ts';
 
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 
 	let {
 		config,

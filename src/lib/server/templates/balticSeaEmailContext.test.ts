@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BALTIC_SEA_STATUS_PRESENTATION } from '$lib/utils/geo/balticSeaStatus';
+import { BALTIC_SEA_STATUS_PRESENTATION } from '#lib/utils/geo/balticSeaStatus.ts';
 import { balticSeaEmailContext, BALTIC_SEA_STATUS_EMAIL_COLORS } from './balticSeaEmailContext';
 
 const ALL_STATUSES = ['baltic', 'edge', 'outside', 'noPosition'] as const;

@@ -130,7 +130,7 @@ await db.execute(`SELECT * FROM sichtungen WHERE id = ${id}`);
 `sanitize-html` wird für HTML-Sanitization verwendet (Wrapper in `src/lib/utils/sanitize.ts`):
 
 ```typescript
-import { sanitizeHtml, sanitizeText } from '$lib/utils/sanitize';
+import { sanitizeHtml, sanitizeText } from '#lib/utils/sanitize.ts';
 
 // sanitizeHtml: erlaubt sichere Tags (a, em, strong, br, span, p, i, b)
 // und Attribute (href, class, target, rel)
@@ -175,7 +175,7 @@ async function validateFile(file: File): Promise<void> {
 
 ```typescript
 // Projekt nutzt `exifr` (nicht `exifreader`) via readImageExifData()
-import { readImageExifData } from '$lib/server/media/exifUtils';
+import { readImageExifData } from '#lib/server/media/exifUtils.ts';
 
 const exifData: ExifData | null = await readImageExifData(buffer);
 // Extrahiert: GPS, Kamera, Datum, Belichtung, ISO, Focal Length
@@ -272,7 +272,7 @@ Security Headers werden in `src/lib/server/middleware/securityHeaders.ts` zentra
 
 **Nicht gesetzt:** `Cross-Origin-Embedder-Policy` — würde OSM Tiles, Vercel Blob und Gravatar blockieren.
 
-CSP wird separat in `svelte.config.js` konfiguriert.
+CSP wird separat in `sveltekit.options.ts` konfiguriert (seit SvelteKit 3; Schlüsselwörter ohne eigene Anführungszeichen, also `self` statt `'self'`).
 
 ---
 
@@ -293,7 +293,7 @@ import {
 	createRateLimitIdentifier,
 	enforceRateLimit,
 	buildRateLimitHeaders
-} from '$lib/server/middleware/rateLimit';
+} from '#lib/server/middleware/rateLimit.ts';
 
 export async function POST({ locals, getClientAddress }) {
 	// Identifier: `user:{sub}` (authentifiziert) oder `ip:{clientIp}`
@@ -325,11 +325,13 @@ BLOB_READ_WRITE_TOKEN=xxx
 ### Zugriff
 
 ```typescript
-import { env } from '$env/dynamic/private';
+import { env } from '#lib/server/env.ts';
 
 // Server-only
 const secret = env.AUTH0_CLIENT_SECRET;
 ```
+
+Neue Variablen in `src/env.ts` eintragen — sonst sind sie `undefined` (siehe `docker.md`).
 
 ---
 

@@ -1,6 +1,6 @@
-import { createLogger } from '$lib/logger.server';
-import { db } from '$lib/server/db';
-import { auditLogs } from '$lib/server/db/schema';
+import { createLogger } from '#lib/logger.server.ts';
+import { db } from '#lib/server/db/index.ts';
+import { auditLogs } from '#lib/server/db/schema.ts';
 
 const logger = createLogger('audit');
 

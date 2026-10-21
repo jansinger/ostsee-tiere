@@ -3,7 +3,7 @@
  *
  * Diese Werte sind **Fallbacks**: Im Normalbetrieb liefert
  * `GET /api/config/upload` die Größen aus der Laufzeit-Konfiguration. Greift
- * der Fetch nicht (Offline, SSR), fällt `$lib/stores/configStore` hierauf
+ * der Fetch nicht (Offline, SSR), fällt `#lib/stores/configStore.js` hierauf
  * zurück — und dann muss gelten, dass diese Werte nie mehr versprechen, als die
  * Vorbelegung der Konfiguration hergibt. Sonst akzeptiert die Dropzone Dateien,
  * die der Server anschließend ablehnt.

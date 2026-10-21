@@ -14,33 +14,37 @@
  * `MEDIA_UPLOAD_ANNOUNCED_MISSING`. Die beiden Ja/Nein-Wortpaare ohne eigenes
  * Präsentationsmodul — „Mit"/„Ohne" und „Lebendsichtung" — standen dafür bis
  * 2026-08-10 in dieser Datei; sie liegen jetzt in
- * `$lib/components/admin/filterLabels.ts`, weil mit dem Export-Dialog eine
- * Aufrufstelle in `$lib` dazugekommen ist (Begründung dort). Das Panel
+ * `#lib/components/admin/filterLabels.ts`, weil mit dem Export-Dialog eine
+ * Aufrufstelle in `#lib` dazugekommen ist (Begründung dort). Das Panel
  * (`+page.svelte`) rendert seine `<option>`-Beschriftungen weiterhin daraus,
  * statt sie ein zweites Mal zu tippen. Ein eigener Wortschatz an einer der
  * Stellen hieße, dass Chip, Panel und Export denselben Filter verschieden
  * benennen, sobald eine davon angefasst wird — derselbe Fehler, gegen den
  * `deadFinding.ts` und `balticSeaStatus.ts` angelegt wurden.
  *
- * Client-sicher: **kein** Import aus `$lib/server/**`. Die Seite ist eine
+ * Client-sicher: **kein** Import aus `#lib/server/**`. Die Seite ist eine
  * Client-Komponente, und der Bruch fiele erst in `npm run build` auf.
  *
  * Der Filterzustand kommt aus `activeFilters.ts` und damit aus der URL — hier
  * entsteht kein zweiter gemerkter Zustand.
  */
+import type { ReadonlyURL } from '$app/state';
 import {
 	AUFNAHME_LABEL,
 	isAufnahmeFilterWert,
 	isMeldeartFilterWert,
 	kanalLabel,
 	MELDEART_LABEL
-} from '$lib/components/admin/filterLabels';
+} from '#lib/components/admin/filterLabels.ts';
 import {
 	SIGHTING_STATUS_PRESENTATION,
 	type SightingStatus
-} from '$lib/components/admin/sightingStatus';
-import { formatLocalDateTime } from '$lib/utils/format/dateTime';
-import { BALTIC_SEA_STATUS_PRESENTATION, isBalticSeaStatus } from '$lib/utils/geo/balticSeaStatus';
+} from '#lib/components/admin/sightingStatus.ts';
+import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
+import {
+	BALTIC_SEA_STATUS_PRESENTATION,
+	isBalticSeaStatus
+} from '#lib/utils/geo/balticSeaStatus.ts';
 import type { FilterParams } from './activeFilters';
 
 export type FilterChip = {
@@ -132,8 +136,8 @@ export function buildFilterChips(
  * Die übergebene URL bleibt unverändert — der Aufrufer navigiert mit dem
  * Rückgabewert.
  */
-export function removeFilterParam(url: URL, param: keyof FilterParams): URL {
-	const ziel = new URL(url);
+export function removeFilterParam(url: ReadonlyURL, param: keyof FilterParams): URL {
+	const ziel = new URL(url.href);
 	ziel.searchParams.delete(param);
 	ziel.searchParams.set('page', '1');
 	return ziel;

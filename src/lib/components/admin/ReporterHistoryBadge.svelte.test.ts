@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import { page } from 'vitest/browser';
-import type { ReporterHistory } from '$lib/types/reporterHistory';
+import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 import ReporterHistoryBadge from './ReporterHistoryBadge.svelte';
 
 function historie(overrides: Partial<ReporterHistory> = {}): ReporterHistory {
@@ -70,7 +70,9 @@ describe('ReporterHistoryBadge', () => {
 		});
 		const flaggedIcon = flaggedContainer.querySelector('[data-testid="reporter-badge"] svg');
 
-		const { container: firstContainer } = await render(ReporterHistoryBadge, { history: historie() });
+		const { container: firstContainer } = await render(ReporterHistoryBadge, {
+			history: historie()
+		});
 		const firstIcon = firstContainer.querySelector('[data-testid="reporter-badge"] svg');
 
 		expect(flaggedIcon).not.toBeNull();

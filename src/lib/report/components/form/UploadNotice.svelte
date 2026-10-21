@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	/**
 	 * Transparenzhinweis an jeder Dropzone: Die Datei wird sofort übertragen,
 	 * eine nicht abgeschickte Meldung wird befristet aufgeräumt, über die
@@ -20,8 +20,8 @@
 	 * „kurze Zusammenfassung" an der Dropzone wäre keine Verbesserung, sondern
 	 * eine zweite, abweichende Aussage. Festgehalten in `UploadNotice.svelte.test.ts`.
 	 */
-	import Icon from '$lib/components/Icon.svelte';
-	import { uploadNotice } from '$lib/form/consent/uploadNotice';
+	import Icon from '#lib/components/Icon.svelte';
+	import { uploadNotice } from '#lib/form/consent/uploadNotice.ts';
 
 	// Die Komponente steht zweimal im Formular (Schritt 1 und Schritt 2). Eine
 	// feste ID wäre im DOM doppelt und machte `aria-labelledby` unbrauchbar.

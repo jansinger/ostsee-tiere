@@ -1,8 +1,8 @@
+import type { Handle } from '@sveltejs/kit/hooks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Handle } from '@sveltejs/kit';
 
 // Mocks müssen vor dem Import der zu testenden Datei stehen
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),
@@ -10,7 +10,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),
@@ -18,7 +18,7 @@ vi.mock('$lib/logger', () => ({
 	})
 }));
 
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		isMaintenanceModeEnabled: vi.fn(),
 		getString: vi.fn()
@@ -31,8 +31,8 @@ vi.mock('@sveltejs/kit', async (importOriginal) => {
 	return { ...actual };
 });
 
-import { ServerConfigService } from '$lib/services/configService';
-import { maintenanceMode, getMaintenanceConfig } from '$lib/server/middleware/maintenanceMode';
+import { ServerConfigService } from '#lib/services/configService.ts';
+import { maintenanceMode, getMaintenanceConfig } from '#lib/server/middleware/maintenanceMode.ts';
 
 const mockIsMaintenanceModeEnabled = vi.mocked(ServerConfigService.isMaintenanceModeEnabled);
 const mockGetString = vi.mocked(ServerConfigService.getString);

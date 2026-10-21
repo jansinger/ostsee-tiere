@@ -14,7 +14,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { TEST_TIME_ZONES, withTimeZone } from '$lib/server/datetime/withTimeZone.testutil';
+import { TEST_TIME_ZONES, withTimeZone } from '#lib/server/datetime/withTimeZone.testutil.ts';
 import { formatDateDDMMYY, formatTimeHHMI } from './date-utils';
 
 /** Offset von Europe/Berlin gegenüber UTC zu einem gegebenen Zeitpunkt, in Millisekunden. */

@@ -45,14 +45,14 @@
  * @version 2.0.0 - Erweitert um typisierte Interfaces und Performance-Metriken
  */
 
-import { createLogger } from '$lib/logger.server';
+import { createLogger } from '#lib/logger.server.ts';
 import type {
 	BalticSeaFileResult,
 	RBushIndexJson,
 	SpatialIndexItem,
 	TurfValidationOptions
-} from '$lib/types';
-import { GEO_LIMITS, isInBalticArea } from '$lib/utils/geo/checkBalticSea';
+} from '#lib/types/index.ts';
+import { GEO_LIMITS, isInBalticArea } from '#lib/utils/geo/checkBalticSea.ts';
 import { booleanPointInPolygon } from '@turf/boolean-point-in-polygon';
 import { multiPolygon, point, polygon } from '@turf/helpers';
 import RBush from 'rbush';

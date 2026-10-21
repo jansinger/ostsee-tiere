@@ -196,14 +196,14 @@ weist eine Sichtung mit `ostsee = 0` und `ostsee_geo = 1` **nicht** als Ostsee a
 ### Alle Anzeigestellen hängen an dieser einen Funktion (seit 2026-07-30)
 
 `getBalticSeaStatus()` liegt in `src/lib/utils/geo/balticSeaStatus.ts` — neben
-`checkBalticSea.ts` und **nicht** unter `$lib/server/`, weil die Admin-Übersicht
+`checkBalticSea.ts` und **nicht** unter `#lib/server/`, weil die Admin-Übersicht
 eine Client-Komponente ist. Angeschlossen sind:
 
-| Stelle                                  | bezieht Status über                         |
-| --------------------------------------- | ------------------------------------------- |
+| Stelle                                             | bezieht Status über                         |
+| -------------------------------------------------- | ------------------------------------------- |
 | `routes/admin/sichtungen/+page.svelte` (Übersicht) | `getBalticSeaStatus()` direkt               |
-| `components/admin/AdminSightingView`    | `getBalticSeaStatus()` direkt               |
-| Benachrichtigungs-Mail                  | `server/templates/balticSeaEmailContext.ts` |
+| `components/admin/AdminSightingView`               | `getBalticSeaStatus()` direkt               |
+| Benachrichtigungs-Mail                             | `server/templates/balticSeaEmailContext.ts` |
 
 Label und Erklärungstext kommen überall aus `BALTIC_SEA_STATUS_PRESENTATION`, sind
 also wortgleich. Die Mail braucht den Umweg über einen vorberechneten Kontext,

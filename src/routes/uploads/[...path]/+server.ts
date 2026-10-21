@@ -1,18 +1,18 @@
-import { createLogger } from '$lib/logger.server';
-import { getFileInfo, getUploadPath, isValidUploadPath } from '$lib/server/uploads';
+import { createLogger } from '#lib/logger.server.ts';
+import { getFileInfo, getUploadPath, isValidUploadPath } from '#lib/server/uploads.ts';
 import { error } from '@sveltejs/kit';
 import { createReadStream } from 'fs';
-import { getStorageProvider, isCloudStorage } from '$lib/server/storage/factory';
-import { isAdminUser } from '$lib/server/auth/auth';
-import { db } from '$lib/server/db';
-import { isSightingApproved } from '$lib/server/db/approvalFilter';
-import { sightingFiles, sightings } from '$lib/server/db/schema';
-import { getClientIp } from '$lib/server/utils/getClientIp';
+import { getStorageProvider, isCloudStorage } from '#lib/server/storage/factory.ts';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
+import { db } from '#lib/server/db/index.ts';
+import { isSightingApproved } from '#lib/server/db/approvalFilter.ts';
+import { sightingFiles, sightings } from '#lib/server/db/schema.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
 import {
 	RATE_LIMITS,
 	enforceRateLimit,
 	createRateLimitIdentifier
-} from '$lib/server/middleware/rateLimit';
+} from '#lib/server/middleware/rateLimit.ts';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 

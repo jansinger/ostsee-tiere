@@ -1,5 +1,5 @@
 import { Control } from 'ol/control';
-import type { MapController } from '$lib/map/optimizedMapController';
+import type { MapController } from '#lib/map/optimizedMapController.ts';
 import { locationButtonState } from './locationControlState';
 
 /**

@@ -2,7 +2,7 @@
  * @fileoverview Admin-Dashboard: Arbeitsliste „Foto angekündigt, fehlt noch".
  *
  * Der neu gebaute iOS-Client setzt `aufnahmeHochladen`, kann aber kein Foto
- * hochladen — es kommt per E-Mail nach (`$lib/utils/media/photoAnnouncement.ts`).
+ * hochladen — es kommt per E-Mail nach (`#lib/utils/media/photoAnnouncement.ts`).
  * `load()` muss dafür eines leisten: Der Filterwert
  * `mediaUpload=announced_missing` muss dieselbe Bedingung erzeugen wie
  * `mediaUploadCondition()` — sonst driftet die Admin-Liste vom zentral
@@ -21,16 +21,16 @@ import { PgDialect } from 'drizzle-orm/pg-core';
 import { and, sql, type SQL, type SQLWrapper } from 'drizzle-orm';
 import { isRedirect, type Redirect } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { searchCondition } from '$lib/server/db/sightingSearchFilter';
+import { searchCondition } from '#lib/server/db/sightingSearchFilter.ts';
 import {
 	MEDIA_UPLOAD_ANNOUNCED_MISSING,
 	mediaUploadCondition
-} from '$lib/server/db/mediaUploadFilter';
-import { balticSeaCondition } from '$lib/server/db/balticSeaFilter';
-import { deadFindingCondition } from '$lib/server/db/deadFindingFilter';
-import { approvedOnly, openOnly, rejectedOnly } from '$lib/server/db/approvalFilter';
-import { berlinCalendarDate } from '$lib/server/db/sqlTimeZone';
-import { sightings } from '$lib/server/db/schema';
+} from '#lib/server/db/mediaUploadFilter.ts';
+import { balticSeaCondition } from '#lib/server/db/balticSeaFilter.ts';
+import { deadFindingCondition } from '#lib/server/db/deadFindingFilter.ts';
+import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
+import { berlinCalendarDate } from '#lib/server/db/sqlTimeZone.ts';
+import { sightings } from '#lib/server/db/schema.ts';
 import { SIGHTING_LIST_FIELDS } from './listColumns';
 
 const dialect = new PgDialect();
@@ -66,7 +66,7 @@ function createRecordingBuilder(record: RecordedSelect) {
 	return builder;
 }
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: (columns?: Record<string, unknown>) => {
 			const record: RecordedSelect = { columns };
@@ -76,7 +76,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		getPaginationConfig: vi
 			.fn()

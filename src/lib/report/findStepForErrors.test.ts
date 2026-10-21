@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { findStepForErrors } from './findStepForErrors';
-import type { FormStep } from '$lib/types';
+import type { FormStep } from '#lib/types/index.ts';
 
 /**
  * Minimaler, aber realistischer Steps-Aufbau für die Tests — analog zu

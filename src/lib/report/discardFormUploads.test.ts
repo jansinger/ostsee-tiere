@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { discardFormUploads } from './discardFormUploads';
-import type { UploadedFileInfo } from '$lib/types';
-import type { MediaStore } from '$lib/utils/media/MediaFile.svelte';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
+import type { MediaStore } from '#lib/utils/media/MediaFile.svelte.ts';
 
 function upload(uid: string): UploadedFileInfo {
 	return {

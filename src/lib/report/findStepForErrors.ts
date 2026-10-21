@@ -1,4 +1,4 @@
-import type { FormStep } from '$lib/types';
+import type { FormStep } from '#lib/types/index.ts';
 
 /**
  * Bestimmt, zu welchem Schritt navigiert werden muss, wenn eine Validierung

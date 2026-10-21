@@ -15,7 +15,7 @@
 	 * Wort, Farbe, Icon und Schwelle kommen weiterhin von dort — diese
 	 * Komponente ordnet sie nur an.
 	 */
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 	import { SPAM_RISK_PRESENTATION, type SpamRisk } from './spamScorePresentation';
 
 	interface Props {

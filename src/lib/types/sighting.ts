@@ -1,4 +1,4 @@
-import { sightings } from '$lib/server/db/schema';
+import { sightings } from '#lib/server/db/schema.ts';
 import { type InferInsertModel, type SQL } from 'drizzle-orm';
 
 /**

@@ -1,11 +1,11 @@
-import type { User } from '$lib/types/User';
+import type { User } from '#lib/types/User.ts';
 import type { Cookies } from '@sveltejs/kit';
 import { error, redirect } from '@sveltejs/kit';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { mockWarn } = vi.hoisted(() => ({ mockWarn: vi.fn() }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -14,7 +14,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -40,7 +40,7 @@ vi.mock('@sveltejs/kit', async () => {
 });
 
 // Mock environment variables (dynamic env for Docker runtime)
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: {
 		AUTH0_CLIENT_ID: 'test-client-id',
 		AUTH0_CLIENT_SECRET: 'test-client-secret',
@@ -49,11 +49,8 @@ vi.mock('$env/dynamic/private', () => ({
 		JWKS_URL: 'https://test-domain.auth0.com/.well-known/jwks.json',
 		ENCRYPTION_KEY: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
 		NODE_ENV: 'test'
-	}
-}));
-
-vi.mock('$env/dynamic/public', () => ({
-	env: {
+	},
+	publicEnv: {
 		PUBLIC_SITE_URL: 'https://test-site.com'
 	}
 }));
@@ -651,7 +648,7 @@ describe('auth.ts', () => {
 		   Wert verwendet, den der Guard geprüft hat. */
 		it('trimmt ENCRYPTION_KEY vor der Verwendung, damit Leerraum drumherum den Guard nicht unterläuft', async () => {
 			vi.resetModules();
-			vi.doMock('$env/dynamic/private', () => ({
+			vi.doMock('#lib/server/env.ts', () => ({
 				env: {
 					AUTH0_CLIENT_ID: 'test-client-id',
 					AUTH0_CLIENT_SECRET: 'test-client-secret',
@@ -662,7 +659,8 @@ describe('auth.ts', () => {
 					// YAML-Blockskalar erzeugen kann.
 					ENCRYPTION_KEY: '  0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\n',
 					NODE_ENV: 'test'
-				}
+				},
+				publicEnv: { PUBLIC_SITE_URL: 'https://test-site.com' }
 			}));
 
 			const { setPKCECookie } = await import('./auth');
@@ -692,7 +690,7 @@ describe('auth.ts', () => {
 		   Sicherheitsentscheidungen aus derselben Variable liefen damit auseinander. */
 		it('setzt secure:true bei NODE_ENV="Production" (Grossschreibung)', async () => {
 			vi.resetModules();
-			vi.doMock('$env/dynamic/private', () => ({
+			vi.doMock('#lib/server/env.ts', () => ({
 				env: {
 					AUTH0_CLIENT_ID: 'test-client-id',
 					AUTH0_CLIENT_SECRET: 'test-client-secret',
@@ -701,7 +699,8 @@ describe('auth.ts', () => {
 					JWKS_URL: 'https://test-domain.auth0.com/.well-known/jwks.json',
 					ENCRYPTION_KEY: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
 					NODE_ENV: 'Production'
-				}
+				},
+				publicEnv: { PUBLIC_SITE_URL: 'https://test-site.com' }
 			}));
 
 			const { setCsrfCookie } = await import('./auth');

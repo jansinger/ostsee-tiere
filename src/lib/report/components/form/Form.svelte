@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { setFormContext } from '$lib/report/formContext';
-	import type { FormContext } from '$lib/report/types';
-	import type { MediaStore } from '$lib/utils/media/MediaFile.svelte';
+	import { setFormContext } from '#lib/report/formContext.ts';
+	import type { FormContext } from '#lib/report/types.ts';
+	import type { MediaStore } from '#lib/utils/media/MediaFile.svelte.ts';
 	import { type Snippet, untrack } from 'svelte';
 
-	import { createForm, type FormProps } from '$lib/form/createForm';
+	import { createForm, type FormProps } from '#lib/form/createForm.ts';
 	import type { HTMLFormAttributes } from 'svelte/elements';
 	import type { AnyObjectSchema } from 'yup';
 

@@ -4,9 +4,9 @@
  * Die Einträge kommen aus `sichtung_status_log` über
  * `GET /api/sightings/[id]/verify` (Spec B3). Geschrieben werden sie
  * ausschließlich vom Verify-Endpunkt; Begründung, Datenschutz und Aufbewahrung
- * stehen am Tabellen-Docblock in `$lib/server/db/schema`.
+ * stehen am Tabellen-Docblock in `#lib/server/db/schema.js`.
  *
- * Client-sicher: **kein** Import aus `$lib/server/…` — wie bei
+ * Client-sicher: **kein** Import aus `#lib/server/…` — wie bei
  * `sightingStatus.ts` fiele der Bruch sonst erst in `npm run build` auf.
  */
 import type { SightingVerdict } from './sightingVerdict';

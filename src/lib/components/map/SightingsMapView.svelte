@@ -1,33 +1,39 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import { onMount } from 'svelte';
-	import Icon from '$lib/components/Icon.svelte';
-	import { MapCountManager, type CountData } from '$lib/map/countManager';
-	import { getDaysInYear } from '$lib/map/dateUtils';
-	import type { MapTranslations } from '$lib/map/mapUtils';
-	import { SichtungenMap } from '$lib/map/optimizedMapController';
-	import { MapTimeSliderManager } from '$lib/map/timeSliderManager';
-	import { getSpeciesOptions } from '$lib/report/formOptions/species';
+	import Icon from '#lib/components/Icon.svelte';
+	import { MapCountManager, type CountData } from '#lib/map/countManager.ts';
+	import { getDaysInYear } from '#lib/map/dateUtils.ts';
+	import type { MapTranslations } from '#lib/map/mapUtils.ts';
+	import { SichtungenMap } from '#lib/map/optimizedMapController.ts';
+	import { MapTimeSliderManager } from '#lib/map/timeSliderManager.ts';
+	import { getSpeciesOptions } from '#lib/report/formOptions/species.ts';
 	import {
 		deriveSelectableYears,
 		getDefaultSightingYear,
 		pickDefaultYear,
 		type YearWithCount
-	} from '$lib/utils/date/defaultYear';
-	import { setMapCountManager } from '$lib/map/mapContext';
-	import { toListEntries, type SightingListProperties } from '$lib/map/listViewUtils';
-	import { legendGroups } from '$lib/map/styleUtils';
+	} from '#lib/utils/date/defaultYear.ts';
+	import { setMapCountManager } from '#lib/map/mapContext.ts';
+	import { toListEntries, type SightingListProperties } from '#lib/map/listViewUtils.ts';
+	import { legendGroups } from '#lib/map/styleUtils.ts';
 	import {
 		buildFilterUrlState,
 		dayOfYearFromIsoDate,
 		parseMapFilterParams,
 		serializeMapFilterParams,
 		type MapFilterUrlState
-	} from '$lib/map/urlFilterState';
-	import { SIGHTING_STATUS_ORDER, type SightingStatus } from '$lib/components/admin/sightingStatus';
-	import { DEFAULT_MAP_STATUSES, isPublicStatusSelection } from '$lib/map/statusRequestParams';
-	import { createYearsRequestSequencer, resolveYearsUpdate } from '$lib/map/yearsRequestSequencer';
-	import { reconcileDisplayedYear } from '$lib/map/yearDisplayReconciliation';
+	} from '#lib/map/urlFilterState.ts';
+	import {
+		SIGHTING_STATUS_ORDER,
+		type SightingStatus
+	} from '#lib/components/admin/sightingStatus.ts';
+	import { DEFAULT_MAP_STATUSES, isPublicStatusSelection } from '#lib/map/statusRequestParams.ts';
+	import {
+		createYearsRequestSequencer,
+		resolveYearsUpdate
+	} from '#lib/map/yearsRequestSequencer.ts';
+	import { reconcileDisplayedYear } from '#lib/map/yearDisplayReconciliation.ts';
 	import { page } from '$app/state';
 	import { replaceState } from '$app/navigation';
 	// Kein `import 'ol/ol.css'` hier: die Datei kommt global aus app.css, und zwar
@@ -35,7 +41,7 @@
 	// ol.css erneut hinter die Projekt-Overrides und macht sie wirkungslos —
 	// genau so ist die Titel-Überlappung des Zoom-Controls entstanden.
 	import LoadingOverlay from './LoadingOverlay.svelte';
-	import StatusBlock from '$lib/components/StatusBlock.svelte';
+	import StatusBlock from '#lib/components/StatusBlock.svelte';
 	import FilterPanel from './Panel/FilterPanel.svelte';
 	import LegendPanel from './Panel/LegendPanel.svelte';
 	import SightingsListView from './SightingsListView.svelte';

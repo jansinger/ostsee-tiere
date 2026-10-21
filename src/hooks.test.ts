@@ -1,6 +1,6 @@
+import type { Reroute } from '@sveltejs/kit/hooks';
 import { describe, expect, it } from 'vitest';
 import { reroute } from './hooks';
-import type { Reroute } from '@sveltejs/kit';
 
 /**
  * Reihenfolge der drei Schritte, nicht ihre Einzelteile — die sind in

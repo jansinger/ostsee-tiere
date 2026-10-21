@@ -1,11 +1,11 @@
 import { render } from 'vitest-browser-svelte';
 import type { ComponentOptions } from 'vitest-browser-svelte/pure';
 import type { Component } from 'svelte';
-import { createForm } from '$lib/form/createForm';
-import { initialFormState } from '$lib/report/formConfig';
-import { key as formContextKey } from '$lib/report/formContext';
-import type { MediaStore } from '$lib/utils/media/MediaFile.svelte';
-import type { FormContext, SightingFormData } from '$lib/types';
+import { createForm } from '#lib/form/createForm.ts';
+import { initialFormState } from '#lib/report/formConfig.ts';
+import { key as formContextKey } from '#lib/report/formContext.ts';
+import type { MediaStore } from '#lib/utils/media/MediaFile.svelte.ts';
+import type { FormContext, SightingFormData } from '#lib/types/index.ts';
 
 export interface FormContextRenderOptions<P extends Record<string, unknown>> {
 	/** Startwerte, die `initialFormState` überschreiben. */

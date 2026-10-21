@@ -1,23 +1,22 @@
-import { env } from '$env/dynamic/private';
-import { LOCALE_COOKIE } from '$lib/i18n/localeCookie';
-import { zielFuerStartseite } from '$lib/i18n/startseitenWeiterleitung';
-import { createLogger } from '$lib/logger.server';
-import { paraglideMiddleware } from '$lib/paraglide/server';
-import { resolveSessionUser } from '$lib/server/auth/sessionRepository';
-import { verlaengertSession } from '$lib/server/auth/sessionTouchExemption';
-import { assertProductionSecrets } from '$lib/server/config/secretGuard';
-import { closeDb } from '$lib/server/db';
-import { databaseCheck } from '$lib/server/middleware/databaseCheck';
-import { maintenanceMode } from '$lib/server/middleware/maintenanceMode';
-import { noindexEnglishPages } from '$lib/server/middleware/noindexEnglishPages';
-import { createSecurityHeadersHandler } from '$lib/server/middleware/securityHeaders';
-import { warnIfBodySizeLimitTooLow } from '$lib/server/startup/bodySizeLimit';
-import { formatStartupBanner, getBuildInfo } from '$lib/server/startup/versionInfo';
-import { buildErrorLogEntry } from '$lib/server/utils/errorChain';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { ServerConfigService } from '$lib/services/configService';
-import type { Handle, HandleServerError } from '@sveltejs/kit';
-import { sequence } from '@sveltejs/kit/hooks';
+import { env } from '#lib/server/env.ts';
+import { LOCALE_COOKIE } from '#lib/i18n/localeCookie.ts';
+import { zielFuerStartseite } from '#lib/i18n/startseitenWeiterleitung.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { paraglideMiddleware } from '#lib/paraglide/server.js';
+import { resolveSessionUser } from '#lib/server/auth/sessionRepository.ts';
+import { verlaengertSession } from '#lib/server/auth/sessionTouchExemption.ts';
+import { assertProductionSecrets } from '#lib/server/config/secretGuard.ts';
+import { closeDb } from '#lib/server/db/index.ts';
+import { databaseCheck } from '#lib/server/middleware/databaseCheck.ts';
+import { maintenanceMode } from '#lib/server/middleware/maintenanceMode.ts';
+import { noindexEnglishPages } from '#lib/server/middleware/noindexEnglishPages.ts';
+import { createSecurityHeadersHandler } from '#lib/server/middleware/securityHeaders.ts';
+import { warnIfBodySizeLimitTooLow } from '#lib/server/startup/bodySizeLimit.ts';
+import { formatStartupBanner, getBuildInfo } from '#lib/server/startup/versionInfo.ts';
+import { buildErrorLogEntry, caughtErrorOutcome } from '#lib/server/utils/errorChain.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { ServerConfigService } from '#lib/services/configService.ts';
+import { sequence, type Handle, type HandleServerError } from '@sveltejs/kit/hooks';
 import { randomUUID } from 'crypto';
 
 // Dynamic environment variables for Docker runtime
@@ -103,8 +102,12 @@ const authentication: Handle = async ({ event, resolve }) => {
  * bliebe mit `replace` stillschweigend unersetzt im ausgelieferten HTML stehen.
  */
 const handleParaglide: Handle = ({ event, resolve }) =>
-	paraglideMiddleware(event.request, ({ request, locale }) => {
-		event.request = request;
+	// Kein `event.request = request` mehr, wie es Paraglides Vorlage noch zeigt: Seit
+	// SvelteKit 3 ist `event.request` readonly. Die Zuweisung trug hier ohnehin nichts —
+	// sie ersetzte nur `request.url` durch die Fassung ohne Sprachpräfix, und das liest
+	// kein Code: Das Routing macht `reroute` (src/hooks.ts), Seiten und Endpunkte
+	// arbeiten mit `event.url`.
+	paraglideMiddleware(event.request, ({ locale }) => {
 		return resolve(event, {
 			transformPageChunk: ({ html }) => html.replaceAll('%lang%', locale)
 		});
@@ -223,7 +226,14 @@ export const handle: Handle = sequence(
  * Nutzer sieht, ist die Fehlerseite; die Unterscheidung 404/500 gehört ins Log, nicht
  * in eine zweite Textvariante.
  */
-export const handleError: HandleServerError = ({ error, event, status, message }) => {
+export const handleError: HandleServerError = (caught) => {
+	// SvelteKit 3 meldet auch bewusst geworfene `error(4xx, '…')` hier an; deren Meldung
+	// muss unverändert beim Client ankommen (Begründung an `caughtErrorOutcome`).
+	const outcome = caughtErrorOutcome(caught);
+	if (outcome === null) return;
+
+	const { error, event } = caught;
+	const { status, message } = outcome;
 	const errorId = randomUUID();
 
 	const entry = buildErrorLogEntry({

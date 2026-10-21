@@ -6,9 +6,9 @@
  * wird hier NICHT nachgebaut: Er trägt den Ausschluss von `_old_uploads`, das
  * Überspringen von Punktdateien und die ENOENT-Toleranz.
  */
-import { db } from '$lib/server/db';
-import { sightingFiles, sightings } from '$lib/server/db/schema';
-import { resolveUploadBasePath } from '$lib/server/storage/uploadPath';
+import { db } from '#lib/server/db/index.ts';
+import { sightingFiles, sightings } from '#lib/server/db/schema.ts';
+import { resolveUploadBasePath } from '#lib/server/storage/uploadPath.ts';
 import { scanUploadDir, selectOrphanedFiles, type DiskEntry } from './orphanCleanup';
 
 export async function scanLocalUploads(cutoff: Date): Promise<DiskEntry[]> {

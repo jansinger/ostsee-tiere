@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 	import { queueHref, type SightingQueue } from './sightingQueue';
 
 	interface Props {

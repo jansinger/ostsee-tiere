@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { DEAD_FINDING_PRESENTATION, isDeadFinding } from '$lib/components/admin/deadFinding';
-	import { getSpeciesLabel } from '$lib/report/formOptions/species';
+	import { DEAD_FINDING_PRESENTATION, isDeadFinding } from '#lib/components/admin/deadFinding.ts';
+	import { getSpeciesLabel } from '#lib/report/formOptions/species.ts';
 	import {
 		BALTIC_SEA_STATUS_PRESENTATION,
 		getBalticSeaStatus
-	} from '$lib/utils/geo/balticSeaStatus';
-	import { formatLocalDateTime } from '$lib/utils/format/dateTime';
+	} from '#lib/utils/geo/balticSeaStatus.ts';
+	import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
 	/* `InboxSighting` und nicht `SightingSelect`: Der Typ ist der Wächter dafür,
 	   dass der Loader jedes hier gelesene Feld auch wirklich abfragt. Mit der
 	   vollen Zeile ginge ein neu gelesenes Feld still durch und stünde in der
 	   Karte leer da (Begründung in `inboxColumns.ts`). */
-	import type { InboxSighting } from '$lib/server/db/inboxColumns';
-	import type { DuplicateCandidate } from '$lib/server/db/duplicateCandidates';
-	import type { ReporterHistory } from '$lib/types/reporterHistory';
-	import Icon from '$lib/components/Icon.svelte';
+	import type { InboxSighting } from '#lib/server/db/inboxColumns.ts';
+	import type { DuplicateCandidate } from '#lib/server/db/duplicateCandidates.ts';
+	import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import ReporterHistoryBadge from './ReporterHistoryBadge.svelte';
 	import { inboxDetailHref } from './adminReturn';
 	import { SIGHTING_STATUS_PRESENTATION } from './sightingStatus';

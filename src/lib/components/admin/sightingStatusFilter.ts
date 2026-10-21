@@ -15,7 +15,7 @@
  * etwas weniger Zeilen; das ist die gewollte Korrektur.
  *
  * Client-sicher, weil `ExportModal.svelte` die Filter-Beschriftung daraus
- * baut — ein Import aus `$lib/server` bräche dort den Build.
+ * baut — ein Import aus `#lib/server` bräche dort den Build.
  */
 export type SightingStatusFilter = 'open' | 'approved' | 'rejected';
 

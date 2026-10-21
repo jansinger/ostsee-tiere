@@ -1,13 +1,13 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import { page } from '$app/state';
-	import ConnectionBadge from '$lib/components/ConnectionBadge.svelte';
-	import Icon from '$lib/components/Icon.svelte';
+	import ConnectionBadge from '#lib/components/ConnectionBadge.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 
-	import { ADMIN_BEREICHE, istAdminPfad } from '$lib/config/adminNav';
-	import { localizeHref } from '$lib/paraglide/runtime';
-	import type { PublicUser } from '$lib/types/User';
-	import { isNotIFrame } from '$lib/utils/client/isNotIFrame';
+	import { ADMIN_BEREICHE, istAdminPfad } from '#lib/config/adminNav.ts';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import type { PublicUser } from '#lib/types/User.ts';
+	import { isNotIFrame } from '#lib/utils/client/isNotIFrame.ts';
 	import OstseeTiereLogo from './OstseeTiereLogo.svelte';
 	import UserMenu from './UserMenu.svelte';
 	import UserMenuMobile from './UserMenuMobile.svelte';

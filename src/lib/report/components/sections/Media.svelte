@@ -1,14 +1,14 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { getUploadConfig } from '$lib/stores/configStore';
-	import { getFormContext } from '$lib/report/formContext';
-	import Icon from '$lib/components/Icon.svelte';
-	import DropzoneEnhanced from '$lib/report/components/form/fields/DropzoneEnhanced.svelte';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
-	import UploadNotice from '$lib/report/components/form/UploadNotice.svelte';
-	import { getFileTypeDescription } from '$lib/utils/validation/fileValidation';
-	import type { ValidationPreset } from '$lib/types';
-	import { MEDIA_FALLBACK_EMAIL } from '$lib/constants/contact';
+	import * as m from '#lib/paraglide/messages.js';
+	import { getUploadConfig } from '#lib/stores/configStore.ts';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import Icon from '#lib/components/Icon.svelte';
+	import DropzoneEnhanced from '#lib/report/components/form/fields/DropzoneEnhanced.svelte';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
+	import UploadNotice from '#lib/report/components/form/UploadNotice.svelte';
+	import { getFileTypeDescription } from '#lib/utils/validation/fileValidation.ts';
+	import type { ValidationPreset } from '#lib/types/index.ts';
+	import { MEDIA_FALLBACK_EMAIL } from '#lib/constants/contact.ts';
 	import SectionCard from './SectionCard.svelte';
 
 	// Im Admin-Bearbeitungsformular bleibt die Medien-Einwilligung sichtbar, aber

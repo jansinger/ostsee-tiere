@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 	import {
 		SIGHTING_STATUS_ORDER,
 		SIGHTING_STATUS_PRESENTATION,

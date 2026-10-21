@@ -4,7 +4,7 @@
   Modernized with Svelte 5 runes
 -->
 <script lang="ts">
-	import { toasts, removeToast } from '$lib/stores/toastState.svelte';
+	import { toasts, removeToast } from '#lib/stores/toastState.svelte.ts';
 	import Toast from './Toast.svelte';
 </script>
 

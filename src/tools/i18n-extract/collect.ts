@@ -61,8 +61,8 @@ export interface CollectResult {
 }
 
 /**
- * Der lokale Name, unter dem `$lib/paraglide/messages` als Namespace
- * importiert ist (`import * as m from '$lib/paraglide/messages'` → `'m'`).
+ * Der lokale Name, unter dem `#lib/paraglide/messages.js` als Namespace
+ * importiert ist (`import * as m from '#lib/paraglide/messages'` → `'m'`).
  *
  * `undefined`, wenn die Datei das Modul nicht (mehr) per Namespace-Import
  * bindet — dann kann auch kein Aufruf als Paraglide-Botschaftsaufruf gelten.
@@ -75,7 +75,7 @@ function paraglideMessagesNamespace(sourceFile: ts.SourceFile): string | undefin
 		if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) {
 			continue;
 		}
-		if (statement.moduleSpecifier.text !== '$lib/paraglide/messages') {
+		if (statement.moduleSpecifier.text !== '#lib/paraglide/messages.js') {
 			continue;
 		}
 		const bindings = statement.importClause?.namedBindings;
@@ -693,11 +693,12 @@ const SVELTE_TARGET_ATTRIBUTES = new Set(['placeholder', 'title', 'aria-label', 
  * TS-Sammler), nur über den rohen Svelte-Quelltext statt über einen
  * `ts.SourceFile` — `collectSvelteSites` baut keinen TS-AST für die ganze
  * Datei auf. Ein Regex über `<script>` reicht: Die Importzeile hat immer
- * dieselbe Form (`import * as m from '$lib/paraglide/messages'`), die
+ * dieselbe Form (`import * as m from '#lib/paraglide/messages'`), die
  * Extraktor-Ausgabe schreibt nichts anderes.
  */
 function paraglideMessagesNamespaceInSvelte(source: string): string | undefined {
-	const match = /import\s*\*\s*as\s+(\w+)\s+from\s*['"]\$lib\/paraglide\/messages['"]/.exec(source);
+	const match =
+		/import\s*\*\s*as\s+(\w+)\s+from\s*['"][$#]lib\/paraglide\/messages(?:\.js)?['"]/.exec(source);
 	return match?.[1];
 }
 

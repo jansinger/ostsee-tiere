@@ -1,17 +1,17 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import { get } from 'svelte/store';
-	import { getFormContext } from '$lib/report/formContext';
-	import { getUploadConfig } from '$lib/stores/configStore';
-	import type { ValidationPreset } from '$lib/types';
-	import Icon from '$lib/components/Icon.svelte';
-	import UploadNotice from '$lib/report/components/form/UploadNotice.svelte';
-	import DropzoneEnhanced from '$lib/report/components/form/fields/DropzoneEnhanced.svelte';
-	import LocationInput from '$lib/report/components/form/LocationInput.svelte';
-	import VerifyLocation from '$lib/report/components/form/VerifyLocation.svelte';
-	import { hasCoordinates, toCoordinate } from '$lib/report/components/form/coordinateValue';
-	import { openAncestorDetails } from '$lib/utils/fieldNavigation';
-	import SectionCard from '$lib/report/components/sections/SectionCard.svelte';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { getUploadConfig } from '#lib/stores/configStore.ts';
+	import type { ValidationPreset } from '#lib/types/index.ts';
+	import Icon from '#lib/components/Icon.svelte';
+	import UploadNotice from '#lib/report/components/form/UploadNotice.svelte';
+	import DropzoneEnhanced from '#lib/report/components/form/fields/DropzoneEnhanced.svelte';
+	import LocationInput from '#lib/report/components/form/LocationInput.svelte';
+	import VerifyLocation from '#lib/report/components/form/VerifyLocation.svelte';
+	import { hasCoordinates, toCoordinate } from '#lib/report/components/form/coordinateValue.ts';
+	import { openAncestorDetails } from '#lib/utils/fieldNavigation.ts';
+	import SectionCard from '#lib/report/components/sections/SectionCard.svelte';
 	import LocationDescription from './LocationDescription.svelte';
 	import { requestCurrentPosition } from './geolocation';
 	import { photoStatus, shouldWarnAboutMissingGps } from './positionPanelState';
@@ -20,7 +20,7 @@
 		outsideBalticNotice,
 		outsideBalticSeverity,
 		positionQuestion
-	} from '$lib/report/wording';
+	} from '#lib/report/wording.ts';
 
 	const { form, handleChange, mediaStore } = getFormContext();
 
@@ -161,7 +161,7 @@
 	 * gebundener Zustand schriebe das hier gesetzte `open` sofort zurück.
 	 *
 	 * Der Vorfahren-`<details>`-Loop steckt in `openAncestorDetails`
-	 * (`$lib/utils/fieldNavigation.ts`) — `scrollToFirstError` dort braucht
+	 * (`#lib/utils/fieldNavigation.ts`) — `scrollToFirstError` dort braucht
 	 * denselben Schritt für jedes Feld hinter einer Disclosure, nicht nur für
 	 * `waterway`.
 	 */

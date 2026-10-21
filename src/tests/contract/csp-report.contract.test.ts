@@ -2,11 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import { POST } from '../../routes/api/csp-report/+server';
 import { createEvent } from './helpers/createEvent';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

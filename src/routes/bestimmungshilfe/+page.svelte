@@ -1,11 +1,11 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import DataUsageNotice from '$lib/components/info/DataUsageNotice.svelte';
-	import DeadFindingNotice from '$lib/components/info/DeadFindingNotice.svelte';
-	import HreflangHead from '$lib/components/seo/HreflangHead.svelte';
-	import SpeciesIdentificationHelp from '$lib/report/components/form/fields/SpeciesIdentificationHelp.svelte';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import DataUsageNotice from '#lib/components/info/DataUsageNotice.svelte';
+	import DeadFindingNotice from '#lib/components/info/DeadFindingNotice.svelte';
+	import HreflangHead from '#lib/components/seo/HreflangHead.svelte';
+	import SpeciesIdentificationHelp from '#lib/report/components/form/fields/SpeciesIdentificationHelp.svelte';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 
 	const title = m.routes_bestimmungshilfe_page_text_bestimmungshilfe_wale_und_robben_der_ost();
 	const description =

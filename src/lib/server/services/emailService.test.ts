@@ -4,30 +4,27 @@
  * Testet das Verhalten des E-Mail-Benachrichtigungsdienstes für neue Meeressäuger-Sichtungen.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
 
 // Das globale Setup in vitest-setup-server.ts mockt emailService — hier aufheben
 // damit wir die echte Implementierung testen
-vi.unmock('$lib/server/services/emailService');
+vi.unmock('#lib/server/services/emailService.ts');
 
 // Mocks müssen vor dem Import des zu testenden Moduls definiert werden
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: {
 		NODE_ENV: 'test',
 		SMTP_HOST: '',
 		SMTP_PORT: '587',
 		SMTP_USER: '',
 		SMTP_PASSWORD: ''
-	}
-}));
-
-vi.mock('$env/dynamic/public', () => ({
-	env: {
+	},
+	publicEnv: {
 		PUBLIC_SITE_URL: 'https://example.com'
 	}
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		info: vi.fn(),
 		debug: vi.fn(),
@@ -36,7 +33,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		info: vi.fn(),
 		debug: vi.fn(),
@@ -45,7 +42,7 @@ vi.mock('$lib/logger', () => ({
 	})
 }));
 
-vi.mock('$lib/server/db/configRepository', () => ({
+vi.mock('#lib/server/db/configRepository.ts', () => ({
 	ConfigRepository: {
 		getBoolean: vi.fn(),
 		getString: vi.fn(),
@@ -54,13 +51,13 @@ vi.mock('$lib/server/db/configRepository', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn()
 	}
 }));
 
-vi.mock('$lib/server/db/sightingFilesRepository', () => ({
+vi.mock('#lib/server/db/sightingFilesRepository.ts', () => ({
 	countFilesForSighting: vi.fn().mockResolvedValue(0)
 }));
 
@@ -77,12 +74,12 @@ vi.mock('fs', () => ({
 	readFileSync: vi.fn()
 }));
 
-vi.mock('$lib/utils/format/sightingFormatter', () => ({
+vi.mock('#lib/utils/format/sightingFormatter.ts', () => ({
 	formatSightingForDisplay: vi.fn(),
 	isUnknownOrMissingSpecies: vi.fn()
 }));
 
-vi.mock('$lib/server/spam/spamDetector', () => ({
+vi.mock('#lib/server/spam/spamDetector.ts', () => ({
 	detectSpamIndicators: vi.fn().mockResolvedValue({
 		score: 0,
 		isHighRisk: false,
@@ -90,22 +87,22 @@ vi.mock('$lib/server/spam/spamDetector', () => ({
 	})
 }));
 
-vi.mock('$lib/utils/format/dateTime', () => ({
+vi.mock('#lib/utils/format/dateTime.ts', () => ({
 	formatLocalDateTime: vi.fn()
 }));
 
-import { ConfigRepository } from '$lib/server/db/configRepository';
-import { db } from '$lib/server/db';
-import { countFilesForSighting } from '$lib/server/db/sightingFilesRepository';
+import { ConfigRepository } from '#lib/server/db/configRepository.ts';
+import { db } from '#lib/server/db/index.ts';
+import { countFilesForSighting } from '#lib/server/db/sightingFilesRepository.ts';
 import nodemailer from 'nodemailer';
 import { readFileSync } from 'fs';
 import {
 	formatSightingForDisplay,
 	isUnknownOrMissingSpecies
-} from '$lib/utils/format/sightingFormatter';
-import { formatLocalDateTime } from '$lib/utils/format/dateTime';
-import { NOTIFICATION_EMAIL_DEFAULT_TEMPLATE } from '$lib/server/templates/notificationEmailDefault';
-import { detectSpamIndicators } from '$lib/server/spam/spamDetector';
+} from '#lib/utils/format/sightingFormatter.ts';
+import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
+import { NOTIFICATION_EMAIL_DEFAULT_TEMPLATE } from '#lib/server/templates/notificationEmailDefault.ts';
+import { detectSpamIndicators } from '#lib/server/spam/spamDetector.ts';
 import { EmailService } from './emailService';
 import { SMTP_CA_BUNDLE } from './smtpRootCertificates';
 
@@ -541,7 +538,7 @@ describe('EmailService', () => {
 
 			await EmailService.sendNewSightingNotification(42);
 
-			const { baseLocale } = await import('$lib/paraglide/runtime');
+			const { baseLocale } = await import('#lib/paraglide/runtime.js');
 			const localeArg = vi.mocked(formatSightingForDisplay).mock.calls[0]?.[1];
 			expect(localeArg).toBe(baseLocale);
 		});
@@ -650,7 +647,7 @@ describe('EmailService', () => {
 				attachedFiles = 0,
 				created = new Date('2026-08-03T10:00:00.000Z'),
 				// Nur die App kündigt ein Foto an, ohne es übertragen zu können
-				// (`$lib/utils/media/photoAnnouncement.ts`) — bei den manuell
+				// (`#lib/utils/media/photoAnnouncement.ts`) — bei den manuell
 				// erfassten Kanälen liegt dem Admin das Foto bereits vor.
 				entryChannel = EntryChannelEnum.APP
 			}: {

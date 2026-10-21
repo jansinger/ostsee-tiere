@@ -10,7 +10,7 @@
  * ausschließlich `Locale → unveränderliches Baurergebnis` ab, und für dieselbe
  * Locale liefert `build` immer denselben Wert.
  */
-import { getLocale, type Locale } from '$lib/paraglide/runtime';
+import { getLocale, type Locale } from '#lib/paraglide/runtime.js';
 
 export function memoizePerLocale<T>(build: (locale: Locale) => T): (locale?: Locale) => T {
 	const cache = new Map<Locale, T>();

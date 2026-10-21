@@ -20,8 +20,8 @@
  * Diese Funktionen sind sicherheitskritisch und sollten bei Änderungen
  * ausführlich getestet werden. Jeder Fehler kann zu Sicherheitslücken führen.
  */
-import { createLogger } from '$lib/logger.server';
-import { resolveUploadBasePath } from '$lib/server/storage/uploadPath';
+import { createLogger } from '#lib/logger.server.ts';
+import { resolveUploadBasePath } from '#lib/server/storage/uploadPath.ts';
 import { existsSync, statSync } from 'fs';
 import path from 'path';
 

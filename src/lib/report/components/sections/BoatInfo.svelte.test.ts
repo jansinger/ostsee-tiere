@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import type { SightingFormData } from '$lib/types';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 import BoatInfo from './BoatInfo.svelte';
 
 /**

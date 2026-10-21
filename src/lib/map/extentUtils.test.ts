@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { boundingExtent } from 'ol/extent';
 import { fromLonLat } from 'ol/proj';
-import { BALTIC_SEA_BBOX } from '$lib/utils/geo/checkBalticSea';
+import { BALTIC_SEA_BBOX } from '#lib/utils/geo/checkBalticSea.ts';
 import { clampExtentToBaltic, type Extent } from './extentUtils';
 
 // Referenz-Extent, unabhängig von der Implementierung berechnet, damit der Test

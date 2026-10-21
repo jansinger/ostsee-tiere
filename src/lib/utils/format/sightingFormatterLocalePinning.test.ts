@@ -25,11 +25,11 @@
  * deshalb einen von 0 verschiedenen Enum-Wert je Feld.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { SpeciesEnum } from '$lib/report/formOptions/species';
-import { AnimalBehaviorEnum } from '$lib/report/formOptions/animalBehavior';
-import { DistanceEnum } from '$lib/report/formOptions/distance';
-import { AnimalConditionEnum } from '$lib/report/formOptions/animalCondition';
-import type { SightingFormValues } from '$lib/types/Form';
+import { SpeciesEnum } from '#lib/report/formOptions/species.ts';
+import { AnimalBehaviorEnum } from '#lib/report/formOptions/animalBehavior.ts';
+import { DistanceEnum } from '#lib/report/formOptions/distance.ts';
+import { AnimalConditionEnum } from '#lib/report/formOptions/animalCondition.ts';
+import type { SightingFormValues } from '#lib/types/Form.ts';
 
 const DIVERGED_EN_LABEL = 'TEST-ONLY-DIVERGED-ENGLISH-LABEL';
 
@@ -40,8 +40,8 @@ function divergeInEnglish(
 		options?.locale === 'en' ? DIVERGED_EN_LABEL : actualFn(inputs, options);
 }
 
-vi.mock('$lib/paraglide/messages', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/paraglide/messages')>();
+vi.mock('#lib/paraglide/messages.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/paraglide/messages.js')>();
 	return {
 		...actual,
 		// Zwingt die englischen Botschaften auseinander, egal was
@@ -76,12 +76,12 @@ describe('formatSightingForDisplay() — Locale-Pinnung für die DMM-Mail', () =
 		// overwriteGetLocale() überschreibt die Modul-Funktion dauerhaft ohne
 		// eingebauten Reset — auf den echten Default zurückschalten, damit
 		// andere Tests im selben Prozess nicht die englische Locale erben.
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => baseLocale);
 	});
 
 	it('liefert das deutsche Species-Label bei explizitem baseLocale, obwohl die aktive Locale Englisch ist und die englische Botschaft nachweislich abweicht', async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		// Simuliert eine Anfrage, deren Locale-Kontext auf Englisch steht — genau
 		// der Fall, den ein ungepinnter Aufruf aus emailService.ts übernehmen würde.
 		overwriteGetLocale(() => 'en');
@@ -97,7 +97,7 @@ describe('formatSightingForDisplay() — Locale-Pinnung für die DMM-Mail', () =
 	});
 
 	it('liefert das deutsche Verhaltens-Label bei explizitem baseLocale, obwohl die aktive Locale Englisch ist und die englische Botschaft nachweislich abweicht', async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		const { formatSightingForDisplay } = await import('./sightingFormatter');
@@ -111,7 +111,7 @@ describe('formatSightingForDisplay() — Locale-Pinnung für die DMM-Mail', () =
 	});
 
 	it('liefert das deutsche Entfernungs-Label bei explizitem baseLocale, obwohl die aktive Locale Englisch ist und die englische Botschaft nachweislich abweicht', async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		const { formatSightingForDisplay } = await import('./sightingFormatter');
@@ -125,7 +125,7 @@ describe('formatSightingForDisplay() — Locale-Pinnung für die DMM-Mail', () =
 	});
 
 	it('liefert das deutsche Totfund-Zustand-Label bei explizitem baseLocale, obwohl die aktive Locale Englisch ist und die englische Botschaft nachweislich abweicht', async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		const { formatSightingForDisplay } = await import('./sightingFormatter');

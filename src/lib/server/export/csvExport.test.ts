@@ -1,38 +1,38 @@
 // @ts-nocheck - Test file with mock data that may not match exact types
 import { describe, it, expect, vi } from 'vitest';
 import { generateCsvData } from './csvExport';
-import type { FrontendSighting } from '$lib/types/index';
+import type { FrontendSighting } from '#lib/types/index.ts';
 
 // Mock form option modules
-vi.mock('$lib/report/formOptions/animalBehavior', () => ({
+vi.mock('#lib/report/formOptions/animalBehavior.ts', () => ({
 	getAnimalBehaviorLabel: vi.fn((value) => `behavior-${value}`)
 }));
 
-vi.mock('$lib/report/formOptions/boatDrive', () => ({
+vi.mock('#lib/report/formOptions/boatDrive.ts', () => ({
 	getBoatDriveLabel: vi.fn((value) => `boatDrive-${value}`)
 }));
 
-vi.mock('$lib/report/formOptions/distance', () => ({
+vi.mock('#lib/report/formOptions/distance.ts', () => ({
 	getDistanceLabel: vi.fn((value) => `distance-${value}`)
 }));
 
-vi.mock('$lib/report/formOptions/distribution', () => ({
+vi.mock('#lib/report/formOptions/distribution.ts', () => ({
 	getDistributionLabel: vi.fn((value) => `distribution-${value}`)
 }));
 
-vi.mock('$lib/report/formOptions/seaState', () => ({
+vi.mock('#lib/report/formOptions/seaState.ts', () => ({
 	getSeaStateLabel: vi.fn((value) => `seaState-${value}`)
 }));
 
-vi.mock('$lib/report/formOptions/sightingFrom', () => ({
+vi.mock('#lib/report/formOptions/sightingFrom.ts', () => ({
 	getSightingFromLabel: vi.fn((value) => `sightingFrom-${value}`)
 }));
 
-vi.mock('$lib/report/formOptions/species', () => ({
+vi.mock('#lib/report/formOptions/species.ts', () => ({
 	getSpeciesLabel: vi.fn((value) => `species-${value}`)
 }));
 
-vi.mock('$lib/report/formOptions/visibility', () => ({
+vi.mock('#lib/report/formOptions/visibility.ts', () => ({
 	getVisibilityLabel: vi.fn((value) => `visibility-${value}`)
 }));
 

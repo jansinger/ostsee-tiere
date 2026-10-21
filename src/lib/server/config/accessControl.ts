@@ -1,6 +1,6 @@
-import type { ConfigItem } from '$lib/server/db/configRepository';
-import type { User } from '$lib/types';
-import { isSuperAdminUser } from '$lib/server/auth/auth';
+import type { ConfigItem } from '#lib/server/db/configRepository.ts';
+import type { User } from '#lib/types/index.ts';
+import { isSuperAdminUser } from '#lib/server/auth/auth.ts';
 
 /**
  * Configuration keys that regular admins can access (non-system-critical)

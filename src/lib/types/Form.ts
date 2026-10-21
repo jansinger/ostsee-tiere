@@ -2,9 +2,9 @@
  * Form-related type definitions
  */
 
-import type { FormApi } from '$lib/form/createForm';
-import { getSightingSchema } from '$lib/form/validation/sightingSchema';
-import type { MediaStore } from '$lib/utils/media/MediaFile.svelte';
+import type { FormApi } from '#lib/form/createForm.ts';
+import { getSightingSchema } from '#lib/form/validation/sightingSchema.ts';
+import type { MediaStore } from '#lib/utils/media/MediaFile.svelte.ts';
 import * as yup from 'yup';
 
 export interface FormStep {

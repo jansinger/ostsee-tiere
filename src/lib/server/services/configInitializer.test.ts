@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mocks müssen vor dem Import der zu testenden Datei stehen
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),
@@ -9,7 +9,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),
@@ -17,7 +17,7 @@ vi.mock('$lib/logger', () => ({
 	})
 }));
 
-vi.mock('$lib/server/db/configRepository', () => ({
+vi.mock('#lib/server/db/configRepository.ts', () => ({
 	ConfigRepository: {
 		insertManyIfAbsent: vi.fn(),
 		upsertMany: vi.fn(),
@@ -25,14 +25,14 @@ vi.mock('$lib/server/db/configRepository', () => ({
 	}
 }));
 
-import { ConfigRepository } from '$lib/server/db/configRepository';
+import { ConfigRepository } from '#lib/server/db/configRepository.ts';
 import {
 	getAvailableConfigurationKeys,
 	getConfigurationCategories,
 	getDefaultConfigurationsByCategory,
 	initializeDefaultConfigurations,
 	resetToDefaultConfigurations
-} from '$lib/server/services/configInitializer';
+} from '#lib/server/services/configInitializer.ts';
 
 const mockInsertManyIfAbsent = vi.mocked(ConfigRepository.insertManyIfAbsent);
 const mockUpsertMany = vi.mocked(ConfigRepository.upsertMany);

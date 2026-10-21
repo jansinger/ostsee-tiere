@@ -1,5 +1,5 @@
-import type { UploadedFileInfo } from '$lib/types';
-import { deleteFileDirect } from '$lib/utils/uploadUtils';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
+import { deleteFileDirect } from '#lib/utils/uploadUtils.ts';
 
 /**
  * Deletes multiple files from server

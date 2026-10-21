@@ -6,7 +6,7 @@ const { mockWhere, mockOrderBy } = vi.hoisted(() => {
 	return { mockWhere, mockOrderBy };
 });
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({ where: mockWhere, orderBy: mockOrderBy })
@@ -14,7 +14,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: {
 		sightingDate: 'sightingDate',
 		approvedAt: 'approvedAt',
@@ -39,16 +39,16 @@ vi.mock('drizzle-orm', () => ({
 	)
 }));
 
-vi.mock('$lib/map/mapUtils', () => ({
+vi.mock('#lib/map/mapUtils.ts', () => ({
 	sightingsToGeoJSON: vi.fn().mockReturnValue({ type: 'FeatureCollection', features: [] })
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
 import { GET } from './+server';
-import { BALTIC_SEA_BBOX } from '$lib/utils/geo/checkBalticSea';
+import { BALTIC_SEA_BBOX } from '#lib/utils/geo/checkBalticSea.ts';
 
 type Condition = { op: string; column: string; value?: string };
 

@@ -23,7 +23,7 @@ import {
 	getBalticSeaStatus,
 	type BalticSeaFlags,
 	type BalticSeaStatus
-} from '$lib/utils/geo/balticSeaStatus';
+} from '#lib/utils/geo/balticSeaStatus.ts';
 import { EMAIL_COLORS } from './emailTokens';
 
 /**

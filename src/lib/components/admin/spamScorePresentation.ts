@@ -20,10 +20,14 @@
  * **Farbe trägt die Bedeutung nicht allein** (WCAG 1.4.1) — jede bewertete
  * Stufe hat zusätzlich ein eigenes Icon. An allen vier Stellen fehlte das.
  *
- * Client-sicher: nur Typen und Konstanten aus `$lib/types/spam`, kein Import
- * aus `$lib/server/**` (der Bruch fiele erst in `npm run build` auf).
+ * Client-sicher: nur Typen und Konstanten aus `#lib/types/spam.js`, kein Import
+ * aus `#lib/server/**` (der Bruch fiele erst in `npm run build` auf).
  */
-import { HIGH_RISK_THRESHOLD, type SpamCheckResponse, type SpamCheckResult } from '$lib/types/spam';
+import {
+	HIGH_RISK_THRESHOLD,
+	type SpamCheckResponse,
+	type SpamCheckResult
+} from '#lib/types/spam.ts';
 
 export type SpamRisk = 'unrated' | 'clean' | 'suspicious' | 'high';
 
@@ -33,7 +37,7 @@ export type SpamRisk = 'unrated' | 'clean' | 'suspicious' | 'high';
  * Anders als `HIGH_RISK_THRESHOLD` ist das **keine** Server-Semantik: Der
  * Detektor kennt nur „Hochrisiko ja/nein". Die Zwischenstufe existiert allein
  * für die Triage-Oberfläche und gehört deshalb hierher und nicht nach
- * `$lib/types/spam`. Der Wert 2 entspricht genau einem ausgelösten Indikator
+ * `#lib/types/spam.js`. Der Wert 2 entspricht genau einem ausgelösten Indikator
  * mittleren Gewichts (Keyword, Großbuchstaben, `noreply@`, Duplikat).
  */
 export const SPAM_SUSPICIOUS_THRESHOLD = 2;
@@ -143,7 +147,7 @@ export type SpamRiskPresentation = SpamRiskBase &
 				/** Flächenfarbe — ohne `-strong`-Suffix (`.claude/rules/design-system.md`). */
 				badgeClass: string;
 				/**
-				 * Icon-Name für `$lib/components/Icon.svelte` — die zweite,
+				 * Icon-Name für `#lib/components/Icon.svelte` — die zweite,
 				 * farbunabhängige Unterscheidung (WCAG 1.4.1).
 				 */
 				icon: string;

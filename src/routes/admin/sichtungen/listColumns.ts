@@ -28,7 +28,7 @@
  *   fällt dort auf, nicht erst beim Nutzer.
  */
 
-import { sightings, type SightingSelect } from '$lib/server/db/schema';
+import { sightings, type SightingSelect } from '#lib/server/db/schema.ts';
 import type { ColumnVisibility } from './columns';
 
 /** Feldname der Tabelle `sichtungen` (Drizzle-Property, nicht Spaltenname). */

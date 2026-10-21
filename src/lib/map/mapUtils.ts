@@ -14,7 +14,7 @@
  * @since 1.0.0
  */
 
-import { getSightingStatus, type SightingStatus } from '$lib/components/admin/sightingStatus';
+import { getSightingStatus, type SightingStatus } from '#lib/components/admin/sightingStatus.ts';
 
 /**
  * Übersetzungsschnittstelle für Kartenbeschriftungen

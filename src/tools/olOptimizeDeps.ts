@@ -3,7 +3,7 @@
  *
  * WARUM DIESE LISTE EXISTIERT
  *
- * `OLMap.svelte` lädt `$lib/utils/map/openLayersHelpers` per `await import(...)`
+ * `OLMap.svelte` lädt `#lib/utils/map/openLayersHelpers` per `await import(...)`
  * nach, damit OpenLayers nicht im Initial-Bundle der Einstiegsseite liegt. Damit
  * sind die `ol/*`-Unterpfade dieser Datei für Vites Dependency-Scanner nicht
  * mehr statisch erreichbar — er findet sie erst, wenn der Browser sie zur

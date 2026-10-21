@@ -1,10 +1,10 @@
+import type { Handle } from '@sveltejs/kit/hooks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Handle } from '@sveltejs/kit';
 
 // Mocks müssen vor dem Import der zu testenden Datei stehen
-vi.mock('$env/dynamic/private', () => ({ env: {} }));
+vi.mock('#lib/server/env.ts', () => ({ env: {} }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -13,7 +13,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -22,7 +22,7 @@ vi.mock('$lib/logger', () => ({
 	})
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	isDatabaseAvailable: vi.fn(),
 	testDatabaseConnection: vi.fn()
 }));
@@ -35,9 +35,9 @@ vi.mock('@sveltejs/kit', async () => {
 	};
 });
 
-import { isDatabaseAvailable, testDatabaseConnection } from '$lib/server/db';
-import { databaseCheck, resetDatabaseCheckCache } from '$lib/server/middleware/databaseCheck';
-import { env } from '$env/dynamic/private';
+import { isDatabaseAvailable, testDatabaseConnection } from '#lib/server/db/index.ts';
+import { databaseCheck, resetDatabaseCheckCache } from '#lib/server/middleware/databaseCheck.ts';
+import { env } from '#lib/server/env.ts';
 
 const mockIsDatabaseAvailable = vi.mocked(isDatabaseAvailable);
 const mockTestDatabaseConnection = vi.mocked(testDatabaseConnection);

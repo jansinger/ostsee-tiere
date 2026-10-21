@@ -1,6 +1,6 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 import OLMap from './OLMap.svelte';
 
 /**

@@ -1,6 +1,6 @@
-import { ServerConfigService } from '$lib/services/configService';
-import { isAdminUser, isSuperAdminUser } from '$lib/server/auth/auth';
-import type { PublicUser } from '$lib/types/User';
+import { ServerConfigService } from '#lib/services/configService.ts';
+import { isAdminUser, isSuperAdminUser } from '#lib/server/auth/auth.ts';
+import type { PublicUser } from '#lib/types/User.ts';
 import type { LayoutServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {

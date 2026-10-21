@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Icon from '$lib/components/Icon.svelte';
-	import WeatherDisplay from '$lib/components/weather/WeatherDisplay.svelte';
-	import type { StoredWeatherData } from '$lib/services/weatherService';
+	import Icon from '#lib/components/Icon.svelte';
+	import WeatherDisplay from '#lib/components/weather/WeatherDisplay.svelte';
+	import type { StoredWeatherData } from '#lib/services/weatherService.ts';
 	// `observation_time` ist zonenlose Berlin-Wanduhrzeit, `fetched_at` ein echter
 	// UTC-Instant — deshalb formatObservationTime bzw. formatLocalDateTime (M4).
-	import { formatLocalDateTime, formatObservationTime } from '$lib/utils/format/dateTime';
-	import { formatLocation } from '$lib/utils/format/formatLocation';
-	import { toast } from '$lib/stores/toastState.svelte';
+	import { formatLocalDateTime, formatObservationTime } from '#lib/utils/format/dateTime.ts';
+	import { formatLocation } from '#lib/utils/format/formatLocation.ts';
+	import { toast } from '#lib/stores/toastState.svelte.ts';
 
 	interface Props {
 		weatherData: StoredWeatherData | null;

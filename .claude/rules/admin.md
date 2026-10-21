@@ -49,7 +49,7 @@ Task-Liste — keine Filter/Spalten dorthin bauen, dafür gibt es
 
 `/admin/[id]` wird aus der Tabelle **und** aus dem Eingang geöffnet. Woher,
 steht in der URL: Die Tabelle verrät sich über ihre Filter-Parameter, der
-Eingang über `?from=inbox` (`$lib/components/admin/adminReturn.ts`).
+Eingang über `?from=inbox` (`#lib/components/admin/adminReturn.ts`).
 `returnTarget()` in `[id]/tableReturnUrl.ts` wertet beides aus und liefert Ziel
 **und** Beschriftung; der Rückweg in den Eingang trägt zusätzlich den Anker
 `#sichtung-<id>` auf die Karte, von der man kam.
@@ -84,7 +84,7 @@ Paginierung im Spiel, und die Queue wäre ein anderes Feature.
 
 Drei Dinge dabei nicht zurückdrehen:
 
-- **Die Ordnung ist `(created, id)` und steht in `$lib/server/db/openQueueOrder.ts`.**
+- **Die Ordnung ist `(created, id)` und steht in `#lib/server/db/openQueueOrder.ts`.**
   `created` ist nicht eindeutig; ohne den Tiebreaker liefern Eingangsliste und
   Nachbar-Query bei gleichem Zeitstempel unterschiedliche Reihenfolgen, und beim
   Abarbeiten fällt still eine Meldung durch. `openQueueOrderScan.test.ts` meldet

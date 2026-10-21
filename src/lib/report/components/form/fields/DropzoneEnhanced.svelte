@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	/**
 	 * DropzoneEnhanced Component
 	 *
@@ -16,38 +16,38 @@
 	 * 1. GPS-Extraktionsmodus (enableGPSExtraction=true): Einzeldatei-Upload mit Kartenanzeige
 	 * 2. Media-Upload-Modus: Multi-Datei-Upload mit Galerie-Ansicht
 	 */
-	import UnifiedDropzone from '$lib/components/form/UnifiedDropzone.svelte';
-	import OLMap from '$lib/components/map/OLMap.svelte';
-	import { createLogger } from '$lib/logger';
-	import { getFormContext } from '$lib/report/formContext';
-	import { createToast } from '$lib/stores/toastState.svelte';
-	import type { ExifData, UploadedFileInfo, ValidationPreset } from '$lib/types';
-	import { deleteFileDirect } from '$lib/utils';
-	import { formatFileSize } from '$lib/utils/file/fileSize';
-	import { getFileIcon } from '$lib/utils/file/fileType';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { resolveDisplayLocale, splitDateTime } from '$lib/utils/format/dateTime';
-	import { formatLocation } from '$lib/utils/format/formatLocation';
-	import { isInBalticArea } from '$lib/utils/geo/checkBalticSea';
-	import { MediaFile } from '$lib/utils/media/MediaFile.svelte';
-	import { deleteMultipleFiles } from '$lib/utils/upload/fileProcessing';
+	import UnifiedDropzone from '#lib/components/form/UnifiedDropzone.svelte';
+	import OLMap from '#lib/components/map/OLMap.svelte';
+	import { createLogger } from '#lib/logger.ts';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { createToast } from '#lib/stores/toastState.svelte.ts';
+	import type { ExifData, UploadedFileInfo, ValidationPreset } from '#lib/types/index.ts';
+	import { deleteFileDirect } from '#lib/utils/index.ts';
+	import { formatFileSize } from '#lib/utils/file/fileSize.ts';
+	import { getFileIcon } from '#lib/utils/file/fileType.ts';
+	import { getLocale } from '#lib/paraglide/runtime.js';
+	import { resolveDisplayLocale, splitDateTime } from '#lib/utils/format/dateTime.ts';
+	import { formatLocation } from '#lib/utils/format/formatLocation.ts';
+	import { isInBalticArea } from '#lib/utils/geo/checkBalticSea.ts';
+	import { MediaFile } from '#lib/utils/media/MediaFile.svelte.ts';
+	import { deleteMultipleFiles } from '#lib/utils/upload/fileProcessing.ts';
 	import {
 		shouldResetExifPosition,
 		type AppliedExifPosition
-	} from '$lib/report/components/form/fields/exifPositionReset';
+	} from '#lib/report/components/form/fields/exifPositionReset.ts';
 	import {
 		shouldApplyExifDateTime,
 		type AppliedExifDateTime
-	} from '$lib/report/components/form/fields/exifDateTimeApply';
+	} from '#lib/report/components/form/fields/exifDateTimeApply.ts';
 	import {
 		isPositionUid,
 		loadPositionUids,
 		markPositionFile,
 		unmarkPositionFile
-	} from '$lib/report/components/form/fields/positionFileOrigin';
+	} from '#lib/report/components/form/fields/positionFileOrigin.ts';
 	import { get } from 'svelte/store';
 
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 
 	const logger = createLogger('DropzoneEnhanced');
 	let { form, touched, handleChange, mediaStore } = getFormContext();

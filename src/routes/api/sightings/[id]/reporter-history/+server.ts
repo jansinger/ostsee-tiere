@@ -9,12 +9,12 @@
  * Es wird nichts persistiert und nichts entschieden — die Zahlen sind eine
  * Triage-Hilfe (`docs/SPAM_DETECTION.md`, Abschnitt „Melder-Historie").
  */
-import { createLogger } from '$lib/logger.server';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { db } from '$lib/server/db';
-import { findReporterHistory } from '$lib/server/db/reporterHistory';
-import { sightings } from '$lib/server/db/schema';
-import type { ReporterHistory } from '$lib/types/reporterHistory';
+import { createLogger } from '#lib/logger.server.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { db } from '#lib/server/db/index.ts';
+import { findReporterHistory } from '#lib/server/db/reporterHistory.ts';
+import { sightings } from '#lib/server/db/schema.ts';
+import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 import { error, isHttpError, json, type RequestHandler } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 

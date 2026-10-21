@@ -1,7 +1,7 @@
-import { createLogger } from '$lib/logger.server';
-import { ServerConfigService } from '$lib/services/configService';
-import type { Handle } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit/hooks';
 import { redirect } from '@sveltejs/kit';
+import { createLogger } from '#lib/logger.server.ts';
+import { ServerConfigService } from '#lib/services/configService.ts';
 
 const logger = createLogger('maintenanceMode');
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { buildHreflangLinks, ogLocale, ogLocaleAlternates } from '$lib/seo/hreflang';
+	import { getLocale } from '#lib/paraglide/runtime.js';
+	import { buildHreflangLinks, ogLocale, ogLocaleAlternates } from '#lib/seo/hreflang.ts';
 
 	/**
 	 * Gemeinsame hreflang-/og:locale-Ausgabe für die vier lokalisierten

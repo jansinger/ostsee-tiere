@@ -18,11 +18,11 @@
  * `geprueft = 1` (öffentlich, der Toggle zeigte sie als ungeprüft). Wer die
  * Spalte hier wieder heranzieht, holt genau diesen Widerspruch zurück.
  *
- * Client-sicher: **kein** Import von `$lib/server/db/approvalFilter` oder
- * `$lib/server/db/schema` — die ziehen server-only Code, und der Bruch fällt
+ * Client-sicher: **kein** Import von `#lib/server/db/approvalFilter.js` oder
+ * `#lib/server/db/schema.js` — die ziehen server-only Code, und der Bruch fällt
  * erst in `npm run build` auf, nicht in `npm run check`.
  */
-import type { SightingVerdict } from '$lib/components/admin/sightingVerdict';
+import type { SightingVerdict } from '#lib/components/admin/sightingVerdict.ts';
 
 export type SightingStatus = 'open' | 'approved' | 'rejected';
 
@@ -78,7 +78,7 @@ export interface SightingStatusPresentation {
 	verdict: SightingVerdict;
 	/** Flächenfarbe — deshalb ohne `-strong`-Suffix (`.claude/rules/design-system.md`). */
 	badgeClass: string;
-	/** Icon-Name für `$lib/components/Icon.svelte`. */
+	/** Icon-Name für `#lib/components/Icon.svelte`. */
 	icon: string;
 	/** Tooltip: was der Zustand bedeutet, nicht nur wie er heißt. */
 	description: string;

@@ -1,5 +1,5 @@
-import { getLocale } from '$lib/paraglide/runtime';
-import { resolveDisplayLocale } from '$lib/utils/format/dateTime';
+import { getLocale } from '#lib/paraglide/runtime.js';
+import { resolveDisplayLocale } from '#lib/utils/format/dateTime.ts';
 
 /**
  * Gibt die Anzahl der Tage in einem Jahr zurück (365 oder 366 bei Schaltjahr).

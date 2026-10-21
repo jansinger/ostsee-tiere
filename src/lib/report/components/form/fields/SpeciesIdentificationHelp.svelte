@@ -1,17 +1,17 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import type { InfoVariant } from '$lib/components/info/variant';
-	import { speciesGroups } from '$lib/report/formOptions/species';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import type { InfoVariant } from '#lib/components/info/variant.ts';
+	import { speciesGroups } from '#lib/report/formOptions/species.ts';
 	import {
 		getFrequencyLabels,
 		getObservabilityLabels,
 		speciesIdentification,
 		type FrequencyLevel,
 		type Observability
-	} from '$lib/report/formOptions/speciesIdentification';
-	import type { SightingFormData } from '$lib/types';
-	import { sanitizeHtml } from '$lib/utils/sanitize';
+	} from '#lib/report/formOptions/speciesIdentification.ts';
+	import type { SightingFormData } from '#lib/types/index.ts';
+	import { sanitizeHtml } from '#lib/utils/sanitize.ts';
 
 	let {
 		currentValue = undefined,

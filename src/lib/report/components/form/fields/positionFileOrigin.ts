@@ -19,8 +19,8 @@
  * Die Mengen-Regeln stehen als pure Funktionen darüber, damit sie ohne Browser
  * testbar sind.
  */
-import { createLogger } from '$lib/logger';
-import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '$lib/storage/localStorage';
+import { createLogger } from '#lib/logger.ts';
+import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '#lib/storage/localStorage.ts';
 
 const logger = createLogger('positionFileOrigin');
 

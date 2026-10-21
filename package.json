@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"type": "module",
 	"engines": {
-		"node": "^20.19.0 || ^22.12.0 || >=24.0.0"
+		"node": "^22.17.0 || >=24.0.0"
 	},
 	"scripts": {
 		"dev": "npm run certs:setup && npm run i18n:compile && vite dev",
@@ -98,9 +98,10 @@
 		"@inlang/paraglide-js": "^2.25.4",
 		"@playwright/test": "^1.64.1",
 		"@scalar/sveltekit": "^0.3.30",
-		"@sveltejs/adapter-node": "^5.5.7",
-		"@sveltejs/adapter-vercel": "^6.3.4",
-		"@sveltejs/kit": "^2.70.3",
+		"@sveltejs/adapter-node": "^6.0.0",
+		"@sveltejs/adapter-vercel": "^7.0.0",
+		"@sveltejs/kit": "^3.0.0",
+		"@sveltejs/load-config": "^0.2.2",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@tailwindcss/vite": "^4.3.3",
 		"@types/html-to-text": "^9.0.4",
@@ -160,7 +161,10 @@
 		"@rollup/rollup-linux-x64-gnu": "4.64.8"
 	},
 	"overrides": {
-		"cookie": "^0.7.2",
 		"axios": "^1.16.1"
+	},
+	"imports": {
+		"#lib": "./src/lib/index.ts",
+		"#lib/*": "./src/lib/*"
 	}
 }

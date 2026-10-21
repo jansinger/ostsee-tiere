@@ -4,7 +4,7 @@
  * Testet den lokalen Dateispeicher mit besonderem Fokus auf
  * Sicherheit (Path Traversal) und Edge Cases
  */
-import type { UploadOptions } from '$lib/types';
+import type { UploadOptions } from '#lib/types/index.ts';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Readable } from 'stream';
@@ -26,7 +26,7 @@ vi.mock('@paralleldrive/cuid2', () => ({
 	createId: vi.fn(() => 'test-id-123')
 }));
 
-vi.mock('$lib/server/exifUtils', () => ({
+vi.mock('#lib/server/exifUtils', () => ({
 	readImageExifData: vi.fn(() =>
 		Promise.resolve({
 			latitude: 54.123,
@@ -37,7 +37,7 @@ vi.mock('$lib/server/exifUtils', () => ({
 	)
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({
 		debug: vi.fn(),
 		warn: vi.fn(),
@@ -46,7 +46,7 @@ vi.mock('$lib/logger.server', () => ({
 	}))
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: vi.fn(() => ({
 		debug: vi.fn(),
 		warn: vi.fn(),

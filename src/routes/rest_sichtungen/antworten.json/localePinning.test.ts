@@ -39,7 +39,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
  * kennt. Hier fiel es nur deshalb noch nicht als Fehlschlag auf, weil der erste
  * Test knapp unter der Grenze blieb.
  */
-import { baseLocale, overwriteGetLocale } from '$lib/paraglide/runtime';
+import { baseLocale, overwriteGetLocale } from '#lib/paraglide/runtime.js';
 import { GET } from './+server';
 
 const DIVERGED_EN_LABEL = 'TEST-ONLY-DIVERGED-ENGLISH-LABEL';
@@ -51,8 +51,8 @@ function divergeInEnglish(
 		options?.locale === 'en' ? DIVERGED_EN_LABEL : actualFn(inputs, options);
 }
 
-vi.mock('$lib/paraglide/messages', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/paraglide/messages')>();
+vi.mock('#lib/paraglide/messages.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/paraglide/messages.js')>();
 	return {
 		...actual,
 		// Zwingt die englische Botschaft auseinander, egal was messages/en.json

@@ -2,14 +2,14 @@
  * Frontend sighting interface
  */
 
-import type { AnimalBehavior } from '$lib/report/formOptions/animalBehavior.js';
-import type { BoatDrive } from '$lib/report/formOptions/boatDrive.js';
-import type { Distance } from '$lib/report/formOptions/distance.js';
-import type { Distribution } from '$lib/report/formOptions/distribution.js';
-import type { SeaState } from '$lib/report/formOptions/seaState.js';
-import type { SightingFrom } from '$lib/report/formOptions/sightingFrom.js';
-import type { Species } from '$lib/report/formOptions/species.js';
-import type { Visibility } from '$lib/report/formOptions/visibility.js';
+import type { AnimalBehavior } from '#lib/report/formOptions/animalBehavior.ts';
+import type { BoatDrive } from '#lib/report/formOptions/boatDrive.ts';
+import type { Distance } from '#lib/report/formOptions/distance.ts';
+import type { Distribution } from '#lib/report/formOptions/distribution.ts';
+import type { SeaState } from '#lib/report/formOptions/seaState.ts';
+import type { SightingFrom } from '#lib/report/formOptions/sightingFrom.ts';
+import type { Species } from '#lib/report/formOptions/species.ts';
+import type { Visibility } from '#lib/report/formOptions/visibility.ts';
 import type { SightingModel } from './sighting.js';
 import type { UploadedFileInfo } from './UploadedFile.js';
 

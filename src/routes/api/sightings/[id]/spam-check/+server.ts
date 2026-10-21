@@ -1,10 +1,10 @@
-import { createLogger } from '$lib/logger.server';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { db } from '$lib/server/db';
-import { sightings } from '$lib/server/db/schema';
-import { detectSpamIndicators } from '$lib/server/spam/spamDetector';
-import type { SpamCheckResponse, SpamDetectionInput, SpamStoredFinding } from '$lib/types/spam';
-import { toStoredIndicators } from '$lib/types/spam';
+import { createLogger } from '#lib/logger.server.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightings } from '#lib/server/db/schema.ts';
+import { detectSpamIndicators } from '#lib/server/spam/spamDetector.ts';
+import type { SpamCheckResponse, SpamDetectionInput, SpamStoredFinding } from '#lib/types/spam.ts';
+import { toStoredIndicators } from '#lib/types/spam.ts';
 import { error, isHttpError, json, type RequestHandler } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 

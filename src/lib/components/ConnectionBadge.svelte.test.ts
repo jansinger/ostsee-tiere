@@ -1,4 +1,4 @@
-import { connection } from '$lib/stores/connectionState.svelte';
+import { connection } from '#lib/stores/connectionState.svelte.ts';
 import { tick } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';

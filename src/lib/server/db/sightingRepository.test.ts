@@ -8,11 +8,11 @@ import {
 	NAME_CONSENT_VERSION,
 	PRIVACY_CONSENT_VERSION,
 	SHIP_NAME_CONSENT_VERSION
-} from '$lib/form/consent/consentVersions';
-import { MEDIA_CONSENT_VERSION } from '$lib/form/consent/mediaConsentVersion';
-import { db } from '$lib/server/db';
-import * as schema from '$lib/server/db/schema';
-import type { UploadedFileInfo } from '$lib/types';
+} from '#lib/form/consent/consentVersions.ts';
+import { MEDIA_CONSENT_VERSION } from '#lib/form/consent/mediaConsentVersion.ts';
+import { db } from '#lib/server/db/index.ts';
+import * as schema from '#lib/server/db/schema.ts';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	loadSightingFiles,
@@ -22,7 +22,7 @@ import {
 } from './sightingRepository';
 
 // Mock dependencies
-vi.mock('$lib/server/db', () => {
+vi.mock('#lib/server/db/index.ts', () => {
 	const db: Record<string, any> = {
 		insert: vi.fn(),
 		update: vi.fn(),
@@ -69,7 +69,7 @@ vi.mock('./mapFormToSighting', () => ({
 	})
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	isCloudStorage: vi.fn(() => false),
 	getStorageProvider: vi.fn(() => ({
 		getUrl: vi.fn((path) => `/uploads/${path}`),
@@ -88,12 +88,12 @@ const { readImageExifDataMock } = vi.hoisted(() => ({
 	)
 }));
 
-vi.mock('$lib/server/media/exifUtils', () => ({
+vi.mock('#lib/server/media/exifUtils.ts', () => ({
 	isImageFile: vi.fn((mimeType: string | undefined) => mimeType?.startsWith('image/')),
 	readImageExifData: readImageExifDataMock
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({
 		info: vi.fn(),
 		debug: vi.fn(),
@@ -102,7 +102,7 @@ vi.mock('$lib/logger.server', () => ({
 	}))
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: vi.fn(() => ({
 		info: vi.fn(),
 		debug: vi.fn(),

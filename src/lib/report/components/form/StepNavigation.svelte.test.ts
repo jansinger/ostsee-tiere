@@ -1,11 +1,11 @@
 import { render } from 'vitest-browser-svelte';
 import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { key as formContextKey } from '$lib/report/formContext';
-import { createForm } from '$lib/form/createForm';
-import { initialFormState } from '$lib/report/formConfig';
-import { clearAllToasts, toasts } from '$lib/stores/toastState.svelte';
-import type { FormContext, SightingFormData } from '$lib/types';
+import { key as formContextKey } from '#lib/report/formContext.ts';
+import { createForm } from '#lib/form/createForm.ts';
+import { initialFormState } from '#lib/report/formConfig.ts';
+import { clearAllToasts, toasts } from '#lib/stores/toastState.svelte.ts';
+import type { FormContext, SightingFormData } from '#lib/types/index.ts';
 import StepNavigation from './StepNavigation.svelte';
 
 /**
@@ -42,7 +42,7 @@ describe('StepNavigation — Validierungs-Toast', () => {
 	});
 
 	it('zeigt den englischen Button-Text, wenn die aktive Locale en ist', async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		try {

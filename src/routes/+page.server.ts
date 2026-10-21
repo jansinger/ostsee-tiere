@@ -1,4 +1,4 @@
-import { issueFormToken } from '$lib/server/spam/formToken';
+import { issueFormToken } from '#lib/server/spam/formToken.ts';
 import type { PageServerLoad } from './$types';
 
 /**

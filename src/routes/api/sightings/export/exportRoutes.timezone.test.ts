@@ -1,23 +1,23 @@
 /**
  * Naht-Tests: Die Export-Routen müssen die getesteten Berlin-Exporter aus
- * `$lib/server/export/*` benutzen — nicht eigene Inline-Implementierungen, die
+ * `#lib/server/export/*` benutzen — nicht eigene Inline-Implementierungen, die
  * rohe `Date`-Objekte bzw. UTC-ISO-Strings ausgeben.
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
-vi.mock('$lib/server/auth/auth', () => ({ requireUserRole: vi.fn() }));
+vi.mock('#lib/server/auth/auth.ts', () => ({ requireUserRole: vi.fn() }));
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
 const { mockOrderBy } = vi.hoisted(() => ({ mockOrderBy: vi.fn() }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -28,7 +28,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: {
 		id: 'id',
 		sightingDate: 'sightingDate',
@@ -44,10 +44,10 @@ import { GET as csvGET } from './csv/+server';
 import { GET as jsonGET } from './json/+server';
 import { GET as kmlGET } from './kml/+server';
 import { GET as xmlGET } from './xml/+server';
-import { generateCsvData } from '$lib/server/export/csvExport';
-import { generateKmlData } from '$lib/server/export/kmlExport';
-import { generateXmlData } from '$lib/server/export/xmlExport';
-import type { FrontendSighting } from '$lib/types/index';
+import { generateCsvData } from '#lib/server/export/csvExport.ts';
+import { generateKmlData } from '#lib/server/export/kmlExport.ts';
+import { generateXmlData } from '#lib/server/export/xmlExport.ts';
+import type { FrontendSighting } from '#lib/types/index.ts';
 
 /** 15.06.2024 18:30 UTC = 20:30 Berlin (MESZ). */
 const SIGHTING_ROW = {

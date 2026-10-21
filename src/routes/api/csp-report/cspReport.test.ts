@@ -5,11 +5,11 @@ const { mockLoggerWarn, mockEnforceRateLimit } = vi.hoisted(() => ({
 	mockEnforceRateLimit: vi.fn().mockReturnValue({ remaining: 10, resetTime: Date.now() + 1000 })
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: mockLoggerWarn, error: vi.fn() })
 }));
 
-vi.mock('$lib/server/middleware/rateLimit', () => ({
+vi.mock('#lib/server/middleware/rateLimit.ts', () => ({
 	enforceRateLimit: mockEnforceRateLimit,
 	createRateLimitIdentifier: vi.fn().mockReturnValue('ip:10.0.0.1')
 }));

@@ -1,35 +1,35 @@
 <script lang="ts">
 	import { goto, invalidateAll, preloadData } from '$app/navigation';
 	import { page } from '$app/state';
-	import AdminSightingView from '$lib/components/admin/AdminSightingView.svelte';
+	import AdminSightingView from '#lib/components/admin/AdminSightingView.svelte';
 	import { carryReturnParams, returnTarget } from './tableReturnUrl';
 	import {
 		deleteSighting,
 		sendTestEmail,
 		TEST_EMAIL_HINT
-	} from '$lib/components/admin/sightingActions';
-	import { planAdvance } from '$lib/components/admin/queueAdvance';
-	import { queueHref } from '$lib/components/admin/sightingQueue';
-	import SightingQueueNav from '$lib/components/admin/SightingQueueNav.svelte';
+	} from '#lib/components/admin/sightingActions.ts';
+	import { planAdvance } from '#lib/components/admin/queueAdvance.ts';
+	import { queueHref } from '#lib/components/admin/sightingQueue.ts';
+	import SightingQueueNav from '#lib/components/admin/SightingQueueNav.svelte';
 	import {
 		getSightingStatus,
 		SIGHTING_STATUS_PRESENTATION,
 		SIGHTING_STATUS_UNDO_MS,
 		verdictToStatus
-	} from '$lib/components/admin/sightingStatus';
-	import { submitVerdict, type SightingVerdict } from '$lib/components/admin/sightingVerdict';
-	import { createUndoMemory } from '$lib/components/admin/undoMemory.svelte';
+	} from '#lib/components/admin/sightingStatus.ts';
+	import { submitVerdict, type SightingVerdict } from '#lib/components/admin/sightingVerdict.ts';
+	import { createUndoMemory } from '#lib/components/admin/undoMemory.svelte.ts';
 	import {
 		resolveInboxShortcut,
 		type InboxShortcutAction
-	} from '$lib/components/admin/adminTriageShortcuts';
-	import InboxShortcutHelp from '$lib/components/admin/InboxShortcutHelp.svelte';
-	import Icon from '$lib/components/Icon.svelte';
+	} from '#lib/components/admin/adminTriageShortcuts.ts';
+	import InboxShortcutHelp from '#lib/components/admin/InboxShortcutHelp.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 	import { onDestroy } from 'svelte';
-	import DeleteDialog from '$lib/components/ui/Dialog/DeleteDialog.svelte';
-	import { toast } from '$lib/stores/toastState.svelte';
-	import type { SpamCheckResponse } from '$lib/types/spam';
-	import SpamFinding from '$lib/components/admin/SpamFinding.svelte';
+	import DeleteDialog from '#lib/components/ui/Dialog/DeleteDialog.svelte';
+	import { toast } from '#lib/stores/toastState.svelte.ts';
+	import type { SpamCheckResponse } from '#lib/types/spam.ts';
+	import SpamFinding from '#lib/components/admin/SpamFinding.svelte';
 	import {
 		getSpamDrift,
 		getSpamRisk,
@@ -37,7 +37,7 @@
 		SPAM_DRIFT_PRESENTATION,
 		SPAM_RISK_PRESENTATION,
 		type SpamRisk
-	} from '$lib/components/admin/spamScorePresentation';
+	} from '#lib/components/admin/spamScorePresentation.ts';
 
 	let { data } = $props();
 

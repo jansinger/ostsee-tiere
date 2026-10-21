@@ -26,8 +26,8 @@ import postgres from 'postgres';
  * den hat, braucht keine Admin-Session mehr, um Schaden anzurichten. Das ist die
  * bewusst gezogene Grenze aus §5.6 der Spec.
  *
- * **Warum ein eigener `postgres`-Client** statt `$lib/server/db`: Playwright läuft
- * als gewöhnliches Node-Programm ohne SvelteKit-Bundler — also ohne `$lib`-Alias
+ * **Warum ein eigener `postgres`-Client** statt `#lib/server/db/index.js`: Playwright läuft
+ * als gewöhnliches Node-Programm ohne SvelteKit-Bundler — also ohne `#lib`-Alias
  * und ohne `$env/dynamic/private`. Präzedenz dafür steht in `.github/workflows/ci.yml`,
  * wo der PostGIS-Check bewusst das `postgres`-Paket statt `psql` nutzt.
  *

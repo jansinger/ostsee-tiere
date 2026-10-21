@@ -11,6 +11,7 @@
  * bisher verloren. Am 2026-07-31 war ein fehlgeschlagener `/admin`-Load aus dem Log
  * deshalb nicht rekonstruierbar.
  */
+import type { CaughtError } from '@sveltejs/kit/hooks';
 
 /**
  * Maximale Anzahl an `cause`-Ebenen unterhalb des Wurzelfehlers.
@@ -309,6 +310,32 @@ export function buildErrorLogFields(
 export const MAX_REQUEST_HEADER_LENGTH = 300;
 
 /** Was `handleError` über die Anfrage weiß. `null`, wo es nichts zu wissen gibt. */
+/**
+ * Was `handleError` aus einem von SvelteKit gefangenen Fehler macht.
+ *
+ * SvelteKit 3 reicht jeden Fehler an `handleError` durch und unterscheidet über
+ * `kind`. SvelteKit 2 rief den Hook für bewusst geworfene Fehler (`error(400, '…')`)
+ * gar nicht auf — ihre Meldung erreichte den Client unverändert, geloggt wurde
+ * nichts. `null` bildet genau das nach: Der Hook kehrt ohne Rückgabe zurück, und
+ * SvelteKit verwendet den Body aus `error(...)`.
+ *
+ * Für alle übrigen Arten liefert die Funktion Status und Meldung, wie SvelteKit 2
+ * sie dem Hook als eigene Parameter übergab; unbekannte Fehler sind 500.
+ */
+export function caughtErrorOutcome(
+	caught: CaughtError
+): { status: number; message: string } | null {
+	switch (caught.kind) {
+		case 'app':
+			return null;
+		case 'framework':
+		case 'validation':
+			return { status: caught.error.status, message: caught.error.message };
+		case 'unknown':
+			return { status: 500, message: 'Internal Error' };
+	}
+}
+
 export interface ErrorLogEntryInput {
 	error: unknown;
 	errorId: string;

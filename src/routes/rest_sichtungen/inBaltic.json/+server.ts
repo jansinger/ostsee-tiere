@@ -10,9 +10,9 @@
  * @since 1.10.0
  */
 
-import { createLogger } from '$lib/logger.server';
-import { checkBalticSeaFile } from '$lib/server/geo/checkBalticSeaFile';
-import { getClientIp } from '$lib/server/utils/getClientIp';
+import { createLogger } from '#lib/logger.server.ts';
+import { checkBalticSeaFile } from '#lib/server/geo/checkBalticSeaFile.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 const logger = createLogger('api:legacy:inBaltic:pdf-compliant');

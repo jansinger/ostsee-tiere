@@ -10,7 +10,7 @@
  * und nicht hinter einer `import.meta.url`-Bedingung — unter einem Loader ist
  * `process.argv[1]` der Loader, nie diese Datei, und die Bedingung wäre nie
  * wahr. Anders als der Import braucht dieses Skript aber weder Datenbank noch
- * `$lib/server/*`, es läuft deshalb unter blankem `node`.
+ * `#lib/server/*`, es läuft deshalb unter blankem `node`.
  */
 import {
 	erstelleDateiSpeicher,

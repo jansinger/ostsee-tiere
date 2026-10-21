@@ -1,13 +1,13 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { getFormContext } from '$lib/report/formContext';
-	import { BoatDriveEnum, getPublicBoatDriveOptions } from '$lib/report/formOptions/boatDrive';
-	import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
+	import * as m from '#lib/paraglide/messages.js';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { BoatDriveEnum, getPublicBoatDriveOptions } from '#lib/report/formOptions/boatDrive.ts';
+	import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
 	import { slide } from 'svelte/transition';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
 	import SectionCard from './SectionCard.svelte';
-	import { detailsSectionTitle, sightingFromQuestion } from '$lib/report/wording';
-	import { isDeadFinding } from '$lib/report/formConfig';
+	import { detailsSectionTitle, sightingFromQuestion } from '#lib/report/wording.ts';
+	import { isDeadFinding } from '#lib/report/formConfig.ts';
 	import {
 		NOT_YET_TRACKED,
 		isBoatSightingFrom,

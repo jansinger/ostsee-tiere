@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkBalticSeaFile } from '$lib/server/geo/checkBalticSeaFile';
+import { checkBalticSeaFile } from '#lib/server/geo/checkBalticSeaFile.ts';
 
 /**
  * Fachliche Referenzpunkte für die bereinigte Ostsee-Geometrie.

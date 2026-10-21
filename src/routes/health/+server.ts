@@ -9,9 +9,9 @@
  * - HTTP 503: Service is unhealthy (database down, etc.)
  */
 
-import { env } from '$env/dynamic/private';
-import { testDatabaseConnection } from '$lib/server/db';
-import { getBuildInfo } from '$lib/server/startup/versionInfo';
+import { env } from '#lib/server/env.ts';
+import { testDatabaseConnection } from '#lib/server/db/index.ts';
+import { getBuildInfo } from '#lib/server/startup/versionInfo.ts';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

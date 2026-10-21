@@ -30,20 +30,16 @@
  * Typfehler zurück.
  */
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-
-const svelteConfigPath = fileURLToPath(new URL('../../../../svelte.config.js', import.meta.url));
+import { SVELTEKIT_OPTIONS } from '../../../../sveltekit.options.ts';
 
 describe('CSP für Medien', () => {
 	it('erlaubt blob: als Medienquelle', () => {
-		const source = readFileSync(svelteConfigPath, 'utf-8');
-		const match = source.match(/['"]media-src['"]\s*:\s*\[([^\]]*)\]/);
+		// Seit SvelteKit 3 steht die CSP in `sveltekit.options.ts` (vorher svelte.config.js)
+		// und Schlüsselwörter ohne eigene Anführungszeichen — Kit setzt sie im Header.
+		const mediaSrc = SVELTEKIT_OPTIONS.csp.directives['media-src'];
 
-		expect(match, 'media-src fehlt — default-src greift und blockiert blob:').not.toBeNull();
-
-		const mediaSrc = match?.[1] ?? '';
-		expect(mediaSrc).toContain("'self'");
+		expect(mediaSrc, 'media-src fehlt — default-src greift und blockiert blob:').toBeDefined();
+		expect(mediaSrc).toContain('self');
 		expect(mediaSrc).toContain('blob:');
 		expect(mediaSrc).toContain('data:');
 	});

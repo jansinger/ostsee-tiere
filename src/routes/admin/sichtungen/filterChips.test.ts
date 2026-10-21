@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { DEAD_FINDING_PRESENTATION } from '$lib/components/admin/deadFinding';
-import { SIGHTING_STATUS_PRESENTATION } from '$lib/components/admin/sightingStatus';
-import { getEntryChannelOptions } from '$lib/report/formOptions/entryChannel';
-import { BALTIC_SEA_STATUS_PRESENTATION } from '$lib/utils/geo/balticSeaStatus';
+import { DEAD_FINDING_PRESENTATION } from '#lib/components/admin/deadFinding.ts';
+import { SIGHTING_STATUS_PRESENTATION } from '#lib/components/admin/sightingStatus.ts';
+import { getEntryChannelOptions } from '#lib/report/formOptions/entryChannel.ts';
+import { BALTIC_SEA_STATUS_PRESENTATION } from '#lib/utils/geo/balticSeaStatus.ts';
 import type { FilterParams } from './activeFilters';
-import { AUFNAHME_LABEL, MELDEART_LABEL } from '$lib/components/admin/filterLabels';
+import { AUFNAHME_LABEL, MELDEART_LABEL } from '#lib/components/admin/filterLabels.ts';
 import { buildFilterChips, removeFilterParam } from './filterChips';
 
 /**

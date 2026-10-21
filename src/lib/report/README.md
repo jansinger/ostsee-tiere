@@ -37,7 +37,7 @@ src/lib/report/
 ├── formConfig.ts                    # formStepsConfig, getFormSteps, initialFormState, USER_CONTACT_FIELDS
 ├── formContext.ts                   # set/getFormContext (Symbol key)
 ├── reportKind.ts                    # ReportKind state machine (entry page, before the form)
-├── types.ts                         # @deprecated re-export shim → import from $lib/types
+├── types.ts                         # @deprecated re-export shim → import from #lib/types
 ├── formOptions/                     # Enum + option helpers (16 files)
 └── components/
     ├── ReportKindChoice.svelte      # Entry page: "Was möchten Sie melden?"
@@ -165,7 +165,7 @@ Datalist suggestions are provided by `BaseInput.svelte` when a text field has op
 
 Handled in `ModernReportForm.svelte` by two separate `$effect`s — the split is deliberate,
 a shared effect would fire twice per step change. Always go through
-[`$lib/storage/localStorage`](../storage/localStorage.ts), never `localStorage` directly;
+[`#lib/storage/localStorage`](../storage/localStorage.ts), never `localStorage` directly;
 GDPR details in [`.claude/rules/browser-storage.md`](../../../.claude/rules/browser-storage.md).
 
 | Data               | Key                 | Backend          | Notes                                |
@@ -213,8 +213,8 @@ Step changes move focus to the step heading (`scrollAndFocusStep` in
 3. Render it with `<FormField name="…" />` in the appropriate section component.
 
 **No type to update:** `SightingFormData` is `yup.InferType<typeof sightingSchema>`
-([`$lib/types/Form.ts`](../types/Form.ts)), so the type follows from step 1 automatically.
-Import types from `$lib/types`, not from the deprecated `report/types.ts` shim.
+([`#lib/types/Form.ts`](../types/Form.ts)), so the type follows from step 1 automatically.
+Import types from `#lib/types`, not from the deprecated `report/types.ts` shim.
 
 New field _types_ go into `FieldRenderer` plus a `Base*` component — never into a step or
 section file.

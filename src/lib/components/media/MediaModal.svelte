@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import type { SightingFile } from '$lib/types';
-	import type { UploadedFileInfo } from '$lib/types/';
-	import { formatLocalDateTime } from '$lib/utils/format/dateTime';
-	import { formatLocation } from '$lib/utils/format/formatLocation';
-	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import type { SightingFile } from '#lib/types/index.ts';
+	import type { UploadedFileInfo } from '#lib/types//index.ts';
+	import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
+	import { formatLocation } from '#lib/utils/format/formatLocation.ts';
+	import Icon from '#lib/components/Icon.svelte';
 
 	let {
 		file,

@@ -1,6 +1,6 @@
-import { createLogger } from '$lib/logger.server';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { ServerConfigService } from '$lib/services/configService';
+import { createLogger } from '#lib/logger.server.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { ServerConfigService } from '#lib/services/configService.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

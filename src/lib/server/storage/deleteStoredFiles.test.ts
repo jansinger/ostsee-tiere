@@ -15,7 +15,7 @@ vi.mock('./factory', () => ({
 	getStorageProvider: mockGetStorageProvider
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

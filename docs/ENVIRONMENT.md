@@ -19,6 +19,26 @@ Complete reference for all environment variables used in the Ostsee-Tiere platfo
 
 ---
 
+## Declaring variables in `src/env.ts` (SvelteKit 3)
+
+Since SvelteKit 3 the app only sees environment variables that are declared in
+`src/env.ts` (`defineEnvVars`). Everything else is `undefined` in the app — even if it
+is set in the container or in `.env`. The build does not fail. When this project
+switched to SvelteKit 3, `DATABASE_POSTGRES_URL` arrived empty this way and every page
+reported "Database is not configured".
+
+- **Adding a variable:** declare it in `src/env.ts` (with `schema: asIs`, which keeps a
+  missing variable `undefined` exactly like `$env/dynamic/private` did) **and** document
+  it here.
+- **Reading a variable:** `import { env } from '#lib/server/env.ts'` (public ones:
+  `publicEnv` from the same module). The module turns the per-variable exports of
+  `$app/env/private` / `$app/env/public` back into the `env` object the code has always
+  used.
+- **Exception:** standalone scripts (`src/tools/`, `scripts/`) run outside SvelteKit and
+  keep reading `process.env` directly.
+
+---
+
 ## Required Variables
 
 These variables **MUST** be set for the application to function:
@@ -801,7 +821,7 @@ These are read by the build and dev tooling rather than by the running applicati
 **Type**: `boolean` (string comparison against `"true"`)
 **Required**: No
 **Default**: unset → Vercel adapter
-**Description**: Selects the SvelteKit adapter in `svelte.config.js`. Only the exact
+**Description**: Selects the SvelteKit adapter in `sveltekit.options.ts`. Only the exact
 string `true` switches to `@sveltejs/adapter-node`; any other value keeps the Vercel
 adapter. The Docker image sets it (`Dockerfile`), so container builds always produce the
 Node build. Set it at **build** time — changing it for an already-built image has no

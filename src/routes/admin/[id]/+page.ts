@@ -1,8 +1,8 @@
-import { HERKUNFT_EINGANG, HERKUNFT_PARAMETER } from '$lib/components/admin/adminReturn';
-import { resolveQueueOrder } from '$lib/components/admin/queueOrder';
-import type { SightingQueue } from '$lib/components/admin/sightingQueue';
-import type { SightingStatusLogEntry } from '$lib/components/admin/sightingStatusLog';
-import type { ReporterHistory } from '$lib/types/reporterHistory';
+import { HERKUNFT_EINGANG, HERKUNFT_PARAMETER } from '#lib/components/admin/adminReturn.ts';
+import { resolveQueueOrder } from '#lib/components/admin/queueOrder.ts';
+import type { SightingQueue } from '#lib/components/admin/sightingQueue.ts';
+import type { SightingStatusLogEntry } from '#lib/components/admin/sightingStatusLog.ts';
+import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 import type { PageLoad } from './$types';
 
 type FetchFn = typeof fetch;

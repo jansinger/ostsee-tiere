@@ -2,7 +2,7 @@
  * Type definitions for sighting files
  */
 
-import type { sightingFiles } from '$lib/server/db/schema';
+import type { sightingFiles } from '#lib/server/db/schema.ts';
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import type { ExifData } from './ExifData';
 

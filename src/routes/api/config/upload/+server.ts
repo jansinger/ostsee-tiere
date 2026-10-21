@@ -1,7 +1,10 @@
-import { PUBLIC_UPLOAD_ACCEPT, PUBLIC_UPLOAD_ALLOWED_TYPES } from '$lib/constants/uploadDefaults';
-import { createLogger } from '$lib/logger.server';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { ServerConfigService } from '$lib/services/configService';
+import {
+	PUBLIC_UPLOAD_ACCEPT,
+	PUBLIC_UPLOAD_ALLOWED_TYPES
+} from '#lib/constants/uploadDefaults.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { ServerConfigService } from '#lib/services/configService.ts';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

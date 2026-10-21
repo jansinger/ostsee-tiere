@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import { loadUserContactData, saveUserContactData } from '$lib/storage/localStorage';
-import type { UserContactData } from '$lib/types';
-import { clearAllToasts, getToasts } from '$lib/stores/toastState.svelte';
-import type { SightingFormData, UploadedFileInfo } from '$lib/types';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import { loadUserContactData, saveUserContactData } from '#lib/storage/localStorage.ts';
+import type { UserContactData } from '#lib/types/index.ts';
+import { clearAllToasts, getToasts } from '#lib/stores/toastState.svelte.ts';
+import type { SightingFormData, UploadedFileInfo } from '#lib/types/index.ts';
 import Step4Contact from './Step4Contact.svelte';
 
 /**
@@ -262,7 +262,7 @@ describe('Step4Contact — mediaConsent steht in der Einwilligungsgruppe, nicht 
  *
  * Gemockt wird hier nichts: Der Browser-Lauf hat echten Storage (den
  * `vitest-setup-client.ts` vor jedem Test leert) und einen echten Toast-Store.
- * Ein Mock auf `$lib/storage/localStorage` müsste alle Exporte nachbilden, die
+ * Ein Mock auf `#lib/storage/localStorage.js` müsste alle Exporte nachbilden, die
  * die Komponente *und* `resetSavedContactData` benutzen — geprüft wird so
  * stattdessen die Wirkung: Sind die Daten hinterher wirklich weg?
  */

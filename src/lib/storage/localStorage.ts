@@ -14,7 +14,7 @@
  */
 
 import { browser } from '$app/env';
-import type { UserContactData } from '$lib/types';
+import type { UserContactData } from '#lib/types/index.ts';
 
 /**
  * Default-Objekt für UserContactData — dient als Whitelist-Template

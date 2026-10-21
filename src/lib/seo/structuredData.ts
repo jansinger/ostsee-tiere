@@ -27,7 +27,7 @@
  * Export-Endpunkt), aber nicht von hier aus. Bis dahin ist die ehrliche
  * Aussage die kleinere.
  */
-import type { Locale } from '$lib/paraglide/runtime';
+import type { Locale } from '#lib/paraglide/runtime.js';
 
 /** Ein JSON-LD-Knoten. Werte sind bewusst weit typisiert — schema.org ist es auch. */
 export interface JsonLdKnoten {

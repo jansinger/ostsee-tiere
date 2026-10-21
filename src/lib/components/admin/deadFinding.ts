@@ -3,12 +3,12 @@
  *
  * Eine Quelle für Wort und Icon der drei Anzeigestellen — Sichtungstabelle,
  * Mobilkarte und Detailansicht —, nach dem Vorbild von
- * `BALTIC_SEA_STATUS_PRESENTATION` (`$lib/utils/geo/balticSeaStatus.ts`). Ohne
+ * `BALTIC_SEA_STATUS_PRESENTATION` (`#lib/utils/geo/balticSeaStatus.ts`). Ohne
  * sie liefen Beschriftung und Icon an drei Stellen auseinander, sobald eine
  * davon angefasst wird.
  *
  * Wort und Icon sind bewusst identisch zur Einstiegsseite des Meldeformulars
- * (`OPTIONS` in `$lib/report/components/ReportKindChoice.svelte`): Melder und
+ * (`OPTIONS` in `#lib/report/components/ReportKindChoice.svelte`): Melder und
  * Admin sollen dieselbe Sache gleich benennen.
  *
  * **Nur der Totfund wird ausgezeichnet.** Für die Lebendsichtung gibt es hier

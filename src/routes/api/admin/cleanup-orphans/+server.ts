@@ -12,22 +12,22 @@
  * Vorgabe ist die Vorschau; gelöscht wird nur mit `mode=execute`.
  * Entwurf: docs/archive/AUFRAEUM_ENDPUNKT_ENTWURF_2026-07-28.md
  */
-import { env } from '$env/dynamic/private';
-import { ORPHAN_RETENTION_HOURS } from '$lib/constants/uploadRetention';
-import { createLogger } from '$lib/logger.server';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { isAdminUser } from '$lib/server/auth/auth';
-import { deleteExpiredSessions } from '$lib/server/auth/sessionRepository';
-import { MIN_TOKEN_LENGTH, isValidCleanupToken } from '$lib/server/media/cleanupAuth';
-import { createDbPorts } from '$lib/server/media/cleanupPorts';
-import { cleanupOrphans } from '$lib/server/media/orphanCleanup';
+import { env } from '#lib/server/env.ts';
+import { ORPHAN_RETENTION_HOURS } from '#lib/constants/uploadRetention.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
+import { deleteExpiredSessions } from '#lib/server/auth/sessionRepository.ts';
+import { MIN_TOKEN_LENGTH, isValidCleanupToken } from '#lib/server/media/cleanupAuth.ts';
+import { createDbPorts } from '#lib/server/media/cleanupPorts.ts';
+import { cleanupOrphans } from '#lib/server/media/orphanCleanup.ts';
 import {
 	RATE_LIMITS,
 	buildRateLimitHeaders,
 	createRateLimitIdentifier,
 	enforceRateLimit
-} from '$lib/server/middleware/rateLimit';
-import { getClientIp } from '$lib/server/utils/getClientIp';
+} from '#lib/server/middleware/rateLimit.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -127,7 +127,10 @@ export const POST: RequestHandler = async ({ request, url, locals, getClientAddr
 		}
 
 		logger.info({ ...report, sessionsRemoved, execute }, 'Aufräum-Lauf abgeschlossen');
-		return json({ retentionHours: retentionMs / HOUR_IN_MS, ...report, sessionsRemoved }, { headers });
+		return json(
+			{ retentionHours: retentionMs / HOUR_IN_MS, ...report, sessionsRemoved },
+			{ headers }
+		);
 	} catch (error) {
 		logger.error({ error }, 'Aufräum-Lauf fehlgeschlagen');
 		return json({ error: 'Aufräumen fehlgeschlagen' }, { status: 500, headers });

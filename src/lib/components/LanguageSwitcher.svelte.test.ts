@@ -1,6 +1,6 @@
 import { render } from 'vitest-browser-svelte';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { LOCALE_COOKIE } from '$lib/i18n/localeCookie';
+import { LOCALE_COOKIE } from '#lib/i18n/localeCookie.ts';
 
 /**
  * `page` aus `$app/state` ist außerhalb eines Routing-Kontexts nicht

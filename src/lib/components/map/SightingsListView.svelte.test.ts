@@ -2,7 +2,7 @@ import { render } from 'vitest-browser-svelte';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import SightingsListView from './SightingsListView.svelte';
-import type { SightingListEntry } from '$lib/map/listViewUtils';
+import type { SightingListEntry } from '#lib/map/listViewUtils.ts';
 
 /**
  * Tests für SightingsListView (Befund K3): der Vertrag der barrierefreien

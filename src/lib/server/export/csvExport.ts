@@ -12,21 +12,21 @@
  * @since 1.0.0
  */
 
-import { getAnimalBehaviorLabel } from '$lib/report/formOptions/animalBehavior';
-import { getBoatDriveLabel } from '$lib/report/formOptions/boatDrive';
-import { getDistanceLabel } from '$lib/report/formOptions/distance';
-import { getDistributionLabel } from '$lib/report/formOptions/distribution';
-import { getSeaStateLabel } from '$lib/report/formOptions/seaState';
-import { getSightingFromLabel } from '$lib/report/formOptions/sightingFrom';
-import { getSpeciesLabel } from '$lib/report/formOptions/species';
-import { getVisibilityLabel } from '$lib/report/formOptions/visibility';
-import { baseLocale } from '$lib/paraglide/runtime';
-import type { FrontendSighting } from '$lib/types/index';
-import { formatLocalDateTime } from '$lib/utils/format/dateTime';
+import { getAnimalBehaviorLabel } from '#lib/report/formOptions/animalBehavior.ts';
+import { getBoatDriveLabel } from '#lib/report/formOptions/boatDrive.ts';
+import { getDistanceLabel } from '#lib/report/formOptions/distance.ts';
+import { getDistributionLabel } from '#lib/report/formOptions/distribution.ts';
+import { getSeaStateLabel } from '#lib/report/formOptions/seaState.ts';
+import { getSightingFromLabel } from '#lib/report/formOptions/sightingFrom.ts';
+import { getSpeciesLabel } from '#lib/report/formOptions/species.ts';
+import { getVisibilityLabel } from '#lib/report/formOptions/visibility.ts';
+import { baseLocale } from '#lib/paraglide/runtime.js';
+import type { FrontendSighting } from '#lib/types/index.ts';
+import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
 import {
 	getSightingStatus,
 	SIGHTING_STATUS_PRESENTATION
-} from '$lib/components/admin/sightingStatus';
+} from '#lib/components/admin/sightingStatus.ts';
 
 /**
  * Generiert CSV-Daten aus einer Sammlung von Sichtungen

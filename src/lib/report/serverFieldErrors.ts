@@ -1,4 +1,4 @@
-import type { FormStep } from '$lib/types';
+import type { FormStep } from '#lib/types/index.ts';
 import { findStepForErrors } from './findStepForErrors';
 
 /** Das Sprungziel einer Server-Ablehnung, fertig zum Anwenden. */

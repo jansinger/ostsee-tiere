@@ -40,7 +40,14 @@ import {
 
 const CLIENT_OUT = '.svelte-kit/output/client';
 const MANIFEST = join(CLIENT_OUT, '.vite/manifest.json');
-const NODES_DIR = '.svelte-kit/generated/client-optimized/nodes';
+/**
+ * Seit SvelteKit 3 unter `generated/build/…`; bis Kit 2 lag es eine Ebene höher
+ * (`generated/client-optimized/nodes`). Nach dem Umstieg las dieser Wächter noch
+ * den alten Pfad — in einem Worktree mit Kit-2-Altlasten fand er dort veraltete
+ * Knoten, deren Schlüssel im neuen Manifest fehlten, maß 2 KB statt 960 KB und
+ * meldete ✅. Deshalb prüft `main()` jetzt, dass jede Wurzel im Manifest steht.
+ */
+const NODES_DIR = '.svelte-kit/generated/build/client-optimized/nodes';
 
 /** Einstieg in die Karten-Laufzeit; alles Schwere hängt hier dran. */
 const OL_ENTRY_SOURCE = 'src/lib/utils/map/openLayersHelpers.ts';
@@ -67,7 +74,7 @@ const OL_ENTRY_SOURCE = 'src/lib/utils/map/openLayersHelpers.ts';
  * | Stand                                            | Schnittmenge | Hülle gzip |
  * | ------------------------------------------------ | ------------ | ---------- |
  * | aufgeteilt (Soll)                                | 21.253 B     | 321.968 B  |
- * | mit `import … from '$lib/map/extentUtils'`       | 31.185 B     | 326.140 B  |
+ * | mit `import … from '#lib/map/extentUtils'`       | 31.185 B     | 326.140 B  |
  *
  * Der Rückfall kostet hier also 9,9 KB — am Gesamtgewicht dagegen nur 4,2 KB
  * gzip, und die gingen im Budget weiter unten unter. **Diese Prüfung ist der
@@ -228,6 +235,15 @@ function main(): void {
 		findClientEntryKey(manifest)
 	];
 
+	// Eine Wurzel, die das Manifest nicht kennt, ließe die Hülle still schrumpfen und
+	// jede Grenze bestehen — lieber abbrechen als eine Messung über nichts melden.
+	const unbekannt = roots.filter((key) => manifest[key] === undefined);
+	if (unbekannt.length > 0) {
+		fail(
+			`Wurzel nicht im Client-Manifest — Pfad der generierten Knoten veraltet?\n   ${unbekannt.join('\n   ')}`
+		);
+	}
+
 	const eager = eagerClosure(manifest, roots);
 	const eagerGroesse = measure(manifest, eager);
 
@@ -281,7 +297,7 @@ function main(): void {
 					`${geteiltGroesse.raw} B > ${OL_SHARED_BUDGET_BYTES} B.\n` +
 					`     Beteiligte Chunks:\n${liste}\n` +
 					`     Wahrscheinlichster Grund: ein statischer \`ol/...\`-Import über einen\n` +
-					`     Umweg — \`$lib/map/extentUtils\` etwa importiert \`ol/proj\`. Suchen also\n` +
+					`     Umweg — \`#lib/map/extentUtils\` etwa importiert \`ol/proj\`. Suchen also\n` +
 					`     nicht nur in \`OLMap.svelte\`, sondern in allem, was die Einstiegsseite\n` +
 					`     statisch erreicht.`
 			);

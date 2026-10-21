@@ -25,9 +25,9 @@
 </script>
 
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import { ORPHAN_RETENTION_HOURS } from '$lib/constants/uploadRetention';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import { ORPHAN_RETENTION_HOURS } from '#lib/constants/uploadRetention.ts';
 	import { SUBMIT_STATUS_OFFLINE_ID } from './submitStatusIds';
 
 	let {

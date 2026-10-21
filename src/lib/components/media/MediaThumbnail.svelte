@@ -1,9 +1,9 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import type { UploadedFileInfo } from '$lib/types';
-	import { formatFileSize } from '$lib/utils/file/fileSize';
-	import { isImageFile, isVideoFile } from '$lib/utils/file/fileType';
-	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import type { UploadedFileInfo } from '#lib/types/index.ts';
+	import { formatFileSize } from '#lib/utils/file/fileSize.ts';
+	import { isImageFile, isVideoFile } from '#lib/utils/file/fileType.ts';
+	import Icon from '#lib/components/Icon.svelte';
 
 	let {
 		file,

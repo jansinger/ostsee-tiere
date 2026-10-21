@@ -18,11 +18,12 @@
  * danach nicht verlässlich derselbe. Ein Parameter überlebt Reload, Bookmark
  * und Direktaufruf.
  */
+import type { ReadonlyURL } from '$app/state';
 import {
 	HERKUNFT_EINGANG,
 	HERKUNFT_PARAMETER,
 	inboxAnchor
-} from '$lib/components/admin/adminReturn';
+} from '#lib/components/admin/adminReturn.ts';
 
 export const TABELLEN_PARAMETER = [
 	'fromDate',
@@ -39,7 +40,7 @@ export const TABELLEN_PARAMETER = [
 	'perPage'
 ] as const;
 
-function pickTableParams(currentUrl: URL): URLSearchParams {
+function pickTableParams(currentUrl: ReadonlyURL): URLSearchParams {
 	const params = new URLSearchParams();
 
 	for (const param of TABELLEN_PARAMETER) {
@@ -50,7 +51,7 @@ function pickTableParams(currentUrl: URL): URLSearchParams {
 	return params;
 }
 
-export function tableReturnUrl(currentUrl: URL): string {
+export function tableReturnUrl(currentUrl: ReadonlyURL): string {
 	const zielUrl = new URL('/admin/sichtungen', currentUrl.origin);
 
 	for (const [param, wert] of pickTableParams(currentUrl)) {
@@ -70,7 +71,7 @@ export interface ReturnTarget {
  * der man kam — weglassen, wenn die Sichtung das Ziel nicht mehr erreicht
  * (gelöscht, oder gerade aus dem Eingang heraus entschieden).
  */
-export function returnTarget(currentUrl: URL, sightingId?: number | string): ReturnTarget {
+export function returnTarget(currentUrl: ReadonlyURL, sightingId?: number | string): ReturnTarget {
 	if (currentUrl.searchParams.get(HERKUNFT_PARAMETER) === HERKUNFT_EINGANG) {
 		const zielUrl = new URL('/admin', currentUrl.origin);
 		/* `order` ist der einzige Parameter, den der Eingang selbst führt — ohne
@@ -100,7 +101,7 @@ export function returnTarget(currentUrl: URL, sightingId?: number | string): Ret
  * Bearbeiten → zurück verlor also die Filter — derselbe Fehler wie beim
  * Eingang, nur eine Route weiter.
  */
-export function carryReturnParams(currentUrl: URL): string {
+export function carryReturnParams(currentUrl: ReadonlyURL): string {
 	const params = new URLSearchParams();
 
 	const herkunft = currentUrl.searchParams.get(HERKUNFT_PARAMETER);

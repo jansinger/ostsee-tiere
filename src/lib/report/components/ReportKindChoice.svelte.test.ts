@@ -1,7 +1,7 @@
 import { render } from 'vitest-browser-svelte';
 import { tick } from 'svelte';
 import { describe, expect, it, vi } from 'vitest';
-import type { ReportKind } from '$lib/report/reportKind';
+import type { ReportKind } from '#lib/report/reportKind.ts';
 import ReportKindChoice from './ReportKindChoice.svelte';
 
 /**

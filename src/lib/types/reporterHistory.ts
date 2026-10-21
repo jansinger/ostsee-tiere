@@ -1,7 +1,7 @@
 /**
  * @fileoverview Was über einen Melder aus dem eigenen Bestand bekannt ist.
  *
- * Client-sicher: nur Typen, kein Import aus `$lib/server/**` — der Bruch fiele
+ * Client-sicher: nur Typen, kein Import aus `#lib/server/**` — der Bruch fiele
  * sonst erst in `npm run build` auf, nicht in `npm run check`.
  *
  * **Die Zahlen zählen die *anderen* Meldungen desselben Melders.** Die Meldung,

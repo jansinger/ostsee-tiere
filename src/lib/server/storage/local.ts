@@ -3,14 +3,14 @@
  *
  * Implements path normalization and validation to prevent directory traversal attacks
  */
-import { createLogger } from '$lib/logger.server';
+import { createLogger } from '#lib/logger.server.ts';
 import type {
 	FileMetadata,
 	StorageFileStream,
 	StorageProvider,
 	UploadedFileInfo,
 	UploadOptions
-} from '$lib/types';
+} from '#lib/types/index.ts';
 import {
 	createReadStream,
 	existsSync,

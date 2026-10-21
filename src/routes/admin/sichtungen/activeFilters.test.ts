@@ -1,5 +1,5 @@
-import type { SightingStatusFilter } from '$lib/components/admin/sightingStatusFilter';
-import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '$lib/utils/media/photoAnnouncement';
+import type { SightingStatusFilter } from '#lib/components/admin/sightingStatusFilter.ts';
+import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '#lib/utils/media/photoAnnouncement.ts';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import { readFilterParams, type FilterParams } from './activeFilters';
 

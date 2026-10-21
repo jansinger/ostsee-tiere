@@ -3,17 +3,17 @@
   Personal information, boat details, and additional observations
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import ConfirmDialog from '$lib/components/ui/Dialog/ConfirmDialog.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import ConfirmDialog from '#lib/components/ui/Dialog/ConfirmDialog.svelte';
 	import {
 		clearContactDataConfirmMessage,
 		clearContactDataWithFeedback
-	} from '$lib/report/clearContactData';
-	import { getFormContext } from '$lib/report/formContext';
-	import { hasUploadedMedia, isFromLand } from '$lib/report/formConfig';
-	import { loadUserContactData } from '$lib/storage/localStorage';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
+	} from '#lib/report/clearContactData.ts';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { hasUploadedMedia, isFromLand } from '#lib/report/formConfig.ts';
+	import { loadUserContactData } from '#lib/storage/localStorage.ts';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
 
 	const { form, updateField } = getFormContext();
 

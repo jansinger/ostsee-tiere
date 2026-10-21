@@ -14,9 +14,9 @@
  * Die Auswahl erfolgt automatisch oder über Umgebungsvariablen.
  */
 import { dev } from '$app/env';
-import { createLogger } from '$lib/logger.server';
-import type { StorageProvider, StorageProviderType } from '$lib/types';
-import { env } from '$env/dynamic/private';
+import { createLogger } from '#lib/logger.server.ts';
+import type { StorageProvider, StorageProviderType } from '#lib/types/index.ts';
+import { env } from '#lib/server/env.ts';
 import { LocalStorageProvider } from './local';
 import { getUploadBasePath, resolveUploadBasePath } from './uploadPath';
 import { VercelBlobStorageProvider } from './vercel-blob';

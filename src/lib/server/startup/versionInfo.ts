@@ -9,8 +9,8 @@
  * `docker run` ohne Build-Args liefern hier `null` — dann steht explizit "unknown" da,
  * statt die Zeile stillschweigend zu verkürzen.
  */
-import { env } from '$env/dynamic/private';
-import type { BuildInfo } from '$lib/types/BuildInfo';
+import { env } from '#lib/server/env.ts';
+import type { BuildInfo } from '#lib/types/BuildInfo.ts';
 import { version as packageVersion } from '../../../../package.json';
 
 export type { BuildInfo };

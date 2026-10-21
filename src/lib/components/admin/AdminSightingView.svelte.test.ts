@@ -4,19 +4,19 @@
  * Der neu gebaute iOS-Client setzt `mediaUpload`, kann aber keine Datei
  * hochladen — das Foto kommt per E-Mail nach. Ohne Einordnung zeigte die
  * Detailansicht dafür nur „Upload: Ja" ohne jede Datei, was wie ein defekter
- * Datensatz aussieht. Siehe `$lib/utils/media/photoAnnouncement.ts`.
+ * Datensatz aussieht. Siehe `#lib/utils/media/photoAnnouncement.ts`.
  */
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AdminSightingView from './AdminSightingView.svelte';
 import { DEAD_FINDING_PRESENTATION } from './deadFinding';
-import type { FrontendSighting } from '$lib/types';
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
+import type { FrontendSighting } from '#lib/types/index.ts';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
 import {
 	PHOTO_ANNOUNCEMENT_LABEL,
 	PHOTO_ANNOUNCEMENT_TITLE
-} from '$lib/utils/media/photoAnnouncement';
+} from '#lib/utils/media/photoAnnouncement.ts';
 
 // Minimales Objekt, wie an anderer Stelle bereits üblich
 // (src/lib/server/export/csvExport.timezone.test.ts) — die Komponente prüft

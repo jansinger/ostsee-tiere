@@ -8,7 +8,7 @@
  * weil sie keine Auszeichnung eines Datensatzes sind, sondern nur die zwei
  * Seiten eines Filters. Die Begründung gilt unverändert — geändert hat sich nur,
  * **wer** sie braucht: neben Chip-Zeile und Filter-Panel jetzt auch der
- * Export-Dialog (`exportFilterDisplay.ts`), und der liegt in `$lib`. Ein Import
+ * Export-Dialog (`exportFilterDisplay.ts`), und der liegt in `#lib`. Ein Import
  * aus `src/routes/**` hinein wäre eine umgekehrte Abhängigkeit; dieselben Wörter
  * ein zweites Mal zu tippen wäre die Zweitbeschriftung, gegen die die Chips
  * angetreten sind. Also stehen sie hier, wo beide Seiten sie erreichen.
@@ -16,11 +16,11 @@
  * Der Sonderwert der Aufnahme-Auswahl kommt weiterhin aus seinem eigenen Modul
  * — er trägt eine fachliche Aussage (`photoAnnouncement.ts`).
  *
- * Client-sicher: **kein** Import aus `$lib/server/**`.
+ * Client-sicher: **kein** Import aus `#lib/server/**`.
  */
-import { DEAD_FINDING_PRESENTATION } from '$lib/components/admin/deadFinding';
-import { getEntryChannelOptions } from '$lib/report/formOptions/entryChannel';
-import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '$lib/utils/media/photoAnnouncement';
+import { DEAD_FINDING_PRESENTATION } from '#lib/components/admin/deadFinding.ts';
+import { getEntryChannelOptions } from '#lib/report/formOptions/entryChannel.ts';
+import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '#lib/utils/media/photoAnnouncement.ts';
 
 /**
  * Die Kanal-ID aus der URL als Wort. Ein Wert, den keine Quelle kennt

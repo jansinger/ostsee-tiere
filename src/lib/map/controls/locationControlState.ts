@@ -1,4 +1,4 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * Pure Zustands- und Fehlerlogik der LocationControl (N2) — vom DOM getrennt,
  * damit sie ohne OpenLayers/Browser testbar ist.

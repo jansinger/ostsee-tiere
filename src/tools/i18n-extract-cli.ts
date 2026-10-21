@@ -294,7 +294,7 @@ export function main(argv: string[]): void {
 
 	// Reihenfolge (Auftrag, Teil 1): erst `--write-messages`, dann
 	// `npm run i18n:compile`, dann `--write-sources` — sonst referenziert der
-	// Quelltext Botschaften, die es im kompilierten `$lib/paraglide/messages`
+	// Quelltext Botschaften, die es im kompilierten `#lib/paraglide/messages.js`
 	// noch nicht gibt, und der Typ-Check bricht. Diese Reihenfolge ist ein
 	// Ablaufschritt zwischen drei separaten npm-Läufen und wird hier bewusst
 	// NICHT programmatisch erzwungen — die Datei kennt den Compile-Schritt

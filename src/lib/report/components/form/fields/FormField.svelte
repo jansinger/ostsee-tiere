@@ -3,11 +3,11 @@
   Uses FieldRenderer for actual field rendering, handles form context integration
 -->
 <script lang="ts">
-	import { createLogger } from '$lib/logger';
-	import { getSightingSchemaFields } from '$lib/report/formConfig';
-	import { getFormContext } from '$lib/report/formContext';
-	import type { FieldOption } from '$lib/types';
-	import type { SightingFormData } from '$lib/types/Form';
+	import { createLogger } from '#lib/logger.ts';
+	import { getSightingSchemaFields } from '#lib/report/formConfig.ts';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import type { FieldOption } from '#lib/types/index.ts';
+	import type { SightingFormData } from '#lib/types/Form.ts';
 	import { untrack } from 'svelte';
 	import * as yup from 'yup';
 	import FieldRenderer from './FieldRenderer.svelte';

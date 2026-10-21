@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { SightingStatusLogEntry } from '$lib/components/admin/sightingStatusLog';
+import type { SightingStatusLogEntry } from '#lib/components/admin/sightingStatusLog.ts';
 import { load } from './+page';
 
 /**
