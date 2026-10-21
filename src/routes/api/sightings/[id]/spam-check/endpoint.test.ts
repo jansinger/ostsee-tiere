@@ -23,7 +23,7 @@ const mockSighting = {
 // Mutable so individual tests can override the result
 let mockDbResult: unknown[] = [mockSighting];
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: () => ({
 			from: () => ({
@@ -35,7 +35,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: { id: 'id' }
 }));
 
@@ -43,7 +43,7 @@ vi.mock('drizzle-orm', () => ({
 	eq: vi.fn((a, b) => ({ a, b }))
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -52,11 +52,11 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/server/spam/spamDetector', () => ({
+vi.mock('#lib/server/spam/spamDetector.ts', () => ({
 	detectSpamIndicators: vi.fn().mockResolvedValue({
 		score: 0,
 		isHighRisk: false,
@@ -65,8 +65,8 @@ vi.mock('$lib/server/spam/spamDetector', () => ({
 }));
 
 import { GET } from './+server';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { detectSpamIndicators } from '$lib/server/spam/spamDetector';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { detectSpamIndicators } from '#lib/server/spam/spamDetector.ts';
 
 const mockRequireUserRole = vi.mocked(requireUserRole);
 const mockDetectSpamIndicators = vi.mocked(detectSpamIndicators);

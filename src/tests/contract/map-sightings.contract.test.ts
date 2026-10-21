@@ -10,7 +10,7 @@ const { mockWhere } = vi.hoisted(() => {
 	return { mockWhere };
 });
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -21,9 +21,9 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', async () => {
+vi.mock('#lib/server/db/schema.ts', async () => {
 	const { strictModuleMock } = await import('./helpers/strictModuleMock');
-	return strictModuleMock('$lib/server/db/schema', {
+	return strictModuleMock('#lib/server/db/schema.ts', {
 		sightings: {
 			id: 'id',
 			sightingDate: 'sightingDate',
@@ -68,18 +68,18 @@ vi.mock('drizzle-orm', async () => {
 	});
 });
 
-vi.mock('$lib/map/mapUtils', () => ({
+vi.mock('#lib/map/mapUtils.ts', () => ({
 	sightingsToGeoJSON: vi.fn().mockReturnValue({
 		type: 'FeatureCollection',
 		features: []
 	})
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

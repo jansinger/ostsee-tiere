@@ -1,4 +1,4 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * @fileoverview Utilities für die barrierefreie Listenansicht der Sichtungskarte
  *
@@ -12,9 +12,9 @@ import * as m from '$lib/paraglide/messages';
  * Zeitstempel herausgefiltert ist.
  */
 
-import { getLocale } from '$lib/paraglide/runtime';
-import { resolveDisplayLocale } from '$lib/utils/format/dateTime';
-import type { SightingStatus } from '$lib/components/admin/sightingStatus';
+import { getLocale } from '#lib/paraglide/runtime.js';
+import { resolveDisplayLocale } from '#lib/utils/format/dateTime.ts';
+import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
 import { getFeatureColorGroup, isBetween } from './styleUtils';
 
 /**

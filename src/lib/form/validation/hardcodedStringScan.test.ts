@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { multiWordLiterals, sourceFiles, stripComments } from '$lib/testing/sourceScan.testutil';
-import type { SourceHit } from '$lib/testing/sourceScan.testutil';
+import { multiWordLiterals, sourceFiles, stripComments } from '#lib/testing/sourceScan.testutil.ts';
+import type { SourceHit } from '#lib/testing/sourceScan.testutil.ts';
 
 /**
  * @fileoverview Hartcodierter Anzeigetext in Schicht A (Yup-Schema) und Schicht B

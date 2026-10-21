@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { getFormContext } from '$lib/report/formContext';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
-	import LocationInput from '$lib/report/components/form/LocationInput.svelte';
-	import VerifyLocation from '$lib/report/components/form/VerifyLocation.svelte';
-	import { toCoordinate } from '$lib/report/components/form/coordinateValue';
+	import * as m from '#lib/paraglide/messages.js';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
+	import LocationInput from '#lib/report/components/form/LocationInput.svelte';
+	import VerifyLocation from '#lib/report/components/form/VerifyLocation.svelte';
+	import { toCoordinate } from '#lib/report/components/form/coordinateValue.ts';
 	import SectionCard from './SectionCard.svelte';
 
 	const { form, handleChange } = getFormContext();

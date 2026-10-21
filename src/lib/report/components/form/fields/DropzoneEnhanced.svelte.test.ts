@@ -7,12 +7,12 @@ import { get } from 'svelte/store';
  * gerade angelegte Datei über `deleteFile` sofort wieder aus dem Store nehmen —
  * ein Wettlauf mit jeder Zusicherung über den Store-Inhalt.
  */
-vi.mock('$lib/utils/uploadUtils', () => ({
+vi.mock('#lib/utils/uploadUtils.ts', () => ({
 	uploadFileDirect: () => ({ result: new Promise<never>(() => {}), abort: () => undefined }),
 	deleteFileDirect: async () => undefined
 }));
 
-vi.mock('$lib/utils/client/fileAnalysis', () => ({
+vi.mock('#lib/utils/client/fileAnalysis.ts', () => ({
 	analyzeClientFile: async (file: File) => ({
 		fileName: file.name,
 		size: file.size,
@@ -20,9 +20,9 @@ vi.mock('$lib/utils/client/fileAnalysis', () => ({
 		exifData: undefined
 	})
 }));
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import type { FormContext, UploadedFileInfo, ValidationPreset } from '$lib/types';
-import { MediaFile, type MediaStore } from '$lib/utils/media/MediaFile.svelte';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import type { FormContext, UploadedFileInfo, ValidationPreset } from '#lib/types/index.ts';
+import { MediaFile, type MediaStore } from '#lib/utils/media/MediaFile.svelte.ts';
 import { markPositionFile } from './positionFileOrigin';
 import DropzoneEnhanced from './DropzoneEnhanced.svelte';
 
@@ -327,12 +327,12 @@ describe('DropzoneEnhanced — Aufnahmezeit folgt der Locale', () => {
 		// overwriteGetLocale() überschreibt die Modul-Funktion dauerhaft ohne
 		// eingebauten Reset — auf den echten Default zurückschalten, damit
 		// andere Tests im selben Prozess nicht die englische Locale erben.
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => baseLocale);
 	});
 
 	it('zeigt die Aufnahmezeit deutsch formatiert, wenn die aktive Locale de ist', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'de');
 
 		renderDropzone([uploadedFile('media-uid')], { maxFiles: 10, enableGPSExtraction: false }, [
@@ -343,7 +343,7 @@ describe('DropzoneEnhanced — Aufnahmezeit folgt der Locale', () => {
 	});
 
 	it('zeigt die Aufnahmezeit britisch formatiert, wenn die aktive Locale en ist', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		renderDropzone([uploadedFile('media-uid')], { maxFiles: 10, enableGPSExtraction: false }, [
@@ -364,12 +364,12 @@ describe('DropzoneEnhanced — Aufnahmezeit folgt der Locale', () => {
  */
 describe('DropzoneEnhanced — Datei-Zähler folgt der Locale (Muster B)', () => {
 	afterEach(async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => baseLocale);
 	});
 
 	it('zeigt den deutschen Singular bei 1 Datei', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'de');
 
 		renderDropzone([uploadedFile('a')], { maxFiles: 10, enableGPSExtraction: false }, [
@@ -381,7 +381,7 @@ describe('DropzoneEnhanced — Datei-Zähler folgt der Locale (Muster B)', () =>
 	});
 
 	it('zeigt den deutschen Plural bei 2 Dateien', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'de');
 
 		renderDropzone(
@@ -397,7 +397,7 @@ describe('DropzoneEnhanced — Datei-Zähler folgt der Locale (Muster B)', () =>
 	});
 
 	it('zeigt den englischen Singular bei 1 Datei', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		renderDropzone([uploadedFile('a')], { maxFiles: 10, enableGPSExtraction: false }, [
@@ -409,7 +409,7 @@ describe('DropzoneEnhanced — Datei-Zähler folgt der Locale (Muster B)', () =>
 	});
 
 	it('zeigt den englischen Plural bei 2 Dateien', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		renderDropzone(

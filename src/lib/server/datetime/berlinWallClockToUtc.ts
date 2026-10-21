@@ -1,4 +1,4 @@
-import { berlinWallClockToInstant } from '$lib/utils/format/berlinWallClock';
+import { berlinWallClockToInstant } from '#lib/utils/format/berlinWallClock.ts';
 
 /** Uhrzeit-Eingabe im Format "HH:MM" (Formular und Legacy-API). */
 const TIME_PATTERN = /^(\d{2}):(\d{2})$/;

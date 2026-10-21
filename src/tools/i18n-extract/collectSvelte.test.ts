@@ -273,7 +273,7 @@ describe('collectSvelteSites — Verweigerungsregeln', () => {
 	// bleiben Attribute-Knoten und brauchen dieselbe Erkennung wie meta()/test().
 	it('erkennt ein bereits ersetztes Attribut (attr={m.key()}) als erledigt, nicht als offenen Fall', () => {
 		const result = collect(
-			`<script>\n\timport * as m from '$lib/paraglide/messages';\n</script>\n<input aria-label={m.foo()} />`
+			`<script>\n\timport * as m from '#lib/paraglide/messages';\n</script>\n<input aria-label={m.foo()} />`
 		);
 		expect(result.sites).toEqual([]);
 		expect(result.skipped.map((s) => [s.aspect, s.reason])).toEqual([
@@ -286,7 +286,7 @@ describe('collectSvelteSites — Verweigerungsregeln', () => {
 	// Attribut zu verschlucken, sobald irgendwo ein `m.`-Aufruf vorkommt.
 	it('bleibt bei einem gemischten Attribut mit m.-Aufruf-Anteil bei dynamic-attribute', () => {
 		const result = collect(
-			`<script>\n\timport * as m from '$lib/paraglide/messages';\n</script>\n<input title="Stand: {m.foo()}" />`
+			`<script>\n\timport * as m from '#lib/paraglide/messages';\n</script>\n<input title="Stand: {m.foo()}" />`
 		);
 		expect(result.sites).toEqual([]);
 		expect(result.skipped.map((s) => [s.aspect, s.reason])).toEqual([

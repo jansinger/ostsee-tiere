@@ -8,8 +8,8 @@
  */
 import { render } from 'vitest-browser-svelte';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { InboxPollerOptions } from '$lib/components/admin/inboxPoller';
-import type { SightingSelect } from '$lib/server/db/schema';
+import type { InboxPollerOptions } from '#lib/components/admin/inboxPoller.ts';
+import type { SightingSelect } from '#lib/server/db/schema.ts';
 import type { PageData } from './$types';
 
 const navigiereZuSessionEnde = vi.fn();
@@ -25,7 +25,7 @@ vi.mock('$app/state', () => ({
 }));
 
 const submitVerdict = vi.fn(() => Promise.resolve(true));
-vi.mock('$lib/components/admin/sightingVerdict', () => ({
+vi.mock('#lib/components/admin/sightingVerdict.ts', () => ({
 	submitVerdict
 }));
 
@@ -34,7 +34,7 @@ vi.mock('$lib/components/admin/sightingVerdict', () => ({
 let letzteOptionen: InboxPollerOptions | null = null;
 const start = vi.fn();
 const stop = vi.fn();
-vi.mock('$lib/components/admin/inboxPoller', () => ({
+vi.mock('#lib/components/admin/inboxPoller.ts', () => ({
 	createInboxPoller: (optionen: InboxPollerOptions) => {
 		letzteOptionen = optionen;
 		return { start, stop };

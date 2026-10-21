@@ -138,12 +138,12 @@ describe('createSightingPopupContent', () => {
 			// overwriteGetLocale() überschreibt die Modul-Funktion dauerhaft ohne
 			// eingebauten Reset — auf den echten Default zurückschalten, damit
 			// andere Tests im selben Prozess nicht die englische Locale erben.
-			const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+			const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 			overwriteGetLocale(() => baseLocale);
 		});
 
 		it('formatiert das Datum deutsch, wenn die aktive Locale de ist', async () => {
-			const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+			const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 			overwriteGetLocale(() => 'de');
 
 			const html = createSightingPopupContent(baseProps, translations);
@@ -152,7 +152,7 @@ describe('createSightingPopupContent', () => {
 		});
 
 		it('formatiert das Datum britisch, wenn die aktive Locale en ist', async () => {
-			const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+			const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 			overwriteGetLocale(() => 'en');
 
 			const html = createSightingPopupContent(baseProps, translations);

@@ -1,4 +1,4 @@
-import type { Handle } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit/hooks';
 
 export function createSecurityHeadersHandler(nodeEnv: string): Handle {
 	return async ({ event, resolve }) => {

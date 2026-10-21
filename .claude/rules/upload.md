@@ -40,7 +40,7 @@ list(prefix?): Promise<UploadedFileInfo[]>
 
 **Local:** Basisverzeichnis aus `UPLOAD_PATH` (Standard `uploads`, relativ zum Arbeitsverzeichnis).
 Einzige Auswertungsstelle: `src/lib/server/storage/uploadPath.ts` — Schreibpfad (`LocalStorageProvider`)
-und Lesepfad (`getUploadPath()` in `$lib/server/uploads`) beziehen ihr Verzeichnis beide von dort.
+und Lesepfad (`getUploadPath()` in `#lib/server/uploads`) beziehen ihr Verzeichnis beide von dort.
 Path-Traversal-Schutz via `normalize()` + `relative()`
 **Vercel Blob:** Token aus `BLOB_READ_WRITE_TOKEN`, öffentliche URLs
 
@@ -54,7 +54,7 @@ Path-Traversal-Schutz via `normalize()` + `relative()`
 
 1. Rate Limit für die Anzahl der Uploads: 20/h anonym, 50/h authentifiziert
    (`RATE_LIMITS.FILE_UPLOAD_*`). Überschreitung: 429
-2. Größenlimit je MIME-Typ: `maxUploadSizeFor()` (`$lib/constants/uploadLimits`)
+2. Größenlimit je MIME-Typ: `maxUploadSizeFor()` (`#lib/constants/uploadLimits`)
    gegen `security.maxFileSize` bzw. `security.maxVideoFileSize` — dieselbe
    Funktion speist `/api/config/upload` und damit die Dropzone. Überschreitung: 413
 3. Gesamtgröße je Meldung gegen `security.maxTotalUploadSize`. Geprüft **vor**
@@ -97,7 +97,7 @@ Anfragenzahl-Limits oben deckeln nicht das Volumen — `Range: bytes=0-` ist ein
 erfüllbarer Bereich über die ganze Datei und bekam dabei sogar das zehnfach
 höhere Range-Limit. Zusätzlich gilt deshalb ein Byte-Budget je Kennung und
 Stunde: 1 GB anonym, 5 GB authentifiziert (`RATE_LIMITS.MEDIA_BYTES_*`,
-`consumeByteBudget()` aus `$lib/server/middleware/byteBudget.ts` — dasselbe
+`consumeByteBudget()` aus `#lib/server/middleware/byteBudget.ts` — dasselbe
 Modul wie beim Upload-Byte-Budget oben, seit diesem Befund ohne `upload`-Präfix
 im Namen). Gebucht wird die tatsächlich ausgelieferte Menge: bei einer
 Teilanfrage die Bereichslänge, bei einer vollen Anfrage die Dateigröße — ein
@@ -115,7 +115,7 @@ entfernen — der Fremdschlüssel-Cascade tut das **nicht**. Reihenfolge ist
 vorgeschrieben:
 
 ```typescript
-import { deleteStoredFiles } from '$lib/server/storage/deleteStoredFiles';
+import { deleteStoredFiles } from '#lib/server/storage/deleteStoredFiles.ts';
 
 // Zeilen explizit löschen und die Pfade in derselben Anweisung mitnehmen
 const removed = await db
@@ -169,7 +169,7 @@ Durchgesetzt wird die Frist über `POST /api/admin/cleanup-orphans` — aus der
 Admin-UI oder per externem Web-Cron mit `CLEANUP_TOKEN`. Für Läufe ohne laufende
 Anwendung bleibt `npm run media:cleanup-orphans:dry-run` (Details:
 `src/tools/README.md`). Beide teilen sich denselben Kern
-(`$lib/server/media/orphanCleanup`).
+(`#lib/server/media/orphanCleanup`).
 
 Dateien ohne Zeile (Klasse B) sind seit PR #584 die Ausnahme: Die Normalwege
 löschen die Storage-Datei über `deleteStoredFiles()` mit. Übrig bleiben

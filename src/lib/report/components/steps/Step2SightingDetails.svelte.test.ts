@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import type { SightingFormData } from '$lib/types';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 import Step2SightingDetails from './Step2SightingDetails.svelte';
 
 /**
@@ -15,7 +15,7 @@ import Step2SightingDetails from './Step2SightingDetails.svelte';
  *    Schritt, sondern auf Schritt 4 bei den übrigen Einwilligungen
  *    (`Step4Contact.svelte.test.ts`).
  * 2. **Beim Totfund fragt der Kopf nach einem Fund, nicht nach einer
- *    Beobachtung.** Die Entscheidung dazu steht in `$lib/report/wording`.
+ *    Beobachtung.** Die Entscheidung dazu steht in `#lib/report/wording.js`.
  */
 function renderStep2(overrides: Partial<SightingFormData> = {}): void {
 	renderWithFormContext(Step2SightingDetails, { overrides });

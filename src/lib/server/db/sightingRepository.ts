@@ -28,30 +28,30 @@
  * @since 1.0.0
  */
 
-import { createLogger } from '$lib/logger.server';
-import type { SightingFormData } from '$lib/report/types';
-import type { StoredWeatherData } from '$lib/services/weatherService';
-import { db } from '$lib/server/db';
-import { sightingFiles, sightings, type SightingSelect } from '$lib/server/db/schema';
-import { getCachedWeatherData } from '$lib/server/services/weatherDeduplication';
-import { getUploadPath } from '$lib/server/uploads';
-import { truncateEntryClient } from '$lib/server/utils/resolveEntryClient';
-import type { ExifData, UploadedFileInfo } from '$lib/types';
-import type { SightingFormValues } from '$lib/types/Form';
-import type { NewSighting, UpdateSighting } from '$lib/types/sighting';
-import type { SpamCheckResult } from '$lib/types/spam';
-import type { SightingFileInsert } from '$lib/types/sightingFile';
-import { isImageFile } from '$lib/utils';
+import { createLogger } from '#lib/logger.server.ts';
+import type { SightingFormData } from '#lib/report/types.ts';
+import type { StoredWeatherData } from '#lib/services/weatherService.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightingFiles, sightings, type SightingSelect } from '#lib/server/db/schema.ts';
+import { getCachedWeatherData } from '#lib/server/services/weatherDeduplication.ts';
+import { getUploadPath } from '#lib/server/uploads.ts';
+import { truncateEntryClient } from '#lib/server/utils/resolveEntryClient.ts';
+import type { ExifData, UploadedFileInfo } from '#lib/types/index.ts';
+import type { SightingFormValues } from '#lib/types/Form.ts';
+import type { NewSighting, UpdateSighting } from '#lib/types/sighting.ts';
+import type { SpamCheckResult } from '#lib/types/spam.ts';
+import type { SightingFileInsert } from '#lib/types/sightingFile.ts';
+import { isImageFile } from '#lib/utils/index.ts';
 import { and, count, countDistinct, eq, gte, isNotNull, ne, sql, type SQL } from 'drizzle-orm';
 import {
 	approvalFilter,
 	type ResolvedSightingScope,
 	type SightingScope
-} from '$lib/server/db/approvalFilter';
-import { readImageExifData } from '$lib/server/media/exifUtils';
-import { mapFormToSighting } from '$lib/server/db/mapFormToSighting';
-import { setSightingIdForReferenceId } from '$lib/server/db/sightingFilesRepository';
-import { deleteStoredFiles } from '$lib/server/storage/deleteStoredFiles';
+} from '#lib/server/db/approvalFilter.ts';
+import { readImageExifData } from '#lib/server/media/exifUtils.ts';
+import { mapFormToSighting } from '#lib/server/db/mapFormToSighting.ts';
+import { setSightingIdForReferenceId } from '#lib/server/db/sightingFilesRepository.ts';
+import { deleteStoredFiles } from '#lib/server/storage/deleteStoredFiles.ts';
 
 // Logger für Repository-Operationen
 const logger = createLogger('db:sightingRepository');
@@ -339,7 +339,7 @@ export const loadSightingFiles = async (sightingId: number): Promise<UploadedFil
 
 			// Falls keine EXIF-Daten in DB verfügbar: bei lokalen Bildern nachlesen
 			if (!exifData && isImageFile(file.mimeType)) {
-				const { isCloudStorage } = await import('$lib/server/storage/factory');
+				const { isCloudStorage } = await import('#lib/server/storage/factory.ts');
 
 				if (!isCloudStorage()) {
 					// Nur bei lokalem Storage EXIF-Daten aus Datei extrahieren
@@ -383,7 +383,7 @@ export const loadSightingFiles = async (sightingId: number): Promise<UploadedFil
 			// URL aus Datenbank verwenden oder vom Storage-Provider generieren lassen
 			let fileUrl = file.url;
 			if (!fileUrl) {
-				const { getStorageProvider } = await import('$lib/server/storage/factory');
+				const { getStorageProvider } = await import('#lib/server/storage/factory.ts');
 				const storageProvider = getStorageProvider();
 				fileUrl = storageProvider.getUrl(file.filePath);
 			}

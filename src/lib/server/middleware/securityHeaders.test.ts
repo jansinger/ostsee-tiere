@@ -1,6 +1,6 @@
+import type { Handle } from '@sveltejs/kit/hooks';
 import { describe, it, expect } from 'vitest';
-import type { Handle } from '@sveltejs/kit';
-import { createSecurityHeadersHandler } from '$lib/server/middleware/securityHeaders';
+import { createSecurityHeadersHandler } from '#lib/server/middleware/securityHeaders.ts';
 
 function createMockEvent(overrides: { protocol?: string; cookies?: string } = {}) {
 	return {

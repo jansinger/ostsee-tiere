@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { flushSync, tick } from 'svelte';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import type { SightingFormData } from '$lib/types';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 import LocationDescription from './LocationDescription.svelte';
 
 /**

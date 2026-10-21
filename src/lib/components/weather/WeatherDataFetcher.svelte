@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import type { WeatherData, WeatherFormFields } from '$lib/services/weatherService';
-	import type { WeatherDataWithMetadata } from '$lib/types';
+	import * as m from '#lib/paraglide/messages.js';
+	import type { WeatherData, WeatherFormFields } from '#lib/services/weatherService.ts';
+	import type { WeatherDataWithMetadata } from '#lib/types/index.ts';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import Icon from '$lib/components/Icon.svelte';
-	import StatusBlock from '$lib/components/StatusBlock.svelte';
+	import Icon from '#lib/components/Icon.svelte';
+	import StatusBlock from '#lib/components/StatusBlock.svelte';
 	import WeatherDisplay from './WeatherDisplay.svelte';
 
 	interface Props {

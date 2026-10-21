@@ -2,7 +2,7 @@ import { render } from 'vitest-browser-svelte';
 import { describe, it, expect } from 'vitest';
 import { page } from 'vitest/browser';
 import FieldRenderer from './FieldRenderer.svelte';
-import { getPublicBoatDriveOptions } from '$lib/report/formOptions/boatDrive';
+import { getPublicBoatDriveOptions } from '#lib/report/formOptions/boatDrive.ts';
 import type * as yup from 'yup';
 
 // Mock field configs that mirror the real schema's .describe() output

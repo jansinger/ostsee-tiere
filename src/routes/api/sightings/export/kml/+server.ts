@@ -1,9 +1,9 @@
-import { createLogger } from '$lib/logger.server';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { db } from '$lib/server/db';
-import { sightings as sightingsTable } from '$lib/server/db/schema';
-import { generateKmlData } from '$lib/server/export/kmlExport';
+import { createLogger } from '#lib/logger.server.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
+import { generateKmlData } from '#lib/server/export/kmlExport.ts';
 import { text } from '@sveltejs/kit';
 import { and, isNotNull } from 'drizzle-orm';
 import { buildExportConditions, parseExportFilterParams, xmlEscape } from '../exportFilterParams';

@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { clearUserContactData } = vi.hoisted(() => ({ clearUserContactData: vi.fn() }));
-vi.mock('$lib/storage/localStorage', () => ({ clearUserContactData }));
+vi.mock('#lib/storage/localStorage.ts', () => ({ clearUserContactData }));
 
 const { createToast } = vi.hoisted(() => ({ createToast: vi.fn() }));
-vi.mock('$lib/stores/toastState.svelte', () => ({ createToast }));
+vi.mock('#lib/stores/toastState.svelte.ts', () => ({ createToast }));
 
-import { USER_CONTACT_FIELDS } from '$lib/report/formConfig';
+import { USER_CONTACT_FIELDS } from '#lib/report/formConfig.ts';
 import {
 	clearContactDataSuccessMessage,
 	clearContactDataWithFeedback,

@@ -1,8 +1,8 @@
-import { AnimalBehaviorEnum } from '$lib/report/formOptions/animalBehavior';
-import { BoatDriveEnum } from '$lib/report/formOptions/boatDrive';
-import { DistributionEnum } from '$lib/report/formOptions/distribution';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import { SpeciesEnum } from '$lib/report/formOptions/species';
+import { AnimalBehaviorEnum } from '#lib/report/formOptions/animalBehavior.ts';
+import { BoatDriveEnum } from '#lib/report/formOptions/boatDrive.ts';
+import { DistributionEnum } from '#lib/report/formOptions/distribution.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import { SpeciesEnum } from '#lib/report/formOptions/species.ts';
 import { describe, expect, it } from 'vitest';
 import { mapLegacyToCurrentSchema } from './field-mapping';
 import type { LegacySightingRequest } from './types';

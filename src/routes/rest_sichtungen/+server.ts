@@ -14,24 +14,24 @@ import {
 	LEGACY_API_MESSAGES,
 	createOriginalApiErrorResponse,
 	createSimpleErrorResponse
-} from '$lib/legacy-api/error-messages.js';
-import { mapLegacyToCurrentSchema } from '$lib/legacy-api/field-mapping.js';
-import type { LegacyCreateResponse, LegacySightingRequest } from '$lib/legacy-api/types.js';
-import { validateDeathFinding } from '$lib/legacy-api/validation.js';
+} from '#lib/legacy-api/error-messages.ts';
+import { mapLegacyToCurrentSchema } from '#lib/legacy-api/field-mapping.ts';
+import type { LegacyCreateResponse, LegacySightingRequest } from '#lib/legacy-api/types.ts';
+import { validateDeathFinding } from '#lib/legacy-api/validation.ts';
 import {
 	createLegacyErrorFromYup,
 	validateLegacySightingWithYup
-} from '$lib/legacy-api/yup-validation.js';
-import { createLogger } from '$lib/logger.server';
-import { countRecentDuplicateSignals, saveSighting } from '$lib/server/db/sightingRepository';
-import { mapFormToSighting } from '$lib/server/db/mapFormToSighting';
-import { detectSpamIndicators } from '$lib/server/spam/spamDetector';
-import { EmailService } from '$lib/server/services/emailService';
-import { ServerConfigService } from '$lib/services/configService';
+} from '#lib/legacy-api/yup-validation.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { countRecentDuplicateSignals, saveSighting } from '#lib/server/db/sightingRepository.ts';
+import { mapFormToSighting } from '#lib/server/db/mapFormToSighting.ts';
+import { detectSpamIndicators } from '#lib/server/spam/spamDetector.ts';
+import { EmailService } from '#lib/server/services/emailService.ts';
+import { ServerConfigService } from '#lib/services/configService.ts';
 import { json, isHttpError, type RequestEvent } from '@sveltejs/kit';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { enforceRateLimit, RATE_LIMITS } from '$lib/server/middleware/rateLimit';
-import { resolveEntryClient } from '$lib/server/utils/resolveEntryClient';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { enforceRateLimit, RATE_LIMITS } from '#lib/server/middleware/rateLimit.ts';
+import { resolveEntryClient } from '#lib/server/utils/resolveEntryClient.ts';
 
 const logger = createLogger('api:legacy:rest_sichtungen:pdf-compliant');
 

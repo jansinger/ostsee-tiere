@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { EmailService, type NotificationBlocker } from '$lib/server/services/emailService';
-import { createLogger } from '$lib/logger.server';
-import { requireUserRole } from '$lib/server/auth/auth';
+import { EmailService, type NotificationBlocker } from '#lib/server/services/emailService.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
 
 const logger = createLogger('api:test-email');
 

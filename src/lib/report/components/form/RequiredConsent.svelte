@@ -1,9 +1,9 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
 	import FormField from './fields/FormField.svelte';
-	import { getFormSteps } from '$lib/report/formConfig';
-	import { getFormContext } from '$lib/report/formContext';
+	import { getFormSteps } from '#lib/report/formConfig.ts';
+	import { getFormContext } from '#lib/report/formContext.ts';
 
 	let {
 		currentStep

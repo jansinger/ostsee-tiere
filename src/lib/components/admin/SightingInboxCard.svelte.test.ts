@@ -3,7 +3,7 @@ import { page } from 'vitest/browser';
 import { describe, expect, it, vi } from 'vitest';
 import SightingInboxCard from './SightingInboxCard.svelte';
 import { inboxDetailHref } from './adminReturn';
-import type { SightingSelect } from '$lib/server/db/schema';
+import type { SightingSelect } from '#lib/server/db/schema.ts';
 
 /* actionLabel ('Freigeben'/'Ablehnen') trägt zufällig dieselben Wörter wie die
    frühere, fest verdrahtete Beschriftung — ein Test gegen die echte Quelle

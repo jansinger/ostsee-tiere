@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import HreflangHead from '$lib/components/seo/HreflangHead.svelte';
-	import Icon from '$lib/components/Icon.svelte';
-	import { ACCESSIBILITY_FEEDBACK_EMAIL } from '$lib/constants/contact';
+	import * as m from '#lib/paraglide/messages.js';
+	import HreflangHead from '#lib/components/seo/HreflangHead.svelte';
+	import Icon from '#lib/components/Icon.svelte';
+	import { ACCESSIBILITY_FEEDBACK_EMAIL } from '#lib/constants/contact.ts';
 
 	const title = m.routes_barrierefreiheit_page_text_titel();
 	const description = m.routes_barrierefreiheit_page_meta_description();

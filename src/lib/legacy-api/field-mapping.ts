@@ -1,8 +1,8 @@
-import { AnimalBehaviorEnum } from '$lib/report/formOptions/animalBehavior';
-import { BoatDriveEnum } from '$lib/report/formOptions/boatDrive';
-import { DistributionEnum } from '$lib/report/formOptions/distribution';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import { SpeciesEnum } from '$lib/report/formOptions/species';
+import { AnimalBehaviorEnum } from '#lib/report/formOptions/animalBehavior.ts';
+import { BoatDriveEnum } from '#lib/report/formOptions/boatDrive.ts';
+import { DistributionEnum } from '#lib/report/formOptions/distribution.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import { SpeciesEnum } from '#lib/report/formOptions/species.ts';
 /**
  * @fileoverview Field mapping adapter for PDF-compliant Legacy REST API
  *
@@ -13,8 +13,8 @@ import { SpeciesEnum } from '$lib/report/formOptions/species';
  * @since 1.10.0
  */
 
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
-import type { SightingFormData } from '$lib/types';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 import { createId } from '@paralleldrive/cuid2';
 import type { LegacySightingRequest } from './types.js';
 

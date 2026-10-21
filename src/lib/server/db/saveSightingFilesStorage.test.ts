@@ -5,7 +5,7 @@
  * Storage-Aufruf bleiben die zugehörigen Dateien als verwaiste Objekte im
  * Upload-Verzeichnis zurück.
  */
-import type { UploadedFileInfo } from '$lib/types';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { mockDb, mockStorage, callOrder, removedRows } = vi.hoisted(() => ({
@@ -19,18 +19,18 @@ const { mockDb, mockStorage, callOrder, removedRows } = vi.hoisted(() => ({
 	removedRows: { value: [] as { filePath: string }[] }
 }));
 
-vi.mock('$lib/server/db', () => ({ db: mockDb }));
+vi.mock('#lib/server/db/index.ts', () => ({ db: mockDb }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	isCloudStorage: vi.fn(() => false),
 	getStorageProvider: vi.fn(() => mockStorage)
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

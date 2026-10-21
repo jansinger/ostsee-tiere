@@ -15,13 +15,13 @@
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
 const configValues: Record<string, unknown> = {};
 
-vi.mock('$lib/server/db/configRepository', () => ({
+vi.mock('#lib/server/db/configRepository.ts', () => ({
 	ConfigRepository: {
 		get: vi.fn((key: string) => Promise.resolve(configValues[key] ?? null))
 	}

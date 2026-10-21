@@ -21,7 +21,7 @@ Datei-Konventionen stehen. Hier stehen die konkreten Rezepte.
 
 ```typescript
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { formatDate } from '$lib/utils/date';
+import { formatDate } from '#lib/utils/date';
 
 describe('formatDate', () => {
 	it('formatiert deutsches Datum korrekt', () => {
@@ -42,7 +42,7 @@ describe('formatDate', () => {
 ```typescript
 import { render } from 'vitest-browser-svelte';
 import { page } from 'vitest/browser';
-import Button from '$lib/components/Button.svelte';
+import Button from '#lib/components/Button.svelte';
 
 describe('Button', () => {
 	it('zeigt Label an', async () => {
@@ -76,7 +76,7 @@ ohne ihn beim ersten Feld). Den Aufbau nicht abschreiben, sondern
 auch die `props`-Ausnahme von oben:
 
 ```typescript
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
 
 // Startwerte über `overrides`, Props typgeprüft über `props`
 renderWithFormContext(DeadAnimal, { overrides: { isDead: true }, props: { adminMode: true } });
@@ -94,7 +94,7 @@ Test-Helfer als ungedeckter Produktionscode (Präzedenz:
 
 ```typescript
 // Mock eines Moduls
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockResolvedValue([])
@@ -103,7 +103,7 @@ vi.mock('$lib/server/db', () => ({
 }));
 
 // Mock einer einzelnen Funktion (vi.spyOn)
-import * as emailService from '$lib/server/services/emailService';
+import * as emailService from '#lib/server/services/emailService.ts';
 vi.spyOn(emailService, 'sendNotification').mockResolvedValue(undefined);
 
 // Mock von fetch
@@ -233,7 +233,7 @@ export const mockDb = {
 	})
 };
 
-vi.mock('$lib/server/db', () => ({ db: mockDb }));
+vi.mock('#lib/server/db/index.ts', () => ({ db: mockDb }));
 ```
 
 ---

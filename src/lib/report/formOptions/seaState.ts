@@ -2,9 +2,9 @@
  * Enum für Seegangzustände
  * Die numerischen Werte werden in der Datenbank gespeichert.
  */
-import { memoizePerLocale } from '$lib/i18n/localeMemo';
-import * as m from '$lib/paraglide/messages';
-import { getLocale, type Locale } from '$lib/paraglide/runtime';
+import { memoizePerLocale } from '#lib/i18n/localeMemo.ts';
+import * as m from '#lib/paraglide/messages.js';
+import { getLocale, type Locale } from '#lib/paraglide/runtime.js';
 
 export enum SeaStateEnum {
 	NONE = 0,

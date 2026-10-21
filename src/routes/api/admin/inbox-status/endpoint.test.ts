@@ -9,7 +9,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { selectMock } = vi.hoisted(() => ({ selectMock: vi.fn() }));
-vi.mock('$lib/server/db', () => ({ db: { select: selectMock } }));
+vi.mock('#lib/server/db/index.ts', () => ({ db: { select: selectMock } }));
 
 import { GET } from './+server';
 

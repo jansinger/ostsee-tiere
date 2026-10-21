@@ -25,10 +25,10 @@
  * Wachstum wäre ein Ausdrucksindex der nächste Schritt.
  */
 import { sql } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { createLogger } from '$lib/logger.server';
-import { approvedOnly, openOnly, rejectedOnly } from '$lib/server/db/approvalFilter';
-import type { ReporterHistory } from '$lib/types/reporterHistory';
+import { db } from '#lib/server/db/index.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
+import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 
 const logger = createLogger('reporterHistory');
 

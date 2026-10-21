@@ -1,15 +1,15 @@
-import { env } from '$env/dynamic/private';
-import { createLogger } from '$lib/logger.server';
-import { logAuditEvent } from '$lib/server/audit/auditService';
+import { env } from '#lib/server/env.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
 import {
 	getPKCEVerifierFromCookie,
 	getToken,
 	getTokenClaims,
 	verifyToken
-} from '$lib/server/auth/auth.js';
-import { createSession } from '$lib/server/auth/sessionRepository';
-import { sanitizeReturnUrl } from '$lib/server/auth/returnUrl';
-import type { User } from '$lib/types';
+} from '#lib/server/auth/auth.ts';
+import { createSession } from '#lib/server/auth/sessionRepository.ts';
+import { sanitizeReturnUrl } from '#lib/server/auth/returnUrl.ts';
+import type { User } from '#lib/types/index.ts';
 import { error, redirect, type Cookies } from '@sveltejs/kit';
 
 const logger = createLogger('auth:auth0');

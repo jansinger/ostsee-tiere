@@ -1,4 +1,4 @@
-import { ORPHAN_RETENTION_HOURS } from '$lib/constants/uploadRetention';
+import { ORPHAN_RETENTION_HOURS } from '#lib/constants/uploadRetention.ts';
 import { tick } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import extent from '$lib/server/geo/baltic-extent.json';
-import rbushIndex from '$lib/server/geo/rbush-index.json';
+import extent from '#lib/server/geo/baltic-extent.json';
+import rbushIndex from '#lib/server/geo/rbush-index.json';
 import { BALTIC_SEA_BBOX, isInBalticArea } from './checkBalticSea';
 
 /**

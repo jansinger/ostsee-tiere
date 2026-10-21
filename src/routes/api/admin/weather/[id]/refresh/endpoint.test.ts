@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from './+server';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -10,7 +10,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -19,16 +19,16 @@ vi.mock('$lib/logger', () => ({
 	})
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	getSightingById: vi.fn(),
 	updateSightingWeatherData: vi.fn()
 }));
 
-vi.mock('$lib/server/services/weatherRefreshService', () => ({
+vi.mock('#lib/server/services/weatherRefreshService.ts', () => ({
 	fetchWeatherData: vi.fn().mockResolvedValue({
 		provider: 'open-meteo',
 		fetched_at: new Date().toISOString(),
@@ -42,7 +42,7 @@ vi.mock('$lib/server/services/weatherRefreshService', () => ({
 	})
 }));
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn()
 }));
 
@@ -58,8 +58,8 @@ describe('/api/admin/weather/[id]/refresh POST endpoint', () => {
 	});
 
 	it('ruft requireUserRole mit admin-Rolle auf', async () => {
-		const { requireUserRole } = await import('$lib/server/auth/auth');
-		const { getSightingById } = await import('$lib/server/db/sightingRepository');
+		const { requireUserRole } = await import('#lib/server/auth/auth.ts');
+		const { getSightingById } = await import('#lib/server/db/sightingRepository.ts');
 		vi.mocked(getSightingById).mockResolvedValue(null);
 
 		const event = createMockEvent('123', { email: 'admin@test.com', roles: ['admin'] });
@@ -81,7 +81,7 @@ describe('/api/admin/weather/[id]/refresh POST endpoint', () => {
 	});
 
 	it('gibt 404 zurück wenn Sichtung nicht gefunden', async () => {
-		const { getSightingById } = await import('$lib/server/db/sightingRepository');
+		const { getSightingById } = await import('#lib/server/db/sightingRepository.ts');
 		vi.mocked(getSightingById).mockResolvedValue(null);
 
 		const event = createMockEvent('999', { email: 'admin@test.com', roles: ['admin'] });
@@ -93,7 +93,7 @@ describe('/api/admin/weather/[id]/refresh POST endpoint', () => {
 	});
 
 	it('500-Antwort enthält keine internen Fehlerdetails', async () => {
-		const { getSightingById } = await import('$lib/server/db/sightingRepository');
+		const { getSightingById } = await import('#lib/server/db/sightingRepository.ts');
 		vi.mocked(getSightingById).mockRejectedValue(
 			new Error('DB connection failed: postgresql://secret@host/db')
 		);
@@ -112,8 +112,8 @@ describe('/api/admin/weather/[id]/refresh POST endpoint', () => {
 	// gehen, nicht als UTC-Instant-Bestandteile (toISOString()).
 	it('leitet Datum und Uhrzeit als Berlin-Wanduhrzeit ab (Sommerzeit, kein Tageswechsel)', async () => {
 		const { getSightingById, updateSightingWeatherData } =
-			await import('$lib/server/db/sightingRepository');
-		const { fetchWeatherData } = await import('$lib/server/services/weatherRefreshService');
+			await import('#lib/server/db/sightingRepository.ts');
+		const { fetchWeatherData } = await import('#lib/server/services/weatherRefreshService.ts');
 		vi.mocked(getSightingById).mockResolvedValue({
 			id: 1,
 			latitude: '54.5',
@@ -132,8 +132,8 @@ describe('/api/admin/weather/[id]/refresh POST endpoint', () => {
 
 	it('leitet Datum und Uhrzeit als Berlin-Wanduhrzeit ab (Tageswechsel über Mitternacht)', async () => {
 		const { getSightingById, updateSightingWeatherData } =
-			await import('$lib/server/db/sightingRepository');
-		const { fetchWeatherData } = await import('$lib/server/services/weatherRefreshService');
+			await import('#lib/server/db/sightingRepository.ts');
+		const { fetchWeatherData } = await import('#lib/server/services/weatherRefreshService.ts');
 		vi.mocked(getSightingById).mockResolvedValue({
 			id: 2,
 			latitude: '54.5',

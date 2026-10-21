@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { submitVerdict } from './sightingVerdict';
-import { toast } from '$lib/stores/toastState.svelte';
+import { toast } from '#lib/stores/toastState.svelte.ts';
 
-vi.mock('$lib/stores/toastState.svelte', () => ({
+vi.mock('#lib/stores/toastState.svelte.ts', () => ({
 	toast: { error: vi.fn(), success: vi.fn() }
 }));
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

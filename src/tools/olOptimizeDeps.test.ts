@@ -75,7 +75,7 @@ describe('OL_OPTIMIZE_DEPS deckt die Importe von openLayersHelpers ab', () => {
 			"import { fromLonLat, toLonLat } from 'ol/proj';",
 			"import type { Coordinate } from 'ol/coordinate';",
 			"import { type Map } from 'ol';",
-			"import { createLogger } from '$lib/logger';"
+			"import { createLogger } from '#lib/logger';"
 		].join('\n');
 
 		expect(olValueImports(beispiel)).toEqual(['ol/Map', 'ol/proj']);

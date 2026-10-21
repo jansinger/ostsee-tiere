@@ -12,19 +12,19 @@ const requireUserRole = vi.fn();
 const findReporterHistory = vi.fn();
 const limit = vi.fn();
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: (...args: unknown[]) => requireUserRole(...args)
 }));
 
-vi.mock('$lib/server/db/reporterHistory', () => ({
+vi.mock('#lib/server/db/reporterHistory.ts', () => ({
 	findReporterHistory: (...args: unknown[]) => findReporterHistory(...args)
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: { select: () => ({ from: () => ({ where: () => ({ limit }) }) }) }
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({ info: vi.fn(), debug: vi.fn(), warn: vi.fn(), error: vi.fn() }))
 }));
 

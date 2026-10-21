@@ -1,7 +1,7 @@
 import { tick } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
-import { clearAllToasts, errorToast, successToast } from '$lib/stores/toastState.svelte';
+import { clearAllToasts, errorToast, successToast } from '#lib/stores/toastState.svelte.ts';
 import ToastContainer from './ToastContainer.svelte';
 
 /**

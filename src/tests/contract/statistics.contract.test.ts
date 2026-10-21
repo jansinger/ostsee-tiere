@@ -3,19 +3,19 @@ import { GET } from '../../routes/api/statistics/+server';
 import { createEvent } from './helpers/createEvent';
 import { asApiResponse } from './helpers/asApiResponse';
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	getSightingStatistics: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-const { getSightingStatistics } = await import('$lib/server/db/sightingRepository');
+const { getSightingStatistics } = await import('#lib/server/db/sightingRepository.ts');
 const mockStats = {
 	totalSightings: 1234,
 	completionRate: 78.5,

@@ -1,6 +1,5 @@
-import { env } from '$env/dynamic/private';
-import { env as publicEnv } from '$env/dynamic/public';
-import { setCsrfCookie, setPKCECookie } from '$lib/server/auth/auth';
+import { env, publicEnv } from '#lib/server/env.ts';
+import { setCsrfCookie, setPKCECookie } from '#lib/server/auth/auth.ts';
 import { redirect, type Cookies } from '@sveltejs/kit';
 
 export async function GET({ url, cookies }: { url: URL; cookies: Cookies }) {
@@ -27,6 +26,7 @@ export async function GET({ url, cookies }: { url: URL; cookies: Cookies }) {
 
 	throw redirect(
 		302,
-		`https://${env.AUTH0_DOMAIN}/authorize?${new URLSearchParams(query).toString()}`
+		`https://${env.AUTH0_DOMAIN}/authorize?${new URLSearchParams(query).toString()}`,
+		{ external: true }
 	);
 }

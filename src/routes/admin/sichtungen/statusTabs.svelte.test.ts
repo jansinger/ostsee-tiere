@@ -11,7 +11,7 @@
  */
 import { render } from 'vitest-browser-svelte';
 import { describe, expect, it, vi } from 'vitest';
-import { SIGHTING_STATUS_PRESENTATION } from '$lib/components/admin/sightingStatus';
+import { SIGHTING_STATUS_PRESENTATION } from '#lib/components/admin/sightingStatus.ts';
 import StatusTabs from './StatusTabs.svelte';
 import type { StatusCounts } from './statusTabs';
 

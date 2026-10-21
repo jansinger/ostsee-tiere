@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { stripComments } from '$lib/testing/sourceScan.testutil';
+import { stripComments } from '#lib/testing/sourceScan.testutil.ts';
 
 /**
  * @fileoverview `resolveSessionUser` muss mit der Touch-Ausnahme aufgerufen werden

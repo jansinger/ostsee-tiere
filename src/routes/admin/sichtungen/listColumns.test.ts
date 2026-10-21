@@ -17,7 +17,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { sightings } from '$lib/server/db/schema';
+import { sightings } from '#lib/server/db/schema.ts';
 import { AVAILABLE_COLUMNS, DEFAULT_COLUMN_VISIBILITY } from './columns';
 import {
 	COLUMN_FIELDS,

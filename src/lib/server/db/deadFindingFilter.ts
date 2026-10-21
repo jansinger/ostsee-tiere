@@ -6,12 +6,12 @@
  * baut und es dem Aufrufer für dessen `and(...)`-Liste überlässt.
  *
  * Totfund heißt `totfund <> 0`, nicht `= 1` — dieselbe Boolean-Semantik wie
- * `isDeadFinding()` in `$lib/components/admin/deadFinding.ts`, die das Badge
+ * `isDeadFinding()` in `#lib/components/admin/deadFinding.ts`, die das Badge
  * setzt. Ein Altbestandswert wie die `2` in `ostsee_geo` (docs/OSTSEE_FLAGS.md)
  * würde sonst das Badge tragen, aber aus dem Filter fallen.
  */
 import { eq, ne, type SQL } from 'drizzle-orm';
-import { sightings } from '$lib/server/db/schema';
+import { sightings } from '#lib/server/db/schema.ts';
 
 /** Query-Parameter-Wert für „nur Totfunde". */
 export const DEAD_FINDING_FILTER_DEAD = '1';

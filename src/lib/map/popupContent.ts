@@ -1,4 +1,4 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * HTML-Inhalte für Popups und Hover-Infos der Sichtungskarte (M6).
  *
@@ -7,13 +7,13 @@ import * as m from '$lib/paraglide/messages';
  * die Darstellung kommt aus CSS-Klassen in mapStyles.css — keine
  * Inline-Styles am Theme vorbei.
  */
-import { getLocale } from '$lib/paraglide/runtime';
-import { sanitizeText } from '$lib/utils/sanitize';
-import { resolveDisplayLocale } from '$lib/utils/format/dateTime';
+import { getLocale } from '#lib/paraglide/runtime.js';
+import { sanitizeText } from '#lib/utils/sanitize.ts';
+import { resolveDisplayLocale } from '#lib/utils/format/dateTime.ts';
 import {
 	SIGHTING_STATUS_PRESENTATION,
 	type SightingStatus
-} from '$lib/components/admin/sightingStatus';
+} from '#lib/components/admin/sightingStatus.ts';
 import type { MapTranslations } from './mapUtils';
 
 /** Feature-Properties einer Sichtung, wie sie im GeoJSON ankommen. */

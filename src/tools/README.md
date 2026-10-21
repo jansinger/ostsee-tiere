@@ -82,7 +82,7 @@ Removes orphaned media uploads: `sichtungen_dateien` rows that never got linked 
 
 **Same logic is reachable over HTTP** via `POST /api/admin/cleanup-orphans` —
 from the admin UI or an external web cron using `CLEANUP_TOKEN`. Both share the
-core in `$lib/server/media/orphanCleanup`. This CLI stays for runs without a
+core in `#lib/server/media/orphanCleanup.js`. This CLI stays for runs without a
 running application and for unbounded batches (the endpoint caps each call at
 500 findings to stay under proxy timeouts).
 

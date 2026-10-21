@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { formatDayOfYearLong, isoDateFromDayOfYear } from '$lib/map/dateUtils';
-	import { dayOfYearFromIsoDate } from '$lib/map/urlFilterState';
+	import * as m from '#lib/paraglide/messages.js';
+	import { formatDayOfYearLong, isoDateFromDayOfYear } from '#lib/map/dateUtils.ts';
+	import { dayOfYearFromIsoDate } from '#lib/map/urlFilterState.ts';
 
 	/**
 	 * M10: Echter Dual-Range-Slider für den Zeitfilter der Sichtungskarte —

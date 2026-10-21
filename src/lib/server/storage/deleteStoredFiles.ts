@@ -1,5 +1,5 @@
-import { createLogger } from '$lib/logger.server';
-import type { StorageProvider } from '$lib/types';
+import { createLogger } from '#lib/logger.server.ts';
+import type { StorageProvider } from '#lib/types/index.ts';
 import { getStorageProvider } from './factory';
 
 const logger = createLogger('storage:deleteStoredFiles');

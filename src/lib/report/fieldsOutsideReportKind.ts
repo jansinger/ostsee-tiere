@@ -1,7 +1,7 @@
-import * as m from '$lib/paraglide/messages';
-import { getFormSteps } from '$lib/report/formConfig';
-import type { ReportKind } from '$lib/report/reportKind';
-import type { SightingFormData } from '$lib/types';
+import * as m from '#lib/paraglide/messages.js';
+import { getFormSteps } from '#lib/report/formConfig.ts';
+import type { ReportKind } from '#lib/report/reportKind.ts';
+import type { SightingFormData } from '#lib/types/index.ts';
 
 /**
  * Felder, die NICHT in den angegebenen Zweig gehören — unabhängig davon, ob

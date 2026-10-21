@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { StoredWeatherData } from '$lib/services/weatherService';
+import type { StoredWeatherData } from '#lib/services/weatherService.ts';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -10,7 +10,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -19,13 +19,13 @@ vi.mock('$lib/logger', () => ({
 	})
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn()
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: {}
 }));
 
@@ -45,7 +45,7 @@ vi.mock('drizzle-orm', () => ({
 	)
 }));
 
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.ts';
 import {
 	isWeatherDataFresh,
 	checkExistingWeatherData,

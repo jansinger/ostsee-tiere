@@ -28,7 +28,7 @@
  * nächste Schritt.
  */
 import { ilike, or, type SQL } from 'drizzle-orm';
-import { sightings } from '$lib/server/db/schema';
+import { sightings } from '#lib/server/db/schema.ts';
 
 /** Spalten, über die gesucht wird — Reihenfolge bestimmt die `OR`-Kette. */
 const SUCHSPALTEN = [

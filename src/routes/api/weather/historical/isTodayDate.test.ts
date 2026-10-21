@@ -7,11 +7,11 @@
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	getCachedWeatherForSighting: vi.fn().mockResolvedValue(null)
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),

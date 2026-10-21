@@ -15,7 +15,7 @@ import {
 	SIGHTING_STATUS_ORDER,
 	SIGHTING_STATUS_PRESENTATION,
 	type SightingStatus
-} from '$lib/components/admin/sightingStatus';
+} from '#lib/components/admin/sightingStatus.ts';
 
 /** Trefferzahlen der aktuell gefilterten Menge, ohne den Statusfilter selbst. */
 export type StatusCounts = {
@@ -33,7 +33,7 @@ export type StatusTab = {
 	label: string;
 	/** Schlüssel in `StatusCounts` — für „Alle" die Gesamtzahl. */
 	countKey: keyof StatusCounts;
-	/** Icon-Name für `$lib/components/Icon.svelte`; „Alle" trägt keines. */
+	/** Icon-Name für `#lib/components/Icon.svelte`; „Alle" trägt keines. */
 	icon?: string;
 };
 

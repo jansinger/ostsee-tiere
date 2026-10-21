@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn().mockReturnValue({
 		warn: vi.fn(),
 		debug: vi.fn(),
@@ -17,7 +17,7 @@ vi.mock('./spamDetector', () => ({
 // (from→where→orderBy→limit), der zweite die Rest-Zählung (from→where→Promise).
 const selectMock = vi.fn();
 const updateSetCalls: Array<Record<string, unknown>> = [];
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: (...args: unknown[]) => selectMock(...args),
 		update: vi.fn().mockReturnValue({

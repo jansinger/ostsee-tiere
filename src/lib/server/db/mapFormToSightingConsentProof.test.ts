@@ -10,7 +10,7 @@
  * Besonders `nameConsent` hat sichtbare Folgen: `/api/sightings` (Feld `na`)
  * veröffentlicht Vor- und Nachnamen, sobald das Flag gesetzt ist.
  */
-import type { SightingFormValues } from '$lib/types/Form';
+import type { SightingFormValues } from '#lib/types/Form.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../geo/checkBalticSeaFile', () => ({
@@ -29,7 +29,7 @@ import {
 	NAME_CONSENT_VERSION,
 	PRIVACY_CONSENT_VERSION,
 	SHIP_NAME_CONSENT_VERSION
-} from '$lib/form/consent/consentVersions';
+} from '#lib/form/consent/consentVersions.ts';
 import { checkBalticSeaFile } from '../geo/checkBalticSeaFile';
 import { mapFormToSighting } from './mapFormToSighting';
 

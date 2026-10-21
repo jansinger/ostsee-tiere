@@ -1,4 +1,4 @@
-import type { UploadOptions } from '$lib/types';
+import type { UploadOptions } from '#lib/types/index.ts';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 // Mutable mock environment object
@@ -7,7 +7,7 @@ const mockEnv: Record<string, string> = {
 };
 
 // Mock environment variables (dynamic env) with Proxy for runtime changes
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: new Proxy({} as Record<string, string>, {
 		get: (_target, prop: string) => mockEnv[prop] ?? '',
 		set: (_target, prop: string, value: string) => {
@@ -18,7 +18,7 @@ vi.mock('$env/dynamic/private', () => ({
 }));
 
 // Mock the logger
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		info: vi.fn(),
 		debug: vi.fn(),
@@ -27,7 +27,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		info: vi.fn(),
 		debug: vi.fn(),

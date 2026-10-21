@@ -1,29 +1,29 @@
-import * as m from '$lib/paraglide/messages';
-import { env } from '$env/dynamic/private';
-import { getSightingSchema } from '$lib/form/validation/sightingSchema';
-import { createLogger } from '$lib/logger.server';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { resolveEntryClient } from '$lib/server/utils/resolveEntryClient';
-import { getBuildInfo } from '$lib/server/startup/versionInfo';
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
-import { db } from '$lib/server/db';
-import { approvedOnly } from '$lib/server/db/approvalFilter';
-import { sightings } from '$lib/server/db/schema';
-import { berlinToChar } from '$lib/server/db/sqlTimeZone';
-import { getYearRange } from '$lib/legacy-api/date-utils';
-import { countRecentDuplicateSignals, saveSighting } from '$lib/server/db/sightingRepository';
-import { mapFormToSighting } from '$lib/server/db/mapFormToSighting';
-import { detectSpamIndicators } from '$lib/server/spam/spamDetector';
-import { verifyFormToken } from '$lib/server/spam/formToken';
-import type { SpamSubmissionContext } from '$lib/types/spam';
-import { EmailService } from '$lib/server/services/emailService';
-import type { StoredWeatherData } from '$lib/services/weatherService';
+import * as m from '#lib/paraglide/messages.js';
+import { env } from '#lib/server/env.ts';
+import { getSightingSchema } from '#lib/form/validation/sightingSchema.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { resolveEntryClient } from '#lib/server/utils/resolveEntryClient.ts';
+import { getBuildInfo } from '#lib/server/startup/versionInfo.ts';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
+import { db } from '#lib/server/db/index.ts';
+import { approvedOnly } from '#lib/server/db/approvalFilter.ts';
+import { sightings } from '#lib/server/db/schema.ts';
+import { berlinToChar } from '#lib/server/db/sqlTimeZone.ts';
+import { getYearRange } from '#lib/legacy-api/date-utils.ts';
+import { countRecentDuplicateSignals, saveSighting } from '#lib/server/db/sightingRepository.ts';
+import { mapFormToSighting } from '#lib/server/db/mapFormToSighting.ts';
+import { detectSpamIndicators } from '#lib/server/spam/spamDetector.ts';
+import { verifyFormToken } from '#lib/server/spam/formToken.ts';
+import type { SpamSubmissionContext } from '#lib/types/spam.ts';
+import { EmailService } from '#lib/server/services/emailService.ts';
+import type { StoredWeatherData } from '#lib/services/weatherService.ts';
 import {
 	checkForbiddenAdminFields,
 	validateSightingFormData
-} from '$lib/server/validation/requestValidation';
-import { ServerConfigService } from '$lib/services/configService';
-import type { SightingFormValues } from '$lib/types/Form';
+} from '#lib/server/validation/requestValidation.ts';
+import { ServerConfigService } from '#lib/services/configService.ts';
+import type { SightingFormValues } from '#lib/types/Form.ts';
 import { json, isHttpError, type RequestEvent } from '@sveltejs/kit';
 import { and, gte, lt, sql } from 'drizzle-orm';
 import { ValidationError } from 'yup';
@@ -32,7 +32,7 @@ import {
 	enforceRateLimit,
 	RATE_LIMITS,
 	createRateLimitIdentifier
-} from '$lib/server/middleware/rateLimit';
+} from '#lib/server/middleware/rateLimit.ts';
 
 // Dynamic environment variable for Docker runtime
 const NODE_ENV = env.NODE_ENV ?? 'development';
@@ -223,7 +223,8 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
 		// Extract and validate weather data from form if available
 		let weatherData: StoredWeatherData | undefined;
 		if (formDataWithDefaults.weatherData) {
-			const { validateWeatherData } = await import('$lib/server/validation/weatherDataValidation');
+			const { validateWeatherData } =
+				await import('#lib/server/validation/weatherDataValidation.ts');
 			const weatherResult = validateWeatherData(formDataWithDefaults.weatherData);
 			if (weatherResult.valid) {
 				weatherData = formDataWithDefaults.weatherData as StoredWeatherData;

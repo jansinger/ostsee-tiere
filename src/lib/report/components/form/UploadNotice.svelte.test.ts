@@ -1,6 +1,6 @@
 import { render } from 'vitest-browser-svelte';
 import { describe, expect, it } from 'vitest';
-import { uploadNotice } from '$lib/form/consent/uploadNotice';
+import { uploadNotice } from '#lib/form/consent/uploadNotice.ts';
 import UploadNotice from './UploadNotice.svelte';
 
 /**

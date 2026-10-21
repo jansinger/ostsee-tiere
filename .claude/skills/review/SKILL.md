@@ -52,7 +52,7 @@ grep -n ': any\b\|as any\b' <file>
 grep -n '{@html' <file>
 ```
 
-**Fix:** Immer `sanitizeHtml()` aus `$lib/utils/sanitize` verwenden.
+**Fix:** Immer `sanitizeHtml()` aus `#lib/utils/sanitize` verwenden.
 
 #### Globaler $state in .ts Dateien (SSR-Leak)
 

@@ -10,7 +10,7 @@
  * angemeldeten Client beantwortet die API mit 403 (siehe statusFilter.ts) —
  * die Karte darf ihn also nicht ungefragt mitschicken.
  */
-import type { SightingStatus } from '$lib/components/admin/sightingStatus';
+import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
 
 export const DEFAULT_MAP_STATUSES: readonly SightingStatus[] = ['approved'];
 

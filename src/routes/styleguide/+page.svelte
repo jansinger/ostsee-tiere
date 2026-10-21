@@ -25,21 +25,21 @@
   Nur in dev erreichbar (siehe +page.server.ts daneben).
 -->
 <script lang="ts">
-	import ConnectionBadge from '$lib/components/ConnectionBadge.svelte';
-	import ReporterHistoryBadge from '$lib/components/admin/ReporterHistoryBadge.svelte';
-	import { SIGHTING_STATUS_PRESENTATION } from '$lib/components/admin/sightingStatus';
-	import { SPAM_RISK_PRESENTATION } from '$lib/components/admin/spamScorePresentation';
-	import Icon from '$lib/components/Icon.svelte';
-	import StatusBlock from '$lib/components/StatusBlock.svelte';
-	import SubmitStatus from '$lib/report/components/form/SubmitStatus.svelte';
-	import { connection } from '$lib/stores/connectionState.svelte';
+	import ConnectionBadge from '#lib/components/ConnectionBadge.svelte';
+	import ReporterHistoryBadge from '#lib/components/admin/ReporterHistoryBadge.svelte';
+	import { SIGHTING_STATUS_PRESENTATION } from '#lib/components/admin/sightingStatus.ts';
+	import { SPAM_RISK_PRESENTATION } from '#lib/components/admin/spamScorePresentation.ts';
+	import Icon from '#lib/components/Icon.svelte';
+	import StatusBlock from '#lib/components/StatusBlock.svelte';
+	import SubmitStatus from '#lib/report/components/form/SubmitStatus.svelte';
+	import { connection } from '#lib/stores/connectionState.svelte.ts';
 	/* Importiert statt abgeschrieben: die Marker-Palette ist Datenkodierung mit
 	   genau einer Quelle (design-system.md, „Randbereiche: wo Hex-Werte erlaubt
 	   sind"). Eine zweite Liste hier hätte den Absatz darunter — der
 	   styleUtils.ts als Quelle benennt — beim ersten Farbwechsel zur Lüge
 	   gemacht. Das Emoji kommt aus derselben Struktur und ist der zweite,
 	   redundante Kanal der Gruppe (UX-Review M1). */
-	import { MARKER_BACKGROUND_COLOR, speciesGroupStyles } from '$lib/map/styleUtils';
+	import { MARKER_BACKGROUND_COLOR, speciesGroupStyles } from '#lib/map/styleUtils.ts';
 
 	/* Jede Kombination einmal ausgeschrieben — siehe Kommentar oben. */
 	const surfaces = [

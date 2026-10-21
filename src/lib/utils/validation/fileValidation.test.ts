@@ -8,8 +8,8 @@ import {
 	validateFiles,
 	validateGPSPhotos
 } from './fileValidation';
-import { ALLOWED_MIME_TYPES, UPLOAD_LIMITS } from '$lib/constants/upload';
-import type { ValidationPreset } from '$lib/types';
+import { ALLOWED_MIME_TYPES, UPLOAD_LIMITS } from '#lib/constants/upload.ts';
+import type { ValidationPreset } from '#lib/types/index.ts';
 
 describe('fileValidation', () => {
 	// Helper function to create mock File objects

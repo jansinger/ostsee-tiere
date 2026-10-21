@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { StoredWeatherData } from '$lib/services/weatherService';
-import { withTimeZone } from '$lib/server/datetime/withTimeZone.testutil';
-import { berlinCalendarDayIso } from '$lib/utils/format/dateTime';
+import type { StoredWeatherData } from '#lib/services/weatherService.ts';
+import { withTimeZone } from '#lib/server/datetime/withTimeZone.testutil.ts';
+import { berlinCalendarDayIso } from '#lib/utils/format/dateTime.ts';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -12,7 +12,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -21,7 +21,7 @@ vi.mock('$lib/logger', () => ({
 	})
 }));
 
-vi.mock('$lib/services/weatherService', () => ({
+vi.mock('#lib/services/weatherService.ts', () => ({
 	convertToStoredWeatherData: vi.fn(
 		(
 			w: { time: string },
@@ -61,7 +61,7 @@ vi.mock('$lib/services/weatherService', () => ({
 	)
 }));
 
-vi.mock('$lib/constants/weather', () => ({
+vi.mock('#lib/constants/weather.ts', () => ({
 	degreesToCardinal: vi.fn(() => 'N'),
 	getWeatherDescription: vi.fn(() => 'Klarer Himmel'),
 	calculateSeaState: vi.fn(() => 1)
@@ -314,7 +314,7 @@ describe('fetchWeatherData', () => {
 		// einen "falschen" Zeitstempel, während Index 2 zufällig den Zieltext "14:00"
 		// trägt — eine Differenz-Suche (alter Code) würde Index 2 wählen, die
 		// Ortszeit-Stunde muss trotzdem Index 14 liefern.
-		const { convertToStoredWeatherData } = await import('$lib/services/weatherService');
+		const { convertToStoredWeatherData } = await import('#lib/services/weatherService.ts');
 
 		const time = Array.from(
 			{ length: 24 },
@@ -362,7 +362,7 @@ describe('fetchWeatherData', () => {
 		// prozesszonen-fest (String-Parsing statt Date-Arithmetik). Abgesichert unter
 		// einer von Berlin/UTC abweichenden Zone, damit eine Rückkehr zu Date-Diffs
 		// hier auffällt.
-		const { convertToStoredWeatherData } = await import('$lib/services/weatherService');
+		const { convertToStoredWeatherData } = await import('#lib/services/weatherService.ts');
 
 		await withTimeZone('America/New_York', async () => {
 			vi.mocked(fetch)
@@ -411,7 +411,7 @@ describe('fetchWeatherData', () => {
 	});
 
 	it('übergibt latitude und longitude korrekt an convertToStoredWeatherData', async () => {
-		const { convertToStoredWeatherData } = await import('$lib/services/weatherService');
+		const { convertToStoredWeatherData } = await import('#lib/services/weatherService.ts');
 		vi.mocked(fetch)
 			.mockResolvedValueOnce({
 				ok: true,

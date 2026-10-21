@@ -2,8 +2,8 @@
  * Aufbewahrungsfrist für unverknüpfte Uploads — Dateien, die übertragen, aber
  * nie mit einer abgeschickten Sichtung verknüpft wurden.
  *
- * Steht bewusst **nicht** unter `$lib/server`: Der Hinweis an der Dropzone
- * (`$lib/form/consent/uploadNotice`) nennt diese Frist und läuft im Browser,
+ * Steht bewusst **nicht** unter `#lib/server`: Der Hinweis an der Dropzone
+ * (`#lib/form/consent/uploadNotice.js`) nennt diese Frist und läuft im Browser,
  * das Aufräumen (`src/tools/cleanup-orphaned-uploads.ts`) auf dem Server. Beide
  * beziehen sie von hier, damit die Zusage im Formular und das tatsächliche
  * Verhalten nicht auseinanderlaufen können (`uploadNotice.test.ts`).

@@ -7,11 +7,11 @@ import { GET as kmlGET } from '../../routes/api/sightings/export/kml/+server';
 import { createEvent, mockAdminUser } from './helpers/createEvent';
 import { asApiResponse } from './helpers/asApiResponse';
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -24,9 +24,9 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', async () => {
+vi.mock('#lib/server/db/schema.ts', async () => {
 	const { strictModuleMock } = await import('./helpers/strictModuleMock');
-	return strictModuleMock('$lib/server/db/schema', {
+	return strictModuleMock('#lib/server/db/schema.ts', {
 		sightings: {
 			id: 'id',
 			sightingDate: 'sightingDate',
@@ -49,15 +49,15 @@ vi.mock('drizzle-orm', async () => {
 	});
 });
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
@@ -89,7 +89,7 @@ const mockSighting = {
 };
 
 async function mockDbWithSighting(sighting: object) {
-	const { db } = vi.mocked(await import('$lib/server/db'));
+	const { db } = vi.mocked(await import('#lib/server/db/index.ts'));
 	(db.select as any).mockReturnValueOnce({
 		from: vi.fn().mockReturnValue({
 			where: vi.fn().mockReturnValue({
@@ -283,7 +283,7 @@ describe('Contract: GET /api/sightings/export (base)', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -300,7 +300,7 @@ describe('Contract: GET /api/sightings/export (base)', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -323,7 +323,7 @@ describe('Audit: export.download wird geloggt', () => {
 	});
 
 	it('logAuditEvent wird mit action export.download für JSON-Export aufgerufen', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/export/json', {
 			searchParams: { fromDate: '2024-01-01', toDate: '2024-12-31' },
 			locals: { user: mockAdminUser }
@@ -341,7 +341,7 @@ describe('Audit: export.download wird geloggt', () => {
 	});
 
 	it('logAuditEvent wird mit action export.download für CSV-Export aufgerufen', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/export/csv', {
 			locals: { user: mockAdminUser }
 		});
@@ -358,7 +358,7 @@ describe('Audit: export.download wird geloggt', () => {
 	});
 
 	it('logAuditEvent wird mit action export.download für XML-Export aufgerufen', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/export/xml', {
 			locals: { user: mockAdminUser }
 		});
@@ -375,7 +375,7 @@ describe('Audit: export.download wird geloggt', () => {
 	});
 
 	it('logAuditEvent wird mit action export.download für KML-Export aufgerufen', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/export/kml', {
 			locals: { user: mockAdminUser }
 		});
@@ -392,7 +392,7 @@ describe('Audit: export.download wird geloggt', () => {
 	});
 
 	it('logAuditEvent wird mit action export.download für Basis-Export aufgerufen', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/export', {
 			searchParams: { fromDate: '2024-01-01', toDate: '2024-12-31' },
 			locals: { user: mockAdminUser }
@@ -410,7 +410,7 @@ describe('Audit: export.download wird geloggt', () => {
 	});
 
 	it('logAuditEvent enthält userEmail wenn admin eingeloggt', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/export/json', {
 			locals: { user: mockAdminUser }
 		});
@@ -426,7 +426,7 @@ describe('Audit: export.download wird geloggt', () => {
 	});
 
 	it('logAuditEvent enthält fromDate und toDate in details', async () => {
-		const { logAuditEvent } = vi.mocked(await import('$lib/server/audit/auditService'));
+		const { logAuditEvent } = vi.mocked(await import('#lib/server/audit/auditService.ts'));
 		const event = createEvent('/api/sightings/export/csv', {
 			searchParams: { fromDate: '2024-01-01', toDate: '2024-12-31' },
 			locals: { user: mockAdminUser }

@@ -151,7 +151,7 @@ describe('Endpunkte mit JavaScript-seitiger Freigabeprüfung', () => {
 
 			it('bezieht die Regel aus approvalFilter', () => {
 				expect(source).toContain('isSightingApproved');
-				expect(source).toMatch(/from '\$lib\/server\/db\/approvalFilter'/);
+				expect(source).toMatch(/from '[$#]lib\/server\/db\/approvalFilter(?:\.(?:js|ts))?'/);
 			});
 
 			for (const { form, muster } of eigeneFreigabepruefungen) {

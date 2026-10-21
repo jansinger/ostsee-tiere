@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { FormStep } from '$lib/types';
+import type { FormStep } from '#lib/types/index.ts';
 import { resolveServerFieldErrors } from './serverFieldErrors';
 
 const steps: FormStep[] = [

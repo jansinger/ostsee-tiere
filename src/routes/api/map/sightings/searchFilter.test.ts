@@ -18,7 +18,7 @@ import { PgDialect } from 'drizzle-orm/pg-core';
 
 const captured = vi.hoisted(() => ({ where: null as unknown }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn(() => ({
 			from: vi.fn(() => ({
@@ -31,11 +31,11 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/map/mapUtils', () => ({
+vi.mock('#lib/map/mapUtils.ts', () => ({
 	sightingsToGeoJSON: vi.fn(() => ({ type: 'FeatureCollection', features: [] }))
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

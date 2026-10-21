@@ -1,9 +1,9 @@
-import { env } from '$env/dynamic/private';
-import { createLogger } from '$lib/logger.server';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { db } from '$lib/server/db';
-import { sessions } from '$lib/server/db/schema';
-import type { User } from '$lib/types/User';
+import { env } from '#lib/server/env.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sessions } from '#lib/server/db/schema.ts';
+import type { User } from '#lib/types/User.ts';
 import type { Cookies } from '@sveltejs/kit';
 import { and, eq, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import { createSessionToken, hashSessionToken } from './sessionToken';

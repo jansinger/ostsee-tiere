@@ -2,10 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	PUBLIC_UPLOAD_ALLOWED_TYPES,
 	PUBLIC_UPLOAD_MAX_FILE_SIZE_BYTES
-} from '$lib/constants/uploadDefaults';
-import { UPLOAD_LIMITS } from '$lib/constants/upload';
+} from '#lib/constants/uploadDefaults.ts';
+import { UPLOAD_LIMITS } from '#lib/constants/upload.ts';
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),

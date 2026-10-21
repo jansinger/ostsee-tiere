@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PUT } from './+server';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -10,15 +10,15 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: () => ({
 			from: () => ({
@@ -30,7 +30,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: { id: 'id' }
 }));
 
@@ -38,7 +38,7 @@ vi.mock('drizzle-orm', () => ({
 	eq: vi.fn((a, b) => ({ a, b }))
 }));
 
-vi.mock('$lib/form/validation/sightingSchema', () => ({
+vi.mock('#lib/form/validation/sightingSchema.ts', () => ({
 	getSightingSchema: vi.fn(() => ({
 		validate: vi.fn().mockResolvedValue(undefined)
 	})),
@@ -48,19 +48,19 @@ vi.mock('$lib/form/validation/sightingSchema', () => ({
 	}))
 }));
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	updateSighting: vi.fn().mockResolvedValue({ id: 123, referenceId: 'ref-test' }),
 	loadSightingFiles: vi.fn().mockResolvedValue([]),
 	saveSightingFiles: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getStorageProvider: () => ({
 		getUrl: (filePath: string) => `https://storage.example.com/${filePath}`
 	})
 }));
 
-vi.mock('$lib/server/utils/getClientIp', () => ({
+vi.mock('#lib/server/utils/getClientIp.ts', () => ({
 	getClientIp: () => '127.0.0.1'
 }));
 

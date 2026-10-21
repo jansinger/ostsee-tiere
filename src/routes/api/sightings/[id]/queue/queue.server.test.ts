@@ -19,7 +19,7 @@
 import type { SQL, SQLWrapper } from 'drizzle-orm';
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { openOnly } from '$lib/server/db/approvalFilter';
+import { openOnly } from '#lib/server/db/approvalFilter.ts';
 
 const dialect = new PgDialect();
 const toSqlText = (condition: SQLWrapper): string => dialect.sqlToQuery(condition.getSQL()).sql;
@@ -59,7 +59,7 @@ function createRecordingBuilder(record: RecordedSelect) {
 	return builder;
 }
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: () => {
 			const record: RecordedSelect = {};
@@ -69,7 +69,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 

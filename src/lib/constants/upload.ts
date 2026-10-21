@@ -1,11 +1,11 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * Centralized upload constants and configuration
  * Single source of truth for all upload-related settings
  */
 
-import { MEDIA_FALLBACK_EMAIL } from '$lib/constants/contact';
-import { describeFileFormats, isVideoFile } from '$lib/utils/file/fileType';
+import { MEDIA_FALLBACK_EMAIL } from '#lib/constants/contact.ts';
+import { describeFileFormats, isVideoFile } from '#lib/utils/file/fileType.ts';
 
 // File size limits (in bytes)
 export const UPLOAD_LIMITS = {

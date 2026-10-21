@@ -13,9 +13,9 @@
  * Das ist gewollt: ein `submission: { tokenStatus: 'missing' }` wäre für
  * Altbestand ein erfundener Malus.
  */
-import { createLogger } from '$lib/logger.server';
-import { db } from '$lib/server/db';
-import { sightings } from '$lib/server/db/schema';
+import { createLogger } from '#lib/logger.server.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightings } from '#lib/server/db/schema.ts';
 import { count, eq, isNull } from 'drizzle-orm';
 import { detectSpamIndicators } from './spamDetector';
 

@@ -3,8 +3,8 @@
   Independent of form context, accepts all props directly
 -->
 <script lang="ts">
-	import type { FieldSize } from '$lib/types';
-	import Icon from '$lib/components/Icon.svelte';
+	import type { FieldSize } from '#lib/types/index.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import type { HTMLTextareaAttributes } from 'svelte/elements';
 
 	interface Props extends HTMLTextareaAttributes {

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import { get } from 'svelte/store';
-	import { getFormContext } from '$lib/report/formContext';
-	import Icon from '$lib/components/Icon.svelte';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
-	import { hasCoordinates } from '$lib/report/components/form/coordinateValue';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import Icon from '#lib/components/Icon.svelte';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
+	import { hasCoordinates } from '#lib/report/components/form/coordinateValue.ts';
 	import { descriptionCollapsed } from './positionPanelState';
 
 	const { form } = getFormContext();

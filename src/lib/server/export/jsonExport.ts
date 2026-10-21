@@ -1,4 +1,4 @@
-import type { FrontendSighting } from '$lib/types/index';
+import type { FrontendSighting } from '#lib/types/index.ts';
 
 /**
  * Erzeugt JSON-Daten aus Sichtungen (Server-Side)

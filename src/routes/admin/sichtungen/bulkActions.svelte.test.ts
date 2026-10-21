@@ -1,6 +1,6 @@
 import { render } from 'vitest-browser-svelte';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { SightingSelect } from '$lib/server/db/schema';
+import type { SightingSelect } from '#lib/server/db/schema.ts';
 import type { PageData } from './$types';
 
 const invalidateAll = vi.fn(() => Promise.resolve());
@@ -12,10 +12,10 @@ vi.mock('$app/navigation', () => ({ goto: vi.fn(() => Promise.resolve()), invali
 vi.mock('$app/state', () => ({
 	page: { url: new URL('https://localhost:4000/admin/sichtungen') }
 }));
-vi.mock('$lib/components/admin/sightingVerdict', () => ({ submitVerdict }));
+vi.mock('#lib/components/admin/sightingVerdict.ts', () => ({ submitVerdict }));
 
 const SichtungenSeite = (await import('./+page.svelte')).default;
-const { toast } = await import('$lib/stores/toastState.svelte');
+const { toast } = await import('#lib/stores/toastState.svelte.ts');
 
 function sichtung(overrides: Partial<SightingSelect>): SightingSelect {
 	return {

@@ -9,18 +9,18 @@
  * `and(...)`-Bedingungsliste.
  */
 import { and, eq, gte, sql, type SQL } from 'drizzle-orm';
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
 import {
 	MEDIA_UPLOAD_ANNOUNCED_MISSING,
 	NEW_IOS_CLIENT_LAUNCH_DATE
-} from '$lib/utils/media/photoAnnouncement';
-import { sightingFiles, sightings } from '$lib/server/db/schema';
+} from '#lib/utils/media/photoAnnouncement.ts';
+import { sightingFiles, sightings } from '#lib/server/db/schema.ts';
 
 /**
  * „Foto angekündigt, aber keine Datei angehängt" — der neu gebaute iOS-Client
  * (`OstSeeTiere/8`, Stand 2026-07-30) setzt `aufnahmeHochladen`, kann aber
  * keine Datei hochladen; das Foto kommt per E-Mail nach. Dieselbe Aussage wie
- * `isPhotoAnnouncementPending()` in `$lib/utils/media/photoAnnouncement.ts`,
+ * `isPhotoAnnouncementPending()` in `#lib/utils/media/photoAnnouncement.ts`,
  * hier aber als SQL-Prädikat statt als Vergleich gegen einen geladenen
  * Dateizähler — die Admin-Liste lädt `sichtungen_dateien` nicht pro Zeile.
  *

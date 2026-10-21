@@ -1,5 +1,5 @@
 /**
- * @deprecated Import types from '$lib/types' instead
+ * @deprecated Import types from '#lib/types/index.ts' instead
  */
 
 // Re-export form types from centralized location
@@ -9,4 +9,4 @@ export type {
 	SightingFormData,
 	FormContext,
 	FormContextKey
-} from '$lib/types';
+} from '#lib/types/index.ts';

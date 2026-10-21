@@ -1,9 +1,9 @@
 /**
  * Server-seitige EXIF-Utilities für das Auslesen von Metadaten aus hochgeladenen Bildern
  */
-import { createLogger } from '$lib/logger.server';
-import type { ExifData } from '$lib/types';
-import { correctCestOffsetUTC } from '$lib/server/datetime/correctCestOffsetUTC';
+import { createLogger } from '#lib/logger.server.ts';
+import type { ExifData } from '#lib/types/index.ts';
+import { correctCestOffsetUTC } from '#lib/server/datetime/correctCestOffsetUTC.ts';
 const logger = createLogger('server:exifUtils');
 
 /**

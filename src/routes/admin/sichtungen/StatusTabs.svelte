@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 	import { STATUS_TABS, type StatusCounts, type StatusTabValue } from './statusTabs';
 
 	interface Props {

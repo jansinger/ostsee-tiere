@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
-	import { isFormDirty } from '$lib/form/isFormDirty';
-	import { getAdminSightingSchema } from '$lib/form/validation/sightingSchema';
-	import Form from '$lib/report/components/form/Form.svelte';
-	import Administrative from '$lib/report/components/sections/Administrative.svelte';
-	import AnimalInfo from '$lib/report/components/sections/AnimalInfo.svelte';
-	import Behavior from '$lib/report/components/sections/Behavior.svelte';
-	import DateTime from '$lib/report/components/sections/DateTime.svelte';
-	import Environment from '$lib/report/components/sections/Environment.svelte';
-	import Location from '$lib/report/components/sections/Location.svelte';
-	import OptionalSightingDetails from '$lib/report/components/sections/OptionalSightingDetails.svelte';
-	import type { FormContext } from '$lib/report/types';
+	import { isFormDirty } from '#lib/form/isFormDirty.ts';
+	import { getAdminSightingSchema } from '#lib/form/validation/sightingSchema.ts';
+	import Form from '#lib/report/components/form/Form.svelte';
+	import Administrative from '#lib/report/components/sections/Administrative.svelte';
+	import AnimalInfo from '#lib/report/components/sections/AnimalInfo.svelte';
+	import Behavior from '#lib/report/components/sections/Behavior.svelte';
+	import DateTime from '#lib/report/components/sections/DateTime.svelte';
+	import Environment from '#lib/report/components/sections/Environment.svelte';
+	import Location from '#lib/report/components/sections/Location.svelte';
+	import OptionalSightingDetails from '#lib/report/components/sections/OptionalSightingDetails.svelte';
+	import type { FormContext } from '#lib/report/types.ts';
 
-	import Media from '$lib/report/components/sections/Media.svelte';
-	import SightingDetails from '$lib/report/components/sections/SightingDetails.svelte';
-	import type { FrontendSighting } from '$lib/types';
-	import { formatLocalDateTime } from '$lib/utils/format/dateTime';
+	import Media from '#lib/report/components/sections/Media.svelte';
+	import SightingDetails from '#lib/report/components/sections/SightingDetails.svelte';
+	import type { FrontendSighting } from '#lib/types/index.ts';
+	import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
 	import { untrack } from 'svelte';
 	import { get } from 'svelte/store';
 

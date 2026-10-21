@@ -8,31 +8,34 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import Icon from '$lib/components/Icon.svelte';
-	import StatusBlock from '$lib/components/StatusBlock.svelte';
-	import { DEAD_FINDING_PRESENTATION, isDeadFinding } from '$lib/components/admin/deadFinding';
-	import SightingActionsMenu from '$lib/components/admin/SightingActionsMenu.svelte';
-	import SightingStatusControl from '$lib/components/admin/SightingStatusControl.svelte';
+	import Icon from '#lib/components/Icon.svelte';
+	import StatusBlock from '#lib/components/StatusBlock.svelte';
+	import { DEAD_FINDING_PRESENTATION, isDeadFinding } from '#lib/components/admin/deadFinding.ts';
+	import SightingActionsMenu from '#lib/components/admin/SightingActionsMenu.svelte';
+	import SightingStatusControl from '#lib/components/admin/SightingStatusControl.svelte';
 	import {
 		getSightingStatus,
 		SIGHTING_STATUS_PRESENTATION,
 		type SightingStatus
-	} from '$lib/components/admin/sightingStatus';
-	import type { SightingVerdict } from '$lib/components/admin/sightingVerdict';
-	import { getSpamRisk, SPAM_RISK_PRESENTATION } from '$lib/components/admin/spamScorePresentation';
-	import { getAnimalBehaviorLabel } from '$lib/report/formOptions/animalBehavior';
-	import { getDistanceLabel } from '$lib/report/formOptions/distance';
-	import { getDistributionLabel } from '$lib/report/formOptions/distribution';
-	import { getSeaStateLabel } from '$lib/report/formOptions/seaState';
-	import { getSpeciesLabel } from '$lib/report/formOptions/species';
-	import { getVisibilityLabel } from '$lib/report/formOptions/visibility';
-	import { getWindStrengthLabel } from '$lib/report/formOptions/windStrength';
+	} from '#lib/components/admin/sightingStatus.ts';
+	import type { SightingVerdict } from '#lib/components/admin/sightingVerdict.ts';
+	import {
+		getSpamRisk,
+		SPAM_RISK_PRESENTATION
+	} from '#lib/components/admin/spamScorePresentation.ts';
+	import { getAnimalBehaviorLabel } from '#lib/report/formOptions/animalBehavior.ts';
+	import { getDistanceLabel } from '#lib/report/formOptions/distance.ts';
+	import { getDistributionLabel } from '#lib/report/formOptions/distribution.ts';
+	import { getSeaStateLabel } from '#lib/report/formOptions/seaState.ts';
+	import { getSpeciesLabel } from '#lib/report/formOptions/species.ts';
+	import { getVisibilityLabel } from '#lib/report/formOptions/visibility.ts';
+	import { getWindStrengthLabel } from '#lib/report/formOptions/windStrength.ts';
 	import type { SichtungenListRow } from './listColumns';
-	import { formatLocalDateTime } from '$lib/utils/format/dateTime';
+	import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
 	import {
 		BALTIC_SEA_STATUS_PRESENTATION,
 		getBalticSeaStatus
-	} from '$lib/utils/geo/balticSeaStatus';
+	} from '#lib/utils/geo/balticSeaStatus.ts';
 	import { setAllSelected, toggleSelection, type BulkHeaderState } from './bulkSelection';
 	import type { ColumnVisibility } from './columns';
 	import { describeEmptyList } from './emptyList';
@@ -113,7 +116,7 @@
 	let sort = $derived(resolveSort(page.url.searchParams));
 
 	function updateSort(column: SortColumn): void {
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('sort', column);
 		url.searchParams.set('order', naechsteRichtung(sort, column));
 		/* Die Seitenzahl ist eine Position in *einer* Reihenfolge und überlebt

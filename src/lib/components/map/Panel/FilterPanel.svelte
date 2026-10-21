@@ -1,10 +1,13 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import { getDaysInYear } from '$lib/map/dateUtils';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import { getDaysInYear } from '#lib/map/dateUtils.ts';
 	import DualRangeSlider from './DualRangeSlider.svelte';
 	import MapPanel from './MapPanel.svelte';
-	import { SIGHTING_STATUS_ORDER, type SightingStatus } from '$lib/components/admin/sightingStatus';
+	import {
+		SIGHTING_STATUS_ORDER,
+		type SightingStatus
+	} from '#lib/components/admin/sightingStatus.ts';
 
 	let {
 		years = [],

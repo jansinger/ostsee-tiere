@@ -1,8 +1,8 @@
 <script lang="ts">
-	import BarChart from '$lib/components/charts/BarChart.svelte';
-	import { getEntryChannelLabel } from '$lib/report/formOptions/entryChannel';
-	import { getSpeciesLabel } from '$lib/report/formOptions/species';
-	import Icon from '$lib/components/Icon.svelte';
+	import BarChart from '#lib/components/charts/BarChart.svelte';
+	import { getEntryChannelLabel } from '#lib/report/formOptions/entryChannel.ts';
+	import { getSpeciesLabel } from '#lib/report/formOptions/species.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import { WEEKDAY_LABELS, buildActivityHeatmap, type HeatmapStep } from './activityHeatmap';
 	import { formatNumber, formatPercentage } from './statisticsFormat';
 	import type { PageData } from './$types';

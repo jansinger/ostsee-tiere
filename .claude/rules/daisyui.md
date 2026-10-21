@@ -40,7 +40,7 @@ JS-Config — definieren das Theme.
 > Die Datei war ein Rest aus der DaisyUI-v4-Zeit und wurde entfernt, nachdem
 > nachgewiesen war, dass sie wirkungslos ist: Unter Tailwind 4 wird eine JS-Config
 > nur noch über eine `@config`-Direktive geladen — die gibt es hier nicht, und
-> auch `vite.config*.ts`, `svelte.config.js` und `.prettierrc` referenzieren sie
+> auch `vite.config*.ts`, `svelte.config.js` (bis SvelteKit 2) und `.prettierrc` referenzierten sie
 > nicht. Der Produktions-Build liefert vor und nach dem Löschen **byte-identisches
 > CSS** (alle 17 Assets, gleiche Content-Hashes).
 >

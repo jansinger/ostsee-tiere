@@ -1,4 +1,4 @@
-import { berlinOffsetHoursForWallClock } from '$lib/utils/format/berlinWallClock';
+import { berlinOffsetHoursForWallClock } from '#lib/utils/format/berlinWallClock.ts';
 
 /**
  * Rechnet eine deutsche Wanduhrzeit in den echten UTC-Zeitpunkt um.

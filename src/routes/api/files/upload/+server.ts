@@ -1,22 +1,25 @@
-import * as m from '$lib/paraglide/messages';
-import { FILE_VALIDATION_PRESETS, UPLOAD_ERROR_MESSAGES } from '$lib/constants/upload';
-import { maxUploadSizeFor } from '$lib/constants/uploadLimits';
-import { createLogger } from '$lib/logger.server';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { saveUploadedFile, sumFileSizesForReference } from '$lib/server/db/sightingFilesRepository';
-import { getOrCreateUploadUid } from '$lib/server/auth/uploadOwnership';
-import { readImageExifData } from '$lib/server/media/exifUtils';
-import { getStorageProvider } from '$lib/server/storage/factory';
-import { isDangerousFileType, validateMagicBytes } from '$lib/server/validation/magicBytes';
-import { validateFile } from '$lib/utils/validation/fileValidation';
-import { ServerConfigService } from '$lib/services/configService';
+import * as m from '#lib/paraglide/messages.js';
+import { FILE_VALIDATION_PRESETS, UPLOAD_ERROR_MESSAGES } from '#lib/constants/upload.ts';
+import { maxUploadSizeFor } from '#lib/constants/uploadLimits.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import {
+	saveUploadedFile,
+	sumFileSizesForReference
+} from '#lib/server/db/sightingFilesRepository.ts';
+import { getOrCreateUploadUid } from '#lib/server/auth/uploadOwnership.ts';
+import { readImageExifData } from '#lib/server/media/exifUtils.ts';
+import { getStorageProvider } from '#lib/server/storage/factory.ts';
+import { isDangerousFileType, validateMagicBytes } from '#lib/server/validation/magicBytes.ts';
+import { validateFile } from '#lib/utils/validation/fileValidation.ts';
+import { ServerConfigService } from '#lib/services/configService.ts';
 import {
 	RATE_LIMITS,
 	enforceRateLimit,
 	createRateLimitIdentifier,
 	buildRateLimitHeaders
-} from '$lib/server/middleware/rateLimit';
-import { consumeByteBudget, type ByteBudget } from '$lib/server/middleware/byteBudget';
+} from '#lib/server/middleware/rateLimit.ts';
+import { consumeByteBudget, type ByteBudget } from '#lib/server/middleware/byteBudget.ts';
 import { isCuid } from '@paralleldrive/cuid2';
 import { error, isHttpError, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';

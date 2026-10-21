@@ -2,8 +2,8 @@
  * Client-side file analysis utilities
  * Diese funktionen nutzen die browser APIs für basic file validation und analysis
  */
-import type { BrowserFileMetadata, ExifData } from '$lib/types';
-import { berlinWallClockToInstant } from '$lib/utils/format/berlinWallClock';
+import type { BrowserFileMetadata, ExifData } from '#lib/types/index.ts';
+import { berlinWallClockToInstant } from '#lib/utils/format/berlinWallClock.ts';
 import * as exifr from 'exifr';
 
 /** EXIF-Zeitstempel, wie exifr sie liefert: entweder roher String oder belebtes Date. */

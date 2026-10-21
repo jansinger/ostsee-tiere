@@ -1,9 +1,9 @@
-import { createLogger } from '$lib/logger.server';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { getSightingById, updateSightingWeatherData } from '$lib/server/db/sightingRepository';
-import { fetchWeatherData } from '$lib/server/services/weatherRefreshService';
-import { splitDateTime } from '$lib/utils/format/dateTime';
+import { createLogger } from '#lib/logger.server.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { getSightingById, updateSightingWeatherData } from '#lib/server/db/sightingRepository.ts';
+import { fetchWeatherData } from '#lib/server/services/weatherRefreshService.ts';
+import { splitDateTime } from '#lib/utils/format/dateTime.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

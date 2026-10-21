@@ -26,7 +26,7 @@
  * E-Mail) ohne Gate, weil sie diese Felder ohnehin sehen.
  */
 
-import { sightings } from '$lib/server/db/schema';
+import { sightings } from '#lib/server/db/schema.ts';
 import { sql, type Column, type SQL } from 'drizzle-orm';
 
 /**

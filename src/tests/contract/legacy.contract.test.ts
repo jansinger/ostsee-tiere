@@ -6,7 +6,7 @@ import { asApiResponse } from './helpers/asApiResponse';
  * `await import()` im Testkörper — gleiche Begründung wie in
  * `src/routes/sichtungen/showreports.json/localePinning.test.ts`: Der Modulgraph
  * zieht über die formOptions den kompletten Paraglide-Barrel
- * (`$lib/paraglide/messages` → 1.306 Einzelmodule) nach. Dessen Transform kostet
+ * (`#lib/paraglide/messages.js` → 1.306 Einzelmodule) nach. Dessen Transform kostet
  * im vollen `test:quick`-Lauf ~5 s, weil 340 Testdateien parallel um dieselben
  * Kerne konkurrieren, und lief damit im Testkörper in Vitests 5000-ms-Grenze pro
  * Test. Am Dateikopf zählt derselbe Aufwand zur Collect-Phase, für die keine
@@ -32,37 +32,37 @@ const { mockSaveSighting, mockValidate, mockCreateError, mockSelectLimit } = vi.
 
 // ─── POST /rest_sichtungen mocks ────────────────────────────────────────────
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	saveSighting: mockSaveSighting,
 	countRecentDuplicateSignals: vi.fn().mockResolvedValue({ sameEmail: 0, sameNotes: 0 })
 }));
 
 // Spam-Detektor mocken: verhindert echte MX-DNS-Lookups im Contract-Test.
-vi.mock('$lib/server/spam/spamDetector', () => ({
+vi.mock('#lib/server/spam/spamDetector.ts', () => ({
 	detectSpamIndicators: vi.fn().mockResolvedValue({ score: 0, isHighRisk: false, indicators: [] })
 }));
-vi.mock('$lib/server/services/emailService', () => ({
+vi.mock('#lib/server/services/emailService.ts', () => ({
 	EmailService: {
 		sendNewSightingNotification: vi.fn().mockResolvedValue(undefined)
 	}
 }));
 
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		getEmailConfig: vi.fn().mockResolvedValue({ enabled: false, recipient: null })
 	}
 }));
 
-vi.mock('$lib/legacy-api/yup-validation.js', () => ({
+vi.mock('#lib/legacy-api/yup-validation.ts', () => ({
 	validateLegacySightingWithYup: mockValidate,
 	createLegacyErrorFromYup: mockCreateError
 }));
 
-vi.mock('$lib/legacy-api/validation.js', () => ({
+vi.mock('#lib/legacy-api/validation.ts', () => ({
 	validateDeathFinding: vi.fn()
 }));
 
-vi.mock('$lib/legacy-api/field-mapping.js', () => ({
+vi.mock('#lib/legacy-api/field-mapping.ts', () => ({
 	mapLegacyToCurrentSchema: vi.fn().mockReturnValue({
 		sightingDate: '2024-01-15',
 		time: '14:30',
@@ -74,7 +74,7 @@ vi.mock('$lib/legacy-api/field-mapping.js', () => ({
 	})
 }));
 
-vi.mock('$lib/legacy-api/error-messages.js', () => ({
+vi.mock('#lib/legacy-api/error-messages.ts', () => ({
 	LEGACY_API_MESSAGES: { NO_DATA_SEND: 'No data send.' },
 	// Flache Legacy-Fehlerform (`message` als String) — wie das echte Modul und
 	// wie `LegacyErrorResponse` in static/openapi.yml.
@@ -82,20 +82,20 @@ vi.mock('$lib/legacy-api/error-messages.js', () => ({
 	createSimpleErrorResponse: vi.fn().mockReturnValue({ message: 'Error' })
 }));
 
-vi.mock('$lib/server/middleware/rateLimit', () => ({
+vi.mock('#lib/server/middleware/rateLimit.ts', () => ({
 	enforceRateLimit: vi.fn(),
 	RATE_LIMITS: { SIGHTING_SUBMISSION: { limit: 20, window: 3600 } }
 }));
 
 // ─── GET /rest_sichtungen/inBaltic.json mocks ───────────────────────────────
 
-vi.mock('$lib/server/geo/checkBalticSeaFile', () => ({
+vi.mock('#lib/server/geo/checkBalticSeaFile.ts', () => ({
 	checkBalticSeaFile: vi.fn().mockReturnValue({ inBaltic: true, inChartArea: true })
 }));
 
 // ─── GET /sichtungen/showreports.json mocks ─────────────────────────────────
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -109,9 +109,9 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', async () => {
+vi.mock('#lib/server/db/schema.ts', async () => {
 	const { strictModuleMock } = await import('./helpers/strictModuleMock');
-	return strictModuleMock('$lib/server/db/schema', {
+	return strictModuleMock('#lib/server/db/schema.ts', {
 		sightings: {
 			id: 'id',
 			sightingDate: 'sightingDate',
@@ -140,7 +140,7 @@ vi.mock('$lib/server/db/schema', async () => {
 // Diese Attrappe ersetzt das Modul vollständig, ein hier fehlender Helper ist
 // zur Laufzeit also nicht da — auch bei **mittelbarem** Aufruf: Seit
 // `/sichtungen/showreports.json` sein Freigabe-Prädikat über `approvedOnly()`
-// aus `$lib/server/db/approvalFilter` bezieht, hängt der Endpunkt an
+// aus `#lib/server/db/approvalFilter.js` bezieht, hängt der Endpunkt an
 // `isNotNull`, ohne es selbst zu importieren. `strictModuleMock` nennt den
 // fehlenden Namen; ohne es meldete der Test nur „expected 500 to be 200",
 // weil der catch-Block der Route den Wurf verschluckt (PR #701).
@@ -172,11 +172,11 @@ vi.mock('drizzle-orm', async () => {
 	});
 });
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
@@ -224,7 +224,7 @@ describe('Contract: POST /rest_sichtungen', () => {
 	});
 
 	it('throws 429 when rate limit is exceeded', async () => {
-		const { enforceRateLimit } = vi.mocked(await import('$lib/server/middleware/rateLimit'));
+		const { enforceRateLimit } = vi.mocked(await import('#lib/server/middleware/rateLimit.ts'));
 		enforceRateLimit.mockImplementationOnce(() => {
 			throw { status: 429, body: { message: 'Too many requests' } };
 		});

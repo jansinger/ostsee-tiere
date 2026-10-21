@@ -11,7 +11,8 @@
  * nichts über UTC laufen.
  */
 
-import type { SightingStatus } from '$lib/components/admin/sightingStatus';
+import type { ReadonlyURLSearchParams } from '$app/state';
+import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
 
 export interface MapFilterUrlState {
 	year?: number;
@@ -78,7 +79,7 @@ function parseListParam(raw: string | null, pattern: RegExp): string[] {
  * Liest den Filterzustand aus URL-Query-Params.
  * Ungültige Werte werden feldweise ignoriert — das Feld fehlt dann im Ergebnis.
  */
-export function parseMapFilterParams(params: URLSearchParams): MapFilterUrlState {
+export function parseMapFilterParams(params: ReadonlyURLSearchParams): MapFilterUrlState {
 	const state: MapFilterUrlState = {};
 
 	const yearRaw = params.get('year');

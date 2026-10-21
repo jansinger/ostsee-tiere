@@ -31,10 +31,10 @@
  * E-Mail-Meldungen waren.
  *
  * **Einzige Stelle, an der dieser Zustand entsteht** — analog zu
- * `getBalticSeaStatus()` in `$lib/utils/geo/balticSeaStatus.ts`. Angeschlossen
+ * `getBalticSeaStatus()` in `#lib/utils/geo/balticSeaStatus.ts`. Angeschlossen
  * sind die Admin-Detailansicht (`AdminSightingView.svelte`), der
  * Datenbank-Filter für die Admin-Arbeitsliste
- * (`$lib/server/db/mediaUploadFilter.ts`) und die Benachrichtigungs-Mail
+ * (`#lib/server/db/mediaUploadFilter.ts`) und die Benachrichtigungs-Mail
  * (`emailService.loadSightingForEmail()`).
  *
  * **Die Mail prüfte bis 2026-08-05 nur das rohe Flag**, mit der Begründung,
@@ -47,7 +47,7 @@
  * aufgefallen).
  */
 
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
 
 /** Zählt als „gesetzt", egal ob DB-Integer (0/1) oder Formular-Boolean. */
 type MediaUploadFlag = number | boolean | null | undefined;
@@ -104,10 +104,10 @@ export const PHOTO_ANNOUNCEMENT_TITLE =
  * Wert des `mediaUpload`-Query-Parameters für die Admin-Arbeitsliste
  * „angekündigt, aber keine Datei angehängt" — dieselbe Aussage wie
  * `isPhotoAnnouncementPending()`, hier als Filterwert für Admin-Übersicht und
- * Export (`$lib/server/db/mediaUploadFilter.ts`).
+ * Export (`#lib/server/db/mediaUploadFilter.ts`).
  *
  * **Hier und nicht in `mediaUploadFilter.ts` definiert**, weil diese Datei
- * client-sicher ist und `mediaUploadFilter.ts` `$lib/server/db/schema`
+ * client-sicher ist und `mediaUploadFilter.ts` `#lib/server/db/schema.js`
  * importiert — ein Import von dort in `admin/+page.svelte` würde
  * SvelteKits Server-only-Grenze verletzen.
  */

@@ -1,4 +1,4 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * Centralized file validation utilities
  * Consolidates validation logic from multiple files
@@ -9,16 +9,16 @@ import {
 	UPLOAD_ERROR_MESSAGES,
 	UPLOAD_LIMITS,
 	type FILE_VALIDATION_PRESETS
-} from '$lib/constants/upload';
-import { maxUploadSizeFor } from '$lib/constants/uploadLimits';
+} from '#lib/constants/upload.ts';
+import { maxUploadSizeFor } from '#lib/constants/uploadLimits.ts';
 
-import type { ValidationPreset, ValidationResult } from '$lib/types';
+import type { ValidationPreset, ValidationResult } from '#lib/types/index.ts';
 import {
 	describeFileFormats,
 	isImageFile,
 	isMediaFile,
 	isVideoFile
-} from '$lib/utils/file/fileType';
+} from '#lib/utils/file/fileType.ts';
 
 /**
  * Validates a single file against specified criteria
@@ -232,9 +232,9 @@ export function getValidationPreset(
 /**
  * Generiert eine benutzerfreundliche Liste der erlaubten Dateitypen.
  *
- * Die Sonderfall-Tabelle liegt zentral in `$lib/utils/file/fileType.ts`
+ * Die Sonderfall-Tabelle liegt zentral in `#lib/utils/file/fileType.ts`
  * (`describeFileFormats`) — dort auch für `UPLOAD_ERROR_MESSAGES.INVALID_TYPE`
- * in `$lib/constants/upload.ts` genutzt, damit beide Stellen für dieselben
+ * in `#lib/constants/upload.ts` genutzt, damit beide Stellen für dieselben
  * MIME-Typen dieselben Formatnamen liefern.
  */
 export function getFileTypeDescription(allowedTypes: readonly string[]): string {

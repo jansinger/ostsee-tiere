@@ -3,7 +3,7 @@
  * Pure functions that determine whether step navigation is allowed.
  */
 
-import type { SightingFormData } from '$lib/report/types';
+import type { SightingFormData } from '#lib/report/types.ts';
 import { isStepValid } from './stepValidation';
 
 /**

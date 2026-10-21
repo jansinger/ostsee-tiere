@@ -3,9 +3,9 @@
   Independent of form context, accepts all props directly
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import type { FieldOption, FieldSize } from '$lib/types';
-	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import type { FieldOption, FieldSize } from '#lib/types/index.ts';
+	import Icon from '#lib/components/Icon.svelte';
 	import type { HTMLSelectAttributes } from 'svelte/elements';
 
 	interface Props extends Omit<HTMLSelectAttributes, 'size'> {

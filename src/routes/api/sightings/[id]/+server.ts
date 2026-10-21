@@ -1,20 +1,20 @@
-import { getAdminSightingSchema } from '$lib/form/validation/sightingSchema';
-import { createLogger } from '$lib/logger.server';
-import type { SightingFormData } from '$lib/report/types';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { db } from '$lib/server/db';
-import { sightingFiles, sightings } from '$lib/server/db/schema';
-import { deleteStoredFiles } from '$lib/server/storage/deleteStoredFiles';
+import { getAdminSightingSchema } from '#lib/form/validation/sightingSchema.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import type { SightingFormData } from '#lib/report/types.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightingFiles, sightings } from '#lib/server/db/schema.ts';
+import { deleteStoredFiles } from '#lib/server/storage/deleteStoredFiles.ts';
 import { posix } from 'path';
 import {
 	loadSightingFiles,
 	saveSightingFiles,
 	updateSighting
-} from '$lib/server/db/sightingRepository';
-import type { ExifData } from '$lib/types';
-import { resolveMediaUploadFlag } from '$lib/utils/media/mediaUploadFlag';
+} from '#lib/server/db/sightingRepository.ts';
+import type { ExifData } from '#lib/types/index.ts';
+import { resolveMediaUploadFlag } from '#lib/utils/media/mediaUploadFlag.ts';
 import { createId } from '@paralleldrive/cuid2';
 import { error, isHttpError, json } from '@sveltejs/kit';
 import { ValidationError } from 'yup';
@@ -116,7 +116,7 @@ export const PUT: RequestHandler = async ({ params, request, locals, url, getCli
 		// `mediaUpload` wird abgeleitet, nicht durchgereicht: Das Bearbeitungs-
 		// formular kennt kein Ankreuzfeld dafür, und ein hier hochgeladenes Foto
 		// muss auch in der Spalte „Aufnahme" ankommen. Die Regel ist asymmetrisch
-		// — Begründung in `$lib/utils/media/mediaUploadFlag.ts`.
+		// — Begründung in `#lib/utils/media/mediaUploadFlag.ts`.
 		//
 		// `uploadedFiles` ist der vollständige Bestand nach dieser Bearbeitung und
 		// nicht nur der Zuwachs — aber nur, wenn die Liste etwas enthält:
@@ -164,7 +164,7 @@ export const PUT: RequestHandler = async ({ params, request, locals, url, getCli
 			const referenceId = updatedSighting.referenceId || createId();
 
 			// Transform uploadedFiles to match UploadedFileInfo interface
-			const { getStorageProvider } = await import('$lib/server/storage/factory');
+			const { getStorageProvider } = await import('#lib/server/storage/factory.ts');
 			const storageProvider = getStorageProvider();
 
 			const fileInfos = uploadedFiles.map((file: unknown) => {

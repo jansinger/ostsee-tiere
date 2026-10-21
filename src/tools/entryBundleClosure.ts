@@ -7,7 +7,7 @@
  * Bibliothek nicht im Initial-Bundle der Einstiegsseite liegt. Diese Zusage
  * lässt sich am Quelltext nur ungefähr prüfen: Ein Wächter, der die Importzeilen
  * einer einzelnen Datei liest, sieht nicht, wenn OpenLayers über einen Umweg
- * zurückkommt — `$lib/map/extentUtils` etwa importiert `ol/proj` statisch, und
+ * zurückkommt — `#lib/map/extentUtils` etwa importiert `ol/proj` statisch, und
  * ein solcher Import in irgendeiner Komponente der Einstiegsseite macht die
  * Aufteilung zunichte, ohne dass eine einzige `ol`-Zeile in `OLMap.svelte`
  * auftauchte.

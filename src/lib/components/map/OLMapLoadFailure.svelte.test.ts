@@ -30,7 +30,7 @@ import OLMap from './OLMap.svelte';
  * und ist obendrein ein realer Fall für sich: ein WebGL-/Canvas-Fehlschlag auf
  * einem alten Telefon.
  */
-vi.mock('$lib/utils/map/openLayersHelpers', () => ({
+vi.mock('#lib/utils/map/openLayersHelpers.ts', () => ({
 	createMap: () => {
 		throw new Error('Failed to fetch dynamically imported module (Test)');
 	},

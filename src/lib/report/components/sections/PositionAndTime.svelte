@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { getFormContext } from '$lib/report/formContext';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
-	import PositionPanel from '$lib/report/components/form/position/PositionPanel.svelte';
-	import SectionCard from '$lib/report/components/sections/SectionCard.svelte';
-	import { dateSectionIntro, dateSectionTitle } from '$lib/report/wording';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
+	import PositionPanel from '#lib/report/components/form/position/PositionPanel.svelte';
+	import SectionCard from '#lib/report/components/sections/SectionCard.svelte';
+	import { dateSectionIntro, dateSectionTitle } from '#lib/report/wording.ts';
 
 	const { form } = getFormContext();
 

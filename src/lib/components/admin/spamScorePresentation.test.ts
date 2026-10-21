@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { SpamCheckResponse, SpamCheckResult } from '$lib/types/spam';
-import { HIGH_RISK_THRESHOLD } from '$lib/types/spam';
+import type { SpamCheckResponse, SpamCheckResult } from '#lib/types/spam.ts';
+import { HIGH_RISK_THRESHOLD } from '#lib/types/spam.ts';
 import {
 	SPAM_DRIFT_PRESENTATION,
 	SPAM_RISK_PRESENTATION,

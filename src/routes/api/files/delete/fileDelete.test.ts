@@ -16,7 +16,7 @@ const {
 	mockGetUploadUid: vi.fn().mockReturnValue('owner-uid-match')
 }));
 
-vi.mock('$lib/server/middleware/rateLimit', () => ({
+vi.mock('#lib/server/middleware/rateLimit.ts', () => ({
 	RATE_LIMITS: {
 		FILE_UPLOAD_ANONYMOUS: { windowMs: 3600000, maxRequests: 20 },
 		FILE_UPLOAD_AUTHENTICATED: { windowMs: 3600000, maxRequests: 50 }
@@ -25,39 +25,39 @@ vi.mock('$lib/server/middleware/rateLimit', () => ({
 	createRateLimitIdentifier: vi.fn().mockReturnValue('ip:10.0.0.1')
 }));
 
-vi.mock('$lib/server/audit/auditService', () => ({
+vi.mock('#lib/server/audit/auditService.ts', () => ({
 	logAuditEvent: mockLogAuditEvent
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	isAdminUser: mockIsAdminUser
 }));
 
-vi.mock('$lib/server/auth/uploadOwnership', () => ({
+vi.mock('#lib/server/auth/uploadOwnership.ts', () => ({
 	getUploadUid: mockGetUploadUid
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/server/db/sightingFilesRepository', () => ({
+vi.mock('#lib/server/db/sightingFilesRepository.ts', () => ({
 	deleteFileByPath: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getStorageProvider: vi.fn().mockReturnValue(mockStorage)
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: { select: mockSelect }
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightingFiles: {}
 }));
 

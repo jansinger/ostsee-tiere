@@ -1,22 +1,22 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 import {
 	calculateSeaState,
 	degreesToCardinal,
 	getWeatherDescription
-} from '$lib/constants/weather';
-import { createLogger } from '$lib/logger.server';
-import { getCachedWeatherForSighting } from '$lib/server/db/sightingRepository';
+} from '#lib/constants/weather.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { getCachedWeatherForSighting } from '#lib/server/db/sightingRepository.ts';
 import {
 	mapWeatherToFormFields,
 	type OpenMeteoRawData,
 	type WeatherData
-} from '$lib/services/weatherService';
-import { hourIndexFromLocalTime } from '$lib/server/weather/hourIndex';
+} from '#lib/services/weatherService.ts';
+import { hourIndexFromLocalTime } from '#lib/server/weather/hourIndex.ts';
 import {
 	berlinCalendarDayIso,
 	combineToDate,
 	formatISOLikeDatetime
-} from '$lib/utils/format/dateTime';
+} from '#lib/utils/format/dateTime.ts';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

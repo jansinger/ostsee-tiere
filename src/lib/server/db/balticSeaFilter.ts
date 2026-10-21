@@ -9,7 +9,7 @@
  * Ergebnis an ihre eigene `and(...)`-Bedingungsliste.
  *
  * Die vier Werte übersetzen `getBalticSeaStatus()`
- * (`$lib/utils/geo/balticSeaStatus.ts`) — **die einzige Stelle, an der dieser
+ * (`#lib/utils/geo/balticSeaStatus.ts`) — **die einzige Stelle, an der dieser
  * Status entsteht** — in SQL. Genau an dieser Übersetzung ist die
  * Benachrichtigungs-Mail schon einmal von der Admin-Anzeige abgewichen
  * (Fehler 4, `docs/OSTSEE_FLAGS.md`): Ein `{{#if sighting.inBalticSeaGeo}}` in
@@ -34,8 +34,8 @@
  * er erst, wenn eine Quelle `NaN` in diese Spalten schreiben kann.
  */
 import { and, gt, isNotNull, isNull, lte, or, type SQL } from 'drizzle-orm';
-import { sightings } from '$lib/server/db/schema';
-import { isBalticSeaStatus } from '$lib/utils/geo/balticSeaStatus';
+import { sightings } from '#lib/server/db/schema.ts';
+import { isBalticSeaStatus } from '#lib/utils/geo/balticSeaStatus.ts';
 
 /** Position vorhanden heißt: beide Koordinatenspalten sind gesetzt. */
 const hasPosition = (): SQL | undefined =>

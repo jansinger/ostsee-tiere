@@ -1,4 +1,4 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * @fileoverview Formular-Übermittlung für Sichtungsdaten
  *
@@ -11,7 +11,7 @@ import * as m from '$lib/paraglide/messages';
  * @since 1.0.0
  */
 
-import type { SightingFormValues } from '$lib/types/Form';
+import type { SightingFormValues } from '#lib/types/Form.ts';
 
 /**
  * Ergebnis einer Übermittlung — bewusst ein diskriminiertes Result statt eines
@@ -165,7 +165,7 @@ function isNetworkFailure(cause: unknown): boolean {
 /**
  * Ermittelt, wie lange bis zum nächsten Versuch gewartet werden muss.
  *
- * `enforceRateLimit()` (`$lib/server/middleware/rateLimit.ts`) wirft
+ * `enforceRateLimit()` (`#lib/server/middleware/rateLimit.ts`) wirft
  * `error(429, 'Rate limit exceeded. Try again after 14:23:11 (45s)')`. SvelteKit
  * liefert das als `{ message }` aus und setzt **keinen** `Retry-After`-Header —
  * die Sekunden stehen nur im Text. Der Header wird trotzdem zuerst gelesen,

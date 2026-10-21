@@ -1,8 +1,8 @@
-import { createLogger } from '$lib/logger.server';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { db } from '$lib/server/db';
-import { sightings as sightingsTable } from '$lib/server/db/schema';
+import { createLogger } from '#lib/logger.server.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
 import { text } from '@sveltejs/kit';
 import { and } from 'drizzle-orm';
 import { buildExportConditions, parseExportFilterParams } from '../exportFilterParams';

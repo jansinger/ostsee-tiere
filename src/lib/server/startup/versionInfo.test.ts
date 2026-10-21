@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { version as packageVersion } from '../../../../package.json';
 
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: { APP_GIT_SHA: 'abcdef1234567890', APP_BUILD_DATE: '2026-07-31T10:00:00Z' }
 }));
 

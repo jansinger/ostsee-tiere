@@ -22,17 +22,17 @@ import {
 	formatTimeHHMI,
 	getYearRange,
 	toUnixTimestamp
-} from '$lib/legacy-api/date-utils.js';
-import { createLogger } from '$lib/logger.server';
-import { getSpeciesLabel } from '$lib/report/formOptions/species.js';
-import { baseLocale } from '$lib/paraglide/runtime';
-import { isAdminUser } from '$lib/server/auth/auth';
-import { db } from '$lib/server/db';
-import { approvedOnly } from '$lib/server/db/approvalFilter';
-import { consentGatedNameSearch, containsPattern } from '$lib/server/db/consentGatedSearch';
-import { sightings } from '$lib/server/db/schema';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { berlinCalendarDayIso } from '$lib/utils/format/dateTime';
+} from '#lib/legacy-api/date-utils.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { getSpeciesLabel } from '#lib/report/formOptions/species.ts';
+import { baseLocale } from '#lib/paraglide/runtime.js';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
+import { db } from '#lib/server/db/index.ts';
+import { approvedOnly } from '#lib/server/db/approvalFilter.ts';
+import { consentGatedNameSearch, containsPattern } from '#lib/server/db/consentGatedSearch.ts';
+import { sightings } from '#lib/server/db/schema.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { berlinCalendarDayIso } from '#lib/utils/format/dateTime.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { and, between, gte, lt, sql } from 'drizzle-orm';
 
@@ -100,7 +100,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 
 		// Only show approved sightings (as per PDF: "freigegeben").
 		// Bewusst der gemeinsame Helper und kein nachgebautes Inline-SQL: Das
-		// Prädikat ist in `$lib/server/db/approvalFilter` einmal definiert, damit
+		// Prädikat ist in `#lib/server/db/approvalFilter.js` einmal definiert, damit
 		// Karte und öffentliche Statistik nicht erneut auseinanderlaufen.
 		//
 		// Der Wechsel ist rein syntaktisch und damit vertragsneutral: Der Helper

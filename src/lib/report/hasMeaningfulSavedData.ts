@@ -1,4 +1,4 @@
-import type { SightingFormData } from '$lib/types';
+import type { SightingFormData } from '#lib/types/index.ts';
 
 /**
  * Felder, die beim Vergleich nicht zählen — sie tragen keine Nutzereingabe und

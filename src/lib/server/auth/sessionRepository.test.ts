@@ -1,11 +1,11 @@
-import type { User } from '$lib/types/User';
+import type { User } from '#lib/types/User.ts';
 import type { Cookies } from '@sveltejs/kit';
 import { SignJWT } from 'jose';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { mockWarn, mockError } = vi.hoisted(() => ({ mockWarn: vi.fn(), mockError: vi.fn() }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: mockWarn, error: mockError })
 }));
 
@@ -18,12 +18,12 @@ const { mockDb } = vi.hoisted(() => ({
 	}
 }));
 
-vi.mock('$lib/server/db', () => ({ db: mockDb }));
+vi.mock('#lib/server/db/index.ts', () => ({ db: mockDb }));
 
 const { mockAudit } = vi.hoisted(() => ({ mockAudit: vi.fn().mockResolvedValue(undefined) }));
-vi.mock('$lib/server/audit/auditService', () => ({ logAuditEvent: mockAudit }));
+vi.mock('#lib/server/audit/auditService.ts', () => ({ logAuditEvent: mockAudit }));
 
-vi.mock('$env/dynamic/private', () => ({ env: { COOKIE_NAME: 'auth-cookie' } }));
+vi.mock('#lib/server/env.ts', () => ({ env: { COOKIE_NAME: 'auth-cookie' } }));
 
 import { hashSessionToken } from './sessionToken';
 import {

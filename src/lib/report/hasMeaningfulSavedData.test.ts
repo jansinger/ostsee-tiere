@@ -13,7 +13,7 @@
 import { describe, expect, it } from 'vitest';
 import { hasMeaningfulSavedData } from './hasMeaningfulSavedData';
 import { initialFormState } from './formConfig';
-import type { SightingFormData } from '$lib/types';
+import type { SightingFormData } from '#lib/types/index.ts';
 
 describe('hasMeaningfulSavedData', () => {
 	it('meldet keine Änderung, wenn die gespeicherten Daten den Defaults entsprechen', () => {

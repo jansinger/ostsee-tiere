@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { canNavigateToStep } from './stepNavigation';
-import type { SightingFormData } from '$lib/report/types';
+import type { SightingFormData } from '#lib/report/types.ts';
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -12,7 +12,7 @@ vi.mock('$lib/logger', () => ({
 }));
 
 // Use same mock config as stepValidation.test.ts
-vi.mock('$lib/report/formConfig', () => {
+vi.mock('#lib/report/formConfig.ts', () => {
 	const formStepsConfig = [
 		{
 			id: 'location-time',

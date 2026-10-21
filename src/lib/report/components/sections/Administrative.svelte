@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
 	import SectionCard from './SectionCard.svelte';
 </script>
 

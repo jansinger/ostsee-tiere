@@ -1,6 +1,6 @@
 import { render } from 'vitest-browser-svelte';
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import type { SightingSelect } from '$lib/server/db/schema';
+import type { SightingSelect } from '#lib/server/db/schema.ts';
 import type { PageData } from './$types';
 import {
 	FILTER_PRESETS_STORAGE_KEY,
@@ -25,7 +25,7 @@ vi.mock('$app/navigation', () => ({
 vi.mock('$app/state', () => ({
 	page: { url: new URL('https://localhost:4000/admin/sichtungen') }
 }));
-vi.mock('$lib/components/admin/sightingVerdict', () => ({
+vi.mock('#lib/components/admin/sightingVerdict.ts', () => ({
 	submitVerdict: vi.fn(() => Promise.resolve(true))
 }));
 

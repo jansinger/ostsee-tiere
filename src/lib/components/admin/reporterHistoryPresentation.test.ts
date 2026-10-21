@@ -7,7 +7,7 @@
  */
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
-import type { ReporterHistory } from '$lib/types/reporterHistory';
+import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 import {
 	REPORTER_ESTABLISHED_THRESHOLD,
 	REPORTER_FLAGGED_RATIO,

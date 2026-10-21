@@ -366,7 +366,7 @@ describe('collectSchemaSites', () => {
 	// einzeln erscheinen (render.ts).
 	it('zählt ein meta-Argument, das bereits eine Paraglide-Botschaftsfunktion aufruft, als bereits übersetzt', () => {
 		const result = collect(`
-			import * as m from '$lib/paraglide/messages';
+			import * as m from '#lib/paraglide/messages.js';
 			const s = yup.object().shape({
 				latitude: yup
 					.number()
@@ -385,7 +385,7 @@ describe('collectSchemaSites', () => {
 	// Freibrief, jeden beliebigen Ausdruck als „schon übersetzt" zu verschlucken.
 	it('zählt ein anderes nicht-literales meta-Argument weiterhin als offenen, einzeln zu prüfenden Fall', () => {
 		const result = collect(`
-			import * as m from '$lib/paraglide/messages';
+			import * as m from '#lib/paraglide/messages.js';
 			const s = yup.object().shape({
 				sightingFromText: yup
 					.string()
@@ -398,7 +398,7 @@ describe('collectSchemaSites', () => {
 	// Dasselbe gilt für die Objektform von .test({ message: ... }).
 	it('zählt ein bereits übersetztes message in der Objektform von .test() als bereits übersetzt', () => {
 		const result = collect(`
-			import * as m from '$lib/paraglide/messages';
+			import * as m from '#lib/paraglide/messages.js';
 			const s = base.shape({
 				distance: field.test({
 					name: 'is-valid-distance',

@@ -51,7 +51,7 @@ model: inherit
 
 ```typescript
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { functionToTest } from '$lib/utils/module';
+import { functionToTest } from '#lib/utils/module';
 
 describe('functionToTest', () => {
 	beforeEach(() => {

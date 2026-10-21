@@ -20,15 +20,15 @@
  * - Upload-Pfad: `${referenceId}/${filename}`
  * - Öffentliche URLs: `https://[prefix].public.blob.vercel-storage.com/[path]`
  */
-import { createLogger } from '$lib/logger.server';
+import { createLogger } from '#lib/logger.server.ts';
 import type {
 	FileMetadata,
 	StorageFileStream,
 	StorageProvider,
 	UploadedFileInfo,
 	UploadOptions
-} from '$lib/types';
-import { env } from '$env/dynamic/private';
+} from '#lib/types/index.ts';
+import { env } from '#lib/server/env.ts';
 import { del, head, list, put } from '@vercel/blob';
 import { basename, extname } from 'path';
 

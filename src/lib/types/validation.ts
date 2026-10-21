@@ -26,7 +26,7 @@ export interface ValidationPreset {
 	/**
 	 * Gesamtlimit je Meldung, in Bytes (`security.maxTotalUploadSize`).
 	 * Optional: fehlt es, fällt `validateFiles()` auf `UPLOAD_LIMITS.MAX_TOTAL_SIZE`
-	 * zurück (Offline-Fallback, siehe `$lib/constants/upload.ts`) — Befund I4.
+	 * zurück (Offline-Fallback, siehe `#lib/constants/upload.ts`) — Befund I4.
 	 */
 	maxTotalSize?: number;
 }

@@ -1,5 +1,5 @@
-import type { DistanceEnum } from '$lib/report/formOptions/distance';
-import type { FrontendSighting } from '$lib/types/index';
+import type { DistanceEnum } from '#lib/report/formOptions/distance.ts';
+import type { FrontendSighting } from '#lib/types/index.ts';
 import { describe, expect, test } from 'vitest';
 import { generateXmlData } from './xmlExport';
 

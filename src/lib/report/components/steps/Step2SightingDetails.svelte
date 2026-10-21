@@ -1,11 +1,11 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import AnimalInfo from '$lib/report/components/sections/AnimalInfo.svelte';
-	import Media from '$lib/report/components/sections/Media.svelte';
-	import SightingDetails from '$lib/report/components/sections/SightingDetails.svelte';
-	import Icon from '$lib/components/Icon.svelte';
-	import { getFormContext } from '$lib/report/formContext';
-	import { observationQuestion } from '$lib/report/wording';
+	import * as m from '#lib/paraglide/messages.js';
+	import AnimalInfo from '#lib/report/components/sections/AnimalInfo.svelte';
+	import Media from '#lib/report/components/sections/Media.svelte';
+	import SightingDetails from '#lib/report/components/sections/SightingDetails.svelte';
+	import Icon from '#lib/components/Icon.svelte';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { observationQuestion } from '#lib/report/wording.ts';
 
 	const { form } = getFormContext();
 
@@ -29,7 +29,7 @@
 		<!-- Beim Totfund fragt der Kopf nach einem Fund statt nach einer Beobachtung
 		     (Wunsch des Museums). Der Rest des Satzes gilt für beide Fälle — er
 		     nennt Tierart und Anzahl, nicht den Vorgang. Die Zuordnung steht in
-		     `$lib/report/wording`, damit sie beim Bau der getrennten Formulare
+		     `#lib/report/wording.js`, damit sie beim Bau der getrennten Formulare
 		     nicht an drei Stellen auseinanderläuft. -->
 		<p class="text-base-content/70 mx-auto max-w-2xl text-sm md:text-base">
 			<strong>{question}</strong>

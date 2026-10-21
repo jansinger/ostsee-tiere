@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { SpamDetectionInput } from '$lib/types/spam';
+import type { SpamDetectionInput } from '#lib/types/spam.ts';
 
 // Mock logger
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn().mockReturnValue({
 		warn: vi.fn(),
 		debug: vi.fn(),
@@ -12,7 +12,7 @@ vi.mock('$lib/logger.server', () => ({
 }));
 
 // Mock isUnknownOrMissingSpecies
-vi.mock('$lib/utils/format/sightingFormatter', () => ({
+vi.mock('#lib/utils/format/sightingFormatter.ts', () => ({
 	isUnknownOrMissingSpecies: vi.fn().mockReturnValue(false)
 }));
 
@@ -22,7 +22,7 @@ vi.mock('./mxCheck', () => ({
 }));
 
 import { detectSpamIndicators } from './spamDetector';
-import { isUnknownOrMissingSpecies } from '$lib/utils/format/sightingFormatter';
+import { isUnknownOrMissingSpecies } from '#lib/utils/format/sightingFormatter.ts';
 import { checkMxRecords } from './mxCheck';
 import { DISPOSABLE_EMAIL_DOMAINS } from './disposableEmailDomains';
 

@@ -1,6 +1,6 @@
 import { render } from 'vitest-browser-svelte';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { SightingSelect } from '$lib/server/db/schema';
+import type { SightingSelect } from '#lib/server/db/schema.ts';
 import type { PageData } from './$types';
 
 /**
@@ -37,7 +37,7 @@ vi.mock('$app/state', () => ({
 		}
 	}
 }));
-vi.mock('$lib/components/admin/sightingVerdict', () => ({ submitVerdict }));
+vi.mock('#lib/components/admin/sightingVerdict.ts', () => ({ submitVerdict }));
 
 const SichtungenSeite = (await import('./+page.svelte')).default;
 

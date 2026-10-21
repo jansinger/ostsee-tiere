@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
  * Begründung und die Entfernungsbedingung).
  *
  * Bis `TRANSLATION_ROLLOUT_COMPLETE = true` (2026-08-13,
- * `$lib/i18n/translationRolloutStage.ts`) trugen alle Antworten unter `/en`
+ * `#lib/i18n/translationRolloutStage.ts`) trugen alle Antworten unter `/en`
  * den Header `X-Robots-Tag: noindex, follow`, damit Suchmaschinen den
  * deutschen Inhalt nicht unter der englischen URL indexierten. Dieser Test
  * prüfte vorher das Vorhandensein des Headers — siehe Git-Historie für den

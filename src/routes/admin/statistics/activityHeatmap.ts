@@ -1,4 +1,4 @@
-import { berlinCalendarDayIso } from '$lib/utils/format/dateTime';
+import { berlinCalendarDayIso } from '#lib/utils/format/dateTime.ts';
 
 /**
  * Datenmodell der Eingangs-Heatmap („letzte 30 Tage").

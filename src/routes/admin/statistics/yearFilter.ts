@@ -14,8 +14,8 @@
  * damit auch keine Grundmenge verschieben.
  */
 
-import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '$lib/server/db/sightingRepository';
-import { berlinCalendarDayIso } from '$lib/utils/format/dateTime';
+import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '#lib/server/db/sightingRepository.ts';
+import { berlinCalendarDayIso } from '#lib/utils/format/dateTime.ts';
 
 /** Name des URL-Parameters. Deutsch wie die übrigen Admin-Filter. */
 export const YEAR_PARAM = 'jahr';

@@ -24,7 +24,7 @@
  * Das ist bewusst dieselbe Einschränkung wie beim bestehenden Rate Limit und
  * kein neuer Kompromiss.
  */
-import { createLogger } from '$lib/logger.server';
+import { createLogger } from '#lib/logger.server.ts';
 
 const logger = createLogger('middleware:byteBudget');
 

@@ -4,7 +4,7 @@ import { POST as weatherRefreshPOST } from '../../routes/api/admin/weather/[id]/
 import { createEvent, mockAdminUser } from './helpers/createEvent';
 import { asApiResponse } from './helpers/asApiResponse';
 
-vi.mock('$lib/server/services/emailService', () => ({
+vi.mock('#lib/server/services/emailService.ts', () => ({
 	EmailService: {
 		sendTestEmail: vi.fn().mockResolvedValue(true),
 		sendNewSightingNotification: vi.fn().mockResolvedValue(true),
@@ -12,29 +12,29 @@ vi.mock('$lib/server/services/emailService', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	getSightingById: vi.fn(),
 	updateSightingWeatherData: vi.fn().mockResolvedValue(true)
 }));
 
-vi.mock('$lib/server/services/weatherRefreshService', () => ({
+vi.mock('#lib/server/services/weatherRefreshService.ts', () => ({
 	fetchWeatherData: vi.fn()
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-const { getSightingById } = await import('$lib/server/db/sightingRepository');
-const { fetchWeatherData } = await import('$lib/server/services/weatherRefreshService');
+const { getSightingById } = await import('#lib/server/db/sightingRepository.ts');
+const { fetchWeatherData } = await import('#lib/server/services/weatherRefreshService.ts');
 
 const mockWeatherData = {
 	data_type: 'historical',
@@ -89,7 +89,7 @@ describe('Contract: POST /api/admin/test-email', () => {
 	 * `/api/config/reset`, nicht zum Tagesgeschäft eines Admins.
 	 */
 	it('verlangt die Rolle superadmin', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		const event = createEvent('/api/admin/test-email', {
 			method: 'POST',
 			locals: { user: mockAdminUser },
@@ -108,7 +108,7 @@ describe('Contract: POST /api/admin/test-email', () => {
 	 * Konfiguration." liest, sucht am falschen Ende.
 	 */
 	it('nennt den Abschalter als Grund, statt pauschal auf die Konfiguration zu verweisen', async () => {
-		const { EmailService } = vi.mocked(await import('$lib/server/services/emailService'));
+		const { EmailService } = vi.mocked(await import('#lib/server/services/emailService.ts'));
 		vi.mocked(EmailService.sendNewSightingNotification).mockResolvedValueOnce(false);
 		vi.mocked(EmailService.findNotificationBlocker).mockResolvedValueOnce('disabled');
 
@@ -126,7 +126,7 @@ describe('Contract: POST /api/admin/test-email', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -144,7 +144,7 @@ describe('Contract: POST /api/admin/test-email', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -206,7 +206,7 @@ describe('Contract: POST /api/admin/weather/{id}/refresh', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -224,7 +224,7 @@ describe('Contract: POST /api/admin/weather/{id}/refresh', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});

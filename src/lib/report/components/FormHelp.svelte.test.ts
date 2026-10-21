@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
-import type { SightingStatistics } from '$lib/server/db/sightingRepository';
+import type { SightingStatistics } from '#lib/server/db/sightingRepository.ts';
 import FormHelp from './FormHelp.svelte';
 
 /**
@@ -38,7 +38,7 @@ afterEach(async () => {
 
 describe('FormHelp — Zahlenformat folgt der Locale', () => {
 	it('formatiert die Statistik-Zahlen deutsch, wenn die aktive Locale de ist', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'de');
 		stubStatisticsFetch();
 
@@ -48,7 +48,7 @@ describe('FormHelp — Zahlenformat folgt der Locale', () => {
 	});
 
 	it('formatiert die Statistik-Zahlen britisch, wenn die aktive Locale en ist', async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 		stubStatisticsFetch();
 
