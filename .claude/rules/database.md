@@ -21,7 +21,7 @@ npm run db:start    # PostgreSQL starten (Docker, Port 5433)
 npm run db:stop     # Datenbank stoppen
 npm run db:push     # Schema direkt auf lokale Dev-DB pushen (nur Entwicklung!)
 npm run db:generate # Migration aus Schema-Änderung generieren (drizzle-kit generate)
-npm run db:migrate  # Migrationen anwenden (scripts/docker-migrate.ts, wie im Container; Node ≥ 22.18)
+npm run db:migrate  # Migrationen anwenden (scripts/docker-migrate.ts, wie im Container; liest .env, gesetzte Umgebung hat Vorrang)
 npm run db:studio   # Drizzle Studio öffnen
 ```
 
