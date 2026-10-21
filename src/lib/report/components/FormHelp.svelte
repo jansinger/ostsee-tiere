@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { createLogger } from '$lib/logger';
 	import type { SightingStatistics } from '$lib/server/db/sightingRepository';
 	const logger = createLogger('components:FormHelp');

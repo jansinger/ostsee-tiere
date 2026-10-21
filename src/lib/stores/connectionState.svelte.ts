@@ -23,7 +23,7 @@
  * echten Requests.
  */
 
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 /** Meldung des Browsers: Ist überhaupt eine Netzwerkschnittstelle aktiv? */
 let interfaceUp = $state(true);

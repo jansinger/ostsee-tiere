@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import Icon from '$lib/components/Icon.svelte';
 	import { outsideBalticNotice, outsideBalticSeverity } from '$lib/report/wording';
 

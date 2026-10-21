@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import { pushState, replaceState } from '$app/navigation';
 	import { tick } from 'svelte';

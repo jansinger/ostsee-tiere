@@ -7,7 +7,7 @@
 
 	import SubmitStatus, { type SubmitState } from './form/SubmitStatus.svelte';
 
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import { connection, watchConnection } from '$lib/stores/connectionState.svelte';
 	import { describeSubmitFailure, submitSightingForm } from '$lib/form/submitSightingForm';

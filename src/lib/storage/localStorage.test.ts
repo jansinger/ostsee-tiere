@@ -49,8 +49,8 @@ const sessionStorageMock = (() => {
 	};
 })();
 
-// Mock $app/environment to simulate browser environment
-vi.mock('$app/environment', () => ({
+// Mock $app/env to simulate browser environment
+vi.mock('$app/env', () => ({
 	browser: true
 }));
 

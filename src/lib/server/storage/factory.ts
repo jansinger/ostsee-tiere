@@ -13,7 +13,7 @@
  *
  * Die Auswahl erfolgt automatisch oder über Umgebungsvariablen.
  */
-import { dev } from '$app/environment';
+import { dev } from '$app/env';
 import { createLogger } from '$lib/logger.server';
 import type { StorageProvider, StorageProviderType } from '$lib/types';
 import { env } from '$env/dynamic/private';

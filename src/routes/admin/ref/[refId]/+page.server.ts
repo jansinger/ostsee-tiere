@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 
 	if (!refId) {
 		logger.error('No reference ID provided');
-		return error(400, { message: 'Reference ID is required' });
+		return error(400, 'Reference ID is required');
 	}
 
 	logger.info(`Looking up sighting by reference ID: ${refId}`);
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 	if (!response.ok) {
 		if (response.status === 404) {
 			logger.warn(`Sighting not found for reference ID: ${refId}`);
-			return error(404, { message: 'Sighting with this reference ID not found' });
+			return error(404, 'Sighting with this reference ID not found');
 		}
 		logger.error(`API error for reference ID ${refId}: ${response.status} ${response.statusText}`);
 		return error(response.status, { message: 'Error retrieving sighting' });

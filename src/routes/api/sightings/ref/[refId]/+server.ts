@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
 	if (!refId) {
 		logger.error('No reference ID provided');
-		return error(400, { message: 'Reference ID is required' });
+		return error(400, 'Reference ID is required');
 	}
 
 	try {
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
 		if (!sighting) {
 			logger.warn(`Sighting not found for reference ID: ${refId}`);
-			return error(404, { message: 'Sighting not found' });
+			return error(404, 'Sighting not found');
 		}
 
 		logger.info(`Successfully retrieved sighting ${sighting.id} for reference ID: ${refId}`);
@@ -33,6 +33,6 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 			throw err;
 		}
 		logger.error(`Error retrieving sighting by reference ID ${refId}: ${String(err)}`);
-		return error(500, { message: 'Internal server error' });
+		return error(500, 'Internal server error');
 	}
 };

@@ -35,7 +35,7 @@ function createStorageMock() {
 	};
 }
 
-vi.mock('$app/environment', () => ({
+vi.mock('$app/env', () => ({
 	browser: true
 }));
 

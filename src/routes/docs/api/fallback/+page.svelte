@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import Icon from '$lib/components/Icon.svelte';
 
 	let openApiSpec = $state<string | null>(null);
