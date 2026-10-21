@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { getFormContext } from '$lib/report/formContext';
-	import { isDeadFinding } from '$lib/report/formConfig';
+	import * as m from '#lib/paraglide/messages.js';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { isDeadFinding } from '#lib/report/formConfig.ts';
 
 	// Default-Noop wie an den übrigen `onchangekind`-Aufrufstellen
 	// (`Step2SightingDetails.svelte`, `ModernReportForm.svelte`):

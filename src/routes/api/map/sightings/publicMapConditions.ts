@@ -8,7 +8,7 @@
  *
  * Zusätzlich zur öffentlichen Freigabe (`approvedOnly()`, siehe
  * `.claude/rules/api.md`) werden NULL- und unplausible Koordinaten
- * herausgefiltert: `sightingsToGeoJSON` (`$lib/map/mapUtils`) fällt bei
+ * herausgefiltert: `sightingsToGeoJSON` (`#lib/map/mapUtils.js`) fällt bei
  * NULL-Koordinaten auf `[0, 0]` zurück ("Null Island"). Dieser Serverfilter
  * macht den Fallback für die Karte unerreichbar, ohne die Funktion selbst
  * anzufassen — andere Aufrufer von `sightingsToGeoJSON` bleiben unverändert.
@@ -20,10 +20,10 @@
  * die Bedingungsliste hier und nicht doppelt in den Routen.
  */
 
-import { approvedOnly, openOnly, rejectedOnly } from '$lib/server/db/approvalFilter';
-import type { SightingStatus } from '$lib/components/admin/sightingStatus';
-import { sightings as sightingsTable } from '$lib/server/db/schema';
-import { BALTIC_SEA_BBOX } from '$lib/utils/geo/checkBalticSea';
+import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
+import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
+import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
+import { BALTIC_SEA_BBOX } from '#lib/utils/geo/checkBalticSea.ts';
 import { gte, isNotNull, lte, or, type SQL } from 'drizzle-orm';
 import { PUBLIC_MAP_STATUSES } from './statusFilter';
 

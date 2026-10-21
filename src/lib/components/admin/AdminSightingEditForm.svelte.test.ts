@@ -13,7 +13,7 @@ import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AdminSightingEditForm from './AdminSightingEditForm.svelte';
 import { SIGHTING_STATUS_PRESENTATION } from './sightingStatus';
-import type { FrontendSighting } from '$lib/types';
+import type { FrontendSighting } from '#lib/types/index.ts';
 
 // `beforeNavigate` gibt es außerhalb des SvelteKit-Routers nicht — der Mock
 // fängt die registrierte Rückrufe ab, damit der Test eine Navigation auslösen

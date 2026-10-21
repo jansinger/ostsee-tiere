@@ -1,5 +1,5 @@
-import { buildSitemapXml } from '$lib/seo/sitemap';
-import { istKanonischerHost } from '$lib/seo/robotsTxt';
+import { buildSitemapXml } from '#lib/seo/sitemap.ts';
+import { istKanonischerHost } from '#lib/seo/robotsTxt.ts';
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

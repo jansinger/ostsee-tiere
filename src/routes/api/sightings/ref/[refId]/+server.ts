@@ -1,6 +1,6 @@
-import { createLogger } from '$lib/logger.server';
-import { requireUserRole } from '$lib/server/auth/auth';
-import { getSightingByReferenceId } from '$lib/server/db/sightingRepository';
+import { createLogger } from '#lib/logger.server.ts';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { getSightingByReferenceId } from '#lib/server/db/sightingRepository.ts';
 import { error, isHttpError, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '#lib/components/Icon.svelte';
 
 	/**
 	 * Zwei Varianten, ein Abschnittsmuster (siehe /styleguide → „Abschnitt").

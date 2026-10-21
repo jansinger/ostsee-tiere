@@ -10,25 +10,28 @@
  * @since 1.10.0
  */
 
-import { createLogger } from '$lib/logger.server';
-import { AnimalBehaviorEnum, getAnimalBehaviorLabel } from '$lib/report/formOptions/animalBehavior';
+import { createLogger } from '#lib/logger.server.ts';
+import {
+	AnimalBehaviorEnum,
+	getAnimalBehaviorLabel
+} from '#lib/report/formOptions/animalBehavior.ts';
 import {
 	AnimalConditionEnum,
 	getAnimalConditionLabel
-} from '$lib/report/formOptions/animalCondition';
-import { BoatDriveEnum, getBoatDriveLabel } from '$lib/report/formOptions/boatDrive';
-import { DistanceEnum, getDistanceLabel } from '$lib/report/formOptions/distance';
-import { DistributionEnum, getDistributionLabel } from '$lib/report/formOptions/distribution';
-import { EntryChannelEnum, getEntryChannelLabel } from '$lib/report/formOptions/entryChannel';
-import { getSeaStateLabel, SeaStateEnum } from '$lib/report/formOptions/seaState';
-import { getSexLabel, SexEnum } from '$lib/report/formOptions/sex';
-import { getSightingFromLabel, SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import { getSpeciesLabel, SpeciesEnum } from '$lib/report/formOptions/species';
-import { getVisibilityLabel, VisibilityEnum } from '$lib/report/formOptions/visibility';
-import { getWindDirectionLabel, WindDirectionEnum } from '$lib/report/formOptions/windDirection';
-import { getWindStrengthLabel, WindStrengthEnum } from '$lib/report/formOptions/windStrength';
-import { getClientIp } from '$lib/server/utils/getClientIp';
-import { baseLocale } from '$lib/paraglide/runtime';
+} from '#lib/report/formOptions/animalCondition.ts';
+import { BoatDriveEnum, getBoatDriveLabel } from '#lib/report/formOptions/boatDrive.ts';
+import { DistanceEnum, getDistanceLabel } from '#lib/report/formOptions/distance.ts';
+import { DistributionEnum, getDistributionLabel } from '#lib/report/formOptions/distribution.ts';
+import { EntryChannelEnum, getEntryChannelLabel } from '#lib/report/formOptions/entryChannel.ts';
+import { getSeaStateLabel, SeaStateEnum } from '#lib/report/formOptions/seaState.ts';
+import { getSexLabel, SexEnum } from '#lib/report/formOptions/sex.ts';
+import { getSightingFromLabel, SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import { getSpeciesLabel, SpeciesEnum } from '#lib/report/formOptions/species.ts';
+import { getVisibilityLabel, VisibilityEnum } from '#lib/report/formOptions/visibility.ts';
+import { getWindDirectionLabel, WindDirectionEnum } from '#lib/report/formOptions/windDirection.ts';
+import { getWindStrengthLabel, WindStrengthEnum } from '#lib/report/formOptions/windStrength.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
+import { baseLocale } from '#lib/paraglide/runtime.js';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 const logger = createLogger('api:legacy:antworten:pdf-compliant');

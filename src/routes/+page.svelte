@@ -3,16 +3,16 @@
   Meldeformular für Meerestier-Sichtungen in der Ostsee
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import { pushState, replaceState } from '$app/navigation';
 	import { tick } from 'svelte';
-	import { createLogger } from '$lib/logger';
-	import HreflangHead from '$lib/components/seo/HreflangHead.svelte';
-	import ModernReportForm from '$lib/report/components/ModernReportForm.svelte';
-	import ReportKindChoice from '$lib/report/components/ReportKindChoice.svelte';
-	import SubmissionSuccess from '$lib/report/components/SubmissionSuccess.svelte';
+	import { createLogger } from '#lib/logger.ts';
+	import HreflangHead from '#lib/components/seo/HreflangHead.svelte';
+	import ModernReportForm from '#lib/report/components/ModernReportForm.svelte';
+	import ReportKindChoice from '#lib/report/components/ReportKindChoice.svelte';
+	import SubmissionSuccess from '#lib/report/components/SubmissionSuccess.svelte';
 	import {
 		clearReportKind,
 		readReportKind,
@@ -22,12 +22,12 @@
 		resolveReportKind,
 		writeReportKind,
 		type ReportKind
-	} from '$lib/report/reportKind';
-	import { buildHomeQueryPath } from '$lib/report/homeQueryPath';
-	import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '$lib/storage/localStorage';
-	import type { SightingFormValues } from '$lib/types/Form';
-	import { isNotIFrame } from '$lib/utils/client/isNotIFrame';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	} from '#lib/report/reportKind.ts';
+	import { buildHomeQueryPath } from '#lib/report/homeQueryPath.ts';
+	import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '#lib/storage/localStorage.ts';
+	import type { SightingFormValues } from '#lib/types/Form.ts';
+	import { isNotIFrame } from '#lib/utils/client/isNotIFrame.ts';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 
 	const logger = createLogger('main:page');
 
@@ -117,7 +117,7 @@
 	 * entstünde der nicht-kanonische String `/?` (Review-Fund). Der
 	 * Query-Erhalt im nicht-leeren Fall bleibt dabei unverändert — er hing
 	 * schon dreimal als Critical-Fund an genau dieser Funktion. Die Prüfung
-	 * selbst steckt in `buildHomeQueryPath` (`$lib/report/homeQueryPath.ts`),
+	 * selbst steckt in `buildHomeQueryPath` (`#lib/report/homeQueryPath.ts`),
 	 * ausgelagert, damit sie ohne die restliche Seite unit-testbar ist — der
 	 * eigentliche Effekt eines fehlenden `?` wäre über `localizeHref()` selbst
 	 * nicht beobachtbar, siehe Kommentar dort.
@@ -142,7 +142,7 @@
 		// Wirft weg, keine Komponenten-Reaktivität nötig — dasselbe Muster wie in
 		// ExportModal.svelte.
 		// eslint-disable-next-line svelte/prefer-svelte-reactivity
-		const params = new URLSearchParams(page.url.searchParams);
+		const params = new URLSearchParams(page.url.search);
 		params.set(REPORT_KIND_PARAM, reportKindToParam(kind));
 		return localizedHomeHref(params);
 	}

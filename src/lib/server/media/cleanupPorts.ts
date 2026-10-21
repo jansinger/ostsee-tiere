@@ -5,9 +5,9 @@
  * Provider liefert `findOrphanFiles` `null` — der Lauf gilt dann als
  * erfolgreich und meldet die Klasse als nicht anwendbar, statt zu scheitern.
  */
-import { db } from '$lib/server/db';
-import { sightingFiles } from '$lib/server/db/schema';
-import { getCurrentStorageProvider, getStorageProvider } from '$lib/server/storage/factory';
+import { db } from '#lib/server/db/index.ts';
+import { sightingFiles } from '#lib/server/db/schema.ts';
+import { getCurrentStorageProvider, getStorageProvider } from '#lib/server/storage/factory.ts';
 import { and, eq, isNull, lt } from 'drizzle-orm';
 import {
 	normalizeRelativePath,

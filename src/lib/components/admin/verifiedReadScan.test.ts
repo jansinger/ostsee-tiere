@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { collectHits, sourceFiles, stripComments } from '$lib/testing/sourceScan.testutil';
-import type { SourceHit } from '$lib/testing/sourceScan.testutil';
+import { collectHits, sourceFiles, stripComments } from '#lib/testing/sourceScan.testutil.ts';
+import type { SourceHit } from '#lib/testing/sourceScan.testutil.ts';
 
 /**
  * @fileoverview `geprueft` (`verified`) darf nirgends mehr **gelesen** werden
@@ -29,7 +29,7 @@ import type { SourceHit } from '$lib/testing/sourceScan.testutil';
  * Beispiel und unter „Gegenproben", was **nicht** anschlagen darf — nach dem
  * Vorbild `src/lib/server/db/approvalPredicateScan.test.ts`.
  *
- * Textaufbereitung und Dateisuche kommen aus `$lib/testing/sourceScan.testutil`
+ * Textaufbereitung und Dateisuche kommen aus `#lib/testing/sourceScan.testutil.js`
  * — dieselbe getestete `stripComments()`, die auch das Vorbild benutzt. Ein
  * zweites Verfahren im selben Repo würde getrennt altern.
  *
@@ -39,14 +39,14 @@ import type { SourceHit } from '$lib/testing/sourceScan.testutil';
 /** Was der Entwickler stattdessen tun soll — erscheint in jeder Fehlermeldung. */
 const REMEDIATION = [
 	'Der Status einer Sichtung wird abgeleitet, nicht aus `verified`/`geprueft` gelesen:',
-	"  import { getSightingStatus } from '$lib/components/admin/sightingStatus';",
+	"  import { getSightingStatus } from '#lib/components/admin/sightingStatus';",
 	'  const status = getSightingStatus({ approvedAt, rejectedAt });',
 	'',
 	// Das Prädikat steht hier absichtlich nicht ausgeschrieben: Es selbst zu
 	// bauen verbietet `approvalPredicateScan.test.ts` — auch in einer
 	// Fehlermeldung.
 	'In SQL kommt die öffentliche Grundmenge aus dem Freigabe-Filter:',
-	"  import { approvedOnly, openOnly, rejectedOnly } from '$lib/server/db/approvalFilter';",
+	"  import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter';",
 	'',
 	'Geschrieben werden darf die Spalte weiter — aber nur vom Verify-Endpunkt',
 	'und vom Insert-Pfad (siehe ALLOWED_FILES unten).'
@@ -300,7 +300,7 @@ describe('Gegenproben', () => {
 	});
 
 	it.each([
-		"import { getSightingStatus } from '$lib/components/admin/sightingStatus';",
+		"import { getSightingStatus } from '#lib/components/admin/sightingStatus';",
 		'const status = getSightingStatus({ approvedAt, rejectedAt });',
 		'.where(approvedOnly())',
 		'const { approvedAt, rejectedAt } = sighting;'

@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { get } from 'svelte/store';
-import { renderWithFormContext } from '$lib/report/components/testing/renderWithFormContext.testutil';
-import type { StoredWeatherData } from '$lib/services/weatherService';
+import { renderWithFormContext } from '#lib/report/components/testing/renderWithFormContext.testutil.ts';
+import type { StoredWeatherData } from '#lib/services/weatherService.ts';
 import Step3Observations from './Step3Observations.svelte';
 
 /**

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { validateMagicBytes } from './magicBytes';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

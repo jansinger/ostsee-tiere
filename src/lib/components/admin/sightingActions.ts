@@ -16,8 +16,8 @@
  * Rückgabewert oder am Logeintrag etwas zu ändern — dieselbe Konstruktion und
  * dieselbe Begründung wie bei `submitVerdict` (`sightingVerdict.ts`).
  */
-import { createLogger } from '$lib/logger';
-import { toast } from '$lib/stores/toastState.svelte';
+import { createLogger } from '#lib/logger.ts';
+import { toast } from '#lib/stores/toastState.svelte.ts';
 
 const logger = createLogger('adminSightingActions');
 

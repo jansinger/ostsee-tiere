@@ -17,7 +17,7 @@ import {
  *
  * Werte des `SightingFromEnum` (`formOptions/sightingFrom.ts`), wie in
  * `form-helpers.ts` per Kommentar statt Import benannt (kein Spec importiert
- * aus `$lib`): 0 Sonstiges, 1 Segelschiff, 2 Motorboot, 3 Land, 4 Fähre.
+ * aus `#lib`): 0 Sonstiges, 1 Segelschiff, 2 Motorboot, 3 Land, 4 Fähre.
  */
 
 /**

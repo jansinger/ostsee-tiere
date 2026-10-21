@@ -1,6 +1,6 @@
-import { isSuperAdminUser, requireUserRole } from '$lib/server/auth/auth';
-import { getBuildInfo } from '$lib/server/startup/versionInfo';
-import type { PublicUser } from '$lib/types/User';
+import { isSuperAdminUser, requireUserRole } from '#lib/server/auth/auth.ts';
+import { getBuildInfo } from '#lib/server/startup/versionInfo.ts';
+import type { PublicUser } from '#lib/types/User.ts';
 import type { LayoutServerLoad } from './$types';
 
 export const load = (async ({ locals, url }) => {

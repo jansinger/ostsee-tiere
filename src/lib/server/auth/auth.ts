@@ -1,7 +1,6 @@
-import { env } from '$env/dynamic/private';
-import { env as publicEnv } from '$env/dynamic/public';
-import { createLogger } from '$lib/logger.server';
-import type { User } from '$lib/types/index';
+import { env, publicEnv } from '#lib/server/env.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import type { User } from '#lib/types/index.ts';
 
 const logger = createLogger('auth');
 
@@ -197,7 +196,7 @@ export async function getToken({ code, pkceVerifier }: { code: string; pkceVerif
 /*
  * getAuthUser, setAuthCookie und clearAuthCookie sind mit dem Session-Store entfallen
  * (Issue #635). Cookie und Identität hängen jetzt ausschließlich an
- * `$lib/server/auth/sessionRepository` — createSession, resolveSessionUser,
+ * `#lib/server/auth/sessionRepository.js` — createSession, resolveSessionUser,
  * destroySession.
  *
  * `getAuthUser` wurde gelöscht statt umgebaut, weil es genau das anbot, was hier

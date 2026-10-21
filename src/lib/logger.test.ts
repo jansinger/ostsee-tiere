@@ -1,7 +1,7 @@
 /**
  * Unit Test für den gemeinsamen Logger.
  *
- * `$lib/logger` wird von Komponenten importiert, deren `<script>`-Block beim
+ * `#lib/logger` wird von Komponenten importiert, deren `<script>`-Block beim
  * SSR **auf dem Server** läuft — der Server-Zweig hier ist also kein
  * Randfall. Er hatte bis zum 2026-08-19 keine Redaction, anders als
  * `logger/serverLogger.ts`: Ein `logger.error({ email })` aus einer

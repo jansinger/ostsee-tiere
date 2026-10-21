@@ -3,9 +3,9 @@
   Independent of form context, accepts all props directly
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import type { FieldSize } from '$lib/types';
-	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import type { FieldSize } from '#lib/types/index.ts';
+	import Icon from '#lib/components/Icon.svelte';
 
 	interface Props {
 		checked?: boolean;

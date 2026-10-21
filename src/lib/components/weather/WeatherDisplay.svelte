@@ -3,24 +3,27 @@
   Used by both WeatherDataFetcher and WeatherDataDisplay for consistent presentation
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { getWeatherDescription } from '$lib/constants/weather';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import Icon from '$lib/components/Icon.svelte';
-	import { getSeaStateLabel } from '$lib/report/formOptions/seaState';
-	import { getVisibilityLabel } from '$lib/report/formOptions/visibility';
-	import { getWindStrengthLabel } from '$lib/report/formOptions/windStrength';
+	import * as m from '#lib/paraglide/messages.js';
+	import { getWeatherDescription } from '#lib/constants/weather.ts';
+	import { getLocale } from '#lib/paraglide/runtime.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import { getSeaStateLabel } from '#lib/report/formOptions/seaState.ts';
+	import { getVisibilityLabel } from '#lib/report/formOptions/visibility.ts';
+	import { getWindStrengthLabel } from '#lib/report/formOptions/windStrength.ts';
 	import type {
 		WeatherData,
 		WeatherFormFields,
 		StoredWeatherData
-	} from '$lib/services/weatherService';
-	import type { WeatherDataWithMetadata } from '$lib/types';
+	} from '#lib/services/weatherService.ts';
+	import type { WeatherDataWithMetadata } from '#lib/types/index.ts';
 	// `time`/`observation_time` ist zonenlose Berlin-Wanduhrzeit (siehe
 	// weatherService.ts) — formatObservationTime reicht sie unkonvertiert durch (M4).
-	import { formatObservationTime } from '$lib/utils/format/dateTime';
-	import { formatLocation } from '$lib/utils/format/formatLocation';
-	import { getWeatherIconClass, getWindDirectionIconClass } from '$lib/utils/weather/weatherIcons';
+	import { formatObservationTime } from '#lib/utils/format/dateTime.ts';
+	import { formatLocation } from '#lib/utils/format/formatLocation.ts';
+	import {
+		getWeatherIconClass,
+		getWindDirectionIconClass
+	} from '#lib/utils/weather/weatherIcons.ts';
 
 	interface Props {
 		weatherData: WeatherDataWithMetadata | WeatherData | StoredWeatherData;

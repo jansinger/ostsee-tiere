@@ -1,4 +1,4 @@
-import type { BoundingBox, GeoLimits } from '$lib/types';
+import type { BoundingBox, GeoLimits } from '#lib/types/index.ts';
 
 /**
  * WGS84-Koordinaten-Limits für globale GPS-Validierung

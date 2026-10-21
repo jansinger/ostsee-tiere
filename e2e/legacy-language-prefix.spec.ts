@@ -70,8 +70,14 @@ test.describe('Legacy-API: Sprachpräfix /de/ und /en/', () => {
 		// dem Review zu Task 6 (2026-08-10): Live gegen den Dev-Server verifiziert
 		// per `curl -sk -D - -o /dev/null "https://localhost:4000/en/"` → Status
 		// 308, `location: /en`, nicht 404.
+		//
+		// Seit SvelteKit 3 steht im Header eine RELATIVE Angabe (`../en` statt `/en`).
+		// Geprüft wird deshalb das aufgelöste Ziel, nicht der wörtliche Header — beide
+		// Schreibweisen führen von `/en/` nach `/en`, und Browser wie HTTP-Clients lösen
+		// relative `Location`-Header auf.
 		const antwort = await request.get('/en/', { maxRedirects: 0 });
 		expect(antwort.status()).toBe(308);
-		expect(antwort.headers()['location']).toBe('/en');
+		const ziel = new URL(antwort.headers()['location'] ?? '', new URL('/en/', antwort.url()));
+		expect(ziel.pathname).toBe('/en');
 	});
 });

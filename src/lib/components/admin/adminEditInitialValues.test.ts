@@ -1,4 +1,4 @@
-import type { FrontendSighting } from '$lib/types/FrontendSighting';
+import type { FrontendSighting } from '#lib/types/FrontendSighting.ts';
 import { describe, expect, it } from 'vitest';
 import { buildAdminEditInitialValues } from './adminEditInitialValues';
 

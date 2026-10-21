@@ -2,7 +2,7 @@ import { render } from 'vitest-browser-svelte';
 import { describe, it, expect } from 'vitest';
 import { page } from 'vitest/browser';
 import BaseRadio from './BaseRadio.svelte';
-import { getPublicBoatDriveOptions } from '$lib/report/formOptions/boatDrive';
+import { getPublicBoatDriveOptions } from '#lib/report/formOptions/boatDrive.ts';
 
 /**
  * `BaseRadio` war bis zur Motorfrage (PR 4, 2026-08-04) ein nie ausgeführter

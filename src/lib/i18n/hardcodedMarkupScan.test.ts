@@ -1,7 +1,7 @@
 import { parse } from 'svelte/compiler';
 import { describe, expect, it } from 'vitest';
-import { multiWordLiterals, stripComments } from '$lib/testing/sourceScan.testutil';
-import type { SourceHit } from '$lib/testing/sourceScan.testutil';
+import { multiWordLiterals, stripComments } from '#lib/testing/sourceScan.testutil.ts';
+import type { SourceHit } from '#lib/testing/sourceScan.testutil.ts';
 import { planExtraction } from '../../tools/i18n-extract/plan';
 
 /**

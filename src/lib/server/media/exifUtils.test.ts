@@ -4,8 +4,8 @@
  * Testet die EXIF-Datenextraktion aus Bildern
  * mit Fokus auf Fehlerbehandlung und Edge Cases
  */
-import type { ExifData } from '$lib/types';
-import { isImageFile } from '$lib/utils';
+import type { ExifData } from '#lib/types/index.ts';
+import { isImageFile } from '#lib/utils/index.ts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { hasGPSData, readImageExifData } from './exifUtils';
 
@@ -20,7 +20,7 @@ vi.mock('fs', () => ({
 	readFileSync: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: vi.fn(() => ({
 		debug: vi.fn(),
 		warn: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock('$lib/logger.server', () => ({
 	}))
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: vi.fn(() => ({
 		debug: vi.fn(),
 		warn: vi.fn(),

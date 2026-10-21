@@ -17,7 +17,7 @@ import OLMap from './OLMap.svelte';
  */
 const disposeSpy = vi.fn();
 
-vi.mock('$lib/utils/map/openLayersHelpers', () => ({
+vi.mock('#lib/utils/map/openLayersHelpers.ts', () => ({
 	createMap: () => ({
 		// Nur das, was `OLMap` auf dem Rückgabewert aufruft.
 		dispose: disposeSpy,

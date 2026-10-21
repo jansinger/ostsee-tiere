@@ -1,18 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		insert: vi.fn()
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	auditLogs: {}
 }));
 
 let mockLoggerError = vi.fn();
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -21,7 +21,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -31,7 +31,7 @@ vi.mock('$lib/logger', () => ({
 }));
 
 import { logAuditEvent } from './auditService';
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.ts';
 
 const mockInsert = vi.mocked(db.insert);
 
@@ -73,9 +73,7 @@ describe('logAuditEvent', () => {
 		});
 
 		const valuesCall = mockInsert.mock.results[0]!.value.values;
-		expect(valuesCall).toHaveBeenCalledWith(
-			expect.objectContaining({ status: 'success' })
-		);
+		expect(valuesCall).toHaveBeenCalledWith(expect.objectContaining({ status: 'success' }));
 	});
 
 	it('speichert optionale details als jsonb', async () => {

@@ -1,7 +1,7 @@
 /**
  * @fileoverview `balticSeaCondition` — SQL-Übersetzung von `getBalticSeaStatus()`
  *
- * `getBalticSeaStatus()` (`$lib/utils/geo/balticSeaStatus.ts`) ist die einzige
+ * `getBalticSeaStatus()` (`#lib/utils/geo/balticSeaStatus.ts`) ist die einzige
  * Stelle, an der der Ostsee-Status einer Sichtung fachlich entsteht.
  * `balticSeaCondition()` baut dieselbe Fallunterscheidung als SQL-Prädikat für
  * den Admin-Filter und den Export nach. Zwei Implementierungen derselben Regel
@@ -51,7 +51,7 @@ import {
 	BALTIC_SEA_STATUS_PRESENTATION,
 	getBalticSeaStatus,
 	type BalticSeaStatus
-} from '$lib/utils/geo/balticSeaStatus';
+} from '#lib/utils/geo/balticSeaStatus.ts';
 import { balticSeaCondition } from './balticSeaFilter';
 
 const dialect = new PgDialect();

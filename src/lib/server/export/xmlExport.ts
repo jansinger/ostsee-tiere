@@ -1,9 +1,9 @@
-import type { FrontendSighting } from '$lib/types/index';
-import { formatForXmlExport } from '$lib/utils/format/dateTime';
+import type { FrontendSighting } from '#lib/types/index.ts';
+import { formatForXmlExport } from '#lib/utils/format/dateTime.ts';
 
 /**
  * Repräsentiert eine Meeressäuger-Sichtung im XML-Export-Format.
- * 
+ *
  * Diese Schnittstelle definiert die Struktur für XML-Exporte, die mit
  * Legacy-Systemen und wissenschaftlichen Tools kompatibel ist.
  * Die Feldnamen entsprechen dem Original-PHP-System.
@@ -45,17 +45,17 @@ interface XmlSighting {
 
 /**
  * Generiert XML-Export aus Meeressäuger-Sichtungen.
- * 
+ *
  * Diese Funktion erstellt strukturiertes XML für wissenschaftliche
  * Auswertung und Legacy-System-Kompatibilität. Das XML-Format
  * enthält:
- * 
+ *
  * - Alle relevanten Sichtungsdaten in strukturierter Form
  * - Koordinatentransformation für spezifische Kartensysteme
  * - Datenschutz-konforme Filterung von persönlichen Daten
  * - Kategorisierung nach Tiergrößenklassen
  * - Boolean-zu-Integer-Konvertierung für XML-Kompatibilität
- * 
+ *
  * Das erzeugte XML folgt dem Schema:
  * ```xml
  * <sichtungen>
@@ -68,10 +68,10 @@ interface XmlSighting {
  *   </sichtung>
  * </sichtungen>
  * ```
- * 
+ *
  * @param sightings - Array von Frontend-Sichtungsdaten
  * @returns Vollständiges XML-Dokument als String
- * 
+ *
  * @example
  * ```typescript
  * const sightings: FrontendSighting[] = [
@@ -86,7 +86,7 @@ interface XmlSighting {
  *     // ... weitere Felder
  *   }
  * ];
- * 
+ *
  * const xmlData = generateXmlData(sightings);
  * // Kann als .xml-Datei exportiert oder an wissenschaftliche Tools gesendet werden
  * ```
@@ -121,20 +121,20 @@ export function generateXmlData(sightings: FrontendSighting[]): string {
 
 /**
  * Transformiert eine Frontend-Sichtung in das XML-Export-Format.
- * 
+ *
  * Diese komplexe Transformationsfunktion:
- * 
+ *
  * 1. **Zeitstempel-Konvertierung**: ISO 8601 → DD.MM.YY + HHMM
  * 2. **Koordinaten-Transformation**: WGS84 → normalisiertes Kartensystem
  * 3. **Kategorisierung**: Tieranzahl → Größenklassen und Media-Tags
  * 4. **Datenschutz**: Nur autorisierte Namen/Schiffsdaten exportieren
  * 5. **Legacy-Kompatibilität**: Feldnamen und -werte für bestehende Tools
- * 
+ *
  * **Koordinaten-Transformation:**
  * Die X/Y-Koordinaten werden durch eine spezifische Mercator-Projektion
  * berechnet, die auf das verwendete Kartensystem normalisiert ist.
  * Diese Transformation stammt aus dem Original-PHP-Code.
- * 
+ *
  * **Größenklassen:**
  * - Einzeltier: 1 Tier
  * - 2-5 Tiere: 2-5 Tiere
@@ -142,7 +142,7 @@ export function generateXmlData(sightings: FrontendSighting[]): string {
  * - 11-15 Tiere: 11-15 Tiere  
  * - Mehr als 15 Tiere: >15 Tiere
  * - tot: Totfunde (unabhängig von Anzahl)
- * 
+ *
  * @param sighting - Eine Frontend-Sichtung
  * @returns XML-kompatible Sichtungsstruktur
  * @internal
@@ -167,8 +167,14 @@ function transformToXmlSighting(sighting: FrontendSighting): XmlSighting {
 		tierart: sighting.species, // Numerische Tierart-ID
 		fahrwasser: sighting.waterway || undefined, // Null → undefined für XML
 		// Koordinaten mit Typ-Sicherheit
-		dezigrad_n: typeof sighting.latitude === 'number' ? sighting.latitude : parseFloat(sighting.latitude || '0'),
-		dezigrad_e: typeof sighting.longitude === 'number' ? sighting.longitude : parseFloat(sighting.longitude || '0'),
+		dezigrad_n:
+			typeof sighting.latitude === 'number'
+				? sighting.latitude
+				: parseFloat(sighting.latitude || '0'),
+		dezigrad_e:
+			typeof sighting.longitude === 'number'
+				? sighting.longitude
+				: parseFloat(sighting.longitude || '0'),
 		totfund: sighting.isDead ? true : false, // Explizite Boolean-Konvertierung
 		// Temporäre Werte - werden basierend auf Tieranzahl überschrieben
 		media: 'Einzeltier',
@@ -229,18 +235,18 @@ function transformToXmlSighting(sighting: FrontendSighting): XmlSighting {
 	 */
 	const gps_n = typeof sighting.latitude === 'number' ? sighting.latitude : 0;
 	const gps_e = typeof sighting.longitude === 'number' ? sighting.longitude : 0;
-	
+
 	// Mercator-Projektion: Longitude zu X-Koordinate
-	const X = gps_e !== null && gps_e !== undefined 
-		? Math.round((gps_e * 6371000 * Math.PI) / 180) 
-		: 0;
-	
+	const X =
+		gps_e !== null && gps_e !== undefined ? Math.round((gps_e * 6371000 * Math.PI) / 180) : 0;
+
 	// Mercator-Projektion: Latitude zu Y-Koordinate
 	// Formel: ln(tan(lat/2 + π/4)) * Erdradius
-	const Y = gps_n !== null && gps_n !== undefined
-		? Math.round(Math.log(Math.tan((gps_n * Math.PI) / 360 + Math.PI / 4)) * 6371000)
-		: 0;
-	
+	const Y =
+		gps_n !== null && gps_n !== undefined
+			? Math.round(Math.log(Math.tan((gps_n * Math.PI) / 360 + Math.PI / 4)) * 6371000)
+			: 0;
+
 	// Normalisierung auf Kartensystem-spezifische Werte
 	// Diese Konstanten stammen aus dem Original-PHP-System
 	xmlSighting.x = Math.round(((X - 1050792.0567911) / 628251.3355417) * 1000) / 1000;

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { STORAGE_KEYS } from '$lib/storage/localStorage';
+import { STORAGE_KEYS } from '#lib/storage/localStorage.ts';
 import {
 	clearReportKind,
 	readReportKind,

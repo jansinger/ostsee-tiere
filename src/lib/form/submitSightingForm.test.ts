@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { describeSubmitFailure, submitSightingForm } from './submitSightingForm';
 
 // Mock clearStorage — die Funktion darf ihn nicht mehr aufrufen (siehe unten).
-vi.mock('$lib/storage/localStorage', () => ({
+vi.mock('#lib/storage/localStorage.ts', () => ({
 	clearStorage: vi.fn()
 }));
 
-import { clearStorage } from '$lib/storage/localStorage';
+import { clearStorage } from '#lib/storage/localStorage.ts';
 
 // Minimal valid form values for testing
 const validFormValues = {

@@ -25,7 +25,7 @@ function ogLocaleAlternateMetas(): string[] {
 
 describe('HreflangHead', () => {
 	afterEach(async () => {
-		const { overwriteGetLocale, baseLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale, baseLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => baseLocale);
 	});
 
@@ -35,7 +35,7 @@ describe('HreflangHead', () => {
 	};
 
 	it('unter de: hreflang=de zeigt auf die aktuelle Seite, hreflang=en auf die /en-Fassung, x-default auf Deutsch', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'de');
 
 		await render(HreflangHead, props);
@@ -46,7 +46,7 @@ describe('HreflangHead', () => {
 	});
 
 	it('unter de: og:locale ist de_DE, og:locale:alternate ist en_GB', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'de');
 
 		await render(HreflangHead, props);
@@ -56,7 +56,7 @@ describe('HreflangHead', () => {
 	});
 
 	it('unter en: og:locale ist en_GB, og:locale:alternate ist de_DE', async () => {
-		const { overwriteGetLocale } = await import('$lib/paraglide/runtime');
+		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
 		overwriteGetLocale(() => 'en');
 
 		await render(HreflangHead, props);

@@ -5,7 +5,7 @@
  *
  * Hintergrund und Entscheidungslage: docs/archive/MEDIENEINWILLIGUNG_ANALYSE_2026-07-28.md
  */
-import type { SightingFormValues } from '$lib/types/Form';
+import type { SightingFormValues } from '#lib/types/Form.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../geo/checkBalticSeaFile', () => ({
@@ -21,7 +21,7 @@ vi.mock('drizzle-orm', () => ({
 }));
 
 import { checkBalticSeaFile } from '../geo/checkBalticSeaFile';
-import { MEDIA_CONSENT_VERSION } from '$lib/form/consent/mediaConsentVersion';
+import { MEDIA_CONSENT_VERSION } from '#lib/form/consent/mediaConsentVersion.ts';
 import { mapFormToSighting } from './mapFormToSighting';
 
 function buildForm(overrides: Partial<SightingFormValues> = {}): SightingFormValues {

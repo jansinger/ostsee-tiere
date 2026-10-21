@@ -22,7 +22,7 @@ const { mockPostgres, mockDrizzle, envState } = vi.hoisted(() => {
 
 vi.mock('postgres', () => ({ default: mockPostgres }));
 vi.mock('drizzle-orm/postgres-js', () => ({ drizzle: mockDrizzle }));
-vi.mock('$env/dynamic/private', () => ({ env: envState }));
+vi.mock('#lib/server/env.ts', () => ({ env: envState }));
 
 function createMockClient(end: ReturnType<typeof vi.fn> = vi.fn().mockResolvedValue(undefined)) {
 	return { end };

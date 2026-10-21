@@ -7,7 +7,7 @@
 	 * bleiben nur die Texte dieses einen Falls. Die Prop-Schnittstelle ist
 	 * unverändert, damit die Aufrufstellen nichts davon merken.
 	 */
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import ConfirmDialog from './ConfirmDialog.svelte';
 
 	let {

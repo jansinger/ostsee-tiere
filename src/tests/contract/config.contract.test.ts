@@ -12,7 +12,7 @@ const mockConfigs = [
 	{ key: 'display.maxSightings', value: 100, description: 'Max sightings', category: 'display' }
 ];
 
-vi.mock('$lib/server/db/configRepository', () => ({
+vi.mock('#lib/server/db/configRepository.ts', () => ({
 	ConfigRepository: {
 		getAll: vi.fn().mockResolvedValue([]),
 		getByCategory: vi.fn().mockResolvedValue([]),
@@ -22,12 +22,12 @@ vi.mock('$lib/server/db/configRepository', () => ({
 	}
 }));
 
-vi.mock('$lib/server/config/accessControl', () => ({
+vi.mock('#lib/server/config/accessControl.ts', () => ({
 	filterConfigsByUserAccess: vi.fn((configs: unknown[]) => configs),
 	canUserAccessConfigKey: vi.fn().mockReturnValue(true)
 }));
 
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		get: vi.fn().mockResolvedValue(null),
 		getString: vi.fn().mockResolvedValue(null),
@@ -45,36 +45,36 @@ vi.mock('$lib/services/configService', () => ({
 	DEFAULT_CONFIG_VALUES: {}
 }));
 
-vi.mock('$lib/server/services/configInitializer', () => ({
+vi.mock('#lib/server/services/configInitializer.ts', () => ({
 	initializeDefaultConfigurations: vi.fn().mockResolvedValue(undefined),
 	resetToDefaultConfigurations: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('$lib/server/services/emailService', () => ({
+vi.mock('#lib/server/services/emailService.ts', () => ({
 	EmailService: {
 		sendTestEmail: vi.fn().mockResolvedValue(true)
 	}
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
 describe('Contract: GET /api/config', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		const { ConfigRepository } = vi.mocked(await import('$lib/server/db/configRepository'));
+		const { ConfigRepository } = vi.mocked(await import('#lib/server/db/configRepository.ts'));
 		(ConfigRepository.getAll as any).mockResolvedValue([...mockConfigs]);
 		const { filterConfigsByUserAccess } = vi.mocked(
-			await import('$lib/server/config/accessControl')
+			await import('#lib/server/config/accessControl.ts')
 		);
 		(filterConfigsByUserAccess as any).mockImplementation((configs: unknown[]) => configs);
 	});
@@ -91,7 +91,7 @@ describe('Contract: GET /api/config', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -105,7 +105,7 @@ describe('Contract: GET /api/config', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -122,7 +122,9 @@ describe('Contract: GET /api/config', () => {
 describe('Contract: PUT /api/config', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		const { canUserAccessConfigKey } = vi.mocked(await import('$lib/server/config/accessControl'));
+		const { canUserAccessConfigKey } = vi.mocked(
+			await import('#lib/server/config/accessControl.ts')
+		);
 		canUserAccessConfigKey.mockReturnValue(true);
 	});
 
@@ -153,7 +155,7 @@ describe('Contract: PUT /api/config', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -171,7 +173,7 @@ describe('Contract: PUT /api/config', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -192,7 +194,9 @@ describe('Contract: PUT /api/config', () => {
 describe('Contract: DELETE /api/config', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		const { canUserAccessConfigKey } = vi.mocked(await import('$lib/server/config/accessControl'));
+		const { canUserAccessConfigKey } = vi.mocked(
+			await import('#lib/server/config/accessControl.ts')
+		);
 		canUserAccessConfigKey.mockReturnValue(true);
 	});
 
@@ -210,7 +214,7 @@ describe('Contract: DELETE /api/config', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -228,7 +232,7 @@ describe('Contract: DELETE /api/config', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -318,7 +322,7 @@ describe('Contract: POST /api/config/init', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -335,7 +339,7 @@ describe('Contract: POST /api/config/init', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -370,7 +374,7 @@ describe('Contract: POST /api/config/reset', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -387,7 +391,7 @@ describe('Contract: POST /api/config/reset', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});
@@ -433,7 +437,7 @@ describe('Contract: POST /api/config/test-email', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -450,7 +454,7 @@ describe('Contract: POST /api/config/test-email', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});

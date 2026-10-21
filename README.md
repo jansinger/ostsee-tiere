@@ -282,7 +282,7 @@ Docker ist die **primäre Deployment-Methode** für Self-Hosted-Installationen.
 
 1. **Docker (Self-Hosted)**: Vollständige Kontrolle über Infrastruktur und Daten (empfohlen)
 2. **Vercel (Cloud-Native)**: Deployment über Vercels eigene Git-Integration (kein
-   GitHub-Actions-Workflow im Repository); der Adapter wird in `svelte.config.js` anhand des
+   GitHub-Actions-Workflow im Repository); der Adapter wird in `sveltekit.options.ts` anhand des
    Build-Ziels gewählt
 
 ### Docker-Features

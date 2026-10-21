@@ -1,9 +1,9 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { ddToDm, ddToDms, dmsToDd, dmToDd } from '$lib/utils/geo/coordinateConversion';
+	import * as m from '#lib/paraglide/messages.js';
+	import { ddToDm, ddToDms, dmsToDd, dmToDd } from '#lib/utils/geo/coordinateConversion.ts';
 	import { untrack } from 'svelte';
 
-	import OLMap from '$lib/components/map/OLMap.svelte';
+	import OLMap from '#lib/components/map/OLMap.svelte';
 
 	type DmsParts = { deg: number | null; min: number | null; sec: number | null };
 	type DmParts = { deg: number | null; min: number | null };

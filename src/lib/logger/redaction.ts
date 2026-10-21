@@ -8,7 +8,7 @@
  * nicht in Logs erscheinen.
  *
  * Gemeinsam genutzt von `logger/serverLogger.ts` und dem Server-Zweig von
- * `$lib/logger`. Getrennt gepflegt driften die beiden auseinander, ohne dass
+ * `#lib/logger.js`. Getrennt gepflegt driften die beiden auseinander, ohne dass
  * es jemandem auffällt: Der SSR-Pfad hatte bis zum 2026-08-19 überhaupt keine
  * Redaction, obwohl Komponenten-Skripte beim Rendern auf dem Server laufen.
  */

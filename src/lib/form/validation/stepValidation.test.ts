@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { isStepValid, validateStep } from './stepValidation';
-import type { SightingFormData } from '$lib/report/types';
+import type { SightingFormData } from '#lib/report/types.ts';
 
 // Mock logger to suppress debug output in tests
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -14,7 +14,7 @@ vi.mock('$lib/logger', () => ({
 
 // Mock formStepsConfig/getFormSteps to decouple from runtime config
 // (sightingSchema itself is NOT mocked — real validation logic is tested)
-vi.mock('$lib/report/formConfig', () => {
+vi.mock('#lib/report/formConfig.ts', () => {
 	const formStepsConfig = [
 		{
 			id: 'location-time',

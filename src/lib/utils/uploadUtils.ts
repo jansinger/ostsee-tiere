@@ -1,6 +1,6 @@
-import * as m from '$lib/paraglide/messages';
-import { createLogger } from '$lib/logger';
-import type { UploadedFileInfo } from '$lib/types';
+import * as m from '#lib/paraglide/messages.js';
+import { createLogger } from '#lib/logger.ts';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 
 const logger = createLogger('UploadUtils');
 

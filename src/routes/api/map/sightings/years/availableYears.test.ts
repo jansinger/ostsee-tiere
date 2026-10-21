@@ -7,7 +7,7 @@ const { mockWhere, mockGroupBy, mockOrderBy } = vi.hoisted(() => {
 	return { mockWhere, mockGroupBy, mockOrderBy };
 });
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({ where: mockWhere })
@@ -15,7 +15,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: {
 		sightingDate: 'sightingDate',
 		approvedAt: 'approvedAt',
@@ -46,7 +46,7 @@ vi.mock('drizzle-orm', () => ({
 	)
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 

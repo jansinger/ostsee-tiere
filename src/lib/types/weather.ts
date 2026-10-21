@@ -1,4 +1,4 @@
-import type { WeatherData } from '$lib/services/weatherService';
+import type { WeatherData } from '#lib/services/weatherService.ts';
 
 /**
  * WeatherData with additional metadata for API calls and caching

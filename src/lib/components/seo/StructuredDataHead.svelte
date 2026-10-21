@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { buildSiteStructuredData, serializeJsonLd } from '$lib/seo/structuredData';
+	import { getLocale } from '#lib/paraglide/runtime.js';
+	import { buildSiteStructuredData, serializeJsonLd } from '#lib/seo/structuredData.ts';
 
 	// `page.url.origin` und nicht `PUBLIC_SITE_URL` — dieselbe Wahl und derselbe
 	// Grund wie in `HreflangHead.svelte`: Die Angaben sollen zu dem Host passen,

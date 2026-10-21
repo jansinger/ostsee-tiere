@@ -5,8 +5,8 @@
 	 * Erst Vorschau, dann bestätigen: Der Lösch-Button erscheint bewusst erst,
 	 * wenn ein Befund vorliegt — sonst löscht ein Admin blind.
 	 */
-	import Icon from '$lib/components/Icon.svelte';
-	import ConfirmDialog from '$lib/components/ui/Dialog/ConfirmDialog.svelte';
+	import Icon from '#lib/components/Icon.svelte';
+	import ConfirmDialog from '#lib/components/ui/Dialog/ConfirmDialog.svelte';
 
 	type CleanupReport = {
 		retentionHours: number;

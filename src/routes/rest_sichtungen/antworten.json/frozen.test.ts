@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { BoatDriveEnum } from '$lib/report/formOptions/boatDrive';
+import { BoatDriveEnum } from '#lib/report/formOptions/boatDrive.ts';
 import { GET } from './+server';
 
 /**

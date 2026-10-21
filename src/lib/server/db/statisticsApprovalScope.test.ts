@@ -83,14 +83,14 @@ function createRecordingBuilder() {
 	return builder;
 }
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: () => createRecordingBuilder(),
 		selectDistinct: () => createRecordingBuilder()
 	}
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
@@ -217,7 +217,7 @@ describe('Freigabestatus in Sichtungs-Statistiken', () => {
 
 	describe('Fehlerfall', () => {
 		it('erfindet keine Zahlen, sondern meldet den Fehler', async () => {
-			const { db } = await import('$lib/server/db');
+			const { db } = await import('#lib/server/db/index.ts');
 			vi.spyOn(db, 'select').mockImplementationOnce(() => {
 				throw new Error('DB down');
 			});

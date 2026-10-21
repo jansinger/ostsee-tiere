@@ -8,14 +8,14 @@ import {
 	hiddenFormFields,
 	type FormStepsInput
 } from './formConfig';
-import { getSightingSchema } from '$lib/form/validation/sightingSchema';
+import { getSightingSchema } from '#lib/form/validation/sightingSchema.ts';
 
 // Testet weiterhin den deutschen Ist-Zustand (Default-Locale) — unveraendert
 // gegenueber der frueheren Modulkonstante.
 const sightingSchemaFields = getSightingSchemaFields();
 const sightingSchema = getSightingSchema();
 import type { SightingFormData } from './types';
-import type { UploadedFileInfo } from '$lib/types';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 
 /**
  * Ein abgeschlossen hochgeladenes File, wie es `$form.uploadedFiles`
@@ -546,7 +546,7 @@ describe('getFormSteps mit Beobachtungsort', () => {
  * füllt. Es steht deshalb jetzt hinter `windForce`.
  *
  * Diese Liste ist dabei nicht kosmetisch: `scrollToFirstError`
- * (`$lib/utils/fieldNavigation`) läuft sie ab, um zum ersten fehlerhaften Feld
+ * (`#lib/utils/fieldNavigation.js`) läuft sie ab, um zum ersten fehlerhaften Feld
  * zu springen — `StepNavigation.svelte` baut das `fieldOrder`-Argument aus
  * genau dieser Config. Weicht sie von der Render-Reihenfolge ab, springt die
  * Navigation an ein anderes Feld als das oberste sichtbare. `findStepForErrors`

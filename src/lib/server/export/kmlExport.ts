@@ -1,5 +1,5 @@
-import type { FrontendSighting } from '$lib/types/index';
-import { formatForKmlExport } from '$lib/utils/format/dateTime';
+import type { FrontendSighting } from '#lib/types/index.ts';
+import { formatForKmlExport } from '#lib/utils/format/dateTime.ts';
 
 /**
  * Repräsentiert ein KML-Placemark für eine Meeressäuger-Sichtung.

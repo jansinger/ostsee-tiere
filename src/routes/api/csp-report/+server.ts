@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import { createLogger } from '$lib/logger.server';
-import { enforceRateLimit, createRateLimitIdentifier } from '$lib/server/middleware/rateLimit';
+import { createLogger } from '#lib/logger.server.ts';
+import { enforceRateLimit, createRateLimitIdentifier } from '#lib/server/middleware/rateLimit.ts';
 
 const logger = createLogger('csp-report');
 

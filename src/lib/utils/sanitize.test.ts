@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { sanitizeHtml, sanitizeText } from '$lib/utils/sanitize';
+import { sanitizeHtml, sanitizeText } from '#lib/utils/sanitize.ts';
 
 /**
  * Tests run in a server environment (no window/DOM).

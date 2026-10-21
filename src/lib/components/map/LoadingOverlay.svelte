@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Icon from '$lib/components/Icon.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import Icon from '#lib/components/Icon.svelte';
+	import * as m from '#lib/paraglide/messages.js';
 
 	/**
 	 * Nur noch `initial`.

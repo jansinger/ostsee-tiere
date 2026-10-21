@@ -1,6 +1,6 @@
-import { createLogger } from '$lib/logger.server';
-import { ConfigRepository, type ConfigItem } from '$lib/server/db/configRepository';
-import { NOTIFICATION_EMAIL_DEFAULT_TEMPLATE } from '$lib/server/templates/notificationEmailDefault';
+import { createLogger } from '#lib/logger.server.ts';
+import { ConfigRepository, type ConfigItem } from '#lib/server/db/configRepository.ts';
+import { NOTIFICATION_EMAIL_DEFAULT_TEMPLATE } from '#lib/server/templates/notificationEmailDefault.ts';
 
 const logger = createLogger('configInitializer');
 

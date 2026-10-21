@@ -3,7 +3,7 @@ import { GET, POST } from '../../routes/api/sightings/+server';
 import { createEvent, mockAdminUser } from './helpers/createEvent';
 import { asApiResponse } from './helpers/asApiResponse';
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({
@@ -15,9 +15,9 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', async () => {
+vi.mock('#lib/server/db/schema.ts', async () => {
 	const { strictModuleMock } = await import('./helpers/strictModuleMock');
-	return strictModuleMock('$lib/server/db/schema', {
+	return strictModuleMock('#lib/server/db/schema.ts', {
 		// `approvedAt` wird von `approvedOnly()` gebraucht — GET filtert die
 		// öffentliche Grundmenge, siehe ../../routes/api/sightings/getEndpoint.test.ts
 		sightings: {
@@ -46,41 +46,40 @@ vi.mock('drizzle-orm', async () => {
 	});
 });
 
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	saveSighting: vi.fn().mockResolvedValue({ id: 123 }),
 	countRecentDuplicateSignals: vi.fn().mockResolvedValue({ sameEmail: 0, sameNotes: 0 })
 }));
 
-
 // Spam-Detektor mocken: verhindert echte MX-DNS-Lookups im Contract-Test.
-vi.mock('$lib/server/spam/spamDetector', () => ({
+vi.mock('#lib/server/spam/spamDetector.ts', () => ({
 	detectSpamIndicators: vi.fn().mockResolvedValue({ score: 0, isHighRisk: false, indicators: [] })
 }));
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/server/middleware/rateLimit', () => ({
+vi.mock('#lib/server/middleware/rateLimit.ts', () => ({
 	enforceRateLimit: vi.fn(),
 	RATE_LIMITS: { SIGHTING_SUBMISSION: {} },
 	createRateLimitIdentifier: vi.fn().mockReturnValue('test-id')
 }));
 
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		getEmailConfig: vi.fn().mockResolvedValue({ enabled: false, recipient: '' })
 	}
 }));
 
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: { NODE_ENV: 'test' }
 }));
 
@@ -129,7 +128,7 @@ describe('Contract: GET /api/sightings', () => {
 describe('Contract: POST /api/sightings', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		const { saveSighting } = vi.mocked(await import('$lib/server/db/sightingRepository'));
+		const { saveSighting } = vi.mocked(await import('#lib/server/db/sightingRepository.ts'));
 		saveSighting.mockResolvedValue({ id: 123 });
 	});
 
@@ -207,7 +206,7 @@ describe('Contract: POST /api/sightings', () => {
 	});
 
 	it('returns 422 on PostgreSQL constraint violation', async () => {
-		const { saveSighting } = vi.mocked(await import('$lib/server/db/sightingRepository'));
+		const { saveSighting } = vi.mocked(await import('#lib/server/db/sightingRepository.ts'));
 		saveSighting.mockRejectedValueOnce({
 			code: '23505',
 			detail: 'Key (email)=(max@example.com) already exists'
@@ -226,7 +225,7 @@ describe('Contract: POST /api/sightings', () => {
 	}, 15000);
 
 	it('throws 429 when rate limit is exceeded', async () => {
-		const { enforceRateLimit } = vi.mocked(await import('$lib/server/middleware/rateLimit'));
+		const { enforceRateLimit } = vi.mocked(await import('#lib/server/middleware/rateLimit.ts'));
 		enforceRateLimit.mockImplementationOnce(() => {
 			throw { status: 429, body: { message: 'Too many requests' } };
 		});

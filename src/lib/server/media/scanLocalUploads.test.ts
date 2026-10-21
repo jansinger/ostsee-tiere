@@ -8,18 +8,18 @@
  * abgedeckt — hier geht es ausschließlich um die Zusammenführung der drei
  * Datenquellen und die korrekte Weitergabe an diese Filterlogik.
  */
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { DiskEntry } from './orphanCleanup';
 import { scanLocalUploads } from './scanLocalUploads';
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn()
 	}
 }));
 
-vi.mock('$lib/server/storage/uploadPath', () => ({
+vi.mock('#lib/server/storage/uploadPath.ts', () => ({
 	resolveUploadBasePath: vi.fn(() => '/srv/uploads')
 }));
 

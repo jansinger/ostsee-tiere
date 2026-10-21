@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ApiDocumentation from '$lib/components/docs/ApiDocumentation.svelte';
+	import ApiDocumentation from '#lib/components/docs/ApiDocumentation.svelte';
 </script>
 
 <svelte:head>

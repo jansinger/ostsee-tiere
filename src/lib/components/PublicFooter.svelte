@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import { localizeHref } from '$lib/paraglide/runtime';
-	import { isNotIFrame } from '$lib/utils/client/isNotIFrame';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { isNotIFrame } from '#lib/utils/client/isNotIFrame.ts';
 </script>
 
 <!-- Footer with navigation (versteckt in iFrame) -->

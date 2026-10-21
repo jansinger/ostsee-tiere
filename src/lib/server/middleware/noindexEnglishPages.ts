@@ -1,6 +1,6 @@
-import type { Handle } from '@sveltejs/kit';
-import { toLocale } from '$lib/paraglide/runtime';
-import { TRANSLATION_ROLLOUT_COMPLETE } from '$lib/i18n/translationRolloutStage';
+import type { Handle } from '@sveltejs/kit/hooks';
+import { toLocale } from '#lib/paraglide/runtime.js';
+import { TRANSLATION_ROLLOUT_COMPLETE } from '#lib/i18n/translationRolloutStage.ts';
 
 /**
  * Vorübergehender Auslieferungs-Riegel für Etappe 0 der Mehrsprachigkeit
@@ -25,7 +25,7 @@ import { TRANSLATION_ROLLOUT_COMPLETE } from '$lib/i18n/translationRolloutStage'
  * Die Entfernungsbedingung — inklusive der Kopplung an den Sprachumschalter
  * in `PublicNavbar.svelte` und die noch ausstehende `hreflang`-Ergänzung —
  * steht gebündelt bei `TRANSLATION_ROLLOUT_COMPLETE`
- * (`$lib/i18n/translationRolloutStage.ts`). Dort auch der vollständige
+ * (`#lib/i18n/translationRolloutStage.ts`). Dort auch der vollständige
  * Ablauf für den Abschluss von Etappe 0.
  *
  * Erkennung über `event.url.pathname` (die vom Client gesendete URL), nicht

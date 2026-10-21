@@ -67,7 +67,9 @@ export default defineConfig({
 	/* Retry on CI only */
 	retries: process.env.CI ? 1 : 0,
 	/* CI: 1 worker — Vite dev server can't handle parallel page compilation reliably */
-	workers: process.env.CI ? 1 : undefined,
+	// Bedingt gespreizt statt `: undefined` — unter exactOptionalPropertyTypes darf ein
+	// optionales Feld nicht explizit `undefined` sein (Playwright-Default bleibt lokal aktiv).
+	...(process.env.CI ? { workers: 1 } : {}),
 	/* Global test timeout */
 	timeout: 30000,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { formatWallClockDateTime } from '$lib/utils/format/formatWallClockDateTime';
-import { AUFNAHME_LABEL, MELDEART_LABEL } from '$lib/components/admin/filterLabels';
-import { SIGHTING_STATUS_PRESENTATION } from '$lib/components/admin/sightingStatus';
-import { DEAD_FINDING_PRESENTATION } from '$lib/components/admin/deadFinding';
-import { getEntryChannelOptions } from '$lib/report/formOptions/entryChannel';
-import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '$lib/utils/media/photoAnnouncement';
+import { formatWallClockDateTime } from '#lib/utils/format/formatWallClockDateTime.ts';
+import { AUFNAHME_LABEL, MELDEART_LABEL } from '#lib/components/admin/filterLabels.ts';
+import { SIGHTING_STATUS_PRESENTATION } from '#lib/components/admin/sightingStatus.ts';
+import { DEAD_FINDING_PRESENTATION } from '#lib/components/admin/deadFinding.ts';
+import { getEntryChannelOptions } from '#lib/report/formOptions/entryChannel.ts';
+import { MEDIA_UPLOAD_ANNOUNCED_MISSING } from '#lib/utils/media/photoAnnouncement.ts';
 import { getActiveFiltersDisplay } from './exportFilterDisplay';
 
 describe('getActiveFiltersDisplay', () => {

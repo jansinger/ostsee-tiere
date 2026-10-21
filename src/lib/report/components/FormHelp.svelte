@@ -1,16 +1,16 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import { browser } from '$app/env';
-	import { createLogger } from '$lib/logger';
-	import type { SightingStatistics } from '$lib/server/db/sightingRepository';
+	import { createLogger } from '#lib/logger.ts';
+	import type { SightingStatistics } from '#lib/server/db/sightingRepository.ts';
 	const logger = createLogger('components:FormHelp');
 	import SpeciesIdentificationHelp from './form/fields/SpeciesIdentificationHelp.svelte';
-	import Icon from '$lib/components/Icon.svelte';
-	import StatusBlock from '$lib/components/StatusBlock.svelte';
-	import DataUsageNotice from '$lib/components/info/DataUsageNotice.svelte';
-	import DeadFindingNotice from '$lib/components/info/DeadFindingNotice.svelte';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { resolveDisplayLocale } from '$lib/utils/format/dateTime';
+	import Icon from '#lib/components/Icon.svelte';
+	import StatusBlock from '#lib/components/StatusBlock.svelte';
+	import DataUsageNotice from '#lib/components/info/DataUsageNotice.svelte';
+	import DeadFindingNotice from '#lib/components/info/DeadFindingNotice.svelte';
+	import { getLocale } from '#lib/paraglide/runtime.js';
+	import { resolveDisplayLocale } from '#lib/utils/format/dateTime.ts';
 
 	// Zahlenformat folgt der Anzeigesprache, nicht hartcodiert 'de-DE', sonst
 	// bleiben die Statistik-Zahlen unter /en deutsch formatiert.

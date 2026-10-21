@@ -1,22 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from './+server';
-import { saveSighting } from '$lib/server/db/sightingRepository';
-import { detectSpamIndicators } from '$lib/server/spam/spamDetector';
-import { issueFormToken } from '$lib/server/spam/formToken';
+import { saveSighting } from '#lib/server/db/sightingRepository.ts';
+import { detectSpamIndicators } from '#lib/server/spam/spamDetector.ts';
+import { issueFormToken } from '#lib/server/spam/formToken.ts';
 
 // Mock dependencies
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	saveSighting: vi.fn().mockResolvedValue({ id: 123 }),
 	countRecentDuplicateSignals: vi.fn().mockResolvedValue({ sameEmail: 0, sameNotes: 0 })
 }));
 
 // Spam-Detektor mocken: verhindert echte MX-DNS-Lookups im Test und macht
 // das übergebene Ergebnis deterministisch prüfbar.
-vi.mock('$lib/server/spam/spamDetector', () => ({
+vi.mock('#lib/server/spam/spamDetector.ts', () => ({
 	detectSpamIndicators: vi.fn().mockResolvedValue({ score: 0, isHighRisk: false, indicators: [] })
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -25,7 +25,7 @@ vi.mock('$lib/logger.server', () => ({
 	})
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -35,7 +35,7 @@ vi.mock('$lib/logger', () => ({
 }));
 
 // Mock EmailService to prevent sending real emails during tests
-vi.mock('$lib/server/services/emailService', () => ({
+vi.mock('#lib/server/services/emailService.ts', () => ({
 	EmailService: {
 		sendNewSightingNotification: vi.fn().mockResolvedValue(true),
 		sendTestEmail: vi.fn().mockResolvedValue(true),
@@ -45,7 +45,7 @@ vi.mock('$lib/server/services/emailService', () => ({
 }));
 
 // Mock ServerConfigService to prevent DB access for email config
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		getEmailConfig: vi.fn().mockResolvedValue({
 			enabled: false,

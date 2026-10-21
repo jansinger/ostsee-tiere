@@ -10,7 +10,7 @@
  * liegt gar nicht erst im Runtime-Image. Dort führt der Weg über
  * `POST /api/admin/spam-rescore` (siehe docs/SPAM_DETECTION.md).
  *
- * Die Bewertung selbst steht in `$lib/server/spam/rescoreSightings` — beide
+ * Die Bewertung selbst steht in `#lib/server/spam/rescoreSightings.js` — beide
  * Wege rechnen damit identisch, und die Logik ist dort getestet. Dieses
  * Werkzeug ist nur die Schleife drumherum plus Fortschrittsausgabe.
  *
@@ -20,12 +20,12 @@
  * "An impossible situation occurred" abbricht.
  *
  * `dotenv/config` lädt die `.env` ins process.env. ESM hoistet zwar alle
- * Imports, aber das trägt: `$lib/server/db` baut seine Verbindung lazy beim
+ * Imports, aber das trägt: `#lib/server/db/index.js` baut seine Verbindung lazy beim
  * ersten Zugriff auf (Proxy, siehe src/lib/server/db/index.ts), und kein
  * importiertes Modul liest die Verbindungszeichenfolge schon beim Laden.
  */
 import 'dotenv/config';
-import { MAX_RESCORE_BATCH, rescoreSightings } from '$lib/server/spam/rescoreSightings';
+import { MAX_RESCORE_BATCH, rescoreSightings } from '#lib/server/spam/rescoreSightings.ts';
 import { maskConnection, resolveConnectionString } from './dbConnection';
 
 function parseBatch(argv: string[]): number {

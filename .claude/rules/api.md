@@ -199,7 +199,7 @@ const WIND_DIRECTIONS = ['N', 'NW', 'W', 'SW', 'S', 'SO', 'O', 'NO'];
 ```typescript
 // src/routes/api/sightings/+server.ts
 import { json, error } from '@sveltejs/kit';
-import { sightingRepository } from '$lib/server/db/sightingRepository';
+import { sightingRepository } from '#lib/server/db/sightingRepository.ts';
 
 export async function GET({ url }) {
 	const page = parseInt(url.searchParams.get('page') || '1');

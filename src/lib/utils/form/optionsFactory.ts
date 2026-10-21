@@ -1,4 +1,4 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * Generic factory for form options
  * Eliminates duplication across 16+ form option files

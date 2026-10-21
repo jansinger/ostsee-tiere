@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { ReporterHistory } from '$lib/types/reporterHistory';
+import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 import { load } from './+page';
 
 /**

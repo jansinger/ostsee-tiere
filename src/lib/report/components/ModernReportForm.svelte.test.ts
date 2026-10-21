@@ -20,7 +20,7 @@ const { deleteMultipleFiles } = vi.hoisted(() => ({
 	deleteMultipleFiles: vi.fn<(files: unknown[]) => Promise<void>>(async () => undefined)
 }));
 
-vi.mock('$lib/utils/upload/fileProcessing', () => ({ deleteMultipleFiles }));
+vi.mock('#lib/utils/upload/fileProcessing.ts', () => ({ deleteMultipleFiles }));
 
 /**
  * Für die Tests unten, die tatsächlich bis zum Absenden laufen: `submitSightingForm`
@@ -36,16 +36,16 @@ const { submitSightingFormMock } = vi.hoisted(() => ({
 	>(async () => ({ status: 'ok', id: 1 }))
 }));
 
-vi.mock('$lib/form/submitSightingForm', () => ({
+vi.mock('#lib/form/submitSightingForm.ts', () => ({
 	submitSightingForm: submitSightingFormMock,
 	describeSubmitFailure: () => 'Die Sichtung konnte nicht gespeichert werden'
 }));
 
-import { initialFormState } from '$lib/report/formConfig';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '$lib/storage/localStorage';
-import { clearAllToasts, toasts } from '$lib/stores/toastState.svelte';
-import type { UploadedFileInfo } from '$lib/types';
+import { initialFormState } from '#lib/report/formConfig.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '#lib/storage/localStorage.ts';
+import { clearAllToasts, toasts } from '#lib/stores/toastState.svelte.ts';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 import ModernReportForm from './ModernReportForm.svelte';
 
 const UPLOAD: UploadedFileInfo = {

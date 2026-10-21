@@ -17,8 +17,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { checkBalticSeaFile } from './checkBalticSeaFile';
-import type { BalticSeaFileResult } from '$lib/types';
-import { BALTIC_SEA_BBOX } from '$lib/utils/geo/checkBalticSea';
+import type { BalticSeaFileResult } from '#lib/types/index.ts';
+import { BALTIC_SEA_BBOX } from '#lib/utils/geo/checkBalticSea.ts';
 
 describe('checkBalticSeaFile', () => {
 	// Test helper to create expected result structure

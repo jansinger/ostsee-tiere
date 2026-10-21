@@ -1,10 +1,10 @@
-import { createLogger } from '$lib/logger.server';
-import type { SpamCheckResult, SpamDetectionInput } from '$lib/types/spam';
-import { isUnknownOrMissingSpecies } from '$lib/utils/format/sightingFormatter';
+import { createLogger } from '#lib/logger.server.ts';
+import type { SpamCheckResult, SpamDetectionInput } from '#lib/types/spam.ts';
+import { isUnknownOrMissingSpecies } from '#lib/utils/format/sightingFormatter.ts';
 import { DISPOSABLE_EMAIL_DOMAINS } from './disposableEmailDomains';
 import { checkMxRecords } from './mxCheck';
 
-import { HIGH_RISK_THRESHOLD } from '$lib/types/spam';
+import { HIGH_RISK_THRESHOLD } from '#lib/types/spam.ts';
 
 export type { SpamCheckResult, SpamDetectionInput };
 

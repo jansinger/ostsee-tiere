@@ -518,6 +518,31 @@ JSON Array with JSON Objects:
 ]
 ```
 
+## Verhalten seit SvelteKit 3 (2026-10)
+
+Zwei Änderungen des Frameworks, die die Legacy-Pfade berühren. Beide ändern nichts für
+die heute angebundenen Clients — festgehalten, damit niemand sie später als Regression
+fehldeutet.
+
+1. **`POST /rest_sichtungen` ohne `Content-Type` und ohne `Origin` wird mit `403`
+   abgewiesen**, bevor der Handler läuft („Cross-site POST form submissions are
+   forbidden"). Der Zweig im Handler für „Mobile-Clients ohne Content-Type" ist für solche
+   Anfragen damit nicht mehr erreichbar; eine Konfigurationsoption, die das zurückholt,
+   gibt es nicht (`csrf.trustedOrigins` greift nur bei vorhandenem `Origin`).
+   **Heute ohne Folgen:** Die drei Mobile-Clients senden an `schweinswalsichtung.de`, und
+   `POST` geht dort bewusst an `legacy-inbox`, nicht an diese App
+   (`docs/SCHWEINSWALSICHTUNG_PROXY.md`). Der Import aus dem Posteingang
+   (`src/tools/send-legacy-inbox.js`) setzt einen fehlenden `Content-Type` auf
+   `application/json`. JSON ist kein Formular-Content-Type und wird von der Prüfung nicht
+   erfasst. Formular-Submissions (`application/x-www-form-urlencoded`) ohne `Origin` wies
+   schon SvelteKit 2 identisch ab. **Vor einem Live-Proxy von `POST` an diese App muss das
+   geprüft werden.**
+2. **Weiterleitungen wegen eines abschließenden `/` tragen eine relative `Location`**
+   (`/rest_sichtungen/` → `308`, `location: ../rest_sichtungen` statt `/rest_sichtungen`).
+   Das Ziel ist dasselbe; HTTP-Clients (auch okhttp und NSURLSession) lösen relative
+   `Location`-Header auf. Die Clients rufen laut Vertrag ohnehin die Pfade ohne
+   abschließenden `/` auf.
+
 ## Critical Implementation Notes
 
 1. **Field Names**: All field names MUST match exactly as specified. Mobile apps depend on exact field names.

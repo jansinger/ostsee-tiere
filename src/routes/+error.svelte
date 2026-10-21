@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import Icon from '$lib/components/Icon.svelte';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import Icon from '#lib/components/Icon.svelte';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 
 	// Error-Informationen aus der page store (Runes Mode)
 	const error = $derived(page.error);

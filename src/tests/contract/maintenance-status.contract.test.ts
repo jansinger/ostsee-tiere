@@ -3,26 +3,26 @@ import { GET } from '../../routes/api/maintenance-status/+server';
 import { createEvent, mockAdminUser } from './helpers/createEvent';
 import { asApiResponse } from './helpers/asApiResponse';
 
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		isMaintenanceModeEnabled: vi.fn().mockResolvedValue(false),
 		getString: vi.fn().mockResolvedValue('Wir sind gleich wieder da.')
 	}
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	requireUserRole: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-const { ServerConfigService } = await import('$lib/services/configService');
+const { ServerConfigService } = await import('#lib/services/configService.ts');
 
 describe('Contract: GET /api/maintenance-status', () => {
 	beforeEach(() => {
@@ -56,7 +56,7 @@ describe('Contract: GET /api/maintenance-status', () => {
 	});
 
 	it('throws 302 when unauthenticated', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 302, location: '/api/auth/login' };
 		});
@@ -70,7 +70,7 @@ describe('Contract: GET /api/maintenance-status', () => {
 	});
 
 	it('throws 403 when role is insufficient', async () => {
-		const { requireUserRole } = vi.mocked(await import('$lib/server/auth/auth'));
+		const { requireUserRole } = vi.mocked(await import('#lib/server/auth/auth.ts'));
 		requireUserRole.mockImplementationOnce(() => {
 			throw { status: 403, body: { message: 'Forbidden' } };
 		});

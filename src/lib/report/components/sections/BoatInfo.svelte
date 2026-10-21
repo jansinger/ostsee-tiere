@@ -20,10 +20,10 @@
   fachlich richtig ein, für Bord- wie für Landmelder gleichermaßen.
 -->
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { getFormContext } from '$lib/report/formContext';
-	import { isFromLand } from '$lib/report/formConfig';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
+	import * as m from '#lib/paraglide/messages.js';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import { isFromLand } from '#lib/report/formConfig.ts';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
 	import SectionCard from './SectionCard.svelte';
 
 	const { form } = getFormContext();

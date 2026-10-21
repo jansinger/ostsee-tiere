@@ -1,8 +1,8 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 import { Stroke, Fill, Style, Circle, Text } from 'ol/style';
 import type { Feature } from 'ol';
 import type { Geometry } from 'ol/geom';
-import type { SightingStatus } from '$lib/components/admin/sightingStatus';
+import type { SightingStatus } from '#lib/components/admin/sightingStatus.ts';
 
 /**
  * Prüft ob ein Wert zwischen zwei Grenzen liegt (inklusiv).

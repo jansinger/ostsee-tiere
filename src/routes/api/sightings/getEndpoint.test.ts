@@ -13,7 +13,7 @@ const { mockOrderBy, mockWhere } = vi.hoisted(() => {
 	return { mockOrderBy, mockWhere };
 });
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: vi.fn().mockReturnValue({
 			from: vi.fn().mockReturnValue({ where: mockWhere, orderBy: mockOrderBy })
@@ -21,7 +21,7 @@ vi.mock('$lib/server/db', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: {
 		id: 'id',
 		created: 'created',
@@ -57,26 +57,26 @@ vi.mock('drizzle-orm', () => ({
 	)
 }));
 
-vi.mock('$lib/legacy-api/date-utils', () => ({
+vi.mock('#lib/legacy-api/date-utils.ts', () => ({
 	getYearRange: vi.fn((year: number) => ({
 		startDate: new Date(Date.UTC(year - 1, 11, 31, 23, 0, 0)),
 		endDate: new Date(Date.UTC(year, 11, 31, 23, 0, 0))
 	}))
 }));
 
-vi.mock('$lib/server/db/sqlTimeZone', () => ({
+vi.mock('#lib/server/db/sqlTimeZone.ts', () => ({
 	berlinToChar: vi.fn((column: string, pattern: string) => `berlinToChar(${column},${pattern})`)
 }));
 
 // Spy um die *echte* Implementierung: die WHERE-Bedingung bleibt damit real
 // geprüft, gleichzeitig ist nachweisbar, dass der Endpunkt den Helper benutzt
 // und das Prädikat nicht selbst zusammenbaut.
-vi.mock('$lib/server/db/approvalFilter', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/server/db/approvalFilter')>();
+vi.mock('#lib/server/db/approvalFilter.ts', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/server/db/approvalFilter.ts')>();
 	return { ...actual, approvedOnly: vi.fn(actual.approvedOnly) };
 });
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -103,7 +103,7 @@ describe('GET /api/sightings', () => {
 	});
 
 	it('nutzt getYearRange (Berlin-Mitternacht) statt lokaler Date-Konstruktoren', async () => {
-		const { getYearRange } = await import('$lib/legacy-api/date-utils');
+		const { getYearRange } = await import('#lib/legacy-api/date-utils.ts');
 
 		await GET(createMockGetEvent('http://localhost/api/sightings?year=2024'));
 
@@ -118,8 +118,8 @@ describe('GET /api/sightings', () => {
 	});
 
 	it('formatiert dt/ti über berlinToChar (Europe/Berlin), nicht über rohes to_char', async () => {
-		const { berlinToChar } = await import('$lib/server/db/sqlTimeZone');
-		const { db } = await import('$lib/server/db');
+		const { berlinToChar } = await import('#lib/server/db/sqlTimeZone.ts');
+		const { db } = await import('#lib/server/db/index.ts');
 
 		await GET(createMockGetEvent('http://localhost/api/sightings?year=2024'));
 
@@ -192,7 +192,7 @@ describe('GET /api/sightings — öffentliche Grundmenge', () => {
 		// Bedingung oben bleibt also real geprüft, und ein handgeschriebenes
 		// `isNotNull(sightings.approvedAt)` im Endpunkt fällt hier auf, weil der
 		// Helper dann nicht aufgerufen wird.
-		const { approvedOnly } = await import('$lib/server/db/approvalFilter');
+		const { approvedOnly } = await import('#lib/server/db/approvalFilter.ts');
 
 		await GET(createMockGetEvent('http://localhost/api/sightings?year=2018'));
 

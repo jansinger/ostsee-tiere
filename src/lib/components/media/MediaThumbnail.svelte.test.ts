@@ -1,7 +1,7 @@
 import { render } from 'vitest-browser-svelte';
 import { describe, expect, it } from 'vitest';
 import { tick } from 'svelte';
-import type { UploadedFileInfo } from '$lib/types';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
 import MediaThumbnail from './MediaThumbnail.svelte';
 
 /**

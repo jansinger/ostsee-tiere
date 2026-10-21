@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Icon from '$lib/components/Icon.svelte';
-	import { formatLocalDateTime } from '$lib/utils/format/dateTime';
+	import Icon from '#lib/components/Icon.svelte';
+	import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
 	import { SIGHTING_STATUS_PRESENTATION, verdictToStatus } from './sightingStatus';
 	import { VERDICT_LOG_LABEL } from './sightingStatusLog';
 	import type { SightingStatusLogEntry } from './sightingStatusLog';

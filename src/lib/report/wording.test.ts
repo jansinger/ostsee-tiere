@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import * as yup from 'yup';
-import { getSightingSchema } from '$lib/form/validation/sightingSchema';
+import { getSightingSchema } from '#lib/form/validation/sightingSchema.ts';
 
 // Testet weiterhin den deutschen Ist-Zustand (Default-Locale) — unveraendert
 // gegenueber der frueheren Modulkonstante.

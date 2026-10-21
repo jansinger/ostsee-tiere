@@ -6,7 +6,7 @@
  * das ist der Punkt: Sobald zwei Stellen selbst rechnen, laufen sie
  * auseinander, und die Dropzone nimmt Dateien an, die der Server ablehnt.
  */
-import { isVideoFile } from '$lib/utils/file/fileType';
+import { isVideoFile } from '#lib/utils/file/fileType.ts';
 
 export interface UploadSizeLimits {
 	/** Grenze für Bilder und alles Übrige, in Bytes */
@@ -33,7 +33,7 @@ function isValidPositiveLimit(value: number): boolean {
  * positiv), sonst restriktiv auf `0` — siehe Begründung an `maxUploadSizeFor()`.
  *
  * Exportiert, weil `ServerConfigService.getUploadConfig()`
- * (`$lib/services/configService.ts`) dieselbe Normalisierung für die
+ * (`#lib/services/configService.ts`) dieselbe Normalisierung für die
  * AGGREGIERTEN Größen (Einzel-, Video- und Gesamtgrenze) braucht, nicht nur
  * für die Einzeldateiprüfung hier. Vorher rechnete `getUploadConfig()`
  * `Number(...)` direkt in Bytes um; ein kaputter DB-Wert (NaN, negativ,

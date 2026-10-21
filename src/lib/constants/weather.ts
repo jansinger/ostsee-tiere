@@ -1,5 +1,5 @@
-import * as m from '$lib/paraglide/messages';
-import { baseLocale, type Locale } from '$lib/paraglide/runtime';
+import * as m from '#lib/paraglide/messages.js';
+import { baseLocale, type Locale } from '#lib/paraglide/runtime.js';
 
 /** Eine parameterlose Paraglide-Botschaft, mit ausdrücklicher Locale. */
 type WeatherMessage = (inputs: Record<string, never>, options: { locale: Locale }) => string;

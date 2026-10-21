@@ -1,4 +1,4 @@
-import { calculateSeaState } from '$lib/constants/weather';
+import { calculateSeaState } from '#lib/constants/weather.ts';
 
 /**
  * Weather data from Open-Meteo API

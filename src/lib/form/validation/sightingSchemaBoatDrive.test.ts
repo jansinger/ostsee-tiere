@@ -18,8 +18,8 @@ import { getSightingSchema } from './sightingSchema';
 // Testet weiterhin den deutschen Ist-Zustand (Default-Locale) — unveraendert
 // gegenueber der frueheren Modulkonstante.
 const sightingSchema = getSightingSchema();
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import { BoatDriveEnum } from '$lib/report/formOptions/boatDrive';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import { BoatDriveEnum } from '#lib/report/formOptions/boatDrive.ts';
 
 /**
  * Validiert ein einzelnes Feld im Schema und gibt den Fehlertext zurück

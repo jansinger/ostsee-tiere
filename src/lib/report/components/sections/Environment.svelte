@@ -1,16 +1,16 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import WeatherDataFetcher from '$lib/components/weather/WeatherDataFetcher.svelte';
-	import { getFormContext } from '$lib/report/formContext';
+	import * as m from '#lib/paraglide/messages.js';
+	import WeatherDataFetcher from '#lib/components/weather/WeatherDataFetcher.svelte';
+	import { getFormContext } from '#lib/report/formContext.ts';
 	import type {
 		WeatherData,
 		WeatherFormFields,
 		OpenMeteoRawData
-	} from '$lib/services/weatherService';
-	import { convertToStoredWeatherData } from '$lib/services/weatherService';
-	import { berlinCalendarDayIso } from '$lib/utils/format/dateTime';
-	import { environmentIntro } from '$lib/report/wording';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
+	} from '#lib/services/weatherService.ts';
+	import { convertToStoredWeatherData } from '#lib/services/weatherService.ts';
+	import { berlinCalendarDayIso } from '#lib/utils/format/dateTime.ts';
+	import { environmentIntro } from '#lib/report/wording.ts';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
 	import SectionCard from './SectionCard.svelte';
 
 	/** Siehe `Behavior.svelte` — vollständiger Editor statt kuratierter Teilmenge. */

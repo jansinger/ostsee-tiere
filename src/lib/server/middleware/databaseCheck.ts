@@ -1,8 +1,8 @@
-import { env } from '$env/dynamic/private';
-import { createLogger } from '$lib/logger.server';
-import { isDatabaseAvailable, testDatabaseConnection } from '$lib/server/db';
-import type { Handle } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit/hooks';
 import { error } from '@sveltejs/kit';
+import { env } from '#lib/server/env.ts';
+import { createLogger } from '#lib/logger.server.ts';
+import { isDatabaseAvailable, testDatabaseConnection } from '#lib/server/db/index.ts';
 
 const logger = createLogger('databaseCheck');
 

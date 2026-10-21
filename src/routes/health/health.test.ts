@@ -9,11 +9,11 @@ import { version as packageVersion } from '../../../package.json';
 
 const testDatabaseConnection = vi.fn();
 
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: { NODE_ENV: 'test', APP_GIT_SHA: 'abcdef1234567890', APP_BUILD_DATE: '2026-07-31T10:00:00Z' }
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	testDatabaseConnection: (...args: unknown[]) => testDatabaseConnection(...args)
 }));
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { AnimalConditionEnum } from '$lib/report/formOptions/animalCondition';
-import { SpeciesEnum } from '$lib/report/formOptions/species';
-import type { SightingFormValues } from '$lib/types/Form';
+import { AnimalConditionEnum } from '#lib/report/formOptions/animalCondition.ts';
+import { SpeciesEnum } from '#lib/report/formOptions/species.ts';
+import type { SightingFormValues } from '#lib/types/Form.ts';
 import { formatSightingForDisplay, isUnknownOrMissingSpecies } from './sightingFormatter';
 
 // Minimale gültige SightingFormValues für Tests

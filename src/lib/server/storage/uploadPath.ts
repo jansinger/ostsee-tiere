@@ -3,14 +3,14 @@
  *
  * Einzige Stelle, an der `UPLOAD_PATH` ausgewertet wird. Sowohl der
  * Schreibpfad (`LocalStorageProvider` über die Storage-Factory) als auch
- * der Lesepfad (`getUploadPath()` in `$lib/server/uploads`) leiten ihr
+ * der Lesepfad (`getUploadPath()` in `#lib/server/uploads.js`) leiten ihr
  * Verzeichnis hierüber ab — andernfalls würden Uploads an einer Stelle
  * geschrieben und an einer anderen gesucht.
  *
  * `UPLOAD_PATH` ist dieselbe Variable, die der Docker-Entrypoint vor dem
  * Start auf Existenz und Schreibrechte prüft.
  */
-import { env } from '$env/dynamic/private';
+import { env } from '#lib/server/env.ts';
 import { resolve } from 'path';
 
 /**

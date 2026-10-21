@@ -1,10 +1,10 @@
-import { isDeadFinding } from '$lib/report/formConfig';
+import { isDeadFinding } from '#lib/report/formConfig.ts';
 import {
 	loadFromStorage,
 	removeFromStorage,
 	saveToStorage,
 	STORAGE_KEYS
-} from '$lib/storage/localStorage';
+} from '#lib/storage/localStorage.ts';
 
 /** Die zwei Zweige des Meldeformulars. */
 export type ReportKind = 'alive' | 'dead';

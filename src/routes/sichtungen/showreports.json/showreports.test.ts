@@ -13,8 +13,8 @@ import { GET, POST, PUT, DELETE } from './+server';
 import type { RequestEvent } from '@sveltejs/kit';
 import { sql, type SQL } from 'drizzle-orm';
 import { PgDialect } from 'drizzle-orm/pg-core';
-import { approvedOnly } from '$lib/server/db/approvalFilter';
-import { sightings } from '$lib/server/db/schema';
+import { approvedOnly } from '#lib/server/db/approvalFilter.ts';
+import { sightings } from '#lib/server/db/schema.ts';
 
 // Die WHERE-Bedingung wird aus dem DB-Mock herausgereicht, damit die Tests die
 // tatsächlich erzeugte SQL prüfen können statt nur den HTTP-Status. Ohne das
@@ -98,7 +98,7 @@ const mockSightingData = [
 	}
 ];
 
-vi.mock('$lib/server/db', () => {
+vi.mock('#lib/server/db/index.ts', () => {
 	return {
 		db: {
 			select: vi.fn(() => ({
@@ -121,7 +121,7 @@ vi.mock('$lib/server/db', () => {
 });
 
 // Mock logger
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: vi.fn(() => ({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -582,7 +582,7 @@ describe('PDF-Compliant Legacy REST API - GET /sichtungen/showreports.json', () 
 	});
 
 	describe('Freigabefilter', () => {
-		// Das Prädikat ist in `$lib/server/db/approvalFilter` **einmal** definiert,
+		// Das Prädikat ist in `#lib/server/db/approvalFilter.js` **einmal** definiert,
 		// damit Karte und öffentliche Statistik nicht erneut auseinanderlaufen
 		// (19.262 vs. 19.877, Stand 2026-07-27). Dieser Endpunkt hatte es lange
 		// von Hand nachgebaut — die Zentralisierung greift nur, wenn der Aufrufer

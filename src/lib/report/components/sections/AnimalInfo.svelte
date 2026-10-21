@@ -1,12 +1,12 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 	import DeadAnimal from './DeadAnimal.svelte';
 
-	import { getFormContext } from '$lib/report/formContext';
-	import FormField from '$lib/report/components/form/fields/FormField.svelte';
+	import { getFormContext } from '#lib/report/formContext.ts';
+	import FormField from '#lib/report/components/form/fields/FormField.svelte';
 	import SectionCard from './SectionCard.svelte';
-	import { isDeadFinding } from '$lib/report/formConfig';
-	import { speciesQuestion } from '$lib/report/wording';
+	import { isDeadFinding } from '#lib/report/formConfig.ts';
+	import { speciesQuestion } from '#lib/report/wording.ts';
 
 	let { adminMode = false }: { adminMode?: boolean } = $props();
 

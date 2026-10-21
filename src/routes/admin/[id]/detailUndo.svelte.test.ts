@@ -11,9 +11,9 @@ import { userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import { page } from 'vitest/browser';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { FrontendSighting } from '$lib/types';
-import type { SightingQueue } from '$lib/components/admin/sightingQueue';
-import { EntryChannelEnum } from '$lib/report/formOptions/entryChannel';
+import type { FrontendSighting } from '#lib/types/index.ts';
+import type { SightingQueue } from '#lib/components/admin/sightingQueue.ts';
+import { EntryChannelEnum } from '#lib/report/formOptions/entryChannel.ts';
 import type { PageData } from './$types';
 
 const goto = vi.fn(() => Promise.resolve());
@@ -31,10 +31,10 @@ vi.mock('$app/navigation', () => ({
 vi.mock('$app/state', () => ({
 	page: { url: new URL('https://localhost:4000/admin/42') }
 }));
-vi.mock('$lib/components/admin/sightingVerdict', () => ({
+vi.mock('#lib/components/admin/sightingVerdict.ts', () => ({
 	submitVerdict
 }));
-vi.mock('$lib/stores/toastState.svelte', () => ({
+vi.mock('#lib/stores/toastState.svelte.ts', () => ({
 	toast: {
 		success: (...args: unknown[]) => toastSuccess(...args),
 		info: vi.fn(),

@@ -1,5 +1,5 @@
-import * as m from '$lib/paraglide/messages';
-import { createLogger } from '$lib/logger';
+import * as m from '#lib/paraglide/messages.js';
+import { createLogger } from '#lib/logger.ts';
 import type { Map } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type Feature from 'ol/Feature';

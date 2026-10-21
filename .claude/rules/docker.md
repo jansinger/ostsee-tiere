@@ -68,7 +68,7 @@ CMD ["node", "build"]
 
 ## Adapter-Konfiguration (Dual: Vercel / Node)
 
-`svelte.config.js` wählt den Adapter **dynamisch**: Default ist `@sveltejs/adapter-vercel`; nur wenn `USE_NODE_ADAPTER=true` gesetzt ist, wird `@sveltejs/adapter-node` verwendet.
+`sveltekit.options.ts` wählt den Adapter **dynamisch**: Default ist `@sveltejs/adapter-vercel`; nur wenn `USE_NODE_ADAPTER=true` gesetzt ist, wird `@sveltejs/adapter-node` verwendet.
 
 Für Docker-Builds wird deshalb das Script `npm run build:docker` genutzt:
 
@@ -87,16 +87,22 @@ Der Node-Adapter erzeugt `build/index.js` (Server startet via `node build`, sieh
 
 ```typescript
 // Zur Laufzeit verfügbar, nicht im Build eingebacken
-import { env } from '$env/dynamic/private';
+import { env } from '#lib/server/env.ts';
 const dbUrl = env.DATABASE_POSTGRES_URL;
 ```
 
+**Jede Variable muss in `src/env.ts` deklariert sein** (SvelteKit 3, `defineEnvVars`).
+Eine dort fehlende Variable ist in der App `undefined` — auch wenn sie im Container
+gesetzt ist. Der Build läuft trotzdem durch; beim Umstieg auf SvelteKit 3 kam so
+`DATABASE_POSTGRES_URL` leer an und jede Seite meldete „Database is not configured".
+`#lib/server/env.ts` macht aus den Einzel-Exporten von `$app/env/private` wieder das
+`env`-Objekt, das der Code seit jeher liest (Begründung dort).
+
 ### Build-time (Static)
 
-```typescript
-// Wird beim Build eingebacken - VORSICHT!
-import { DATABASE_URL } from '$env/static/private';
-```
+Statische Variablen (`static: true` in `src/env.ts`) werden beim Build eingebacken —
+für dieses Projekt nicht verwenden: Ein Image läuft auf Staging und Produktion mit
+unterschiedlicher Umgebung.
 
 ### Docker Run mit Env Vars
 
@@ -240,8 +246,8 @@ server {
 ### Do's
 
 - Multi-Stage Builds verwenden
-- `$env/dynamic/private` für Runtime-Config
-- ORIGIN Environment Variable setzen
+- Runtime-Config über `#lib/server/env.ts`, jede Variable in `src/env.ts` deklariert
+- Origin über `PROTOCOL_HEADER`/`HOST_HEADER` (`ORIGIN` kennt adapter-node seit Version 6 nicht mehr)
 - Health Checks implementieren
 - Logging-Limits konfigurieren
 

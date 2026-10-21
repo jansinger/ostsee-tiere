@@ -133,7 +133,7 @@ export function getThemeColor(variable: string): string {
 
 ```typescript
 import { Style, Circle, Fill, Stroke } from 'ol/style';
-import { getThemeColor } from '$lib/map/styleUtils';
+import { getThemeColor } from '#lib/map/styleUtils.ts';
 
 // Farben beim Initialisieren auslesen (nach DOM-Mount in $effect)
 const sightingStyle = new Style({
@@ -158,7 +158,7 @@ Für große Datensätze `WebGLPointsLayer` statt `VectorLayer` verwenden:
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
-import { getThemeColor } from '$lib/map/styleUtils';
+import { getThemeColor } from '#lib/map/styleUtils.ts';
 
 // CSS vars via getThemeColor auflösen — WebGL akzeptiert keine var(...)
 const pointsLayer = new WebGLPointsLayer({
@@ -183,7 +183,7 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Style, Circle, Fill, Text, Stroke } from 'ol/style';
-import { getThemeColor } from '$lib/map/styleUtils';
+import { getThemeColor } from '#lib/map/styleUtils.ts';
 
 const clusterSource = new Cluster({
 	distance: 40, // Pixel-Abstand für Clustering
@@ -269,9 +269,9 @@ new View({
 ```typescript
 // src/routes/api/map/sightings/+server.ts
 import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { sightings as sightingsTable } from '$lib/server/db/schema';
-import { sightingsToGeoJSON } from '$lib/map/mapUtils';
+import { db } from '#lib/server/db/index.ts';
+import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
+import { sightingsToGeoJSON } from '#lib/map/mapUtils.ts';
 import { eq } from 'drizzle-orm';
 
 export async function GET() {
@@ -324,17 +324,17 @@ const nearby = await db.execute(sql`
 
 ## CSP für Tiles
 
-In `svelte.config.js`:
+In `sveltekit.options.ts` (seit SvelteKit 3 Schlüsselwörter ohne eigene Anführungszeichen):
 
 ```javascript
 csp: {
     directives: {
-        'img-src': ["'self'", 'data:', 'blob:',
+        'img-src': ['self', 'data:', 'blob:',
             'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org',
             'https://tiles.openseamap.org',
             'https://4i7mo0wwc3lp8d1e.public.blob.vercel-storage.com',
             'https://blob.vercel-storage.com'],
-        'connect-src': ["'self'",
+        'connect-src': ['self',
             'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org',
             'https://api.openstreetmap.org', 'https://archive-api.open-meteo.com',
             'https://4i7mo0wwc3lp8d1e.public.blob.vercel-storage.com',
@@ -343,7 +343,7 @@ csp: {
 }
 ```
 
-**Hinweis:** Auszug der kartenrelevanten CSP-Einträge. Vollständige Konfiguration in `svelte.config.js`.
+**Hinweis:** Auszug der kartenrelevanten CSP-Einträge. Vollständige Konfiguration in `sveltekit.options.ts`.
 
 ---
 

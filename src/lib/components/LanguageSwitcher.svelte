@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import Icon from '$lib/components/Icon.svelte';
-	import { LOCALE_COOKIE } from '$lib/i18n/localeCookie';
-	import { istAusgeschlossen } from '$lib/legacy-api/languagePrefix';
+	import Icon from '#lib/components/Icon.svelte';
+	import { LOCALE_COOKIE } from '#lib/i18n/localeCookie.ts';
+	import { istAusgeschlossen } from '#lib/legacy-api/languagePrefix.ts';
 	import {
 		cookieDomain,
 		cookieMaxAge,
 		deLocalizeUrl,
 		getLocale,
 		localizeHref
-	} from '$lib/paraglide/runtime';
+	} from '#lib/paraglide/runtime.js';
 
 	/* Das Styling bestimmt die Aufrufstelle: Der Umschalter sitzt seit dem
 	   2026-08-13 als Eintrag im Profilmenü (`UserMenu`/`UserMenuMobile`) und
@@ -25,7 +25,7 @@
 	// Ohne diese Prüfung würde `ziel` unten für `/admin` zu `/en/admin`
 	// lokalisiert, `reroute` kennt diesen Pfad nicht, gibt `undefined` zurück,
 	// und SvelteKit löst ihn wörtlich auf: 404, kein wirkungsloser Knopf.
-	const ausgeschlossen = $derived(istAusgeschlossen(deLocalizeUrl(page.url).pathname));
+	const ausgeschlossen = $derived(istAusgeschlossen(deLocalizeUrl(page.url.href).pathname));
 
 	// Pfad, Query-String UND Hash gehören zusammen in die Lokalisierung —
 	// `localizeHref` bekäme mit nur `page.url.pathname` keine Chance, sie zu
@@ -100,7 +100,7 @@
 	einmal gescheitert, siehe docs/IFRAME_EINBETTUNG.md.
 
 	Stand Etappe 0 der Mehrsprachigkeit ist die Komponente NICHT eingebunden
-	(`TRANSLATION_ROLLOUT_COMPLETE`, `$lib/i18n/translationRolloutStage.ts`):
+	(`TRANSLATION_ROLLOUT_COMPLETE`, `#lib/i18n/translationRolloutStage.ts`):
 	Solange keine einzige Zeichenkette übersetzt ist, führt ein Umschalter nur
 	auf eine ebenso deutsche Seite. Komponente und Tests bleiben erhalten, bis
 	die Übersetzung ausgeliefert ist.

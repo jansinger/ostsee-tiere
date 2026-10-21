@@ -1,5 +1,5 @@
-import { DistanceEnum } from '$lib/report/formOptions/distance';
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
+import { DistanceEnum } from '#lib/report/formOptions/distance.ts';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
 import { describe, expect, it } from 'vitest';
 import * as yup from 'yup';
 import { getAdminSightingSchema, getSightingSchema } from './sightingSchema';

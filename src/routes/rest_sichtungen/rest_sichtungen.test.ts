@@ -8,29 +8,29 @@
  * @since 1.10.0
  */
 
-import type { LegacySightingRequest } from '$lib/legacy-api/types';
+import type { LegacySightingRequest } from '#lib/legacy-api/types.ts';
 import type { RequestEvent } from '@sveltejs/kit';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resetRateLimits } from '$lib/server/middleware/rateLimit';
+import { resetRateLimits } from '#lib/server/middleware/rateLimit.ts';
 import { DELETE, POST, PUT } from './+server';
 
 // Mock dependencies - these need to be hoisted before any imports
-vi.mock('$lib/server/db/sightingRepository', () => ({
+vi.mock('#lib/server/db/sightingRepository.ts', () => ({
 	saveSighting: vi.fn(),
 	countRecentDuplicateSignals: vi.fn().mockResolvedValue({ sameEmail: 0, sameNotes: 0 })
 }));
 
 // Spam-Detektor mocken: verhindert echte MX-DNS-Lookups im Test und macht
 // das an saveSighting übergebene Ergebnis deterministisch.
-vi.mock('$lib/server/spam/spamDetector', () => ({
+vi.mock('#lib/server/spam/spamDetector.ts', () => ({
 	detectSpamIndicators: vi.fn().mockResolvedValue({ score: 0, isHighRisk: false, indicators: [] })
 }));
 
-vi.mock('$lib/server/geo/checkBalticSeaFile', () => ({
+vi.mock('#lib/server/geo/checkBalticSeaFile.ts', () => ({
 	checkBalticSeaFile: vi.fn()
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: vi.fn().mockReturnValue({
 		debug: vi.fn(),
 		info: vi.fn(),
@@ -40,7 +40,7 @@ vi.mock('$lib/logger', () => ({
 }));
 
 // Mock ServerConfigService to prevent real config loading
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		getEmailConfig: vi.fn().mockResolvedValue({
 			enabled: false,
@@ -55,8 +55,8 @@ vi.mock('$lib/services/configService', () => ({
 // No need to mock it again here
 
 // Import mocked modules statically to avoid race conditions
-import { saveSighting } from '$lib/server/db/sightingRepository';
-import { checkBalticSeaFile } from '$lib/server/geo/checkBalticSeaFile';
+import { saveSighting } from '#lib/server/db/sightingRepository.ts';
+import { checkBalticSeaFile } from '#lib/server/geo/checkBalticSeaFile.ts';
 
 // Helper to create mock request event
 function createMockRequestEvent(body: LegacySightingRequest, userAgent?: string): RequestEvent {
@@ -234,7 +234,7 @@ describe('PDF-Compliant Legacy REST API - POST /rest_sichtungen', () => {
 		});
 
 		it('bewertet Legacy-Meldungen ohne Formular-Token-Malus (App kennt kein Token)', async () => {
-			const { detectSpamIndicators } = await import('$lib/server/spam/spamDetector');
+			const { detectSpamIndicators } = await import('#lib/server/spam/spamDetector.ts');
 			const event = createMockRequestEvent({
 				sichtungsdatum: '2024-03-15 12:00',
 				anzahl_gesamt: 1,
@@ -256,7 +256,7 @@ describe('PDF-Compliant Legacy REST API - POST /rest_sichtungen', () => {
 			// mapLegacyToCurrentSchema mappt fehlendes GPS auf 0 — ginge das roh in
 			// den Detektor, entstünde mit ostsee_geo = 0 der falsche Indikator
 			// „Position weit außerhalb der Ostsee" für jede Meldung ohne Position.
-			const { detectSpamIndicators } = await import('$lib/server/spam/spamDetector');
+			const { detectSpamIndicators } = await import('#lib/server/spam/spamDetector.ts');
 			const event = createMockRequestEvent({
 				sichtungsdatum: '2024-03-15 12:00',
 				anzahl_gesamt: 1,

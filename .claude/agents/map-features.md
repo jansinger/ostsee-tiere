@@ -153,7 +153,7 @@ Siehe `.claude/rules/maps.md` für Ostsee-Bounds, View Constraints und CSP-Konfi
 ```typescript
 // src/routes/api/[feature]/geojson/+server.ts
 import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.ts';
 import { sql } from 'drizzle-orm';
 
 export async function GET({ url }) {

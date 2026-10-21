@@ -1,11 +1,11 @@
-import * as m from '$lib/paraglide/messages';
+import * as m from '#lib/paraglide/messages.js';
 /**
  * Modern whale sighting form configuration
  * Richtlinien: docs/DESIGN_GUIDE.md, verbindliche Regeln: .claude/rules/design-system.md
  */
 
-import { getSightingSchema } from '$lib/form/validation/sightingSchema';
-import { baseLocale, getLocale, type Locale } from '$lib/paraglide/runtime';
+import { getSightingSchema } from '#lib/form/validation/sightingSchema.ts';
+import { baseLocale, getLocale, type Locale } from '#lib/paraglide/runtime.js';
 import { SightingFromEnum } from './formOptions/sightingFrom';
 import type { FormStep, SightingFormData } from './types';
 // Typ-Import, kein Laufzeit-Import — der Zyklus formConfig.ts →

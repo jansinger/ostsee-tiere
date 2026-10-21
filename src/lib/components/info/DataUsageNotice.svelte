@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import Icon from '$lib/components/Icon.svelte';
-	import { infoStyles, type InfoVariant } from '$lib/components/info/variant';
+	import * as m from '#lib/paraglide/messages.js';
+	import Icon from '#lib/components/Icon.svelte';
+	import { infoStyles, type InfoVariant } from '#lib/components/info/variant.ts';
 
 	let { variant = 'inline' }: { variant?: InfoVariant } = $props();
 

@@ -8,8 +8,8 @@ import {
 	serializeMapFilterParams,
 	STATUS_PATTERN,
 	type MapFilterUrlState
-} from '$lib/map/urlFilterState';
-import { SIGHTING_STATUS_ORDER } from '$lib/components/admin/sightingStatus';
+} from '#lib/map/urlFilterState.ts';
+import { SIGHTING_STATUS_ORDER } from '#lib/components/admin/sightingStatus.ts';
 
 /**
  * Tests für den URL-Query-Param-Sync der Sichtungskarten-Filter

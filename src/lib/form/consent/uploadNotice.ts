@@ -1,5 +1,5 @@
-import * as m from '$lib/paraglide/messages';
-import { ORPHAN_RETENTION_HOURS } from '$lib/constants/uploadRetention';
+import * as m from '#lib/paraglide/messages.js';
+import { ORPHAN_RETENTION_HOURS } from '#lib/constants/uploadRetention.ts';
 
 /**
  * Hinweis an der Dropzone.

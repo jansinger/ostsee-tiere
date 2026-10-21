@@ -20,36 +20,33 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Das globale Setup in vitest-setup-server.ts mockt emailService — hier aufheben,
 // damit die echte Implementierung getestet wird.
-vi.unmock('$lib/server/services/emailService');
+vi.unmock('#lib/server/services/emailService.ts');
 
 const ENV_HOST = 'smtp.aus-der-umgebung.test';
 const ENV_USER = 'env-user@example.com';
 const ENV_PASSWORD = 'env-geheim';
 
-vi.mock('$env/dynamic/private', () => ({
+vi.mock('#lib/server/env.ts', () => ({
 	env: {
 		NODE_ENV: 'test',
 		SMTP_HOST: 'smtp.aus-der-umgebung.test',
 		SMTP_PORT: '2525',
 		SMTP_USER: 'env-user@example.com',
 		SMTP_PASSWORD: 'env-geheim'
-	}
-}));
-
-vi.mock('$env/dynamic/public', () => ({
-	env: { PUBLIC_SITE_URL: 'https://example.com' }
+	},
+	publicEnv: { PUBLIC_SITE_URL: 'https://example.com' }
 }));
 
 // Kein gemeinsamer Helper: vi.mock wird an den Dateianfang gehoist, eine
 // Top-Level-Variable wäre dort noch nicht initialisiert.
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ info: vi.fn(), debug: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ info: vi.fn(), debug: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/server/db/configRepository', () => ({
+vi.mock('#lib/server/db/configRepository.ts', () => ({
 	ConfigRepository: {
 		getBoolean: vi.fn(),
 		getString: vi.fn(),
@@ -58,19 +55,19 @@ vi.mock('$lib/server/db/configRepository', () => ({
 	}
 }));
 
-vi.mock('$lib/server/db', () => ({ db: { select: vi.fn() } }));
+vi.mock('#lib/server/db/index.ts', () => ({ db: { select: vi.fn() } }));
 vi.mock('nodemailer', () => ({ default: { createTransport: vi.fn() } }));
 vi.mock('fs', () => ({ readFileSync: vi.fn(() => '<html>{{referenceId}}</html>') }));
-vi.mock('$lib/utils/format/sightingFormatter', () => ({
+vi.mock('#lib/utils/format/sightingFormatter.ts', () => ({
 	formatSightingForDisplay: vi.fn(),
 	isUnknownOrMissingSpecies: vi.fn()
 }));
-vi.mock('$lib/server/spam/spamDetector', () => ({
+vi.mock('#lib/server/spam/spamDetector.ts', () => ({
 	detectSpamIndicators: vi.fn().mockResolvedValue({ score: 0, isHighRisk: false, indicators: [] })
 }));
-vi.mock('$lib/utils/format/dateTime', () => ({ formatLocalDateTime: vi.fn() }));
+vi.mock('#lib/utils/format/dateTime.ts', () => ({ formatLocalDateTime: vi.fn() }));
 
-import { ConfigRepository } from '$lib/server/db/configRepository';
+import { ConfigRepository } from '#lib/server/db/configRepository.ts';
 import nodemailer from 'nodemailer';
 import { EmailService } from './emailService';
 

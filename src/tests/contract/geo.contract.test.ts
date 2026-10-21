@@ -3,19 +3,19 @@ import { GET } from '../../routes/api/geo/inBaltic/+server';
 import { createEvent } from './helpers/createEvent';
 import { asApiResponse } from './helpers/asApiResponse';
 
-vi.mock('$lib/server/geo/checkBalticSeaFile', () => ({
+vi.mock('#lib/server/geo/checkBalticSeaFile.ts', () => ({
 	checkBalticSeaFile: vi.fn()
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/logger', () => ({
+vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-const { checkBalticSeaFile } = await import('$lib/server/geo/checkBalticSeaFile');
+const { checkBalticSeaFile } = await import('#lib/server/geo/checkBalticSeaFile.ts');
 
 describe('Contract: GET /api/geo/inBaltic', () => {
 	beforeEach(() => {

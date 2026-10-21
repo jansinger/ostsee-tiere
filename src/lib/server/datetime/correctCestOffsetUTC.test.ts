@@ -12,7 +12,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { combineToDate } from '$lib/utils/format/dateTime';
+import { combineToDate } from '#lib/utils/format/dateTime.ts';
 import { correctCestOffsetUTC } from './correctCestOffsetUTC';
 import { withTimeZone } from './withTimeZone.testutil';
 

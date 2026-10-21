@@ -11,10 +11,10 @@
  * genau gelöscht wird, und dass der Reset weiterläuft, wenn die Löschung
  * scheitert.
  */
-import { createLogger } from '$lib/logger';
-import type { UploadedFileInfo } from '$lib/types';
-import type { MediaStore } from '$lib/utils/media/MediaFile.svelte';
-import { deleteMultipleFiles } from '$lib/utils/upload/fileProcessing';
+import { createLogger } from '#lib/logger.ts';
+import type { UploadedFileInfo } from '#lib/types/index.ts';
+import type { MediaStore } from '#lib/utils/media/MediaFile.svelte.ts';
+import { deleteMultipleFiles } from '#lib/utils/upload/fileProcessing.ts';
 
 const logger = createLogger('report:discard-form-uploads');
 

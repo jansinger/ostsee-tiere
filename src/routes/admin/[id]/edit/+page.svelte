@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import AdminSightingEditForm from '$lib/components/admin/AdminSightingEditForm.svelte';
+	import AdminSightingEditForm from '#lib/components/admin/AdminSightingEditForm.svelte';
 	import { carryReturnParams } from '../tableReturnUrl';
-	import { createLogger } from '$lib/logger';
-	import type { FrontendSighting } from '$lib/types/FrontendSighting.js';
-	import Icon from '$lib/components/Icon.svelte';
+	import { createLogger } from '#lib/logger.ts';
+	import type { FrontendSighting } from '#lib/types/FrontendSighting.ts';
+	import Icon from '#lib/components/Icon.svelte';
 
 	const logger = createLogger('AdminSightingEditPage');
 

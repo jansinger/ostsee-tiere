@@ -13,11 +13,11 @@ import { getSightingSchema } from './sightingSchema';
 // Testet weiterhin den deutschen Ist-Zustand (Default-Locale) — unveraendert
 // gegenueber der frueheren Modulkonstante.
 const sightingSchema = getSightingSchema();
-import { SightingFromEnum } from '$lib/report/formOptions/sightingFrom';
-import { DistributionEnum } from '$lib/report/formOptions/distribution';
-import { AnimalBehaviorEnum } from '$lib/report/formOptions/animalBehavior';
-import { BoatDriveEnum } from '$lib/report/formOptions/boatDrive';
-import { AnimalConditionEnum } from '$lib/report/formOptions/animalCondition';
+import { SightingFromEnum } from '#lib/report/formOptions/sightingFrom.ts';
+import { DistributionEnum } from '#lib/report/formOptions/distribution.ts';
+import { AnimalBehaviorEnum } from '#lib/report/formOptions/animalBehavior.ts';
+import { BoatDriveEnum } from '#lib/report/formOptions/boatDrive.ts';
+import { AnimalConditionEnum } from '#lib/report/formOptions/animalCondition.ts';
 
 // Kein Mock nötig — sightingSchema importiert weder $lib/logger noch $lib/report/formConfig
 

@@ -2,8 +2,8 @@
  * Request validation utilities for API endpoints
  */
 
-import { getSightingSchemaBase } from '$lib/form/validation/sightingSchema';
-import { baseLocale } from '$lib/paraglide/runtime';
+import { getSightingSchemaBase } from '#lib/form/validation/sightingSchema.ts';
+import { baseLocale } from '#lib/paraglide/runtime.js';
 import * as yup from 'yup';
 
 /**

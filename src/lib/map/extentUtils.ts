@@ -8,7 +8,7 @@
  */
 import { boundingExtent, getIntersection, isEmpty } from 'ol/extent';
 import { fromLonLat } from 'ol/proj';
-import { BALTIC_SEA_BBOX } from '$lib/utils/geo/checkBalticSea';
+import { BALTIC_SEA_BBOX } from '#lib/utils/geo/checkBalticSea.ts';
 
 /** [minX, minY, maxX, maxY] in der Kartenprojektion (EPSG:3857). */
 export type Extent = [number, number, number, number];

@@ -11,8 +11,8 @@
  *    (preserves originals; UPLOAD_PATH defaults to `uploads` relative to the working directory)
  */
 
-import type { ExifData } from '$lib/types';
-import type { SightingFileInsert } from '$lib/types/sightingFile';
+import type { ExifData } from '#lib/types/index.ts';
+import type { SightingFileInsert } from '#lib/types/sightingFile.ts';
 import { createId } from '@paralleldrive/cuid2';
 import { and, eq, isNotNull, ne } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -284,7 +284,7 @@ async function main() {
 	const db = drizzle(client, { schema });
 
 	// Same UPLOAD_PATH contract as the app (src/lib/server/storage/uploadPath.ts).
-	// Standalone script — cannot use $env/dynamic/private, so read process.env directly.
+	// Standalone script — cannot use SvelteKit's env modules, so read process.env directly.
 	const baseUploadPath = path.resolve((process.env.UPLOAD_PATH ?? '').trim() || 'uploads');
 	const oldUploadPath = path.join(baseUploadPath, '_old_uploads');
 

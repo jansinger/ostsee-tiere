@@ -1,13 +1,13 @@
 /**
  * @fileoverview Modul-Attrappen, die einen fehlenden Export laut melden.
  *
- * Die Contract-Tests ersetzen `drizzle-orm` und `$lib/server/db/schema`
+ * Die Contract-Tests ersetzen `drizzle-orm` und `#lib/server/db/schema.js`
  * **vollständig**. Ein Export, den der getestete Code verwendet, hier aber
  * fehlt — eine Funktion wie `isNotNull` ebenso wie eine Tabelle wie
  * `auditLogs` —, ist damit zur Laufzeit nicht da. Das passiert auch
  * **mittelbar**: Seit
  * `/sichtungen/showreports.json` sein Freigabe-Prädikat über `approvedOnly()`
- * aus `$lib/server/db/approvalFilter` bezieht, hängt der Endpunkt an
+ * aus `#lib/server/db/approvalFilter.js` bezieht, hängt der Endpunkt an
  * `isNotNull`, ohne es selbst zu importieren (PR #701).
  *
  * Vitest wirft in diesem Fall bereits von sich aus eine brauchbare Meldung
@@ -59,7 +59,7 @@ function currentTestFile(): string {
 
 /**
  * Bewusst neutral formuliert: Die Attrappe deckt zwei Modularten ab. Bei
- * `drizzle-orm` fehlt eine Funktion, bei `$lib/server/db/schema` eine Tabelle
+ * `drizzle-orm` fehlt eine Funktion, bei `#lib/server/db/schema.js` eine Tabelle
  * wie `auditLogs` — die wird verwendet, nicht „aufgerufen".
  */
 function describeMiss({ moduleName, exportName, testFile }: MissingMockExport): string {

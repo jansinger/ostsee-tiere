@@ -24,7 +24,7 @@ import { getAdminSightingSchema, getSightingSchema } from './sightingSchema';
 // gegenueber der frueheren Modulkonstante.
 const sightingSchema = getSightingSchema();
 const adminSightingSchema = getAdminSightingSchema();
-import { legacyApiSchema } from '$lib/legacy-api/yup-validation';
+import { legacyApiSchema } from '#lib/legacy-api/yup-validation.ts';
 
 /**
  * Validiert ein einzelnes Feld im Schema.

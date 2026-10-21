@@ -12,7 +12,7 @@
 	 * Basis bleibt das native `<dialog>` mit `showModal()`: Fokus-Trap, ESC und
 	 * der Top-Layer kommen damit vom Browser und werden nicht nachgebaut.
 	 */
-	import * as m from '$lib/paraglide/messages';
+	import * as m from '#lib/paraglide/messages.js';
 
 	let {
 		show = $bindable(false),

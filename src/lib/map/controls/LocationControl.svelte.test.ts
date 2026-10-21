@@ -3,7 +3,7 @@
  * Control echte DOM-Elemente baut (ol/control braucht document).
  */
 import { describe, expect, it, vi } from 'vitest';
-import type { MapController } from '$lib/map/optimizedMapController';
+import type { MapController } from '#lib/map/optimizedMapController.ts';
 import { LocationControl } from './LocationControl';
 
 /** Minimaler MapController-Fake: Tracking-Zustand + Listener wie der echte Controller. */

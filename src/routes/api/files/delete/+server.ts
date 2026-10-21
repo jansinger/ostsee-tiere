@@ -1,18 +1,18 @@
-import * as m from '$lib/paraglide/messages';
-import { createLogger } from '$lib/logger.server';
-import { db } from '$lib/server/db';
-import { sightingFiles } from '$lib/server/db/schema';
-import { deleteFileByPath } from '$lib/server/db/sightingFilesRepository';
-import { getStorageProvider } from '$lib/server/storage/factory';
-import { isAdminUser } from '$lib/server/auth/auth';
-import { getUploadUid } from '$lib/server/auth/uploadOwnership';
-import { logAuditEvent } from '$lib/server/audit/auditService';
-import { getClientIp } from '$lib/server/utils/getClientIp';
+import * as m from '#lib/paraglide/messages.js';
+import { createLogger } from '#lib/logger.server.ts';
+import { db } from '#lib/server/db/index.ts';
+import { sightingFiles } from '#lib/server/db/schema.ts';
+import { deleteFileByPath } from '#lib/server/db/sightingFilesRepository.ts';
+import { getStorageProvider } from '#lib/server/storage/factory.ts';
+import { isAdminUser } from '#lib/server/auth/auth.ts';
+import { getUploadUid } from '#lib/server/auth/uploadOwnership.ts';
+import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { getClientIp } from '#lib/server/utils/getClientIp.ts';
 import {
 	RATE_LIMITS,
 	enforceRateLimit,
 	createRateLimitIdentifier
-} from '$lib/server/middleware/rateLimit';
+} from '#lib/server/middleware/rateLimit.ts';
 import { error, isHttpError, json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';

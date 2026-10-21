@@ -12,6 +12,7 @@ import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import { CI_DEV_HOST, ciDevPort, devServerIdentity } from './src/tools/dev-server-identity.ts';
 import { stableDepHash } from './src/tools/vite-stable-dep-hash.ts';
 import { OL_OPTIMIZE_DEPS } from './src/tools/olOptimizeDeps.ts';
+import { SVELTEKIT_OPTIONS } from './sveltekit.options.ts';
 
 /**
  * In Git-Worktrees liegt das installierte node_modules außerhalb des
@@ -54,7 +55,7 @@ export default defineConfig({
 				props.height = props.height || '20';
 			}
 		}),
-		sveltekit(),
+		sveltekit(SVELTEKIT_OPTIONS),
 		// No basicSsl plugin for CI to avoid HTTPS certificate issues
 		// Auch in CI: Der Identitäts-Check in e2e/global-setup.ts läuft unbedingt, damit
 		// ein versehentlich entferntes Plugin auffällt statt still die Prüfung abzuschalten.

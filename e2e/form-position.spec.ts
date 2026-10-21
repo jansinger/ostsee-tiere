@@ -81,7 +81,7 @@ test.describe('PositionAndTime — Single-Panel-Positionseingabe', () => {
 	// Nutzer den Block und drückt „Weiter", landet er sonst wieder im
 	// Sackgassen-Zustand, den diese Branch eigentlich beheben sollte: die
 	// Fehlermeldung erscheint, aber das Feld ist unerreichbar
-	// (`scrollToFirstError` in `$lib/utils/fieldNavigation.ts`).
+	// (`scrollToFirstError` in `#lib/utils/fieldNavigation.ts`).
 	test('„Weiter" bei geschlossener Ortsbeschreibung öffnet sie wieder und fokussiert waterway', async ({
 		page
 	}) => {

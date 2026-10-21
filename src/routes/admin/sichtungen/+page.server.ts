@@ -1,17 +1,17 @@
-import { db } from '$lib/server/db';
-import { sightings } from '$lib/server/db/schema';
-import { berlinCalendarDate } from '$lib/server/db/sqlTimeZone';
-import { mediaUploadCondition } from '$lib/server/db/mediaUploadFilter';
-import { balticSeaCondition } from '$lib/server/db/balticSeaFilter';
-import { deadFindingCondition } from '$lib/server/db/deadFindingFilter';
-import { searchCondition, normalizeSearchTerm } from '$lib/server/db/sightingSearchFilter';
-import { approvedOnly, openOnly, rejectedOnly } from '$lib/server/db/approvalFilter';
+import { db } from '#lib/server/db/index.ts';
+import { sightings } from '#lib/server/db/schema.ts';
+import { berlinCalendarDate } from '#lib/server/db/sqlTimeZone.ts';
+import { mediaUploadCondition } from '#lib/server/db/mediaUploadFilter.ts';
+import { balticSeaCondition } from '#lib/server/db/balticSeaFilter.ts';
+import { deadFindingCondition } from '#lib/server/db/deadFindingFilter.ts';
+import { searchCondition, normalizeSearchTerm } from '#lib/server/db/sightingSearchFilter.ts';
+import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
 import { and, eq, sql, type SQL } from 'drizzle-orm';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-import { ServerConfigService } from '$lib/services/configService';
+import { ServerConfigService } from '#lib/services/configService.ts';
 import { isValidDateParam } from './dateParam';
 import { SIGHTING_LIST_COLUMNS } from './listColumns';
 import { resolveSort, type SortColumn } from './sortParams';

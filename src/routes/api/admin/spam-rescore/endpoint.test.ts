@@ -4,7 +4,7 @@
  * anzustoßen: dmm gibt den DB-Port nicht frei, hawking hat
  * `allowtcpforwarding no`.
  */
-import { MIN_TOKEN_LENGTH } from '$lib/server/media/cleanupAuth';
+import { MIN_TOKEN_LENGTH } from '#lib/server/media/cleanupAuth.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const TOKEN = 'z'.repeat(MIN_TOKEN_LENGTH);
@@ -16,14 +16,14 @@ const { rescoreSightings, logAuditEvent, mockEnv } = vi.hoisted(() => ({
 	mockEnv: { CLEANUP_TOKEN: 'z'.repeat(32) }
 }));
 
-vi.mock('$lib/server/spam/rescoreSightings', async () => {
-	const actual = await vi.importActual<typeof import('$lib/server/spam/rescoreSightings')>(
-		'$lib/server/spam/rescoreSightings'
+vi.mock('#lib/server/spam/rescoreSightings.ts', async () => {
+	const actual = await vi.importActual<typeof import('#lib/server/spam/rescoreSightings.ts')>(
+		'#lib/server/spam/rescoreSightings.ts'
 	);
 	return { ...actual, rescoreSightings };
 });
-vi.mock('$lib/server/audit/auditService', () => ({ logAuditEvent }));
-vi.mock('$env/dynamic/private', () => ({ env: mockEnv }));
+vi.mock('#lib/server/audit/auditService.ts', () => ({ logAuditEvent }));
+vi.mock('#lib/server/env.ts', () => ({ env: mockEnv }));
 
 import { POST } from './+server';
 

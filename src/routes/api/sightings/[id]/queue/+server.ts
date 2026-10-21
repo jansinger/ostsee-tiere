@@ -19,9 +19,9 @@
  * Sichtung nicht mehr offen ist: Sie hat dann keinen Rang im Stapel, wohl aber
  * weiterhin Nachbarn.
  */
-import { requireUserRole } from '$lib/server/auth/auth';
-import { db } from '$lib/server/db';
-import { isSightingApproved, isSightingRejected, openOnly } from '$lib/server/db/approvalFilter';
+import { requireUserRole } from '#lib/server/auth/auth.ts';
+import { db } from '#lib/server/db/index.ts';
+import { isSightingApproved, isSightingRejected, openOnly } from '#lib/server/db/approvalFilter.ts';
 import {
 	neighborScanOrder,
 	openQueueOrderBy,
@@ -29,8 +29,8 @@ import {
 	resolveQueueOrder,
 	type QueueAnchor,
 	type QueueOrder
-} from '$lib/server/db/openQueueOrder';
-import { sightings } from '$lib/server/db/schema';
+} from '#lib/server/db/openQueueOrder.ts';
+import { sightings } from '#lib/server/db/schema.ts';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { and, eq, sql } from 'drizzle-orm';
 

@@ -1,6 +1,6 @@
-import { createLogger } from '$lib/logger';
-import { getFormSteps } from '$lib/report/formConfig';
-import type { SightingFormData } from '$lib/report/types';
+import { createLogger } from '#lib/logger.ts';
+import { getFormSteps } from '#lib/report/formConfig.ts';
+import type { SightingFormData } from '#lib/report/types.ts';
 import { ValidationError } from 'yup';
 import { getSightingSchema } from './sightingSchema';
 

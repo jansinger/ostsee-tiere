@@ -11,21 +11,21 @@
 	Tabelle. Die Karte zeigt die Felder, die für die Triage am Telefon zählen.
 -->
 <script lang="ts">
-	import Icon from '$lib/components/Icon.svelte';
-	import StatusBlock from '$lib/components/StatusBlock.svelte';
-	import { DEAD_FINDING_PRESENTATION, isDeadFinding } from '$lib/components/admin/deadFinding';
+	import Icon from '#lib/components/Icon.svelte';
+	import StatusBlock from '#lib/components/StatusBlock.svelte';
+	import { DEAD_FINDING_PRESENTATION, isDeadFinding } from '#lib/components/admin/deadFinding.ts';
 	import { describeEmptyList } from './emptyList';
-	import SightingActionsMenu from '$lib/components/admin/SightingActionsMenu.svelte';
-	import SightingStatusControl from '$lib/components/admin/SightingStatusControl.svelte';
-	import { getSightingStatus, type SightingStatus } from '$lib/components/admin/sightingStatus';
-	import type { SightingVerdict } from '$lib/components/admin/sightingVerdict';
-	import { getSpeciesLabel } from '$lib/report/formOptions/species';
+	import SightingActionsMenu from '#lib/components/admin/SightingActionsMenu.svelte';
+	import SightingStatusControl from '#lib/components/admin/SightingStatusControl.svelte';
+	import { getSightingStatus, type SightingStatus } from '#lib/components/admin/sightingStatus.ts';
+	import type { SightingVerdict } from '#lib/components/admin/sightingVerdict.ts';
+	import { getSpeciesLabel } from '#lib/report/formOptions/species.ts';
 	import type { SichtungenListRow } from './listColumns';
-	import { formatLocalDateTime } from '$lib/utils/format/dateTime';
+	import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
 	import {
 		BALTIC_SEA_STATUS_PRESENTATION,
 		getBalticSeaStatus
-	} from '$lib/utils/geo/balticSeaStatus';
+	} from '#lib/utils/geo/balticSeaStatus.ts';
 	import { NUR_KOMPAKT } from './layoutSwitch';
 
 	interface Props {

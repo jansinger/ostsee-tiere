@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import { GET } from './+server';
-import { PUBLIC_UPLOAD_ALLOWED_TYPES } from '$lib/constants/uploadDefaults';
+import { PUBLIC_UPLOAD_ALLOWED_TYPES } from '#lib/constants/uploadDefaults.ts';
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/services/configService', () => ({
+vi.mock('#lib/services/configService.ts', () => ({
 	ServerConfigService: {
 		getUploadConfig: vi.fn().mockResolvedValue({
 			maxFileSize: 25,

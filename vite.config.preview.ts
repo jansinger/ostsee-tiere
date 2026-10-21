@@ -6,6 +6,7 @@ import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
+import { SVELTEKIT_OPTIONS } from './sveltekit.options.ts';
 
 export default defineConfig({
 	plugins: [
@@ -23,7 +24,7 @@ export default defineConfig({
 			// vite.config.ts.
 			outputStructure: 'message-modules'
 		}),
-		sveltekit()
+		sveltekit(SVELTEKIT_OPTIONS)
 		// No basicSsl plugin for preview in CI to avoid HTTPS certificate issues
 	],
 	preview: {

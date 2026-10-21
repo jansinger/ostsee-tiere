@@ -29,30 +29,30 @@ vi.mock('fs', () => ({
 	createReadStream: vi.fn().mockReturnValue({ on: vi.fn() })
 }));
 
-vi.mock('$lib/logger.server', () => ({
+vi.mock('#lib/logger.server.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
-vi.mock('$lib/server/uploads', () => ({
+vi.mock('#lib/server/uploads.ts', () => ({
 	isValidUploadPath: mockIsValidUploadPath,
 	getUploadPath: vi.fn().mockReturnValue('/abs/uploads/file.jpg'),
 	getFileInfo: mockGetFileInfo
 }));
 
-vi.mock('$lib/server/storage/factory', () => ({
+vi.mock('#lib/server/storage/factory.ts', () => ({
 	getStorageProvider: mockGetStorageProvider,
 	isCloudStorage: mockIsCloudStorage
 }));
 
-vi.mock('$lib/server/auth/auth', () => ({
+vi.mock('#lib/server/auth/auth.ts', () => ({
 	isAdminUser: mockIsAdminUser
 }));
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.ts', () => ({
 	db: { select: mockSelect }
 }));
 
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.ts', () => ({
 	sightingFiles: { sightingId: {}, filePath: {}, id: {} },
 	sightings: { id: {}, approvedAt: {} }
 }));
@@ -61,7 +61,7 @@ vi.mock('drizzle-orm', () => ({
 	eq: vi.fn()
 }));
 
-vi.mock('$lib/server/middleware/rateLimit', () => ({
+vi.mock('#lib/server/middleware/rateLimit.ts', () => ({
 	RATE_LIMITS: {
 		MEDIA_ACCESS_ANONYMOUS: { windowMs: 60000, maxRequests: 30 },
 		MEDIA_ACCESS_AUTHENTICATED: { windowMs: 60000, maxRequests: 100 }
@@ -70,7 +70,7 @@ vi.mock('$lib/server/middleware/rateLimit', () => ({
 	createRateLimitIdentifier: vi.fn().mockReturnValue('ip:10.0.0.1')
 }));
 
-vi.mock('$lib/server/utils/getClientIp', () => ({
+vi.mock('#lib/server/utils/getClientIp.ts', () => ({
 	getClientIp: vi.fn().mockReturnValue('10.0.0.1')
 }));
 
