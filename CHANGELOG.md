@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.24.1](https://github.com/jansinger/ostsee-tiere/compare/v2.24.0...v2.24.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* **map:** start the embedded map in safari after the consent swap ([#996](https://github.com/jansinger/ostsee-tiere/issues/996)) ([7ea7c2a](https://github.com/jansinger/ostsee-tiere/commit/7ea7c2abb365dae0391ceefa0f31e4a2c856c325))
+
 ## [2.24.0](https://github.com/jansinger/ostsee-tiere/compare/v2.23.4...v2.24.0) (2026-11-02)
 
 
