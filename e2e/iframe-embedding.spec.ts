@@ -130,6 +130,33 @@ test.describe('iframe-Einbettung', () => {
 		await expect.poll(() => iframeHeight(page)).toBeLessThan(1500);
 	});
 
+	/**
+	 * Review PR #994: Fehler- und Erfolgsseite trugen `min-h-screen`. Im iframe
+	 * ist „screen" der iframe selbst — jede Höhenmeldung lag damit über der
+	 * aktuellen Höhe, der iframe wuchs, die nächste Meldung lag wieder darüber.
+	 * Beide nutzen dieselbe Klasse; die Fehlerseite ist ohne Absenden erreichbar.
+	 */
+	test('die Fehlerseite schaukelt den iframe nicht auf', async ({ page, baseURL }) => {
+		await openEmbedded(page, baseURL!, { path: '/gibt-es-nicht' });
+		await expect.poll(() => iframeHeight(page)).toBeLessThan(1500);
+
+		const settled = await iframeHeight(page);
+		await page.waitForTimeout(1000);
+		expect(await iframeHeight(page)).toBe(settled);
+	});
+
+	/**
+	 * Gegenstück: `/map` füllt das Fenster, statt mit dem Inhalt zu wachsen. Hebt
+	 * die automatische Höhe dort `min-h-dvh` auf, fällt die Karte auf Höhe 0
+	 * (CI-Shard `map`, `map-pan-zoom.spec.ts`).
+	 */
+	test('die Karte behält eingebettet ihre Höhe', async ({ page, baseURL }) => {
+		await openEmbedded(page, baseURL!, { path: '/map' });
+		const map = page.frameLocator('#app').locator('.ol-viewport').first();
+		await expect(map).toBeVisible();
+		await expect.poll(async () => (await map.boundingBox())?.height ?? 0).toBeGreaterThan(300);
+	});
+
 	test('ohne embed.js bleibt der iframe auf seiner Starthöhe', async ({ page, baseURL }) => {
 		await page.route(/\/embed\.js$/, (route) => route.abort());
 		await openEmbedded(page, baseURL!);

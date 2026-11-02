@@ -54,14 +54,18 @@ describe('answeredOptionalFieldCount', () => {
 			expect(summand).toBeDefined();
 			expect(summand).toContain(`"sichtungen"."${col}" not in (0, 4)`);
 			// „Sonstige" (0) zählt nur mit Freitext — siehe unspecifiedDefaults.test.ts
-			expect(summand).toContain(`nullif(btrim("sichtungen"."${textCol}"), '')`);
+			expect(summand).toContain(`coalesce("sichtungen"."${textCol}" ~ '[^[:space:]]', false)`);
 		}
 	);
 
 	it.each(['windrichtung', 'windstaerke', 'reaktion', 'schiffsname', 'bootstyp', 'bemerkungen'])(
-		'wertet einen leeren oder nur aus Leerzeichen bestehenden Text in %s nicht als Antwort',
+		'wertet einen leeren oder nur aus Leerraum bestehenden Text in %s nicht als Antwort',
 		(col) => {
-			expect(countSql).toContain(`nullif(btrim("sichtungen"."${col}"), '') is not null`);
+			// Nicht `btrim`: Das entfernt nur Leerzeichen, ein Tab oder Zeilenumbruch
+			// zählte dann als Angabe (Review PR #994). `coalesce`, weil `NULL ~ …`
+			// NULL ergibt und die Summe sonst insgesamt NULL würde.
+			expect(countSql).toContain(`coalesce("sichtungen"."${col}" ~ '[^[:space:]]', false)`);
+			expect(countSql).not.toContain('btrim');
 		}
 	);
 

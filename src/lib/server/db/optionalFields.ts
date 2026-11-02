@@ -15,7 +15,7 @@
  *   Altbestand ist das überwiegend eine nicht gegebene Antwort, neue Daten
  *   tragen dafür `4` = „Keine Angabe". „Sonstige" zählt deshalb nur mit
  *   Freitext (Messung und Begründung in `unspecifiedDefaults.test.ts`).
- * - Texte zählen nur, wenn sie nach dem Trimmen nicht leer sind.
+ * - Texte zählen nur, wenn sie mehr als Leerraum enthalten.
  * - `anzahl_schiffe` hat keinen Default; `0` ist dort eine echte Antwort.
  */
 
@@ -23,7 +23,12 @@ import { sightings } from '#lib/server/db/schema.ts';
 import { sql, type SQL } from 'drizzle-orm';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 
-const hasText = (column: AnyPgColumn): SQL => sql`(nullif(btrim(${column}), '') is not null)`;
+/**
+ * Text mit mindestens einem Zeichen, das kein Leerraum ist. Nicht `btrim`: Das
+ * entfernt nur Leerzeichen, ein bloßer Zeilenumbruch zählte sonst als Angabe.
+ * `coalesce`, weil `NULL ~ …` NULL ergibt und die Summe sonst NULL würde.
+ */
+const hasText = (column: AnyPgColumn): SQL => sql`coalesce(${column} ~ '[^[:space:]]', false)`;
 
 /** `0` = „Sonstige", `4` = „Keine Angabe" — siehe Datei-Kommentar. */
 const hasCategory = (column: AnyPgColumn, textColumn: AnyPgColumn): SQL =>
