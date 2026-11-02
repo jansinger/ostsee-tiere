@@ -4082,13 +4082,18 @@ components:
         completionRate:
           type: number
           format: float
-          description: Durchschnittliche Ausfüllrate des Formulars (0-100%)
-          example: 72.5
+          description: >-
+            Anteil der Sichtungen (0–100, ganzzahlig gerundet) mit mindestens einem
+            beantworteten Zusatzfeld. Vorbelegte Werte („Keine Angabe") und leere
+            Texte zählen nicht als Antwort.
+          example: 83
         averageOptionalFields:
           type: number
           format: float
-          description: Durchschnittliche Anzahl ausgefüllter optionaler Felder
-          example: 8.3
+          description: >-
+            Durchschnittliche Anzahl beantworteter Zusatzfelder je Sichtung
+            (von 11, ganzzahlig gerundet; gleiche Zählung wie completionRate)
+          example: 3
         yearsOfService:
           type: integer
           description: Jahre seit Projektbeginn

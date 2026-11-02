@@ -54,7 +54,14 @@
 				background: #f0ece2;
 			}
 
-			/* Empfohlene Einbettungsmaße fürs Meeresmuseum, live verifiziert
+			/* STAND 2026-11: Höhe und Breite sind inzwischen anders gelöst — die App
+			   meldet ihre Höhe per postMessage, embed.js (unten eingebunden) setzt
+			   sie, und die Breitenbegrenzung entfällt. Maßgeblich ist
+			   docs/IFRAME_EINBETTUNG.md. Der Block darunter ist der Befund vom
+			   2026-08-12, der zu dieser Änderung geführt hat; die Messwerte
+			   der Tabelle sind weiterhin eine brauchbare Größenordnung.
+
+			   Empfohlene Einbettungsmaße fürs Meeresmuseum, live verifiziert
 			   (2026-08-12, per Debug-Ausgabe direkt im Quellcode gemessen,
 			   danach wieder entfernt):
 
@@ -88,7 +95,6 @@
 			iframe#sichtungen-frame {
 				display: block;
 				width: 100%;
-				max-width: 700px;
 				min-width: 320px;
 				height: 3350px;
 				border: 0;
@@ -100,6 +106,12 @@
 
 		<main>
 			<h1>Sichtung melden</h1>
+			<p class="befund">
+				<strong>Stand 2026-11:</strong> Die App meldet ihre Höhe jetzt per <code>postMessage</code>,
+				und <code>embed.js</code> (unter dem iframe eingebunden) passt den iframe an. Die Hinweise
+				zur festen Höhe und zur Breitenbegrenzung weiter unten sind der Befund vom 2026-08-12, der
+				zu dieser Änderung geführt hat. Maßgeblich ist <code>docs/IFRAME_EINBETTUNG.md</code>.
+			</p>
 			<p>
 				Nachbau von
 				<a href="https://www.deutsches-meeresmuseum.de/wissenschaft/sichtungen/sichtung-melden"
@@ -186,6 +198,7 @@
 			</p>
 
 			<iframe src="https://localhost:4000" id="sichtungen-frame" title="Sichtung melden"></iframe>
+			<script src="https://localhost:4000/embed.js" defer></script>
 		</main>
 
 		<footer>Footer der Elternseite (Attrappe)</footer>

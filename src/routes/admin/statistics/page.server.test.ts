@@ -20,6 +20,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { sightings } from '#lib/server/db/schema.ts';
 import { berlinCalendarDate } from '#lib/server/db/sqlTimeZone.ts';
 import { openOnly } from '#lib/server/db/approvalFilter.ts';
+import { isBehaviorAnswered } from '#lib/server/db/optionalFields.ts';
+import { hasMediaFiles } from '#lib/server/db/statisticsPredicates.ts';
 import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '#lib/server/db/sightingRepository.ts';
 
 const dialect = new PgDialect();
@@ -494,5 +496,39 @@ describe('admin/statistics load() — Epoch-Ausschluss nur in den Kalenderauswer
 				epochGrenze
 			);
 		}
+	});
+});
+
+/**
+ * Bug (2026-11): Zwei Kennzahlen rechneten anders als die öffentliche
+ * Statistik. „Mit Medien" zählte das Ankündigungs-Kennzeichen
+ * `aufnahmeHochladen` (lokal 3.314 gegen 829 Sichtungen mit Datei), und
+ * „Verhalten" in der Datenqualität zählte `verhalten != 0` — also auch
+ * „Keine Angabe" (4). Beide nutzen jetzt die gemeinsamen Prädikate.
+ */
+describe('admin/statistics load() — dieselbe Rechnung wie die öffentliche Statistik', () => {
+	const abfrageMit = (spalte: string) =>
+		recordedQueries.find((eintrag) => spalte in eintrag.columns);
+
+	it('zählt „Mit Medien" über vorhandene Dateien statt über aufnahmeHochladen', async () => {
+		recordedQueries = [];
+		await ladeSeite();
+
+		const spalte = abfrageMit('withMedia')?.columns.withMedia as SQLWrapper | undefined;
+		expect(spalte, 'Abfrage mit Spalte „withMedia" nicht gefunden').toBeDefined();
+		const text = toSqlText(spalte!);
+		expect(text).toContain(toSqlText(hasMediaFiles()));
+		expect(text).not.toContain('aufnahmeHochladen');
+	});
+
+	it('zählt „Verhalten angegeben" mit derselben Bedingung wie die Zusatzfeld-Quote', async () => {
+		recordedQueries = [];
+		await ladeSeite();
+
+		const verhalten = recordedQueries.filter(
+			(eintrag) => eintrag.where && toSqlText(eintrag.where).includes('"verhalten"')
+		);
+		expect(verhalten).toHaveLength(1);
+		expect(toSqlText(verhalten[0]!.where!)).toContain(toSqlText(isBehaviorAnswered()));
 	});
 });

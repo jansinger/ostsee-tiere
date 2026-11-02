@@ -6,10 +6,12 @@ import {
 	pendingOnly,
 	rejectedOnly
 } from '#lib/server/db/approvalFilter.ts';
+import { isBehaviorAnswered } from '#lib/server/db/optionalFields.ts';
 import { sightings } from '#lib/server/db/schema.ts';
+import { hasMediaFiles } from '#lib/server/db/statisticsPredicates.ts';
 import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '#lib/server/db/sightingRepository.ts';
 import { berlinCalendarDate, berlinDatePart } from '#lib/server/db/sqlTimeZone.ts';
-import { and, eq, gte, isNotNull, ne, sql, type SQL } from 'drizzle-orm';
+import { and, eq, gte, isNotNull, sql, type SQL } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import { YEAR_PARAM, parseYearParam, plausibleYearRange } from './yearFilter';
 
@@ -65,7 +67,9 @@ async function loadBasicStats(grundmenge: SQL): Promise<AdminBasicStats> {
 			avgGroupSize: sql<number>`COALESCE(AVG(${sightings.totalCount})::numeric, 0)`,
 			maxGroupSize: sql<number>`COALESCE(MAX(${sightings.totalCount})::integer, 0)`,
 			deadAnimals: sql<number>`COUNT(CASE WHEN ${sightings.isDead} = 1 THEN 1 END)::integer`,
-			withMedia: sql<number>`COUNT(CASE WHEN ${sightings.mediaUpload} != 0 THEN 1 END)::integer`
+			// Vorhandene Dateien, nicht das Ankündigungs-Kennzeichen `aufnahmeHochladen` —
+			// dasselbe Prädikat wie die öffentliche Statistik (`statisticsPredicates.ts`).
+			withMedia: sql<number>`COUNT(CASE WHEN ${hasMediaFiles()} THEN 1 END)::integer`
 		})
 		.from(sightings)
 		.where(grundmenge);
@@ -402,7 +406,9 @@ export const load: PageServerLoad = async ({ url }) => {
 			.from(sightings)
 			.where(
 				mitJahr(
-					and(approvedOnly(), isNotNull(sightings.behavior), ne(sightings.behavior, 0)) as SQL
+					// Dieselbe Bedingung wie in der Zusatzfeld-Quote: „Keine Angabe" (4) ist
+					// keine Angabe, „Sonstige" (0) zählt nur mit Freitext.
+					and(approvedOnly(), isBehaviorAnswered()) as SQL
 				)
 			);
 
