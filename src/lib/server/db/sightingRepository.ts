@@ -42,7 +42,7 @@ import type { NewSighting, UpdateSighting } from '#lib/types/sighting.ts';
 import type { SpamCheckResult } from '#lib/types/spam.ts';
 import type { SightingFileInsert } from '#lib/types/sightingFile.ts';
 import { isImageFile } from '#lib/utils/index.ts';
-import { and, count, countDistinct, eq, gte, isNotNull, ne, sql, type SQL } from 'drizzle-orm';
+import { and, count, eq, gte, isNotNull, ne, sql, type SQL } from 'drizzle-orm';
 import {
 	approvalFilter,
 	type ResolvedSightingScope,
@@ -52,6 +52,11 @@ import { readImageExifData } from '#lib/server/media/exifUtils.ts';
 import { mapFormToSighting } from '#lib/server/db/mapFormToSighting.ts';
 import { setSightingIdForReferenceId } from '#lib/server/db/sightingFilesRepository.ts';
 import { deleteStoredFiles } from '#lib/server/storage/deleteStoredFiles.ts';
+import {
+	answeredOptionalFieldCount,
+	hasAnsweredOptionalField
+} from '#lib/server/db/optionalFields.ts';
+import { hasMediaFiles } from '#lib/server/db/statisticsPredicates.ts';
 
 // Logger für Repository-Operationen
 const logger = createLogger('db:sightingRepository');
@@ -595,61 +600,32 @@ async function collectStatisticsForScope(
 
 		const totalSightings = totalResult?.count || 0;
 
-		// Sichtungen mit Medien: über `sichtungen` joinen, weil die Datei-Tabelle
-		// den Freigabestatus nicht kennt. `countDistinct` zählt Sichtungen, nicht
-		// Dateien — sonst überstiege der Medienanteil bei Mehrfach-Uploads 100 %.
+		// Sichtungen mit mindestens einer Datei — dasselbe Prädikat wie die
+		// Admin-Statistik. `EXISTS` zählt Sichtungen, nicht Dateien; sonst überstiege
+		// der Medienanteil bei Mehrfach-Uploads 100 %.
 		const [mediaResult] = await db
-			.select({ count: countDistinct(sightingFiles.sightingId) })
-			.from(sightingFiles)
-			.innerJoin(sightings, eq(sightingFiles.sightingId, sightings.id))
-			.where(approval);
+			.select({ count: count() })
+			.from(sightings)
+			.where(withApproval(hasMediaFiles()));
 
 		const sightingsWithMedia = mediaResult?.count || 0;
 
-		// Completion Rate (Prozentsatz der Sichtungen mit mindestens 8 ausgefüllten optionalen Feldern)
+		// Anteil der Sichtungen mit mindestens einem beantworteten Zusatzfeld.
+		// Was als „beantwortet" zählt, steht in `optionalFields.ts` — die Hilfe
+		// im Formular zeigt genau diese eine Zahl.
 		const completionRateQuery = await db
 			.select({ count: count() })
 			.from(sightings)
-			.where(
-				withApproval(
-					sql`(
-					CASE WHEN ${sightings.seaState} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.visibility} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.windDirection} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.windForce} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.behavior} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.distribution} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.reaction} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.shipCount} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.shipName} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.boatType} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.sightingDate} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.notes} IS NOT NULL THEN 1 ELSE 0 END
-				) >= 8`
-				)
-			);
+			.where(withApproval(hasAnsweredOptionalField()));
 
 		const completeSightings = completionRateQuery[0]?.count || 0;
 		const completionRate =
 			totalSightings > 0 ? Math.round((completeSightings / totalSightings) * 100) : 0;
 
-		// Durchschnittliche Anzahl ausgefüllter optionaler Felder
+		// Durchschnittliche Anzahl beantworteter Zusatzfelder (gleiche Zählung)
 		const avgOptionalQuery = await db
 			.select({
-				avg: sql<number>`ROUND(AVG(
-					CASE WHEN ${sightings.seaState} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.visibility} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.windDirection} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.windForce} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.behavior} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.distribution} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.reaction} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.shipCount} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.shipName} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.boatType} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.sightingDate} IS NOT NULL THEN 1 ELSE 0 END +
-					CASE WHEN ${sightings.notes} IS NOT NULL THEN 1 ELSE 0 END
-				))`
+				avg: sql<number>`ROUND(AVG(${answeredOptionalFieldCount()}))`
 			})
 			.from(sightings)
 			.where(approval);

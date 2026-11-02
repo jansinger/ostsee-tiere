@@ -208,20 +208,9 @@
 									{m.report_components_formhelp_text_auch_unscharfe_bilder_koennen_nuetzlich()}
 								</li>
 							</ul>
-							<div class="bg-success/10 mt-2 rounded p-2">
-								<div class="text-base-content/70 text-xs">
-									✅ <strong>
-										{#if loading}
-											<span class="loading loading-dots loading-xs"></span>
-										{:else if statistics}
-											{Math.round((statistics.averageOptionalFields / 12) * 100)}%
-										{:else}
-											–
-										{/if}
-									</strong>
-									{m.report_components_formhelp_text_der_beobachter_fuellen_zusatzfelder_aus()}
-								</div>
-							</div>
+							<!-- Hier stand bis 2026-11 eine zweite Zusatzfeld-Quote mit eigener Rechnung
+							     (averageOptionalFields / 12). Sie wich von der Kachel oben ab (67 % gegen
+							     56 %); die Kennzahl steht jetzt nur noch dort. -->
 						</div>
 
 						<div class="card bg-base-100 p-4">

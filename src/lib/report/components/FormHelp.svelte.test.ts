@@ -36,6 +36,27 @@ afterEach(async () => {
 	globalThis.fetch = originalFetch;
 });
 
+/**
+ * Bug (2026-11): Die Hilfe zeigte die Zusatzfeld-Quote zweimal, mit zwei
+ * verschiedenen Rechnungen (`completionRate` und `averageOptionalFields / 12`)
+ * und fast gleichem Text — live 56 % neben 67 %. Es gibt jetzt genau eine
+ * Kennzahl an genau einer Stelle.
+ */
+describe('FormHelp — Zusatzfeld-Quote', () => {
+	it('zeigt die Quote genau einmal, und zwar completionRate', async () => {
+		stubStatisticsFetch();
+
+		await render(FormHelp);
+
+		await expect.poll(() => document.body.textContent, { timeout: 5000 }).toContain('42%');
+		const percentages = document.body.textContent?.match(/\d+\s?%/g) ?? [];
+		expect(percentages.filter((p) => p === '42%')).toHaveLength(1);
+		// 50 % = averageOptionalFields 6 von 12 — die frühere zweite Rechnung.
+		// (100 % ist der Medienanteil, 1.234 von 1.234.)
+		expect(percentages).not.toContain('50%');
+	});
+});
+
 describe('FormHelp — Zahlenformat folgt der Locale', () => {
 	it('formatiert die Statistik-Zahlen deutsch, wenn die aktive Locale de ist', async () => {
 		const { overwriteGetLocale } = await import('#lib/paraglide/runtime.js');
