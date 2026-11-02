@@ -81,7 +81,7 @@ unverändert richtig.
 | Admin-Suche (`sightingSearchFilter.ts`)                                                                | `ILIKE` über E-Mail und Name; anonymisierte Meldungen per E-Mail nicht mehr auffindbar | Ist die Suche eine vollständige Adresse, zusätzlich `OR melder_hash = hash(suche)`                                                                                | 3    |
 | Statistik: eindeutige Melder, Wiederholungs-Melder                                                     | `COUNT(DISTINCT email)`                                                                | über `melder_hash`                                                                                                                                                | 3    |
 | Statistik: Top-Beobachter                                                                              | gruppiert und zeigt E-Mail, schließt `@meeresmuseum.de` aus                            | gruppiert über `melder_hash`; zeigt Name/E-Mail der jüngsten noch nicht anonymisierten Meldung, sonst „anonymisiert"; Ausschluss über neue Spalte `melder_intern` | 2, 3 |
-| Statistik: Schiffe (`COUNT(DISTINCT schiffsname)`)                                                     | zählt danach nur noch Schiffe mit Einwilligung                                         | **akzeptieren** und beschriften („mit veröffentlichtem Schiffsnamen")                                                                                             | 3    |
+| Statistik: Schiffe (`COUNT(DISTINCT schiffsname)`)                                                     | zählt danach nur noch Schiffe mit Einwilligung                                         | **akzeptiert (2026-11-02)**, beschriften („mit veröffentlichtem Schiffsnamen")                                                                                    | 3    |
 | Duplikat-Kandidaten (`duplicateCandidates.ts`)                                                         | gleiche E-Mail in derselben Stunde; betrifft praktisch nur frische Meldungen           | auf `melder_hash` umstellen (nutzt den Index)                                                                                                                     | 3    |
 | Spam-Nachbewertung (`rescoreSightings.ts`)                                                             | bewertet anonymisierte Zeilen ohne E-Mail-Signale                                      | anonymisierte Zeilen ausnehmen; vor dem ersten Lauf vollständig nachbewerten                                                                                      | 4    |
 | Spam-Prüfung einer Meldung (`/api/sightings/[id]/spam-check`)                                          | Neuberechnung ohne Kontaktdaten liefert ein anderes Ergebnis                           | bei anonymisierten Meldungen gespeicherten Wert mit Hinweis zurückgeben                                                                                           | 4    |
@@ -198,6 +198,19 @@ zusammen (Historie, Statistik, `/about`, Duplikate) bzw. werden gefunden (Suche,
 `gleicherMelder`), `sightingSearchFilter.ts`,
 `src/routes/admin/statistics/+page.server.ts` und `+page.svelte` (Beschriftung
 Schiffe), `src/routes/about/+page.server.ts`, `duplicateCandidates.ts`.
+
+**Abweichungen, die gewollt sind.** Der Hash normalisiert (`trim`, Kleinschreibung),
+die heutigen Abfragen nicht: `COUNT(DISTINCT email)` zählt `Erika@x.de` und
+`erika@x.de` als zwei Melder, `NOT LIKE '%@meeresmuseum.de'` übersieht
+`@Meeresmuseum.de`. Nach der Umstellung können „eindeutige Melder" und
+`/about` deshalb leicht **sinken** und die Top-Beobachter leicht anders aussehen.
+Das ist eine Korrektur, kein Verlust.
+
+**Nachweis vor dem ersten Lauf.** Nach dem Deploy von PR 3, solange die E-Mails
+noch vorhanden sind, werden auf Production alte und neue Zählweise
+nebeneinander gerechnet (je Jahr: eindeutige Melder, Wiederholungs-Melder,
+Top 10, `/about`). Erwartet: Die neue Zahl entspricht der alten Zählung über
+`lower(trim(email))` exakt. Das Ergebnis geht mit der Vorschau an das Museum.
 
 **Größe:** M · `feat(admin): read reporter identity from reporter hash`
 
@@ -320,10 +333,8 @@ jemand merkt. Deshalb:
 - **Hinweis im Eingang** an ungeprüften Meldungen, die in 14 Tagen oder früher
   fällig werden („Rückfragen nur noch bis …").
 
-**Offen beim Rollout:** Ob für `cleanup-orphans` heute tatsächlich ein Cron
-eingerichtet ist, lässt sich aus dem Repository nicht feststellen. Dokumentiert
-ist nur der Aufruf (`docs/ENVIRONMENT.md`). Das ist vor dem ersten Lauf zu
-prüfen und sonst einzurichten.
+**Cron:** Für `cleanup-orphans` ist in Production ein Cron eingerichtet
+(bestätigt 2026-11-02). Der Aufruf von `/api/admin/anonymize` wird dort ergänzt.
 
 ---
 
