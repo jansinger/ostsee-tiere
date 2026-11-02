@@ -37,3 +37,48 @@ Zusätzlich sollte das iframe **kein** `scrolling="no"` gesetzt bekommen, damit 
 - [ ] Test auf einem schmalen Bildschirm (Smartphone-Breite) durchgeführt
 
 Ein Testaufbau zum lokalen Ausprobieren der Einbettung liegt in [test-iframe.html](test-iframe.html).
+
+---
+
+# Sichtungskarte per iframe einbetten
+
+Stand 2026-11-02 bettet deutsches-meeresmuseum.de `https://www.ostsee-tiere.de/map` unter
+_Wissenschaft → Sichtungen → Sichtungskarte_ in einen 4:3-Rahmen (`embed-responsive-4by3`)
+einer rund 545px breiten Spalte ein — gemessen **545 × 409 px**.
+
+## Was die Karte im iframe selbst anpasst
+
+Die Karte erkennt die Einbettung (`window !== window.top`) und richtet sich darauf ein:
+
+| Element                        | Eigene Seite | Im iframe                                                 |
+| ------------------------------ | ------------ | --------------------------------------------------------- |
+| Titel „Sichtungskarte 2026"    | sichtbar     | entfällt — die Museumsseite trägt die Überschrift         |
+| Museumslogo unten rechts       | sichtbar     | entfällt — die Museumsseite trägt die Marke               |
+| Runder Hilfe-Knopf unten links | sichtbar     | entfällt; „Tastaturkürzel anzeigen" steht in der Legende  |
+| Link „Große Karte"             | —            | unten rechts, öffnet `/map` mit den aktuellen Filtern neu |
+
+Unabhängig von der Einbettung gilt außerdem:
+
+- **Größe der Bedienelemente nach Zeigerart.** Bei reiner Maus-/Trackpad-Bedienung sind Zoom,
+  Panel-Reiter und Karte/Liste 32px groß, sobald ein Touch-Zeiger vorhanden ist 44px
+  (`--map-control-min`, Begründung in `src/css/tokens.css`).
+- **Kompakte Reiter in niedrigen Rahmen.** Unter 512px Höhe werden „Filter" und „Legende" zu
+  Icon-Knöpfen oben rechts statt 128px hoher beschrifteter Reiter.
+
+## Empfehlung an die Museumsseite: mehr Höhe
+
+Der 4:3-Rahmen ist für eine Karte flach — die Ostsee ist breiter als hoch, aber die
+Bedienelemente brauchen oben und unten Platz. Besser:
+
+```html
+<iframe
+	src="https://www.ostsee-tiere.de/map"
+	title="Sichtungskarte Meeressäugetiere Ostsee"
+	style="display:block; width:100%; height:600px; border:0;"
+></iframe>
+```
+
+Ab 512px Höhe kehren die beschrifteten Panel-Reiter zurück. Das ist eine Empfehlung, keine
+Voraussetzung: Die Karte bleibt auch im heutigen 4:3-Rahmen vollständig bedienbar.
+
+Abgesichert in `e2e/map-embed.spec.ts` (echte Einbettung in einen 545×409-Rahmen).

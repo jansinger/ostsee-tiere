@@ -210,7 +210,7 @@ Erst der manuelle Workflow **Promote to Production** (mit Approval am Environmen
 | `docs/CONFIGURATION_USAGE.md`      | ConfigService (Laufzeit-Konfiguration)                                             |
 | `docs/LEGACY_API_SPECIFICATION.md` | Legacy API (KRITISCH)                                                              |
 | `docs/OSTSEE_FLAGS.md`             | `ostsee` vs. `ostsee_geo` — Namen sind irreführend, `2` im Altbestand              |
-| `docs/IFRAME_EINBETTUNG.md`        | iframe auf meeresmuseum.de: warum `/bestimmungshilfe` eingebettet unerreichbar ist |
+| `docs/IFRAME_EINBETTUNG.md`        | iframe auf meeresmuseum.de: Formular, Sichtungskarte, `/bestimmungshilfe` gesperrt |
 | `docs/SPAM_DETECTION.md`           | Spam-Score: Signale, Persistenz, Backfill (deployt nur per Admin-Endpunkt)         |
 | `docs/RELEASE_PIPELINE.md`         | Release → Staging → Production, Image-Tags, Promotion, Rollback                    |
 | `docs/PRODUCTION_DEPLOYMENT.md`    | Production Deployment (Schnellanleitung)                                           |

@@ -332,12 +332,33 @@ describe('FilterPanel als Bottom-Sheet (H6)', () => {
 		);
 	});
 
-	it('Toggle-Button hält das 44px-Touch-Target auf Mobile (WCAG 2.5.5)', async () => {
+	// Die Breite folgt seit 2026-11 der Zeigerart, nicht der Viewport-Breite
+	// (--map-control-min, tokens.css): 44px, sobald ein Touch-Zeiger da ist,
+	// sonst 32px. Den Touch-Fall prüft e2e/map-embed.spec.ts mit `hasTouch` —
+	// Vitest im Browser kann keinen groben Zeiger emulieren.
+	it('Toggle-Button ist so breit wie --map-control-min', async () => {
 		await page.viewport(375, 667);
 		await render(FilterPanel, { years: YEARS, defaultYear: 2025 });
 
-		const rect = getToggleButton().getBoundingClientRect();
-		expect(rect.width).toBeGreaterThanOrEqual(44);
+		const probe = document.createElement('div');
+		probe.style.width = 'var(--map-control-min)';
+		document.body.append(probe);
+		const tokenWidth = probe.getBoundingClientRect().width;
+		probe.remove();
+
+		expect(tokenWidth).toBeGreaterThanOrEqual(32);
+		expect(getToggleButton().getBoundingClientRect().width).toBe(tokenWidth);
+	});
+
+	it('Toggle-Button folgt im Feldmodus der größeren Trefferfläche (56px)', async () => {
+		await page.viewport(375, 667);
+		document.documentElement.dataset.density = 'field';
+		try {
+			await render(FilterPanel, { years: YEARS, defaultYear: 2025 });
+			expect(getToggleButton().getBoundingClientRect().width).toBeGreaterThanOrEqual(56);
+		} finally {
+			delete document.documentElement.dataset.density;
+		}
 	});
 
 	it('Griff schaltet Peek/Expanded', async () => {

@@ -22,8 +22,25 @@
 }
 
 /* OpenLayers Zoom Controls */
+/* Die drei linken Controls stapeln sich ab --map-controls-top; jeder Schritt
+   ist eine Trefferfläche plus 2×2px Margin. Vorher standen die Abstände als
+   feste rem-Werte da (11rem, 14.5rem), ausgerechnet für 44px — eine kleinere
+   Trefferfläche hätte Lücken gerissen.
+
+   4.5rem hält den Stapel unter dem Kartentitel. Im iframe gibt es keinen Titel
+   (die Museumsseite trägt ihn), dort reichen 3rem: Das hält ihn nur noch unter
+   der Zeile der Filter-Chips, die oben links beginnt. */
+.map-container-wrapper {
+	--map-controls-top: 4.5rem;
+	--map-control-step: calc(var(--map-control-min) + 4px);
+}
+
+.map-container-wrapper[data-embedded] {
+	--map-controls-top: 3rem;
+}
+
 .ol-zoom {
-	top: 4.5rem;
+	top: var(--map-controls-top, 4.5rem);
 	left: 0.5rem;
 }
 
@@ -35,11 +52,11 @@
 	font-weight: bold !important;
 	box-shadow: var(--shadow-raised) !important;
 	margin: 2px !important;
-	/* Touch-Target min. 44x44px (WCAG 2.5.5) — Desktop und Mobile identisch */
-	height: 44px !important;
-	width: 44px !important;
-	/* Symbolgröße, nicht Trefferfläche: die 44x44px oben bleiben unangetastet
-	   (WCAG 2.5.5), nur das Glyph wird ruhiger. */
+	/* Trefferfläche aus --map-control-min: 44px (WCAG 2.5.5), bei reiner
+	   Mausbedienung 32px — Begründung in tokens.css. */
+	height: var(--map-control-min) !important;
+	width: var(--map-control-min) !important;
+	/* Symbolgröße, nicht Trefferfläche: nur das Glyph wird ruhiger. */
 	font-size: 16px !important;
 	display: flex !important;
 	align-items: center !important;
@@ -69,11 +86,10 @@
    Die Regel weg zu lassen ist damit reine Aufräumarbeit — jedes echte Control
    bringt seine Regel unten selbst mit. */
 
-/* Zoom All Control */
-/* top: 11rem — ol-zoom (top 4.5rem) + zwei 44px-Buttons + Control-Padding, damit
-   die größeren Touch-Targets aus QW6 nicht mit dem Zoom-Control kollidieren. */
+/* Zoom All Control — unter den zwei Zoom-Knöpfen, 0.5rem Luft.
+   Mit 44px ergibt das wie bisher 11rem. */
 .zoom-all-control {
-	top: 11rem;
+	top: calc(var(--map-controls-top, 4.5rem) + 2 * var(--map-control-step, 48px) + 0.5rem);
 	left: 0.5rem;
 }
 
@@ -83,12 +99,12 @@
 	border-radius: 4px !important;
 	color: var(--color-base-content) !important;
 	cursor: pointer;
-	/* Touch-Target min. 44x44px (WCAG 2.5.5) — Desktop und Mobile identisch */
-	height: 44px !important;
-	width: 44px !important;
+	/* Trefferfläche aus --map-control-min: 44px (WCAG 2.5.5), bei reiner
+	   Mausbedienung 32px — Begründung in tokens.css. */
+	height: var(--map-control-min) !important;
+	width: var(--map-control-min) !important;
 	font-weight: bold !important;
-	/* Symbolgröße, nicht Trefferfläche: die 44x44px oben bleiben unangetastet
-	   (WCAG 2.5.5), nur das Glyph wird ruhiger. */
+	/* Symbolgröße, nicht Trefferfläche: nur das Glyph wird ruhiger. */
 	font-size: 16px !important;
 	box-shadow: var(--shadow-raised) !important;
 	margin: 2px !important;
@@ -101,11 +117,17 @@
 	background-color: var(--color-base-100) !important;
 }
 
-/* Location Control */
-/* top: 14.5rem — analog zur Zoom-All-Control-Berechnung, ein 44px-Button darunter. */
+/* Location Control — ein Knopf unter Zoom-All. Mit 44px wie bisher 14.5rem. */
 .location-control {
-	top: 14.5rem;
+	top: calc(var(--map-controls-top, 4.5rem) + 3 * var(--map-control-step, 48px) + 1rem);
 	left: 0.5rem;
+}
+
+/* Karte/Liste-Umschalter und Fenster-Link sind DaisyUI-Buttons; deren
+   Mindesthöhe kommt global aus --target-min (app.css, Touch-Targets). Für die
+   schwebenden Karten-Controls gilt stattdessen --map-control-min. */
+.map-control-scope {
+	--target-min: var(--map-control-min);
 }
 
 .location-control button {
@@ -114,12 +136,12 @@
 	border-radius: 4px !important;
 	color: var(--color-base-content) !important;
 	cursor: pointer;
-	/* Touch-Target min. 44x44px (WCAG 2.5.5) — Desktop und Mobile identisch */
-	height: 44px !important;
-	width: 44px !important;
+	/* Trefferfläche aus --map-control-min: 44px (WCAG 2.5.5), bei reiner
+	   Mausbedienung 32px — Begründung in tokens.css. */
+	height: var(--map-control-min) !important;
+	width: var(--map-control-min) !important;
 	font-weight: bold !important;
-	/* Symbolgröße, nicht Trefferfläche: die 44x44px oben bleiben unangetastet
-	   (WCAG 2.5.5), nur das Glyph wird ruhiger. */
+	/* Symbolgröße, nicht Trefferfläche: nur das Glyph wird ruhiger. */
 	font-size: 16px !important;
 	box-shadow: var(--shadow-raised) !important;
 	margin: 2px !important;
