@@ -161,6 +161,33 @@ test.describe('Karte im iframe — Touch-Gerät', () => {
 	});
 });
 
+test.describe('Karte im iframe — Safari ignoriert die History-API', () => {
+	// Das Museum lädt die Karte erst nach der Einwilligung: Sein Cookie-Skript
+	// tauscht `src` des iframes vom Platzhalter auf /map. Safari ignoriert in
+	// einem so umgesetzten iframe pushState/replaceState still (WebKit-Bug
+	// 227474) — `history.state` bleibt null. SvelteKit 3.1 liest seine
+	// Metadaten nach dem replaceState beim Start ungeprüft zurück und bricht mit
+	// „undefined is not an object (evaluating 't.resetIndex')" ab; /map rendert
+	// nur im Browser und blieb leer (gemeldet am 2026-11-02, Release 2.24.0).
+	//
+	// Chromium hat den Fehler nicht, deshalb wird er hier nachgestellt: Im iframe
+	// laufen beide Methoden ins Leere, bevor irgendein Skript der App lädt.
+	test('Karte startet trotzdem', async ({ page }) => {
+		await page.addInitScript(() => {
+			if (window === window.top) return;
+			History.prototype.pushState = () => undefined;
+			History.prototype.replaceState = () => undefined;
+		});
+		const fehler: string[] = [];
+		page.on('pageerror', (error) => fehler.push(error.message));
+
+		const frame = await openEmbedded(page);
+
+		await expect(frame.locator('.ol-viewport')).toBeVisible();
+		expect(fehler).toEqual([]);
+	});
+});
+
 test.describe('Kompakte Reiter außerhalb des iframes', () => {
 	// Handy in Querlage: niedrig genug für die kompakten Reiter, aber anders als
 	// im iframe steht oben die Navigationsleiste. Die Reiter gehören auf die Karte.

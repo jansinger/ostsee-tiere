@@ -26,6 +26,11 @@
 		<link rel="manifest" href="%sveltekit.assets%/manifest.json" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
+		<!-- Muss vor SvelteKit laufen: fängt ab, dass Safari in einem iframe mit
+		     nachträglich gesetzter Adresse replaceState ignoriert (Museumsseite
+		     der Sichtungskarte). Begründung in der Datei selbst. -->
+		<script src="%sveltekit.assets%/history-guard.js"></script>
+
 		<!--
 			HIER STEHEN NUR SEITENUNABHÄNGIGE TAGS.
 

@@ -201,6 +201,28 @@ Unabhängig von der Einbettung gilt außerdem:
 - **Kompakte Reiter in niedrigen Rahmen.** Unter 512px Höhe werden „Filter" und „Legende" zu
   Icon-Knöpfen oben rechts statt 128px hoher beschrifteter Reiter.
 
+## Safari: Karte blieb nach der Einwilligung leer
+
+Anders als das Formular lädt die Museumsseite die Karte erst nach der Einwilligung in externe
+Inhalte: Im iframe steht zunächst ihr Platzhalter (`/iframe-placeholder?…`), die Adresse der
+Karte nur in `data-src`. Nach der Zustimmung setzt das Cookie-Skript `src` um.
+
+In einem so umgesetzten iframe ignoriert Safari `history.pushState` und `replaceState` still
+([WebKit-Bug 227474](https://bugs.webkit.org/show_bug.cgi?id=227474)), `history.state` bleibt
+`null`. Seit SvelteKit 3.1 (Release 2.24.0) liest der Router seine Metadaten beim Start
+ungeprüft daraus zurück und bricht mit
+`TypeError: undefined is not an object (evaluating 't.resetIndex')` ab. Weil `/map` nur im
+Browser rendert, blieb die Fläche leer; Chrome war nicht betroffen.
+
+`static/history-guard.js` fängt das ab. Es läuft aus `src/app.html` vor SvelteKit, wirkt nur im
+iframe und erst, wenn ein Aufruf nachweislich ins Leere ging, und hält dann den Zustand selbst
+vor. Abgesichert in `src/lib/utils/client/historyGuard.test.ts` und `e2e/map-embed.spec.ts`
+(„Safari ignoriert die History-API“, nachgestellt per Init-Skript, weil Chromium den Fehler
+nicht hat).
+
+Wer die Datei entfernen will, prüft vorher, ob SvelteKit die Stelle selbst absichert
+(`set_history_options` in `runtime/client/client.js`; in 3.1.1 noch ungeprüft).
+
 ## Empfehlung an die Museumsseite: mehr Höhe
 
 Der 4:3-Rahmen ist für eine Karte flach — die Ostsee ist breiter als hoch, aber die
