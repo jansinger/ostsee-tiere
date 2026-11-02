@@ -1275,7 +1275,13 @@
 				aria-label={m.components_map_sightingsmapview_aria_label_grosse_karte_in_neuem_fenster()}
 			>
 				<Icon icon="lucide:external-link" class="h-4 w-4" aria-hidden="true" />
-				{m.components_map_sightingsmapview_text_grosse_karte()}
+				<!-- Unter 26rem Rahmenbreite (Handy auf der Museumsseite) reicht die
+				     untere Zeile nicht für Text-Link und zentrierten Umschalter — ab
+				     etwa 338px überdeckte der Umschalter den Link. Dort bleibt das
+				     Icon; den Namen trägt weiterhin aria-label. -->
+				<span class="max-[26rem]:sr-only"
+					>{m.components_map_sightingsmapview_text_grosse_karte()}</span
+				>
 			</a>
 		</div>
 	{/if}

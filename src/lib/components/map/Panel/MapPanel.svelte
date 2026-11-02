@@ -77,7 +77,10 @@
      44px. Das Token fragt die Zeigerart direkt ab (Begründung in tokens.css).
 
      `short:` (max-height 32rem, app.css): Im niedrigen Viewport wird der Reiter
-     zum quadratischen Icon-Knopf. Den Namen trägt weiterhin `aria-label`; der
+     zum quadratischen Icon-Knopf und hängt sich mit `short:absolute` an die
+     Karte statt an das Fenster. Fensterbezogen läge er auf der eigenen Seite in
+     der Navigationsleiste (Handy quer, 667×375) — im iframe gibt es keine, dort
+     ist beides dasselbe. Das Panel selbst bleibt `fixed`. Den Namen trägt weiterhin `aria-label`; der
      senkrechte Text entfällt dort ganz statt abgeschnitten zu werden — ein
      sichtbarer Rest stünde sonst nicht im zugänglichen Namen (WCAG 2.5.3).
 
@@ -95,7 +98,7 @@
 <button
 	bind:this={toggleEl}
 	onclick={togglePanel}
-	class="bg-base-100 text-base-content hover:bg-base-200 {accentBorderClass} {togglePositionClass} z-nav shadow-floating duration-panel short:h-(--map-control-min) fixed right-0 flex h-32 w-(--map-control-min) cursor-pointer flex-col items-center justify-center rounded-l-lg border-2 border-r-0 transition-all {isOpen
+	class="bg-base-100 text-base-content hover:bg-base-200 {accentBorderClass} {togglePositionClass} z-nav shadow-floating duration-panel short:absolute short:h-(--map-control-min) fixed right-0 flex h-32 w-(--map-control-min) cursor-pointer flex-col items-center justify-center rounded-l-lg border-2 border-r-0 transition-all {isOpen
 		? 'md:-translate-x-80'
 		: ''} {toggleHidden ? 'max-md:hidden' : ''}"
 	aria-label={title}

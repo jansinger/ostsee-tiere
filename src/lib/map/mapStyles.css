@@ -28,15 +28,21 @@
    Trefferfläche hätte Lücken gerissen.
 
    4.5rem hält den Stapel unter dem Kartentitel. Im iframe gibt es keinen Titel
-   (die Museumsseite trägt ihn), dort reichen 3rem: Das hält ihn nur noch unter
-   der Zeile der Filter-Chips, die oben links beginnt. */
+   (die Museumsseite trägt ihn); dort muss der Stapel nur unter die Zeile der
+   Filter-Chips, die bei 0.5rem beginnt. Die Chips sind Buttons und so hoch wie
+   --target-min — im Feldmodus 56px. Ein fester Wert (vorher 3rem) lag dort
+   unter dem ersten Chip.
+
+   --map-control-size gilt nur hier: Die Positionskarte im Meldeformular trägt
+   dieselben `.ol-zoom`-Knöpfe, behält aber --target-min. */
 .map-container-wrapper {
+	--map-control-size: var(--map-control-min);
 	--map-controls-top: 4.5rem;
-	--map-control-step: calc(var(--map-control-min) + 4px);
+	--map-control-step: calc(var(--map-control-size) + 4px);
 }
 
 .map-container-wrapper[data-embedded] {
-	--map-controls-top: 3rem;
+	--map-controls-top: calc(1rem + var(--target-min));
 }
 
 .ol-zoom {
@@ -52,10 +58,12 @@
 	font-weight: bold !important;
 	box-shadow: var(--shadow-raised) !important;
 	margin: 2px !important;
-	/* Trefferfläche aus --map-control-min: 44px (WCAG 2.5.5), bei reiner
-	   Mausbedienung 32px — Begründung in tokens.css. */
-	height: var(--map-control-min) !important;
-	width: var(--map-control-min) !important;
+	/* Trefferfläche: --target-min (44px, WCAG 2.5.5). Die Sichtungskarte setzt
+	   --map-control-size auf --map-control-min (bei reiner Mausbedienung 32px,
+	   Begründung in tokens.css); die Positionskarte im Meldeformular nutzt
+	   dieselben OpenLayers-Klassen und bleibt bei --target-min. */
+	height: var(--map-control-size, var(--target-min)) !important;
+	width: var(--map-control-size, var(--target-min)) !important;
 	/* Symbolgröße, nicht Trefferfläche: nur das Glyph wird ruhiger. */
 	font-size: 16px !important;
 	display: flex !important;
@@ -99,10 +107,12 @@
 	border-radius: 4px !important;
 	color: var(--color-base-content) !important;
 	cursor: pointer;
-	/* Trefferfläche aus --map-control-min: 44px (WCAG 2.5.5), bei reiner
-	   Mausbedienung 32px — Begründung in tokens.css. */
-	height: var(--map-control-min) !important;
-	width: var(--map-control-min) !important;
+	/* Trefferfläche: --target-min (44px, WCAG 2.5.5). Die Sichtungskarte setzt
+	   --map-control-size auf --map-control-min (bei reiner Mausbedienung 32px,
+	   Begründung in tokens.css); die Positionskarte im Meldeformular nutzt
+	   dieselben OpenLayers-Klassen und bleibt bei --target-min. */
+	height: var(--map-control-size, var(--target-min)) !important;
+	width: var(--map-control-size, var(--target-min)) !important;
 	font-weight: bold !important;
 	/* Symbolgröße, nicht Trefferfläche: nur das Glyph wird ruhiger. */
 	font-size: 16px !important;
@@ -136,10 +146,12 @@
 	border-radius: 4px !important;
 	color: var(--color-base-content) !important;
 	cursor: pointer;
-	/* Trefferfläche aus --map-control-min: 44px (WCAG 2.5.5), bei reiner
-	   Mausbedienung 32px — Begründung in tokens.css. */
-	height: var(--map-control-min) !important;
-	width: var(--map-control-min) !important;
+	/* Trefferfläche: --target-min (44px, WCAG 2.5.5). Die Sichtungskarte setzt
+	   --map-control-size auf --map-control-min (bei reiner Mausbedienung 32px,
+	   Begründung in tokens.css); die Positionskarte im Meldeformular nutzt
+	   dieselben OpenLayers-Klassen und bleibt bei --target-min. */
+	height: var(--map-control-size, var(--target-min)) !important;
+	width: var(--map-control-size, var(--target-min)) !important;
 	font-weight: bold !important;
 	/* Symbolgröße, nicht Trefferfläche: nur das Glyph wird ruhiger. */
 	font-size: 16px !important;
