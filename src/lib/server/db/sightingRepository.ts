@@ -57,6 +57,29 @@ import { deleteStoredFiles } from '#lib/server/storage/deleteStoredFiles.ts';
 const logger = createLogger('db:sightingRepository');
 
 /**
+ * Was von einer neuen Sichtung ins Log darf: fachliche Eckdaten, keine Person.
+ *
+ * Eine Auswahl statt einer Ausschlussliste. Die Redaction in
+ * `#lib/logger/redaction.ts` kennt nur Schlüssel, an die jemand gedacht hat —
+ * bis 2026-11 fehlten dort `street`, `zipCode`, `city`, `fax`, `shipName` und
+ * `homePort`, und `saveSighting` schrieb sie mit dem ganzen Datensatz ins Log.
+ * Personenbezogene Daten im Log überdauern jede Löschfrist der Datenbank
+ * (docs/ANONYMISIERUNG_KONZEPT.md). Hier steht nur, was zur Fehlersuche
+ * gebraucht wird.
+ */
+function summarizeForLog(sightingData: NewSighting): Record<string, unknown> {
+	return {
+		referenceId: sightingData.referenceId,
+		species: sightingData.species,
+		isDead: sightingData.isDead,
+		entryChannel: sightingData.entryChannel,
+		entryClient: sightingData.entryClient,
+		hasPosition: sightingData.latitude != null && sightingData.longitude != null,
+		spamScore: sightingData.spamScore
+	};
+}
+
+/**
  * Speichert eine neue Sichtung mit verknüpften Mediendateien und Wetterdaten in der Datenbank
  *
  * Diese Funktion führt eine transaktionale Operation durch, bei der sowohl
@@ -112,7 +135,7 @@ export const saveSighting = async (
 
 		logger.info(
 			{
-				sightingData: { ...sightingData, weatherData: undefined }, // Don't log full weather data
+				sighting: summarizeForLog(sightingData),
 				hasWeatherData: true,
 				weatherProvider: weatherData.provider,
 				weatherDataType: weatherData.data_type
@@ -120,7 +143,10 @@ export const saveSighting = async (
 			'Speichere neue Sichtung mit Wetterdaten'
 		);
 	} else {
-		logger.info({ sightingData }, 'Speichere neue Sichtung ohne Wetterdaten');
+		logger.info(
+			{ sighting: summarizeForLog(sightingData) },
+			'Speichere neue Sichtung ohne Wetterdaten'
+		);
 	}
 
 	// Insert der Sichtung UND das Verknüpfen der Mediendateien laufen in einer
@@ -135,7 +161,10 @@ export const saveSighting = async (
 		const id = result?.id;
 
 		if (!id) {
-			logger.error({ sightingData }, 'Fehler beim Speichern der Sichtung');
+			logger.error(
+				{ sighting: summarizeForLog(sightingData) },
+				'Fehler beim Speichern der Sichtung'
+			);
 			throw new Error('Fehler beim Speichern der Sichtung');
 		}
 
@@ -290,7 +319,7 @@ export const updateSighting = async (
 		.where(eq(sightings.id, Number(id)))
 		.returning();
 
-	logger.info({ id, updatedSighting }, 'Sichtung erfolgreich aktualisiert');
+	logger.info({ id, found: Boolean(updatedSighting) }, 'Sichtung erfolgreich aktualisiert');
 
 	return updatedSighting as NewSighting;
 };
