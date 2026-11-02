@@ -224,6 +224,12 @@ findet die Admin-Suche auch anonymisierte Meldungen einer Person:
 - **Mehrfachmeldungen in der Admin-Ansicht:** „Weitere Meldungen dieser Person
   (n)" über gleichen `melder_hash`.
 
+**Der Hash verlässt den Server nie** — nicht in API-Antworten, nicht in Exporten,
+nicht in URLs. Verknüpft wird serverseitig über die ID einer Meldung („alle
+Meldungen derselben Person wie Meldung 4711"), gesucht über eine eingegebene
+Adresse, die der Server selbst hasht. So kann ein Hash nicht in Browser-Verlauf,
+Zugriffsprotokollen oder heruntergeladenen Dateien landen, wo keine Frist gilt.
+
 Die Legacy-Suche in `showreports.json` durchsucht für Admins `email` per
 `ILIKE`. Bei anonymisierten Meldungen findet sie nichts mehr. Das ist gewollt
 und wird dokumentiert. Eine exakte Suche über den Hash kann ergänzt werden, ohne
@@ -240,34 +246,22 @@ Deshalb im Admin-Bereich (Einstellungen, neben dem Aufräum-Panel) anzeigen:
 
 ## 7. Auswirkungen an anderen Stellen
 
-| Stelle                                                                            | Was zu tun ist                                                                                                                                                                                                                                                                                        |
-| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Admin-Detailansicht                                                               | Bei `anonymisiert_am`: „Kontaktdaten anonymisiert am …" statt leerer Felder; Kontaktfelder schreibgeschützt.                                                                                                                                                                                          |
-| Admin-Posteingang                                                                 | Optional: Hinweis auf Meldungen, die in den nächsten 14 Tagen fällig werden und noch ungeprüft sind. Danach sind keine Rückfragen mehr möglich.                                                                                                                                                       |
-| **Server-Log**                                                                    | `sightingRepository.ts` loggt beim Speichern das ganze `sightingData` (`logger.info({ sightingData }, …)`), also auch Name, E-Mail und Telefon. Das muss auf ID und Flags reduziert werden, sonst bleiben die Daten im Log über die Frist hinaus. Eigener kleiner Fix, unabhängig von diesem Konzept. |
-| Benachrichtigungs-Mail an Admins                                                  | Das Template (`notificationEmailDefault.ts`) enthält Name und E-Mail. Die Postfächer liegen außerhalb der Anwendung; das Museum braucht dafür eine eigene Aufbewahrungsregel.                                                                                                                         |
-| Exporte (CSV, JSON, XML, KML)                                                     | Exporte nach der Anonymisierung enthalten automatisch keine Kontaktdaten mehr. Bereits heruntergeladene Dateien liegen außerhalb der Anwendung.                                                                                                                                                       |
-| Backups                                                                           | Werden nicht umgeschrieben, brauchen aber eine Aufbewahrungsfrist (z. B. höchstens 3 Monate), sonst sind die Daten dort weiter vorhanden.                                                                                                                                                             |
-| Audit-Log                                                                         | Unkritisch: `sighting.edit` speichert nur die **Namen** geänderter Felder, keine Werte.                                                                                                                                                                                                               |
-| Melder-Historie (Badge im Eingang und in der Detailansicht, `reporterHistory.ts`) | Zählt heute über die E-Mail und fände nach der Anonymisierung nichts mehr. Wird auf `melder_hash` umgestellt; der Link „Meldungen dieses Melders“ (`/admin/sichtungen?q=<email>`) ebenso.                                                                                                             |
-| Spam-Erkennung                                                                    | Unberührt: `sameEmail` betrachtet nur die letzten 24 Stunden.                                                                                                                                                                                                                                         |
-| Medien (EXIF, Personen auf Bildern)                                               | Eigenes Thema aus dem Datenschutz-Abgleich, hier nicht enthalten.                                                                                                                                                                                                                                     |
+Der vollständige Abgleich aller Stellen, die die betroffenen Felder lesen oder
+schreiben, steht im Umsetzungsplan (`docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md`,
+Abschnitt „Nutzungsabgleich"). Außerhalb der Anwendung bleiben:
+
+- **Benachrichtigungs-Mails an Admins** (`notificationEmailDefault.ts`) enthalten
+  Name und E-Mail. Die Postfächer brauchen eine eigene Aufbewahrungsregel des
+  Museums.
+- **Heruntergeladene Exporte** liegen außerhalb der Anwendung.
+- **Backups** werden nicht umgeschrieben und brauchen eine Aufbewahrungsfrist
+  (höchstens 3 Monate).
+- **Medien** (EXIF, Personen auf Bildern, Original-Dateinamen) sind ein eigenes
+  Thema aus dem Datenschutz-Abgleich.
 
 ## 8. Einführung
 
-1. Migration: Spalten `melder_hash`, `anonymisiert_am` und Index
-   (`npm run db:generate`, committen).
-2. Schlüssel `REPORTER_HASH_KEY` auf Staging und Production setzen und separat
-   sichern.
-3. Deploy. Ab jetzt bekommen neue Meldungen den Hash beim Eingang.
-4. Backfill der Hashes über den gesamten Bestand: `npm run privacy:anonymize:dry-run`,
-   dann der Hash-Schritt.
-5. **Vorschau dem Museum vorlegen:** Der erste Lauf leert praktisch den gesamten
-   Bestand seit 2009. Das ist nicht umkehrbar.
-6. Erster echter Lauf, danach täglich per Cron.
-7. Datenschutzerklärung bzw. `/about` um Frist und Pseudonym ergänzen; die
-   Zusage auf `/about`, dass dort steht, „wie lange sie gespeichert bleiben",
-   ist damit erstmals erfüllt.
+Ablauf, Freigabe des ersten Laufs und Automatisierung: siehe Umsetzungsplan.
 
 ## 9. Tests (Test-First)
 
