@@ -123,6 +123,8 @@ src/tools
 scripts/*
 !scripts/docker-*.sh
 !scripts/docker-migrate.ts
+# Vor `npm run sbom:prod` im Builder (räumt node_modules/$app weg)
+!scripts/sbom-prepare.mjs
 
 # Playwright
 playwright.config.ts
