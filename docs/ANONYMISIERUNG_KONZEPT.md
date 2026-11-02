@@ -1,6 +1,6 @@
 # Konzept: Anonymisierung personenbezogener Meldedaten nach 3 Monaten
 
-**Stand:** 2026-11-02 · **Status:** Entwurf, Entscheidungen E1–E3 getroffen (2026-11-02), noch nicht umgesetzt · **Keine Rechtsberatung.**
+**Stand:** 2026-11-02 · **Status:** Entwurf, Entscheidungen E1–E3 getroffen und mit dem Museum abgestimmt (2026-11-02), noch nicht umgesetzt · Umsetzung: `docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md` · **Keine Rechtsberatung.**
 
 ## 1. Anlass und Vorgabe
 
@@ -73,13 +73,14 @@ bleibt ein nicht umkehrbares Kennzeichen gespeichert."
 
 ### 3.2 Normalisierung
 
-`normalize(email) = email.normalize('NFC').trim().toLowerCase()`
-
-Leer oder nur Leerzeichen → kein Hash (`NULL`). Dieselbe Normalisierung, die die
-Spam-Erkennung schon für `sameEmail` nutzt (`lower(trim(email))`). Weiter wird
-bewusst nicht normalisiert: keine Sonderregeln für Gmail-Punkte oder
-`+`-Adressen. Zwei Schreibweisen derselben Person bleiben zwei Gruppen; das ist
-hinnehmbar und vorhersagbar.
+Es gilt die vorhandene `normalizeReporterKey` aus
+`src/lib/server/db/reporterHistory.ts`: `trim()` und `toLowerCase()`; leer oder
+nur Leerzeichen → kein Hash (`NULL`). Das ist dieselbe Gleichheit, mit der die
+Melder-Historie im Admin schon heute zählt, und dieselbe, die die
+Spam-Erkennung für `sameEmail` nutzt (`lower(trim(email))`). Weiter wird bewusst
+nicht normalisiert: keine Sonderregeln für Gmail-Punkte oder `+`-Adressen. Zwei
+Schreibweisen derselben Person bleiben zwei Gruppen; das ist hinnehmbar und
+vorhersagbar.
 
 ### 3.3 Schlüsselverwaltung
 
@@ -144,17 +145,17 @@ Personenbezug und sollte in der Admin-Maske gesperrt sein (siehe 7).
 
 ### 5.2 Feld-Matrix
 
-| Feld(er)                                                               | ohne Namens-Einwilligung | mit Namens-Einwilligung (`namensnennung = 1`) |
-| ---------------------------------------------------------------------- | ------------------------ | --------------------------------------------- |
-| `vorname`, `name`                                                      | `NULL`                   | bleibt (ist veröffentlicht)                   |
-| `email`                                                                | `NULL`                   | `NULL` (E1)                                   |
-| `telefon`, `fax`                                                       | `NULL`                   | `NULL` (E1)                                   |
-| `strasse`, `plz`, `ort`                                                | `NULL`                   | `NULL` (E1)                                   |
-| `schiffsname`, `heimathafen`                                           | bleibt (E2)              | bleibt (E2)                                   |
-| Freitexte (`bemerkungen`, `sonstige_auffaelligkeiten`, `*_text`, …)    | bleibt (E3)              | bleibt (E3)                                   |
-| `melder_hash`                                                          | bleibt                   | bleibt                                        |
-| `anonymisiert_am`                                                      | `now()`                  | `now()`                                       |
-| alles andere (Tier, Ort, Zeit, Wetter, Status, Einwilligungsnachweise) | bleibt                   | bleibt                                        |
+| Feld(er)                                                               | ohne Namens-Einwilligung                         | mit Namens-Einwilligung (`namensnennung = 1`)    |
+| ---------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------ |
+| `vorname`, `name`                                                      | `NULL`                                           | bleibt (ist veröffentlicht)                      |
+| `email`                                                                | `NULL`                                           | `NULL` (E1)                                      |
+| `telefon`, `fax`                                                       | `NULL`                                           | `NULL` (E1)                                      |
+| `strasse`, `plz`, `ort`                                                | `NULL`                                           | `NULL` (E1)                                      |
+| `schiffsname`, `heimathafen`                                           | `NULL`, außer bei `schiffnamensnennung = 1` (E2) | `NULL`, außer bei `schiffnamensnennung = 1` (E2) |
+| Freitexte (`bemerkungen`, `sonstige_auffaelligkeiten`, `*_text`, …)    | bleibt (E3)                                      | bleibt (E3)                                      |
+| `melder_hash`                                                          | bleibt                                           | bleibt                                           |
+| `anonymisiert_am`                                                      | `now()`                                          | `now()`                                          |
+| alles andere (Tier, Ort, Zeit, Wetter, Status, Einwilligungsnachweise) | bleibt                                           | bleibt                                           |
 
 `NULL` statt Leerstring: Alle Ausgabewege fangen `NULL` bereits ab
 (`showreports.json` bildet `na` mit `|| ''`, die Exporte ebenso). Für die
@@ -173,12 +174,11 @@ Personenbezug.
   wurden auch bei diesen Personen „ausschließlich für Rückfragen" erhoben. Sie
   werden deshalb immer geleert, der Name bleibt nur bei Einwilligung. Die
   Mehrfachzuordnung trägt der Hash.
-- **E2 — Schiffsname und Heimathafen: nicht leeren.** Beide Felder bleiben
-  unabhängig von `schiffnamensnennung` gespeichert; veröffentlicht werden sie
-  weiterhin nur mit dieser Einwilligung. Hinweis für die Abstimmung mit dem
-  Museum: Bei Sportbooten führen Schiffsname und Heimathafen oft direkt zum
-  Eigner. Die Felder bleiben damit personenbeziehbar, und das sollte der
-  Datenschutzbeauftragte ausdrücklich mittragen.
+- **E2 — Schiffsname und Heimathafen: leeren ohne Einwilligung** (geändert nach
+  Abstimmung mit dem Museum, 2026-11-02). Bei Sportbooten führen beide Felder oft
+  direkt zum Eigner. Sie werden deshalb geleert, wenn `schiffnamensnennung = 0`;
+  mit Einwilligung bleiben sie. `bootstyp` und `bootsantrieb` bleiben in jedem
+  Fall, sie sind fachlich relevant.
 - **E3 — Freitexte: nicht leeren.** Automatisch leeren würde fachliche
   Beobachtungen vernichten. Personenbezogene Angaben in Freitexten
   („bitte Rückruf unter …") bereinigt die Prüfung von Hand innerhalb der 3
@@ -240,17 +240,18 @@ Deshalb im Admin-Bereich (Einstellungen, neben dem Aufräum-Panel) anzeigen:
 
 ## 7. Auswirkungen an anderen Stellen
 
-| Stelle                              | Was zu tun ist                                                                                                                                                                                                                                                                                        |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Admin-Detailansicht                 | Bei `anonymisiert_am`: „Kontaktdaten anonymisiert am …" statt leerer Felder; Kontaktfelder schreibgeschützt.                                                                                                                                                                                          |
-| Admin-Posteingang                   | Optional: Hinweis auf Meldungen, die in den nächsten 14 Tagen fällig werden und noch ungeprüft sind. Danach sind keine Rückfragen mehr möglich.                                                                                                                                                       |
-| **Server-Log**                      | `sightingRepository.ts` loggt beim Speichern das ganze `sightingData` (`logger.info({ sightingData }, …)`), also auch Name, E-Mail und Telefon. Das muss auf ID und Flags reduziert werden, sonst bleiben die Daten im Log über die Frist hinaus. Eigener kleiner Fix, unabhängig von diesem Konzept. |
-| Benachrichtigungs-Mail an Admins    | Das Template (`notificationEmailDefault.ts`) enthält Name und E-Mail. Die Postfächer liegen außerhalb der Anwendung; das Museum braucht dafür eine eigene Aufbewahrungsregel.                                                                                                                         |
-| Exporte (CSV, JSON, XML, KML)       | Exporte nach der Anonymisierung enthalten automatisch keine Kontaktdaten mehr. Bereits heruntergeladene Dateien liegen außerhalb der Anwendung.                                                                                                                                                       |
-| Backups                             | Werden nicht umgeschrieben, brauchen aber eine Aufbewahrungsfrist (z. B. höchstens 3 Monate), sonst sind die Daten dort weiter vorhanden.                                                                                                                                                             |
-| Audit-Log                           | Unkritisch: `sighting.edit` speichert nur die **Namen** geänderter Felder, keine Werte.                                                                                                                                                                                                               |
-| Spam-Erkennung                      | Unberührt: `sameEmail` betrachtet nur die letzten 24 Stunden.                                                                                                                                                                                                                                         |
-| Medien (EXIF, Personen auf Bildern) | Eigenes Thema aus dem Datenschutz-Abgleich, hier nicht enthalten.                                                                                                                                                                                                                                     |
+| Stelle                                                                            | Was zu tun ist                                                                                                                                                                                                                                                                                        |
+| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Admin-Detailansicht                                                               | Bei `anonymisiert_am`: „Kontaktdaten anonymisiert am …" statt leerer Felder; Kontaktfelder schreibgeschützt.                                                                                                                                                                                          |
+| Admin-Posteingang                                                                 | Optional: Hinweis auf Meldungen, die in den nächsten 14 Tagen fällig werden und noch ungeprüft sind. Danach sind keine Rückfragen mehr möglich.                                                                                                                                                       |
+| **Server-Log**                                                                    | `sightingRepository.ts` loggt beim Speichern das ganze `sightingData` (`logger.info({ sightingData }, …)`), also auch Name, E-Mail und Telefon. Das muss auf ID und Flags reduziert werden, sonst bleiben die Daten im Log über die Frist hinaus. Eigener kleiner Fix, unabhängig von diesem Konzept. |
+| Benachrichtigungs-Mail an Admins                                                  | Das Template (`notificationEmailDefault.ts`) enthält Name und E-Mail. Die Postfächer liegen außerhalb der Anwendung; das Museum braucht dafür eine eigene Aufbewahrungsregel.                                                                                                                         |
+| Exporte (CSV, JSON, XML, KML)                                                     | Exporte nach der Anonymisierung enthalten automatisch keine Kontaktdaten mehr. Bereits heruntergeladene Dateien liegen außerhalb der Anwendung.                                                                                                                                                       |
+| Backups                                                                           | Werden nicht umgeschrieben, brauchen aber eine Aufbewahrungsfrist (z. B. höchstens 3 Monate), sonst sind die Daten dort weiter vorhanden.                                                                                                                                                             |
+| Audit-Log                                                                         | Unkritisch: `sighting.edit` speichert nur die **Namen** geänderter Felder, keine Werte.                                                                                                                                                                                                               |
+| Melder-Historie (Badge im Eingang und in der Detailansicht, `reporterHistory.ts`) | Zählt heute über die E-Mail und fände nach der Anonymisierung nichts mehr. Wird auf `melder_hash` umgestellt; der Link „Meldungen dieses Melders“ (`/admin/sichtungen?q=<email>`) ebenso.                                                                                                             |
+| Spam-Erkennung                                                                    | Unberührt: `sameEmail` betrachtet nur die letzten 24 Stunden.                                                                                                                                                                                                                                         |
+| Medien (EXIF, Personen auf Bildern)                                               | Eigenes Thema aus dem Datenschutz-Abgleich, hier nicht enthalten.                                                                                                                                                                                                                                     |
 
 ## 8. Einführung
 
