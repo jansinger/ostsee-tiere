@@ -68,8 +68,21 @@
 	}
 </script>
 
-<!-- Toggle Button (always visible) — H6: auf Mobile 44px breit (Touch-Target)
-     und ortsfest; nur auf md+ wandert er mit dem Panel nach links.
+<!-- Toggle Button (always visible) — H6: ortsfest; nur auf md+ wandert er mit
+     dem Panel nach links.
+
+     Breite aus --map-control-min statt `w-11 md:w-8`: Die alte Staffel nahm die
+     Viewport-Breite als Stellvertreter für die Bedienart — ein Touch-Tablet ab
+     md bekam 32px, ein Desktop-Besucher im 545px-iframe auf meeresmuseum.de
+     44px. Das Token fragt die Zeigerart direkt ab (Begründung in tokens.css).
+
+     `short:` (max-height 32rem, app.css): Im niedrigen Viewport wird der Reiter
+     zum quadratischen Icon-Knopf und hängt sich mit `short:absolute` an die
+     Karte statt an das Fenster. Fensterbezogen läge er auf der eigenen Seite in
+     der Navigationsleiste (Handy quer, 667×375) — im iframe gibt es keine, dort
+     ist beides dasselbe. Das Panel selbst bleibt `fixed`. Den Namen trägt weiterhin `aria-label`; der
+     senkrechte Text entfällt dort ganz statt abgeschnitten zu werden — ein
+     sichtbarer Rest stünde sonst nicht im zugänglichen Namen (WCAG 2.5.3).
 
      Die Fläche ist deckendes `bg-base-100` und NICHT `glass`: Der Umschalter
      steht mit seiner Beschriftung (FILTER/LEGENDE) über den OSM-Kacheln, und
@@ -85,7 +98,7 @@
 <button
 	bind:this={toggleEl}
 	onclick={togglePanel}
-	class="bg-base-100 text-base-content hover:bg-base-200 {accentBorderClass} {togglePositionClass} z-nav shadow-floating duration-panel fixed right-0 flex h-32 w-11 cursor-pointer flex-col items-center justify-center rounded-l-lg border-2 border-r-0 transition-all md:w-8 {isOpen
+	class="bg-base-100 text-base-content hover:bg-base-200 {accentBorderClass} {togglePositionClass} z-nav shadow-floating duration-panel short:absolute short:h-(--map-control-min) fixed right-0 flex h-32 w-(--map-control-min) cursor-pointer flex-col items-center justify-center rounded-l-lg border-2 border-r-0 transition-all {isOpen
 		? 'md:-translate-x-80'
 		: ''} {toggleHidden ? 'max-md:hidden' : ''}"
 	aria-label={title}
@@ -94,10 +107,10 @@
 >
 	<Icon
 		icon={isLoading ? 'lucide:loader-2' : icon}
-		class="mb-1 h-4 w-4 {isLoading ? 'animate-spin' : ''}"
+		class="short:mb-0 mb-1 h-4 w-4 {isLoading ? 'animate-spin' : ''}"
 	/>
 	<div
-		class="text-xs whitespace-nowrap"
+		class="short:hidden text-xs whitespace-nowrap"
 		style="writing-mode: vertical-rl; text-orientation: mixed;"
 	>
 		{toggleText}

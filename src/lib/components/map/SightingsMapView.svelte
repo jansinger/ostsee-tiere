@@ -34,6 +34,7 @@
 		resolveYearsUpdate
 	} from '#lib/map/yearsRequestSequencer.ts';
 	import { reconcileDisplayedYear } from '#lib/map/yearDisplayReconciliation.ts';
+	import { standaloneMapHref } from '#lib/map/embedMode.ts';
 	import { page } from '$app/state';
 	import { replaceState } from '$app/navigation';
 	// Kein `import 'ol/ol.css'` hier: die Datei kommt global aus app.css, und zwar
@@ -61,6 +62,7 @@
 		showTitle = true,
 		title = 'Sichtungskarte',
 		showLogo = true,
+		embedded = false,
 		containerClass = 'relative h-screen w-screen overflow-hidden',
 		titleClass = 'bg-base-100 text-base-content text-sm z-raised rounded-lg px-3 py-1.5 font-bold shadow-floating flex items-center gap-2'
 	}: {
@@ -68,6 +70,8 @@
 		showTitle?: boolean;
 		title?: string;
 		showLogo?: boolean;
+		/** Läuft im iframe auf meeresmuseum.de — siehe docs/IFRAME_EINBETTUNG.md. */
+		embedded?: boolean;
 		containerClass?: string;
 		titleClass?: string;
 	} = $props();
@@ -445,12 +449,21 @@
 	 * Navigation, kein History-Eintrag, damit Zurück nicht durch jede
 	 * Filteränderung läuft.
 	 */
+	// Ziel des Links „Große Karte" im iframe. Folgt den Filtern über
+	// syncFiltersToUrl — die große Karte öffnet dort, wo die eingebettete stand.
+	let standaloneHref = $state(standaloneMapHref(page.url));
+
 	function syncFiltersToUrl(state: MapFilterUrlState): void {
 		const query = serializeMapFilterParams(state);
 		const search = query ? `?${query}` : '';
 		if (window.location.search === search) return;
 		// Hash beibehalten — z. B. #map-skip-target nach Nutzung des Skip-Links.
 		replaceState(`${window.location.pathname}${search}${window.location.hash}`, page.state);
+		standaloneHref = standaloneMapHref({
+			origin: window.location.origin,
+			pathname: window.location.pathname,
+			search
+		});
 	}
 
 	// --- N6: Aktionen der Filter-Chips -------------------------------------
@@ -845,7 +858,7 @@
 	}
 </script>
 
-<div class="{containerClass} map-container-wrapper">
+<div class="{containerClass} map-container-wrapper" data-embedded={embedded || undefined}>
 	<!-- K3: Skip-Link — erstes fokussierbares Element, überspringt die Karte.
 	     Nur in der Kartenansicht: in der Liste gibt es nichts zu überspringen. -->
 	{#if viewMode === 'map'}
@@ -1166,16 +1179,21 @@
 		{m.components_map_sightingsmapview_text_ende_der_karte()}
 	</div>
 
-	<!-- K3: Umschalter Karte/Liste -->
+	<!-- K3: Umschalter Karte/Liste
+
+	     `btn-sm` statt `min-h-11`: Die Mindesthöhe kommt über `map-control-scope`
+	     aus --map-control-min — 44px, sobald ein Touch-Zeiger da ist, sonst 32px.
+	     Mit DaisyUIs Standardgröße blieb der Knopf bei Mausbedienung trotzdem
+	     40px hoch, weil `.btn` die Höhe selbst setzt. -->
 	<div
-		class="z-panel absolute bottom-4 left-1/2 -translate-x-1/2"
+		class="z-panel map-control-scope absolute bottom-4 left-1/2 -translate-x-1/2"
 		role="group"
 		aria-label={m.components_map_sightingsmapview_aria_label_darstellung_der_sichtungen_waehlen()}
 	>
 		<div class="join shadow-floating">
 			<button
 				type="button"
-				class="btn join-item min-h-11 {viewMode === 'map' ? 'btn-primary' : ''}"
+				class="btn btn-sm join-item {viewMode === 'map' ? 'btn-primary' : ''}"
 				aria-pressed={viewMode === 'map'}
 				onclick={() => (viewMode = 'map')}
 			>
@@ -1183,7 +1201,7 @@
 			</button>
 			<button
 				type="button"
-				class="btn join-item min-h-11 {viewMode === 'list' ? 'btn-primary' : ''}"
+				class="btn btn-sm join-item {viewMode === 'list' ? 'btn-primary' : ''}"
 				aria-pressed={viewMode === 'list'}
 				onclick={() => (viewMode = 'list')}
 			>
@@ -1217,6 +1235,7 @@
 		bind:colorVisibility
 		onSeamarkToggle={(visible) => mapInstance?.setSeamarkVisibility(visible)}
 		showStatusLegend={isAdmin}
+		onShowKeyboardHelp={embedded ? () => (showKeyboardHelp = true) : undefined}
 	/>
 
 	<!-- Tastatur-Hilfe Button
@@ -1227,14 +1246,45 @@
 	     entscheiden und meldet es als offen. `aria-hidden` am Zeichen hilft nicht:
 	     axe ermittelt den sichtbaren Text dieser Regel ausdrücklich ohne
 	     Rücksicht auf den Accessibility-Tree. Ein SVG trägt keinen Text. -->
-	<button
-		onclick={() => (showKeyboardHelp = true)}
-		class="bg-info text-info-content hover:bg-info/80 z-raised shadow-floating duration-instant fixed bottom-4 left-4 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full transition-colors"
-		aria-label={m.components_map_sightingsmapview_aria_label_tastatur_hilfe_anzeigen()}
-		title={m.components_map_sightingsmapview_title_tastaturkuerzel_anzeigen_h_oder()}
-	>
-		<Icon icon="lucide:circle-help" width="24" height="24" aria-hidden="true" />
-	</button>
+	{#if !embedded}
+		<button
+			data-testid="map-help-fab"
+			onclick={() => (showKeyboardHelp = true)}
+			class="bg-info text-info-content hover:bg-info/80 z-raised shadow-floating duration-instant fixed bottom-4 left-4 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full transition-colors"
+			aria-label={m.components_map_sightingsmapview_aria_label_tastatur_hilfe_anzeigen()}
+			title={m.components_map_sightingsmapview_title_tastaturkuerzel_anzeigen_h_oder()}
+		>
+			<Icon icon="lucide:circle-help" width="24" height="24" aria-hidden="true" />
+		</button>
+	{/if}
+
+	{#if embedded}
+		<!-- Im iframe auf meeresmuseum.de (545×409) ist die Karte ein Vorgeschmack;
+		     wer filtern, die Liste lesen oder großflächig schauen will, braucht die
+		     eigene Seite. Der Link sitzt dort, wo außerhalb des iframes das Logo
+		     steht — das entfällt hier, weil die Museumsseite die Marke trägt.
+
+		     Der sichtbare Text steht im zugänglichen Namen (WCAG 2.5.3), der Name
+		     ergänzt nur das neue Fenster, das sonst unangekündigt aufginge. -->
+		<div class="z-raised map-control-scope absolute right-1 bottom-4">
+			<a
+				href={standaloneHref}
+				target="_blank"
+				rel="noopener"
+				class="btn btn-sm bg-base-100 shadow-floating"
+				aria-label={m.components_map_sightingsmapview_aria_label_grosse_karte_in_neuem_fenster()}
+			>
+				<Icon icon="lucide:external-link" class="h-4 w-4" aria-hidden="true" />
+				<!-- Unter 26rem Rahmenbreite (Handy auf der Museumsseite) reicht die
+				     untere Zeile nicht für Text-Link und zentrierten Umschalter — ab
+				     etwa 338px überdeckte der Umschalter den Link. Dort bleibt das
+				     Icon; den Namen trägt weiterhin aria-label. -->
+				<span class="max-[26rem]:sr-only"
+					>{m.components_map_sightingsmapview_text_grosse_karte()}</span
+				>
+			</a>
+		</div>
+	{/if}
 
 	<!-- Logo (unten rechts) - optional -->
 	{#if showLogo}

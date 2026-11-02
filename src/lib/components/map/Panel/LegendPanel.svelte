@@ -35,7 +35,10 @@
 		onSeamarkToggle = undefined,
 		// Task 8: nur im Admin-Kontext gesetzt — die öffentliche Karte kennt keine
 		// Bearbeitungszustände und zeigt diesen Abschnitt deshalb nie.
-		showStatusLegend = false
+		showStatusLegend = false,
+		// Nur im iframe gesetzt: Dort entfällt der schwebende Hilfe-Knopf der
+		// Karte, und die Tastaturhilfe ist über diesen Eintrag erreichbar.
+		onShowKeyboardHelp = undefined
 	}: {
 		translations: MapTranslations;
 		counts: CountData;
@@ -45,6 +48,7 @@
 		colorVisibility?: Record<string, boolean>;
 		onSeamarkToggle?: (visible: boolean) => void;
 		showStatusLegend?: boolean;
+		onShowKeyboardHelp?: (() => void) | undefined;
 	} = $props();
 
 	// CountManager via typisiertem Svelte Context (Symbol-Key, siehe mapContext.ts)
@@ -157,7 +161,7 @@
 	title={m.components_map_panel_legendpanel_title_legende()}
 	toggleText={m.components_map_panel_legendpanel_title_legende().toLocaleUpperCase()}
 	icon="lucide:list"
-	togglePositionClass="top-52"
+	togglePositionClass="top-52 short:top-[calc(1rem+var(--map-control-min))]"
 	accentBorderClass="border-secondary/20"
 	{toggleHidden}
 	bind:isOpen
@@ -357,5 +361,21 @@
 				{m.components_map_panel_legendpanel_text_status_cluster_erklaerung()}
 			</p>
 		</div>
+	{/if}
+
+	{#if onShowKeyboardHelp}
+		<!-- Im iframe auf meeresmuseum.de stand der runde Hilfe-Knopf als dritte
+		     schwebende Fläche über einer 545×409-Karte. Die Tastaturhilfe braucht
+		     dort keinen eigenen Platz auf der Karte — die Tasten H und ? öffnen sie
+		     weiterhin, und hier bleibt sie für alle anderen auffindbar. -->
+		<button
+			type="button"
+			data-testid="legend-keyboard-help"
+			class="btn btn-ghost btn-sm mt-4 w-full justify-start"
+			onclick={onShowKeyboardHelp}
+		>
+			<Icon icon="lucide:circle-help" class="h-4 w-4" aria-hidden="true" />
+			{m.components_map_panel_legendpanel_text_tastaturkuerzel_anzeigen()}
+		</button>
 	{/if}
 </MapPanel>

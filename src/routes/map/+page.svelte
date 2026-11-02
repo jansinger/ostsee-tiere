@@ -2,6 +2,13 @@
 	import * as m from '#lib/paraglide/messages.js';
 	import HreflangHead from '#lib/components/seo/HreflangHead.svelte';
 	import LazyMapWrapper from '#lib/components/map/LazyMapWrapper.svelte';
+	import { isNotIFrame } from '#lib/utils/client/isNotIFrame.ts';
+
+	// Im iframe auf meeresmuseum.de trägt die Museumsseite Überschrift und
+	// Marke selbst — Titel-Platte und Logo der Karte wiederholten beides auf
+	// einer 545×409-Fläche. Die Route läuft mit ssr=false (+page.ts), der Wert
+	// stammt also immer aus dem Browser und nie aus dem Server-Default `false`.
+	const embedded = !isNotIFrame;
 </script>
 
 <svelte:head>
@@ -28,7 +35,8 @@
 <LazyMapWrapper
 	mapContainerId="map"
 	title={m.routes_map_page_title_sichtungskarte()}
-	showTitle={true}
-	showLogo={true}
+	showTitle={!embedded}
+	showLogo={!embedded}
+	{embedded}
 	containerClass="relative min-h-0 w-full flex-1 overflow-hidden"
 />

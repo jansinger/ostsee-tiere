@@ -224,6 +224,14 @@
 	transition-timing-function: linear;
 }
 
+/* Niedriger Viewport — eine Höhen-, keine Breitengrenze, und deshalb kein
+   Eingriff in den Breakpoint-Vertrag (md/lg, design-system.md). Anlass ist die
+   Sichtungskarte im iframe auf meeresmuseum.de (545×409) und Handys in
+   Querlage (~375px hoch): Dort nahmen die zwei 128px hohen Panel-Reiter samt
+   Versatz zwei Drittel des rechten Kartenrands ein. 32rem = 512px trifft beide
+   Fälle und lässt jedes Tablet und jedes Desktop-Fenster unberührt. */
+@custom-variant short (@media (max-height: 32rem));
+
 /* ===== Base Styles ===== */
 /* Nur 'Roboto' gehört in Anführungszeichen. `system-ui` und `sans-serif` sind
    CSS-Schlüsselwörter — in Anführungszeichen wären es Familiennamen, und die

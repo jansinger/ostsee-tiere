@@ -10,6 +10,7 @@
 		showTitle = true,
 		title = 'Sichtungskarte',
 		showLogo = true,
+		embedded = false,
 		containerClass = 'relative h-screen w-screen overflow-hidden',
 		titleClass = 'bg-base-100 text-base-content text-sm z-raised rounded-lg px-3 py-1.5 font-bold shadow-floating flex items-center gap-2'
 	}: {
@@ -17,6 +18,7 @@
 		showTitle?: boolean;
 		title?: string;
 		showLogo?: boolean;
+		embedded?: boolean;
 		containerClass?: string;
 		titleClass?: string;
 	} = $props();
@@ -77,5 +79,13 @@
 		</div>
 	</div>
 {:else if MapComponent}
-	<MapComponent {mapContainerId} {showTitle} {title} {showLogo} {containerClass} {titleClass} />
+	<MapComponent
+		{mapContainerId}
+		{showTitle}
+		{title}
+		{showLogo}
+		{embedded}
+		{containerClass}
+		{titleClass}
+	/>
 {/if}

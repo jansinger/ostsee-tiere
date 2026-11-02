@@ -112,6 +112,23 @@ describe('LegendPanel — Umschalter folgt der Locale', () => {
 	});
 });
 
+describe('LegendPanel — Tastaturhilfe im eingebetteten Zustand', () => {
+	// Im iframe auf meeresmuseum.de entfällt der schwebende Hilfe-Knopf der
+	// Karte; erreichbar bleibt die Hilfe über diesen Eintrag in der Legende.
+	it('zeigt den Eintrag nur, wenn ein Handler übergeben wird', async () => {
+		await render(LegendPanel, { translations, counts });
+		expect(document.querySelector('[data-testid="legend-keyboard-help"]')).toBeNull();
+	});
+
+	it('ruft den Handler beim Klick auf', async () => {
+		const onShowKeyboardHelp = vi.fn();
+		await render(LegendPanel, { translations, counts, isOpen: true, onShowKeyboardHelp });
+
+		await page.getByRole('button', { name: 'Tastaturkürzel anzeigen' }).click();
+		expect(onShowKeyboardHelp).toHaveBeenCalledOnce();
+	});
+});
+
 describe('LegendPanel', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();

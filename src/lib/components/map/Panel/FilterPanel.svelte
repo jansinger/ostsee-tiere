@@ -103,7 +103,7 @@
 	title={m.components_map_panel_filterpanel_title_filter()}
 	toggleText="FILTER"
 	icon="lucide:filter"
-	togglePositionClass="top-20"
+	togglePositionClass="top-20 short:top-2"
 	accentBorderClass="border-primary/20"
 	{isLoading}
 	{toggleHidden}

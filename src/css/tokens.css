@@ -206,6 +206,10 @@
 	   Control bleibt visuell ruhig. 28px liegt leicht über DaisyUIs 24px —
 	   an Deck bei Sonne besser auszumachen, ohne die Zeile zu dominieren. */
 	--control-size: 1.75rem; /* 28px */
+	/* Trefferfläche der Bedienelemente, die über der Karte schweben (Zoom,
+	   Panel-Reiter, Karte/Liste). Folgt --target-min — außer wenn das Gerät
+	   gar keinen groben Zeiger hat, siehe @media unten. */
+	--map-control-min: var(--target-min);
 
 	/* Layout-Verträge. Die iframe-Breite ist ein Vertrag mit meeresmuseum.de
 	   und darf nicht beiläufig geändert werden. */
@@ -220,4 +224,24 @@
 	--target-min: 3.5rem; /* 56px */
 	--target-gap: var(--space-4);
 	--text-support: 0.875rem; /* 14px */
+}
+
+/* Karten-Bedienelemente bei reiner Maus-/Trackpad-Bedienung: 32px statt 44px.
+   Die 44px sind eine Größe für den Finger (WCAG 2.5.5); ein Mauszeiger trifft
+   32px sicher, und WCAG 2.2 verlangt in 2.5.8 (AA) 24px. Über der Karte zählt
+   jeder Pixel — im iframe auf meeresmuseum.de (545×409) verdeckten die
+   Touch-Größen ein Drittel der Fläche.
+
+   `any-pointer`, nicht `pointer`: Ein Notebook mit Touchscreen meldet die Maus
+   als primären Zeiger, wird aber auch mit dem Finger bedient. Sobald IRGENDEIN
+   grober Zeiger da ist, bleibt es bei --target-min. Der Feldmodus gewinnt
+   ebenfalls — wer ihn einschaltet, hat ihn für größere Ziele eingeschaltet.
+
+   Bewusst nur für die Karte und nicht für --target-min selbst: Das
+   Meldeformular wird an Deck ausgefüllt, und dort ist die Zeigerart beim
+   Laden kein verlässlicher Hinweis auf die Hand, die bedient. */
+@media not (any-pointer: coarse) {
+	:root:not([data-density='field']) {
+		--map-control-min: 2rem; /* 32px */
+	}
 }

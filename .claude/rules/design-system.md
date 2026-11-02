@@ -498,6 +498,11 @@ Das Formular wird an Deck und am Strand ausgefüllt — nass, in der Sonne, mit 
 - Ausnahmen tragen `.target-exempt` und **begründen das im Code-Kommentar**. Zulässig nur für Ziele, die nachweislich nicht mit dem Finger bedient werden.
 - Der Mindestabstand zwischen zwei Zielen ist `--target-gap`.
 - Der Feldmodus wird über `<html data-density="field">` geschaltet und hebt `--target-min` auf 56px sowie `--text-support` auf 14px. Keine Komponente kennt den Modus — sie liest nur die Tokens.
+- **Die eine Ausnahme nach Zeigerart: die schwebenden Bedienelemente der Karte** (seit 2026-11). Zoom, Zoom-All, Standort, Panel-Reiter, Karte/Liste und der Fenster-Link im iframe lesen `--map-control-min` statt `--target-min`. Das Token folgt `--target-min`, außer wenn das Gerät **gar keinen** groben Zeiger hat (`@media not (any-pointer: coarse)`) — dann 32px. Der Feldmodus gewinnt immer. Anlass war die Einbettung auf meeresmuseum.de (545×409): Die Touch-Größen verdeckten dort ein Drittel der Karte, obwohl der Besucher am Rechner sitzt.
+  - **`any-pointer`, nicht `pointer`.** Ein Notebook mit Touchscreen meldet die Maus als primären Zeiger und wird trotzdem mit dem Finger bedient.
+  - **Nicht auf `--target-min` selbst übertragen.** Das Formular wird an Deck ausgefüllt; die Zeigerart beim Laden sagt dort nichts über die Hand, die bedient.
+  - DaisyUI-Buttons in diesem Bereich bekommen die Klasse `map-control-scope` (setzt `--target-min` lokal auf das Token) und `btn-sm` — sonst bleibt der Button über DaisyUIs eigene `height` bei 40px.
+  - Abgesichert in `e2e/map-embed.spec.ts` (Maus: ≤ 32px, `hasTouch`: ≥ 44px) und `FilterPanel.svelte.test.ts` (Feldmodus: ≥ 56px).
 - Die Primäraktion muss ohne Scrollen erreichbar sein: unterhalb `md` trägt die Schritt-Navigation `.form-step-nav` und wird zum ortsfesten Balken am unteren Rand (inkl. `env(safe-area-inset-bottom)`).
 
 ---
