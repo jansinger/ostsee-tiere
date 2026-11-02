@@ -126,6 +126,10 @@ ENCRYPTION_KEY="HIER_GENERIERTEN_WERT_EINFÜGEN"
 # Endpunkt nur über eine Admin-Session erreichbar — siehe Abschnitt unten.
 CLEANUP_TOKEN="HIER_GENERIERTEN_WERT_EINFÜGEN"
 
+# Schlüssel für den Melder-Hash (openssl rand -base64 48). NIE rotieren und
+# getrennt von der Datenbank sichern — siehe docs/ENVIRONMENT.md.
+REPORTER_HASH_KEY="HIER_GENERIERTEN_WERT_EINFÜGEN"
+
 # Auth0 Konfiguration
 AUTH0_CLIENT_ID="deine-client-id"
 AUTH0_CLIENT_SECRET="dein-client-secret"
@@ -180,6 +184,18 @@ openssl rand -hex 32
 
 # CLEANUP_TOKEN (mindestens 32 Zeichen)
 openssl rand -hex 32
+
+# REPORTER_HASH_KEY (mindestens 32 Zeichen) — nie rotieren, getrennt sichern
+openssl rand -base64 48
+```
+
+Nach dem ersten Setzen von `REPORTER_HASH_KEY` den Bestand einmal hashen,
+solange die E-Mail-Adressen noch vorhanden sind. Wiederholen, bis die Antwort
+`"done": true` enthält:
+
+```bash
+curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+  "https://deine-domain.de/api/admin/reporter-hash"
 ```
 
 ### Aufräum-Cron einrichten — Pflicht

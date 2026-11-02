@@ -10,6 +10,7 @@ export type AuditAction =
 	| 'sighting.verify'
 	| 'sighting.weather.refresh'
 	| 'sighting.spam_rescore'
+	| 'sighting.reporter_hash_backfill'
 	| 'file.delete'
 	| 'file.cleanup_orphans'
 	| 'config.update'

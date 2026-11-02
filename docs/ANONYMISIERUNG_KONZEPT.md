@@ -133,8 +133,14 @@ Personenbezug und sollte in der Admin-Maske gesperrt sein (siehe 7).
 
 ### 5.1 Fälligkeit
 
-`created < now() - interval '3 months' + interval '1 day' AND anonymisiert_am IS NULL`
+`created + interval '3 months' - interval '1 day' <= (now() AT TIME ZONE 'UTC') AND anonymisiert_am IS NULL`
 
+- **Vorwärts gerechnet, vom Eingang aus.** Eine rückwärts gerechnete Grenze
+  (`created < now() - interval '3 months' + …`) lässt an Monatsenden Meldungen
+  liegen: Am 28. Februar ergibt sie den 28. November, ein Eingang vom
+  30. November ist nach PostgreSQL-Rechnung (`+ 3 months` kappt auf den
+  28. Februar) aber schon fällig. Gefunden im Review von PR #1006.
+- In UTC verglichen, weil `created` ein `timestamp` ohne Zone in UTC ist.
 - Maßgeblich ist `created` (Eingang), **nicht** der Prüfstatus. Sonst blieben
   ungeprüfte oder abgelehnte Meldungen unbegrenzt liegen.
 - Ein Tag Puffer, damit ein täglicher Lauf die Grenze „spätestens 3 Monate"
@@ -219,8 +225,12 @@ findet die Admin-Suche auch anonymisierte Meldungen einer Person:
 
 - **Auskunftsersuchen (Art. 15):** „Welche Meldungen haben Sie von mir?" →
   Adresse hashen, Treffer auflisten.
-- **Löschersuchen (Art. 17):** Dieselbe Suche; anschließend den `melder_hash`
-  der Treffer auf `NULL` setzen. Die Meldungen bleiben, die Verknüpfung ist weg.
+- **Löschersuchen (Art. 17):** Dieselbe Suche; anschließend die Treffer
+  **sofort anonymisieren** (Feld-Matrix aus 5.2, `anonymisiert_am` setzen) und
+  den `melder_hash` auf `NULL` setzen. Die Meldungen bleiben, die Verknüpfung
+  ist weg. Nur den Hash zu leeren reicht nicht: Solange die E-Mail noch da ist,
+  rechnet der Backfill (`hashReporters`) ihn beim nächsten Lauf neu aus.
+  Anonymisierte Zeilen nimmt er dagegen aus. Gefunden im Review von PR #1006.
 - **Mehrfachmeldungen in der Admin-Ansicht:** „Weitere Meldungen dieser Person
   (n)" über gleichen `melder_hash`.
 

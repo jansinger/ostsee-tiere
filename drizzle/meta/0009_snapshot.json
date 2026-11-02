@@ -1,0 +1,1267 @@
+{
+  "id": "b519ad60-7a14-4d1c-8d67-127807d60b43",
+  "prevId": "6cfe2d5b-8c4e-4e6c-899e-0ae8188af27d",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.app_config": {
+      "name": "app_config",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "category": {
+          "name": "category",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_app_config_key": {
+          "name": "idx_app_config_key",
+          "columns": [
+            {
+              "expression": "key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_app_config_category": {
+          "name": "idx_app_config_category",
+          "columns": [
+            {
+              "expression": "category",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "app_config_key_unique": {
+          "name": "app_config_key_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "key"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.audit_logs": {
+      "name": "audit_logs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "user_email": {
+          "name": "user_email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resource_type": {
+          "name": "resource_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resource_id": {
+          "name": "resource_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details": {
+          "name": "details",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "varchar(45)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'success'"
+        }
+      },
+      "indexes": {
+        "idx_audit_logs_timestamp": {
+          "name": "idx_audit_logs_timestamp",
+          "columns": [
+            {
+              "expression": "timestamp",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_audit_logs_action_timestamp": {
+          "name": "idx_audit_logs_action_timestamp",
+          "columns": [
+            {
+              "expression": "action",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "timestamp",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_audit_logs_user_email_timestamp": {
+          "name": "idx_audit_logs_user_email_timestamp",
+          "columns": [
+            {
+              "expression": "user_email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "timestamp",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sessions": {
+      "name": "sessions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "token_hash": {
+          "name": "token_hash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sub": {
+          "name": "sub",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "roles": {
+          "name": "roles",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "ARRAY[]::text[]"
+        },
+        "user_claims": {
+          "name": "user_claims",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "absolute_expires_at": {
+          "name": "absolute_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "revoked_at": {
+          "name": "revoked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "last_seen_at": {
+          "name": "last_seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_sessions_sub": {
+          "name": "idx_sessions_sub",
+          "columns": [
+            {
+              "expression": "sub",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_sessions_expires_at": {
+          "name": "idx_sessions_expires_at",
+          "columns": [
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "sessions_token_hash_unique": {
+          "name": "sessions_token_hash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "token_hash"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sichtungen_dateien": {
+      "name": "sichtungen_dateien",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sichtung_id": {
+          "name": "sichtung_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "referenz_id": {
+          "name": "referenz_id",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "original_name": {
+          "name": "original_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datei_name": {
+          "name": "datei_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datei_pfad": {
+          "name": "datei_pfad",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mime_typ": {
+          "name": "mime_typ",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "size": {
+          "name": "size",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar(1000)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hochgeladen_am": {
+          "name": "hochgeladen_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exif_daten": {
+          "name": "exif_daten",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_sichtungen_dateien_sichtung_id": {
+          "name": "idx_sichtungen_dateien_sichtung_id",
+          "columns": [
+            {
+              "expression": "sichtung_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_sichtungen_dateien_referenz_id": {
+          "name": "idx_sichtungen_dateien_referenz_id",
+          "columns": [
+            {
+              "expression": "referenz_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_sichtungen_dateien_uid": {
+          "name": "idx_sichtungen_dateien_uid",
+          "columns": [
+            {
+              "expression": "uid",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "sichtungen_dateien_sichtung_id_sichtungen_id_fk": {
+          "name": "sichtungen_dateien_sichtung_id_sichtungen_id_fk",
+          "tableFrom": "sichtungen_dateien",
+          "tableTo": "sichtungen",
+          "columnsFrom": [
+            "sichtung_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sichtung_status_log": {
+      "name": "sichtung_status_log",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sichtung_id": {
+          "name": "sichtung_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "verdict": {
+          "name": "verdict",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bearbeiter": {
+          "name": "bearbeiter",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "zeitpunkt": {
+          "name": "zeitpunkt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_sichtung_status_log_sichtung": {
+          "name": "idx_sichtung_status_log_sichtung",
+          "columns": [
+            {
+              "expression": "sichtung_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "zeitpunkt",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "sichtung_status_log_sichtung_id_sichtungen_id_fk": {
+          "name": "sichtung_status_log_sichtung_id_sichtungen_id_fk",
+          "tableFrom": "sichtung_status_log",
+          "tableTo": "sichtungen",
+          "columnsFrom": [
+            "sichtung_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "sichtung_status_log_verdict_check": {
+          "name": "sichtung_status_log_verdict_check",
+          "value": "\"sichtung_status_log\".\"verdict\" IN ('approve', 'reject', 'reset')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.sichtungen": {
+      "name": "sichtungen",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nextval('sichtungen_seq'::regclass)"
+        },
+        "gps_breite": {
+          "name": "gps_breite",
+          "type": "numeric(8, 6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gps_laenge": {
+          "name": "gps_laenge",
+          "type": "numeric(8, 6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fahrwasser": {
+          "name": "fahrwasser",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "seezeichen": {
+          "name": "seezeichen",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sichtungsdatum": {
+          "name": "sichtungsdatum",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "vonwo": {
+          "name": "vonwo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "vonwo_text": {
+          "name": "vonwo_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "entfernung": {
+          "name": "entfernung",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "anzahl_schiffe": {
+          "name": "anzahl_schiffe",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "anzahl_gesamt": {
+          "name": "anzahl_gesamt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "anzahl_jung": {
+          "name": "anzahl_jung",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "verteilung": {
+          "name": "verteilung",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "verteilung_text": {
+          "name": "verteilung_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "aufnahme": {
+          "name": "aufnahme",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "aufnahmeHochladen": {
+          "name": "aufnahmeHochladen",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "verhalten": {
+          "name": "verhalten",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "verhalten_text": {
+          "name": "verhalten_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reaktion": {
+          "name": "reaktion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sonstige_auffaelligkeiten": {
+          "name": "sonstige_auffaelligkeiten",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "seegang": {
+          "name": "seegang",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "windrichtung": {
+          "name": "windrichtung",
+          "type": "varchar(4)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "windstaerke": {
+          "name": "windstaerke",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sichtweite": {
+          "name": "sichtweite",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "schiffsname": {
+          "name": "schiffsname",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "heimathafen": {
+          "name": "heimathafen",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bootstyp": {
+          "name": "bootstyp",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bootsantrieb": {
+          "name": "bootsantrieb",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "bootsantrieb_text": {
+          "name": "bootsantrieb_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vorname": {
+          "name": "vorname",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "strasse": {
+          "name": "strasse",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "plz": {
+          "name": "plz",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ort": {
+          "name": "ort",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fax": {
+          "name": "fax",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "namensnennung": {
+          "name": "namensnennung",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "namensnennung_am": {
+          "name": "namensnennung_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "namensnennung_version": {
+          "name": "namensnennung_version",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "schiffnamensnennung": {
+          "name": "schiffnamensnennung",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "schiffnamensnennung_am": {
+          "name": "schiffnamensnennung_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "schiffnamensnennung_version": {
+          "name": "schiffnamensnennung_version",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bemerkungen": {
+          "name": "bemerkungen",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created": {
+          "name": "created",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eingangskanal": {
+          "name": "eingangskanal",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "eingangs_client": {
+          "name": "eingangs_client",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "freigegeben_am": {
+          "name": "freigegeben_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geprueft": {
+          "name": "geprueft",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "ostsee": {
+          "name": "ostsee",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "kommentar_intern": {
+          "name": "kommentar_intern",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "location": {
+          "name": "location",
+          "type": "geometry(point)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ostsee_geo": {
+          "name": "ostsee_geo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "totfund": {
+          "name": "totfund",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "totfund_groesse": {
+          "name": "totfund_groesse",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totfund_zustand": {
+          "name": "totfund_zustand",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "totfund_geschlecht": {
+          "name": "totfund_geschlecht",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "totfund_telefon": {
+          "name": "totfund_telefon",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "tierart": {
+          "name": "tierart",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "datenschutz_einverstaendnis": {
+          "name": "datenschutz_einverstaendnis",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "datenschutz_einverstaendnis_am": {
+          "name": "datenschutz_einverstaendnis_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "datenschutz_einverstaendnis_version": {
+          "name": "datenschutz_einverstaendnis_version",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "medien_einwilligung": {
+          "name": "medien_einwilligung",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "medien_einwilligung_am": {
+          "name": "medien_einwilligung_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "medien_einwilligung_version": {
+          "name": "medien_einwilligung_version",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "referenz_id": {
+          "name": "referenz_id",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weather_data": {
+          "name": "weather_data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weather_fetched_at": {
+          "name": "weather_fetched_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weather_provider": {
+          "name": "weather_provider",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'open-meteo'"
+        },
+        "weather_api_version": {
+          "name": "weather_api_version",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weather_data_type": {
+          "name": "weather_data_type",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'historical'"
+        },
+        "spam_score": {
+          "name": "spam_score",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "spam_indicators": {
+          "name": "spam_indicators",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "abgelehnt_am": {
+          "name": "abgelehnt_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "abgelehnt_von": {
+          "name": "abgelehnt_von",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "freigegeben_von": {
+          "name": "freigegeben_von",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "melder_hash": {
+          "name": "melder_hash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "melder_intern": {
+          "name": "melder_intern",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "anonymisiert_am": {
+          "name": "anonymisiert_am",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "geom_sichtungen": {
+          "name": "geom_sichtungen",
+          "columns": [
+            {
+              "expression": "location",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "gist_geometry_ops_2d"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "gist",
+          "with": {}
+        },
+        "idx_sichtungsdatum": {
+          "name": "idx_sichtungsdatum",
+          "columns": [
+            {
+              "expression": "sichtungsdatum",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_melder_hash": {
+          "name": "idx_melder_hash",
+          "columns": [
+            {
+              "expression": "melder_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_sichtungsdatum_berlin_tag": {
+          "name": "idx_sichtungsdatum_berlin_tag",
+          "columns": [
+            {
+              "expression": "DATE(\"sichtungsdatum\" AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Berlin')",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_year_sichtungen": {
+          "name": "idx_year_sichtungen",
+          "columns": [
+            {
+              "expression": "EXTRACT(year FROM \"sichtungsdatum\" AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Berlin')",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_weather_data_gin": {
+          "name": "idx_weather_data_gin",
+          "columns": [
+            {
+              "expression": "weather_data",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "gin",
+          "with": {}
+        },
+        "idx_weather_fetched": {
+          "name": "idx_weather_fetched",
+          "columns": [
+            {
+              "expression": "weather_fetched_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_weather_provider": {
+          "name": "idx_weather_provider",
+          "columns": [
+            {
+              "expression": "weather_provider",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_position_date_weather": {
+          "name": "idx_position_date_weather",
+          "columns": [
+            {
+              "expression": "ROUND(\"gps_breite\"::numeric, 2)",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "ROUND(\"gps_laenge\"::numeric, 2)",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "DATE(\"sichtungsdatum\" AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Berlin')",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"sichtungen\".\"weather_data\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {
+    "public.sichtungen_seq": {
+      "name": "sichtungen_seq",
+      "schema": "public",
+      "increment": "1",
+      "startWith": "1840",
+      "minValue": "1",
+      "maxValue": "9223372036854775807",
+      "cache": "1",
+      "cycle": false
+    }
+  },
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

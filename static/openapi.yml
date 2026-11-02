@@ -1361,6 +1361,55 @@ paths:
         '500':
           description: Unerwarteter Fehler
 
+  /api/admin/reporter-hash:
+    post:
+      tags:
+        - Admin
+      summary: Melder-Hash für bestehende Sichtungen nachholen
+      description: >
+        Berechnet den Melder-Hash (`melder_hash`, HMAC-SHA256 der normalisierten
+        E-Mail-Adresse) für Sichtungen mit Adresse, die noch keinen haben und
+        nicht anonymisiert sind, und setzt `melder_intern`. Der Hash verknüpft
+        die Meldungen einer Person auch nach der Anonymisierung der
+        Kontaktdaten. Er wird nie ausgegeben, auch nicht von diesem Endpunkt.
+
+
+        Muss nach dem ersten Setzen von `REPORTER_HASH_KEY` über den ganzen
+        Bestand laufen, solange die Adressen noch vorhanden sind. Idempotent und
+        wiederholbar; arbeitet in Batches — bei `done: false` erneut aufrufen.
+        Zugang über Admin-Session oder Bearer-Token (`CLEANUP_TOKEN`).
+      security:
+        - adminAuth: []
+        - cleanupToken: []
+      parameters:
+        - name: limit
+          in: query
+          description: Zeilen pro Aufruf. Unlesbare Werte fallen auf die Vorgabe zurück.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2000
+            default: 500
+      responses:
+        '200':
+          description: Batch gehasht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReporterHashReport'
+        '401':
+          description: >-
+            Nicht autorisiert — erforderlich ist eine angemeldete Admin-Session
+            oder ein gültiges `CLEANUP_TOKEN`.
+        '429':
+          description: Rate Limit überschritten
+        '500':
+          description: Unerwarteter Fehler
+        '503':
+          description: >-
+            `REPORTER_HASH_KEY` fehlt oder ist kürzer als 32 Zeichen. Es wurde
+            nichts geschrieben.
+
   /api/admin/test-email:
     post:
       tags:
@@ -2979,6 +3028,19 @@ components:
             zusammen mit isHighRisk true — beides wörtlich zu nehmen ergäbe
             "Hochrisiko ohne einen einzigen Indikator". Für die Anzeige ist der
             ehrliche Zustand derselbe wie stored null: es wurde nichts bewertet.
+    ReporterHashReport:
+      type: object
+      required: [hashed, remaining, done]
+      properties:
+        hashed:
+          type: integer
+          description: Zeilen, die in diesem Lauf einen Hash bekommen haben.
+        remaining:
+          type: integer
+          description: Danach noch offene Zeilen (mit Adresse, ohne Hash, nicht anonymisiert).
+        done:
+          type: boolean
+          description: true, wenn weniger Zeilen als das Limit geladen wurden — nicht erneut aufrufen.
     SpamRescoreReport:
       type: object
       required: [scored, skippedFailed, lastId, remaining, done, stalled, distribution]

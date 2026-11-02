@@ -3,6 +3,7 @@ import { requireUserRole } from '#lib/server/auth/auth.ts';
 import { logAuditEvent } from '#lib/server/audit/auditService.ts';
 import { db } from '#lib/server/db/index.ts';
 import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
+import { omitReporterIdentity } from '#lib/server/privacy/reporterHash.ts';
 import { text } from '@sveltejs/kit';
 import { and } from 'drizzle-orm';
 import { buildExportConditions, parseExportFilterParams } from '../exportFilterParams';
@@ -50,7 +51,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 					mediaUpload: mediaUpload || null
 				}
 			},
-			sichtungen: sightings
+			// Ohne Melder-Hash: Exporte verlassen das System und unterliegen
+			// keiner Löschfrist (docs/ANONYMISIERUNG_KONZEPT.md, 6.2).
+			sichtungen: sightings.map(omitReporterIdentity)
 		};
 
 		// Audit-Log schreiben
