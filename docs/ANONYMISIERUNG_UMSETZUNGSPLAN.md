@@ -172,15 +172,26 @@ Statistik und `/about` am ersten Tag ein.
    `normalizeReporterKey`. `melder_intern` = Domain in einer Liste
    (`meeresmuseum.de`), dieselbe Bedingung, die die Statistik heute im SQL hat.
 4. `saveSighting`/`updateSighting` setzen Hash und `melder_intern`.
-5. Backfill `src/tools/hash-reporters.ts`, `npm run privacy:hash-reporters`
-   (`:dry-run`), Stapel zu 500, in Node gehasht.
+5. Backfill `hashReporters` in `src/lib/server/privacy/hashReporters.ts`, Stapel zu
+   500 (höchstens 2.000), in Node gehasht. Aufruf auf den Hosts über
+   `POST /api/admin/reporter-hash` (Admin-Session oder `CLEANUP_TOKEN`), lokal über
+   `npm run privacy:hash-reporters`. **Umgesetzt (2026-11-02):** Werkzeuge aus
+   `src/tools/` erreichen die deployten Datenbanken nicht (kein freigegebener
+   DB-Port, `src/tools/` nicht im Image) — derselbe Grund wie bei
+   `/api/admin/spam-rescore`. Ein Dry-Run entfällt: Der Schritt ist idempotent und
+   ändert keine bestehenden Werte.
 6. `src/lib/server/privacy/piiColumns.ts`: Klassifizierung der Spalten samt
    Bedingung, einzige Quelle für PR 4.
-7. Hash und `melder_intern` aus der Admin-Detail-API und dem JSON-Export
-   entfernen.
+7. Hash und `melder_intern` aus allen Antworten entfernen, die ganze Zeilen
+   ausliefern: `GET`/`PUT /api/sightings/[id]`, `GET /api/sightings/ref/[refId]`,
+   JSON-Export. Guard `reporterHashLeakScan.test.ts`: Kein Route- und kein
+   Komponenten-Code nennt die Felder.
+8. `REPORTER_HASH_KEY` in `docker-compose.production.yml` durchreichen, sonst
+   kommt er im Container nicht an.
 
 **Nach dem Merge:** Schlüssel für Staging und Production erzeugen
-(`openssl rand -base64 48`) und getrennt sichern, deployen, Backfill. Prüfung:
+(`openssl rand -base64 48`) und getrennt sichern, deployen, Backfill über
+`POST /api/admin/reporter-hash` wiederholen, bis `"done": true`. Prüfung:
 `SELECT count(*) FROM sichtungen WHERE email <> '' AND melder_hash IS NULL` → 0.
 
 **Größe:** M · `feat(db): add reporter hash for linking reports without email`
@@ -238,7 +249,8 @@ Top 10, `/about`). Erwartet: Die neue Zahl entspricht der alten Zählung über
   und `anonymisiert_am IS NULL`.
 - `POST /api/admin/anonymize` nach dem Muster von `cleanup-orphans`
   (Admin-Session oder Bearer `CLEANUP_TOKEN`, Rate-Limit, Audit
-  `privacy.anonymize`); CLI `npm run privacy:anonymize` (`:dry-run`).
+  `privacy.anonymize`); CLI `npm run privacy:anonymize` (`:dry-run`) nur für die
+  lokale Datenbank — auf den Hosts läuft alles über den Endpunkt.
 - Admin-Schema, Sperre in `updateSighting`, Ausnahme in `rescoreSightings`,
   Hinweis in `spam-check`.
 
@@ -294,7 +306,7 @@ Panel zeigt dann rot.
 | 3       | Entwicklung | **Vorschau** erzeugen und dem Museum schicken: Anzahl fälliger Meldungen gesamt und je Jahr; davon Namen geleert und behalten; Schiffsnamen geleert und behalten; davon ungeprüft; Grenzdatum. Keine personenbezogenen Werte.      |
 | 4       | Museum      | **Schriftliche Freigabe** per E-Mail mit Bezug auf die Zahlen der Vorschau. Ablage als `docs/archive/ANONYMISIERUNG_FREIGABE_<datum>.md`: wer, wann, welche Zahlen; ohne private Adressen.                                         |
 | 5       | Superadmin  | **Freischaltung** im Panel. Der Dialog zeigt die aktuelle Vorschau; bestätigt wird durch Eingabe der Anzahl. Weicht sie deutlich von der freigegebenen ab, ist das der Moment, um anzuhalten. Audit-Eintrag mit Person und Zahlen. |
-| 6       | Superadmin  | **Erster Lauf** über „Jetzt ausführen" im Panel oder `npm run privacy:anonymize`. Er arbeitet in Stapeln, bis nichts mehr fällig ist (bei ~20.000 Zeilen etwa 40 Stapel zu 500).                                                   |
+| 6       | Superadmin  | **Erster Lauf** über „Jetzt ausführen" im Panel oder den Endpunkt. Er arbeitet in Stapeln, bis nichts mehr fällig ist (bei ~20.000 Zeilen etwa 40 Stapel zu 500).                                                                  |
 | 7       | Entwicklung | **Prüfung:** Panel grün (0 über der Frist); Stichproben in der Detailansicht; Historie und Statistik plausibel; Legacy-Contract-Tests grün.                                                                                        |
 
 Auf **Staging** wird derselbe Ablauf vorher einmal vollständig durchgespielt.

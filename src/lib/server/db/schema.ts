@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm';
 import { berlinCalendarDate, berlinDatePart } from './sqlTimeZone';
 import {
 	bigint,
+	boolean,
 	check,
 	geometry,
 	index,
@@ -141,7 +142,18 @@ export const sightings = pgTable(
 		// Information nicht, und ein Platzhalter würde eine Person behaupten, die
 		// es nie gab. Geschrieben ausschließlich von
 		// PATCH /api/sightings/[id]/verify, gemeinsam mit allen Status-Spalten.
-		approvedBy: varchar('freigegeben_von', { length: 255 })
+		approvedBy: varchar('freigegeben_von', { length: 255 }),
+		// Melder-Hash: HMAC-SHA256 der normalisierten E-Mail (hex), gesetzt beim
+		// Eingang. Verknüpft die Meldungen einer Person auch nach der
+		// Anonymisierung. Verlässt den Server nie (omitReporterIdentity).
+		// Konzept: docs/ANONYMISIERUNG_KONZEPT.md. NULL = keine Adresse oder
+		// beim Eingang kein Schlüssel (der Backfill holt ihn nach).
+		reporterHash: varchar('melder_hash', { length: 64 }),
+		// Adresse gehört dem Museum. Ersetzt den Domain-Filter der Statistik, der
+		// nach der Anonymisierung nichts mehr fände. NULL = keine Adresse.
+		reporterInternal: boolean('melder_intern'),
+		// Zeitpunkt, zu dem die Kontaktdaten geleert wurden. NULL = nicht anonymisiert.
+		anonymizedAt: timestamp('anonymisiert_am', { mode: 'date' })
 	},
 	(table) => [
 		index('geom_sichtungen').using(
@@ -149,6 +161,7 @@ export const sightings = pgTable(
 			table.location.asc().nullsLast().op('gist_geometry_ops_2d')
 		),
 		index('idx_sichtungsdatum').on(table.sightingDate),
+		index('idx_melder_hash').on(table.reporterHash),
 		// Berliner Kalendertag — muss zum Ausdruck des Admin-Datumsfilters passen
 		// (admin/+page.server.ts), sonst greift der Index nicht.
 		index('idx_sichtungsdatum_berlin_tag').using('btree', berlinCalendarDate(table.sightingDate)),

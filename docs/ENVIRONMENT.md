@@ -96,6 +96,40 @@ curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
   "https://<host>/api/admin/cleanup-orphans?mode=execute"
 ```
 
+### `REPORTER_HASH_KEY`
+
+Geheimer Schlüssel für den Melder-Hash (`melder_hash`, HMAC-SHA256 der
+E-Mail-Adresse). Der Hash verknüpft alle Meldungen einer Person, auch nachdem
+ihre Kontaktdaten 3 Monate nach Eingang anonymisiert wurden. Konzept und
+Begründung: `docs/ANONYMISIERUNG_KONZEPT.md`, Abschnitt 3.
+
+- **Pflicht:** ja, in jeder deployten Umgebung. Ohne Wert werden Meldungen
+  trotzdem gespeichert, aber ohne Hash (Fehler im Log), und
+  `POST /api/admin/reporter-hash` antwortet mit `503`. Die spätere
+  Anonymisierung verweigert ohne Schlüssel jede Änderung.
+- **Mindestlänge:** 32 Zeichen. Ein kürzerer Wert gilt als nicht gesetzt.
+- **Nie rotieren.** Nach der Anonymisierung gibt es keine Adresse mehr, aus der
+  sich mit einem neuen Schlüssel neu hashen ließe. Ein neuer Schlüssel trennt
+  alle künftigen Meldungen von allen bisherigen. Tausch nur bei nachgewiesener
+  Kompromittierung, und dann bewusst mit diesem Bruch.
+- **Getrennt von der Datenbank sichern** (Passwort-Manager des Museums). Wer
+  Schlüssel und Dump zusammen hat, kann zu einer vermuteten Adresse prüfen, ob
+  sie gemeldet hat. Geht er verloren, gilt dasselbe wie bei einer Rotation.
+- **Je Umgebung ein eigener Wert.** Staging und Production teilen keinen
+  Schlüssel.
+
+```bash
+REPORTER_HASH_KEY=$(openssl rand -base64 48)
+```
+
+Nach dem ersten Setzen einmal den Bestand hashen, solange die Adressen noch
+vorhanden sind — wiederholen, bis die Antwort `"done": true` enthält:
+
+```bash
+curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+  "https://<host>/api/admin/reporter-hash"
+```
+
 ### `SESSION_SECRET` — entfallen
 
 Diese Variable wird **nicht mehr verwendet** und kann aus jeder `.env` entfernt werden.

@@ -1,6 +1,7 @@
 import { createLogger } from '#lib/logger.server.ts';
 import { requireUserRole } from '#lib/server/auth/auth.ts';
 import { getSightingByReferenceId } from '#lib/server/db/sightingRepository.ts';
+import { omitReporterIdentity } from '#lib/server/privacy/reporterHash.ts';
 import { error, isHttpError, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -27,7 +28,8 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 		}
 
 		logger.info(`Successfully retrieved sighting ${sighting.id} for reference ID: ${refId}`);
-		return json(sighting);
+		// Ohne Melder-Hash — er verlässt den Server nie (docs/ANONYMISIERUNG_KONZEPT.md, 6.2).
+		return json(omitReporterIdentity(sighting));
 	} catch (err) {
 		if (isHttpError(err)) {
 			throw err;

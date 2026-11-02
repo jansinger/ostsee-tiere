@@ -28,11 +28,13 @@ import { sql } from 'drizzle-orm';
 import { db } from '#lib/server/db/index.ts';
 import { createLogger } from '#lib/logger.server.ts';
 import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
+import { normalizeReporterKey } from '#lib/server/privacy/reporterKey.ts';
 import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 
 const logger = createLogger('reporterHistory');
 
 export type { ReporterHistory };
+export { normalizeReporterKey };
 
 /** Was der Aufrufer je Sichtung mitbringt — mehr wird nicht gelesen. */
 export interface ReporterHistoryInput {
@@ -48,19 +50,6 @@ interface AggregateRow {
 	rejected: number | string;
 	open: number | string;
 	since: string | null;
-}
-
-/**
- * Die Identität eines Melders — kleingeschrieben und ohne Randweißraum.
- *
- * Dieselbe Normalisierung wie im E-Mail-Zweig von `duplicateCandidates.ts`,
- * plus `trim`: Eine Adresse mit angehängtem Leerzeichen wäre sonst ein zweiter
- * Melder. Mehr Normalisierung bewusst nicht — Punkte und `+tag` bei Gmail
- * zusammenzuziehen wäre eine Aussage über einen fremden Anbieter.
- */
-export function normalizeReporterKey(email: string | null | undefined): string | null {
-	const key = email?.trim().toLowerCase() ?? '';
-	return key.length > 0 ? key : null;
 }
 
 export async function findReporterHistory(

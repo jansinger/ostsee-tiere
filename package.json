@@ -68,6 +68,7 @@
 		"import:legacy-inbox": "TEST=true vite-node src/tools/import-legacy-inbox-cli.js --",
 		"send:legacy-inbox": "node src/tools/send-legacy-inbox-cli.js",
 		"spam:rescore": "TEST=true vite-node src/tools/rescore-spam.ts --",
+		"privacy:hash-reporters": "TEST=true vite-node src/tools/hash-reporters.ts --",
 		"analyse:legacy-inbox": "node src/tools/analyse-legacy-inbox.js",
 		"sbom:generate": "npm run sbom:json && npm run sbom:xml",
 		"sbom:json": "npx -y npm@11.14.1 exec -- @cyclonedx/cyclonedx-npm --ignore-npm-errors --output-format JSON --output-file sbom/sbom.json --validate",

@@ -2,6 +2,7 @@ import { getAdminSightingSchema } from '#lib/form/validation/sightingSchema.ts';
 import { createLogger } from '#lib/logger.server.ts';
 import type { SightingFormData } from '#lib/report/types.ts';
 import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { omitReporterIdentity } from '#lib/server/privacy/reporterHash.ts';
 import { requireUserRole } from '#lib/server/auth/auth.ts';
 import { getClientIp } from '#lib/server/utils/getClientIp.ts';
 import { db } from '#lib/server/db/index.ts';
@@ -52,13 +53,13 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
 	}
 
 	try {
-		const sighting = await db
+		const [sighting] = await db
 			.select()
 			.from(sightings)
 			.where(eq(sightings.id, Number(id)))
 			.limit(1);
 
-		if (sighting.length === 0) {
+		if (!sighting) {
 			logger.warn({ id }, 'Sichtung nicht gefunden');
 			throw error(404, 'Sichtung nicht gefunden');
 		}
@@ -66,8 +67,10 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
 		// Lade auch die zugehörigen Dateien
 		const uploadedFiles = await loadSightingFiles(Number(id));
 
+		// Ganze Zeile, aber ohne Melder-Hash — er verlässt den Server nie,
+		// auch nicht an Admins (docs/ANONYMISIERUNG_KONZEPT.md, 6.2).
 		return json({
-			...sighting[0],
+			...omitReporterIdentity(sighting),
 			uploadedFiles
 		});
 	} catch (err) {
@@ -216,7 +219,7 @@ export const PUT: RequestHandler = async ({ params, request, locals, url, getCli
 			await saveSightingFiles(Number(id), fileInfos, referenceId);
 		}
 
-		return json(updatedSighting);
+		return json(omitReporterIdentity(updatedSighting));
 	} catch (err) {
 		if (isHttpError(err)) throw err;
 

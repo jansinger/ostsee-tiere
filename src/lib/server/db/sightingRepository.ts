@@ -33,6 +33,8 @@ import type { SightingFormData } from '#lib/report/types.ts';
 import type { StoredWeatherData } from '#lib/services/weatherService.ts';
 import { db } from '#lib/server/db/index.ts';
 import { sightingFiles, sightings, type SightingSelect } from '#lib/server/db/schema.ts';
+import { getReporterHashKey, reporterIdentityFor } from '#lib/server/privacy/reporterHash.ts';
+import { normalizeReporterKey } from '#lib/server/privacy/reporterKey.ts';
 import { getCachedWeatherData } from '#lib/server/services/weatherDeduplication.ts';
 import { getUploadPath } from '#lib/server/uploads.ts';
 import { truncateEntryClient } from '#lib/server/utils/resolveEntryClient.ts';
@@ -116,6 +118,19 @@ export const saveSighting = async (
 	if (entryClient) {
 		sightingData.entryClient = truncateEntryClient(entryClient);
 	}
+
+	// Melder-Hash beim Eingang, nicht erst bei der Anonymisierung: Nur so
+	// gehört diese Meldung später zu älteren derselben Person, deren Adresse
+	// längst gelöscht ist (docs/ANONYMISIERUNG_KONZEPT.md, Abschnitt 4). Fehlt
+	// der Schlüssel, wird trotzdem gespeichert — der Backfill holt den Hash nach.
+	const reporterHashKey = getReporterHashKey();
+	if (!reporterHashKey) {
+		logger.error(
+			{ action: 'reporter_hash_key_missing' },
+			'REPORTER_HASH_KEY fehlt oder ist zu kurz — Meldung wird ohne Melder-Hash gespeichert'
+		);
+	}
+	Object.assign(sightingData, reporterIdentityFor(sightingData.email, reporterHashKey));
 
 	// Spam-Heuristik zum Meldezeitpunkt festhalten. NULL bleibt für Altbestand,
 	// Eingänge ohne Bewertung UND fehlgeschlagene Prüfungen — deren Fail-Safe-
@@ -309,6 +324,13 @@ export const updateSighting = async (
 		...rest
 	} = sightingData;
 	const updateData = rest as UpdateSighting;
+
+	// Ändert der Admin die Adresse, muss der Hash folgen — sonst hinge die
+	// Meldung an der falschen Person. Ohne Adresse bleibt beides unangetastet:
+	// Eine Bearbeitung ohne Kontaktfeld darf die Verknüpfung nicht aufreißen.
+	if (normalizeReporterKey(updateData.email)) {
+		Object.assign(updateData, reporterIdentityFor(updateData.email, getReporterHashKey()));
+	}
 
 	// Führe Update-Operation mit ID-Filter aus
 	const [updatedSighting] = await db
