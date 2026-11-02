@@ -1,6 +1,6 @@
 # Konzept: Anonymisierung personenbezogener Meldedaten nach 3 Monaten
 
-**Stand:** 2026-11-02 · **Status:** Entwurf, noch nicht umgesetzt · **Keine Rechtsberatung.**
+**Stand:** 2026-11-02 · **Status:** Entwurf, Entscheidungen E1–E3 getroffen (2026-11-02), noch nicht umgesetzt · **Keine Rechtsberatung.**
 
 ## 1. Anlass und Vorgabe
 
@@ -147,11 +147,11 @@ Personenbezug und sollte in der Admin-Maske gesperrt sein (siehe 7).
 | Feld(er)                                                               | ohne Namens-Einwilligung | mit Namens-Einwilligung (`namensnennung = 1`) |
 | ---------------------------------------------------------------------- | ------------------------ | --------------------------------------------- |
 | `vorname`, `name`                                                      | `NULL`                   | bleibt (ist veröffentlicht)                   |
-| `email`                                                                | `NULL`                   | `NULL` (siehe E1)                             |
-| `telefon`, `fax`                                                       | `NULL`                   | `NULL` (siehe E1)                             |
-| `strasse`, `plz`, `ort`                                                | `NULL`                   | `NULL` (siehe E1)                             |
-| `schiffsname`, `heimathafen`                                           | nach E2                  | nach E2                                       |
-| Freitexte (`bemerkungen`, `sonstige_auffaelligkeiten`, `*_text`, …)    | nach E3                  | nach E3                                       |
+| `email`                                                                | `NULL`                   | `NULL` (E1)                                   |
+| `telefon`, `fax`                                                       | `NULL`                   | `NULL` (E1)                                   |
+| `strasse`, `plz`, `ort`                                                | `NULL`                   | `NULL` (E1)                                   |
+| `schiffsname`, `heimathafen`                                           | bleibt (E2)              | bleibt (E2)                                   |
+| Freitexte (`bemerkungen`, `sonstige_auffaelligkeiten`, `*_text`, …)    | bleibt (E3)              | bleibt (E3)                                   |
 | `melder_hash`                                                          | bleibt                   | bleibt                                        |
 | `anonymisiert_am`                                                      | `now()`                  | `now()`                                       |
 | alles andere (Tier, Ort, Zeit, Wetter, Status, Einwilligungsnachweise) | bleibt                   | bleibt                                        |
@@ -165,26 +165,25 @@ Die Einwilligungsnachweise (`*_am`, `*_version`) bleiben stehen. Sie belegen
 nach Art. 7 Abs. 1 DSGVO, was zugestimmt wurde, und enthalten selbst keinen
 Personenbezug.
 
-### 5.3 Offene Entscheidungen des Museums
+### 5.3 Entscheidungen (2026-11-02)
 
-- **E1 — Kontaktdaten bei Namens-Einwilligung.** Die Weisung nennt nur Meldungen
-  ohne Namens-Einwilligung. Die Namens-Einwilligung erlaubt aber nur die
-  Veröffentlichung von Vor- und Nachname; E-Mail, Telefon und Anschrift wurden
-  auch bei diesen Personen „ausschließlich für Rückfragen" erhoben.
-  **Empfehlung:** Kontaktdaten immer leeren, den Namen nur bei Einwilligung
-  behalten (so in der Matrix oben). Die Mehrfachzuordnung trägt ohnehin der
-  Hash.
-- **E2 — Schiffsname und Heimathafen.** Bei Sportbooten führt beides oft direkt
-  zum Eigner. Eine Einwilligung gibt es nur über `schiffnamensnennung`.
-  **Empfehlung:** leeren, wenn `schiffnamensnennung = 0`, sonst behalten.
-  `bootstyp` und `bootsantrieb` bleiben in jedem Fall, sie sind fachlich
-  relevant.
-- **E3 — Freitexte.** Dort stehen gelegentlich Telefonnummern oder Namen
-  („bitte Rückruf unter …"). Automatisch leeren würde fachliche Beobachtungen
-  vernichten. **Empfehlung:** nicht automatisch leeren. Stattdessen beim Eingang
-  eine einfache Erkennung (E-Mail-Muster, Telefonnummern-Muster) als Hinweis in
-  der Admin-Ansicht, damit die Prüfung das innerhalb der 3 Monate von Hand
-  bereinigt. Das wäre eine eigene Ausbaustufe.
+- **E1 — Kontaktdaten bei Namens-Einwilligung: leeren.** Die Weisung nennt nur
+  Meldungen ohne Namens-Einwilligung. Die Namens-Einwilligung erlaubt aber nur
+  die Veröffentlichung von Vor- und Nachname; E-Mail, Telefon und Anschrift
+  wurden auch bei diesen Personen „ausschließlich für Rückfragen" erhoben. Sie
+  werden deshalb immer geleert, der Name bleibt nur bei Einwilligung. Die
+  Mehrfachzuordnung trägt der Hash.
+- **E2 — Schiffsname und Heimathafen: nicht leeren.** Beide Felder bleiben
+  unabhängig von `schiffnamensnennung` gespeichert; veröffentlicht werden sie
+  weiterhin nur mit dieser Einwilligung. Hinweis für die Abstimmung mit dem
+  Museum: Bei Sportbooten führen Schiffsname und Heimathafen oft direkt zum
+  Eigner. Die Felder bleiben damit personenbeziehbar, und das sollte der
+  Datenschutzbeauftragte ausdrücklich mittragen.
+- **E3 — Freitexte: nicht leeren.** Automatisch leeren würde fachliche
+  Beobachtungen vernichten. Personenbezogene Angaben in Freitexten
+  („bitte Rückruf unter …") bereinigt die Prüfung von Hand innerhalb der 3
+  Monate. Eine Erkennung von E-Mail- und Telefonnummern-Mustern als Hinweis in
+  der Admin-Ansicht wäre eine mögliche spätere Ausbaustufe.
 
 ## 6. Der Job
 
