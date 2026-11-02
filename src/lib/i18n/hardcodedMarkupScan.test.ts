@@ -216,8 +216,12 @@ const OPEN_SKIP_LEDGER: Readonly<Record<string, number>> = {
 	 * (`SightingsMapView`) ist durch ein Icon ersetzt — axe-core 4.14 konnte es
 	 * unter WCAG 2.5.3 nicht gegen den zugänglichen Namen prüfen. Entfernt, nicht
 	 * übersetzt; es gab nichts zu übersetzen.
+	 *
+	 * 44 → 41 am 2026-11-02: In `FormHelp` ist die zweite Zusatzfeld-Quote
+	 * entfallen (eigene Rechnung, wich von der Kachel ab). Mit ihr gingen das
+	 * „✅", das „%" und der Platzhalter „–" — entfernt, nicht übersetzt.
 	 */
-	'no-letter-group': 44,
+	'no-letter-group': 41,
 	/**
 	 * Attributwert ohne jeden statischen Text (`title={file.name}`) — nie
 	 * Übersetzungsarbeit.

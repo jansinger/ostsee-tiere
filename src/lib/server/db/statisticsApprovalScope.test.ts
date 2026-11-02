@@ -24,6 +24,7 @@ import { PgDialect } from 'drizzle-orm/pg-core';
 import type { SQL } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { approvedOnly, pendingOnly } from './approvalFilter';
+import { hasMediaFiles } from './statisticsPredicates';
 
 const dialect = new PgDialect();
 const toSqlText = (condition: SQL): string => dialect.sqlToQuery(condition).sql;
@@ -143,6 +144,13 @@ describe('Freigabestatus in Sichtungs-Statistiken', () => {
 			await getSightingStatistics('approved');
 
 			expect(recordedWheres).toEqual(defaultWheres);
+		});
+
+		it('zählt Medien über vorhandene Dateien — dasselbe Prädikat wie der Admin', async () => {
+			await getSightingStatistics('approved');
+
+			const media = toSqlText(hasMediaFiles());
+			expect(recordedWheres.some((whereSql) => whereSql.includes(media))).toBe(true);
 		});
 
 		it('liefert die freigegebene Anzahl, nicht die Gesamtzahl', async () => {

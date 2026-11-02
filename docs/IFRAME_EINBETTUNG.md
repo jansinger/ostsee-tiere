@@ -1,39 +1,175 @@
 # Sichtungsmeldung per iframe einbetten
 
-Anleitung zum Einbetten des Sichtungsmeldeformulars auf meeresmuseum.de.
+Anleitung für das Einbetten des Sichtungsmeldeformulars auf deutsches-meeresmuseum.de (Typo3).
 
-## Einbettungscode
+**Kurzfassung für die Redaktion:** Im HTML-Inhaltselement mit dem Formular den alten Code durch den aus Variante A ersetzen. Neu sind zwei Dinge: `max-width:700px` fällt weg, und hinter dem iframe steht eine `<script>`-Zeile. Lässt Typo3 oder das Cookie-/Consent-Werkzeug ein Skript von fremder Adresse nicht zu, Variante B nehmen.
+
+## Variante A — Skript von ostsee-tiere.de laden (empfohlen)
 
 ```html
 <iframe
 	src="https://ostsee-tiere.de/"
 	title="Sichtung melden"
-	style="display:block; width:100%; max-width:700px; min-width:320px; height:3350px; border:0;"
+	style="display:block; width:100%; min-width:320px; height:3350px; border:0;"
 ></iframe>
+<script src="https://ostsee-tiere.de/embed.js" defer></script>
 ```
 
-Navigation, Footer und Formular-Titel der Anwendung blenden sich automatisch aus, sobald die Seite in einem iframe läuft — es entsteht kein doppeltes Menü oder Footer neben dem der Museumsseite.
+Beides gehört in **ein** HTML-Inhaltselement, das `<script>` direkt hinter den iframe. Vorteil gegenüber Variante B: Verbesserungen am Skript kommen automatisch an, auf der Museumsseite ist nie wieder etwas zu ändern.
 
-## Breite: max. 650–700px
+## Variante B — Code direkt einfügen
 
-Das Formular begrenzt sich selbst auf 648px Gesamtbreite. Ist das iframe breiter, bleibt links und rechts sichtbarer Leerraum in der (hellen) Hintergrundfarbe der Anwendung stehen — das ist kein Fehler, sieht auf einer breiten Spalte aber wie ein Darstellungsproblem aus.
+Für den Fall, dass externe Skripte nicht erlaubt sind. Der Code ist derselbe wie in Variante A (ein Test im Projekt hält beide gleich), er steht hier nur vollständig im Inhaltselement:
 
-**Empfehlung:** iframe-Breite auf ca. 650–700px begrenzen, nicht auf 100 % der Spaltenbreite. Nach unten darf das iframe schmaler werden (bis 320px) — das Formular passt sich dort automatisch an mobile Breiten an.
+```html
+<iframe
+	src="https://ostsee-tiere.de/"
+	title="Sichtung melden"
+	style="display:block; width:100%; min-width:320px; height:3350px; border:0;"
+></iframe>
+<script>
+	/*
+	 * Ostsee-Tiere: Höhe des eingebetteten Meldeformulars anpassen.
+	 *
+	 * Für die einbettende Seite (deutsches-meeresmuseum.de). Einbinden direkt
+	 * hinter dem iframe, per src="https://ostsee-tiere.de/embed.js".
+	 * Einbettungscode und Anleitung: docs/IFRAME_EINBETTUNG.md
+	 *
+	 * Diese Datei darf nirgends ein schließendes Script-Tag enthalten, auch nicht
+	 * im Kommentar: Inline eingefügt, beendete es das Skript an genau der Stelle.
+	 *
+	 * Das Skript sucht alle iframes, die von derselben Adresse laden wie es selbst,
+	 * und
+	 *   - setzt ihre Höhe auf die Höhe des Inhalts, sobald das Formular sie meldet,
+	 *   - scrollt die Seite an die Stelle, die das Formular anspringen möchte
+	 *     (nächster Schritt, erstes fehlerhaftes Feld).
+	 *
+	 * Statt per src darf der Inhalt dieser Datei auch direkt im Script-Element
+	 * stehen (z. B. wenn externe Skripte nicht erlaubt sind). Dann gilt
+	 * APP_ORIGIN unten.
+	 *
+	 * Hat die Seite eine fest stehende Kopfleiste, die den Formularanfang beim
+	 * Scrollen verdecken würde: data-scroll-offset="Höhe in px" am Script-Element
+	 * bzw. SCROLL_OFFSET unten setzen.
+	 *
+	 * Ohne das Skript bleibt der iframe einfach auf der Höhe aus seinem
+	 * style-Attribut. Gegenstück in der App: src/lib/utils/client/embedMessages.ts.
+	 */
+	(function () {
+		'use strict';
 
-## Höhe: feste 3350px, kein automatisches Mitwachsen
+		/** Adresse des Formulars — gilt, wenn dieser Code direkt im Script-Element steht. */
+		var APP_ORIGIN = 'https://ostsee-tiere.de';
+		/** Zusätzlicher Abstand nach oben beim Scrollen, in px (fest stehende Kopfleiste). */
+		var SCROLL_OFFSET = 0;
 
-Die Anwendung passt ihre Höhe nicht automatisch an den Elterncontainer an. Je nach Formularschritt schwankt der Platzbedarf zwischen ca. 440px (Einstiegsseite) und ca. 3.260px (letzter Schritt mit allen Validierungsfehlern) — mehr als das Siebenfache.
+		var script = document.currentScript;
+		var appOrigin = script && script.src ? new URL(script.src).origin : APP_ORIGIN;
+		var scrollOffset = Number(script && script.getAttribute('data-scroll-offset')) || SCROLL_OFFSET;
 
-**Empfehlung:** iframe-Höhe fest auf **3350px** setzen (deckt auch den ungünstigsten Fall ab, mit etwas Puffer). Das bedeutet auf kurzen Formularschritten sichtbaren Leerraum unterhalb des Inhalts — das ist der Kompromiss, bis eine automatische Höhenanpassung nachgerüstet ist.
+		function appFrames() {
+			return Array.prototype.filter.call(document.querySelectorAll('iframe'), function (frame) {
+				try {
+					return new URL(frame.src, document.baseURI).origin === appOrigin;
+				} catch (_error) {
+					return false;
+				}
+			});
+		}
 
-Zusätzlich sollte das iframe **kein** `scrolling="no"` gesetzt bekommen, damit unvorhergesehen lange Inhalte (z. B. sehr lange Freitext-Eingaben) notfalls innerhalb des iframes scrollen können, statt abgeschnitten zu werden.
+		function frameFor(source) {
+			var frames = appFrames();
+			for (var i = 0; i < frames.length; i++) {
+				if (frames[i].contentWindow === source) return frames[i];
+			}
+			return null;
+		}
+
+		window.addEventListener('message', function (event) {
+			if (event.origin !== appOrigin) return;
+			var data = event.data;
+			if (!data || typeof data !== 'object') return;
+			var frame = frameFor(event.source);
+			if (!frame) return;
+
+			var isHeight = data.type === 'ostsee-tiere:height' && typeof data.height === 'number';
+			if (isHeight && data.height > 0) {
+				frame.style.height = Math.ceil(data.height) + 'px';
+			} else if (data.type === 'ostsee-tiere:scroll' && typeof data.top === 'number') {
+				var top = frame.getBoundingClientRect().top + window.pageYOffset + data.top - scrollOffset;
+				window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+			}
+		});
+
+		// Die erste Höhenmeldung kann vor diesem Skript eingetroffen sein — nachfragen.
+		function requestHeight(frame) {
+			if (frame.contentWindow) {
+				frame.contentWindow.postMessage({ type: 'ostsee-tiere:request-height' }, appOrigin);
+			}
+		}
+		appFrames().forEach(function (frame) {
+			requestHeight(frame);
+			frame.addEventListener('load', function () {
+				requestHeight(frame);
+			});
+		});
+	})();
+</script>
+```
+
+Nachteil: Ändert sich das Skript, muss das Museum den Block neu kopieren. Bisher ist das nicht absehbar — das Skript ist klein und hängt nur an drei Nachrichtennamen.
+
+## Was das Skript tut
+
+**Höhe:** Das Formular meldet seine Höhe per `postMessage`, das Skript setzt sie am iframe. Der iframe ist damit auf jedem Schritt so hoch wie sein Inhalt. Vorher stand er fest auf 3350px; auf der Einstiegsseite (rund 440px Inhalt) blieben so etwa 2.900px Leerraum stehen.
+
+**Scrollen:** Beim Wechsel zum nächsten Formularschritt springt die Museumsseite zum Kopf des neuen Schritts. Ohne das bliebe man unten beim „Weiter"-Knopf stehen, mitten im neuen Schritt — sobald der iframe so hoch ist wie sein Inhalt, scrollt nicht mehr das Formular, sondern die Museumsseite.
+
+**Ohne Skript** bleibt alles wie bisher: `height:3350px` im Einbettungscode ist die Starthöhe bis zur ersten Meldung und zugleich der Rückfall, falls das Skript nicht lädt. Deshalb bleibt der Wert stehen.
+
+## Breite: frei, das Formular passt sich an
+
+Der iframe darf die volle Spaltenbreite nutzen. Das Formular verhält sich darin wie beim direkten Aufruf von ostsee-tiere.de, gemessen am 2026-11-02:
+
+| iframe-Breite | Formular                               | Ansicht |
+| ------------- | -------------------------------------- | ------- |
+| 320–703px     | füllt den iframe (je 16px Rand)        | mobil   |
+| 704–767px     | 672px, zentriert, seitlich Hintergrund | mobil   |
+| ab 768px      | 672px, zentriert, seitlich Hintergrund | breit   |
+
+Ob die mobile oder die breite Ansicht erscheint, entscheidet die **iframe-Breite**, nicht die Breite des Browserfensters. Bis 2026-11 deckelte der Einbettungscode den iframe auf `max-width:700px` — das Formular erschien dadurch auch auf großen Bildschirmen immer in der mobilen Ansicht.
+
+Ist der iframe breiter als 704px, steht links und rechts neben dem Formular die sehr hell blaugraue Hintergrundfarbe der Anwendung. Wer das nicht möchte, setzt am iframe `max-width:704px`; dann füllt das Formular den iframe ganz aus, bleibt aber in der mobilen Ansicht.
+
+## Anpassungen, die nötig werden können
+
+**Fest stehende Kopfleiste.** Das Formular scrollt mit 80px Luft über dem Schrittkopf. Ist die Kopfleiste der Museumsseite beim Scrollen höher, verdeckt sie den Anfang des Schritts. Dann ihre Höhe in Pixeln angeben:
+
+- Variante A: `<script src="https://ostsee-tiere.de/embed.js" data-scroll-offset="100" defer></script>`
+- Variante B: im Code die Zeile `var SCROLL_OFFSET = 0;` auf den Wert setzen
+
+**Content-Security-Policy.** Setzt die Museumsseite eine CSP, braucht Variante A `https://ostsee-tiere.de` in `script-src`, Variante B ein erlaubtes Inline-Skript (`'unsafe-inline'`, Nonce oder Hash). Der iframe selbst braucht `https://ostsee-tiere.de` in `frame-src` — das gilt schon heute.
+
+**Cookie-/Consent-Werkzeug.** Die Museumsseite ersetzt fremde iframes teils durch einen Platzhalter, bis zugestimmt wurde (zu sehen beim Google-Tag-Manager-iframe im Seitenquelltext). Den Formular-iframe betrifft das nach dem Stand vom 2026-11-02 nicht. Falls das Werkzeug ihn oder das Skript künftig zurückhält: Das Skript findet einen iframe auch dann, wenn er erst nach der Zustimmung geladen wird.
 
 ## Checkliste vor dem Livegang
 
-- [ ] iframe-Breite auf 650–700px begrenzt (nicht 100 % der Spalte)
-- [ ] iframe-Höhe auf 3350px gesetzt
-- [ ] `scrolling` nicht auf `no` gesetzt
-- [ ] Test mit einer echten Sichtung durchgeklickt (alle Formularschritte, inkl. Erfolgsseite)
-- [ ] Test auf einem schmalen Bildschirm (Smartphone-Breite) durchgeführt
+- [ ] Einbettungscode aus Variante A (oder B) übernommen, `max-width:700px` ist weg
+- [ ] Auf der Einstiegsseite („Was möchten Sie melden?") steht unter dem Formular kein großer Leerraum mehr
+- [ ] Eine echte Sichtung durchgeklickt, alle Schritte bis zur Erfolgsseite: Der iframe wächst und schrumpft mit, nach jedem „Weiter" steht der Kopf des neuen Schritts oben im Fenster und nicht unter der Kopfleiste
+- [ ] Dasselbe auf einem Smartphone
+- [ ] Wenn etwas nicht passt: In der Browser-Konsole (F12) nach Fehlern zu `embed.js` oder zur Content-Security-Policy suchen
 
-Ein Testaufbau zum lokalen Ausprobieren der Einbettung liegt in [test-iframe.html](test-iframe.html).
+## Technischer Hintergrund
+
+| Nachricht                     | Richtung          | Inhalt                                                                             |
+| ----------------------------- | ----------------- | ---------------------------------------------------------------------------------- |
+| `ostsee-tiere:height`         | Formular → Museum | `{ height }` in px, bei jeder Höhenänderung                                        |
+| `ostsee-tiere:scroll`         | Formular → Museum | `{ top }` in px ab Oberkante des iframes                                           |
+| `ostsee-tiere:request-height` | Museum → Formular | Bitte um erneute Höhenmeldung (falls das Skript später lädt als die erste Meldung) |
+
+Das Skript nimmt nur Nachrichten von der Adresse an, von der es geladen wurde (Variante B: `APP_ORIGIN`), und nur von iframes, die von dort laden. Das Formular schickt nichts als Pixelzahlen.
+
+Navigation, Footer und Formular-Titel der Anwendung blenden sich im iframe automatisch aus.
+
+Im Projekt: [`static/embed.js`](../static/embed.js) ist das Skript, [`src/lib/utils/client/embedMessages.ts`](../src/lib/utils/client/embedMessages.ts) das Gegenstück in der App. Abgesichert durch `e2e/iframe-embedding.spec.ts` (echte Einbettung von fremder Adresse, beide Varianten, Scroll-Versatz) und `src/lib/utils/client/embedScript.test.ts` (Variante B entspricht `embed.js`). Ein Testaufbau zum lokalen Ausprobieren liegt in [test-iframe.html](test-iframe.html).

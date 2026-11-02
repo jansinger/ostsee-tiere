@@ -6,7 +6,12 @@
  * Playwright), obwohl keine Svelte-Komponente gerendert wird.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { requestParentScroll } from '#lib/utils/client/embedMessages.ts';
 import { scrollToElement, scrollToFirstError, scrollToStepHeader } from './fieldNavigation';
+
+// Im eingebetteten Zustand scrollt die Museumsseite, nicht die App — dorthin
+// geht derselbe Zielwert als Nachricht (siehe embedMessages.ts).
+vi.mock('#lib/utils/client/embedMessages.ts', () => ({ requestParentScroll: vi.fn() }));
 
 /** Baut die für Step-Komponenten typische Struktur nach: Container > Step-Root > Header(Icon, h2, Badge) */
 function buildStepContainer(containerId: string): { header: HTMLElement; heading: HTMLElement } {
@@ -64,10 +69,24 @@ describe('scrollToElement', () => {
 		});
 	});
 
+	it('bittet zusätzlich die einbettende Seite, an dieselbe Stelle zu scrollen', () => {
+		const el = document.createElement('div');
+		document.body.appendChild(el);
+		vi.spyOn(el, 'getBoundingClientRect').mockReturnValue({ top: 500 } as DOMRect);
+		vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+		vi.mocked(requestParentScroll).mockClear();
+
+		scrollToElement(el);
+
+		expect(requestParentScroll).toHaveBeenCalledWith(500 + window.scrollY - 80);
+	});
+
 	it('tut nichts, wenn kein Element übergeben wird', () => {
 		const scrollSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+		vi.mocked(requestParentScroll).mockClear();
 		scrollToElement(null);
 		expect(scrollSpy).not.toHaveBeenCalled();
+		expect(requestParentScroll).not.toHaveBeenCalled();
 	});
 });
 

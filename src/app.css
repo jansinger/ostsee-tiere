@@ -298,6 +298,18 @@ body {
 	padding: 0;
 }
 
+/* Eingebettet bestimmt der Inhalt die Höhe des iframes (embedMessages.ts).
+   Jede Mindesthöhe aus der Fensterhöhe muss dort weg — das Fenster ist hier
+   der iframe selbst: `min-h-dvh` an der App-Hülle ließe ihn nie schrumpfen,
+   und ein `min-h-screen` darin (Erfolgs-, Fehler-, Wartungsseite) läge stets
+   über der gemeldeten Höhe, sodass sie sich mit jeder Meldung aufschaukelte.
+   Nicht auf `/map`: Die Karte füllt das Fenster und bezieht ihre Höhe genau
+   aus `min-h-dvh` (Liste in embedHeightMode.ts). */
+.embed-auto-height .min-h-dvh,
+.embed-auto-height .min-h-screen {
+	min-height: 0;
+}
+
 .iframe-mode .container,
 .iframe-mode main {
 	padding: var(--space-3);
