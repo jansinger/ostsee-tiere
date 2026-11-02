@@ -5,15 +5,27 @@
 	import PublicNavbar from '#lib/components/PublicNavbar.svelte';
 	import StructuredDataHead from '#lib/components/seo/StructuredDataHead.svelte';
 	import ToastContainer from '#lib/components/ToastContainer.svelte';
+	import { startHeightReporting } from '#lib/utils/client/embedMessages.ts';
 	import { isNotIFrame } from '#lib/utils/client/isNotIFrame.ts';
 	import '../app.css';
 
 	let { children, data } = $props();
+
+	let shell = $state<HTMLDivElement>();
+
+	$effect(() => {
+		if (isNotIFrame || !shell) return;
+		return startHeightReporting(shell);
+	});
 </script>
 
 <StructuredDataHead />
 
-<div class:iframe-mode={!isNotIFrame}>
+<!-- Eingebettet meldet dieses Element seine Höhe an die Museumsseite, die den
+     iframe daraufhin anpasst (Gegenstück: docs/IFRAME_EINBETTUNG.md). Gemessen
+     wird hier und nicht am Dokument: Das ist mindestens so hoch wie der iframe
+     selbst und könnte deshalb nie schrumpfen. -->
+<div class:iframe-mode={!isNotIFrame} bind:this={shell}>
 	<!-- Skip-Link: erster fokussierbarer Inhalt vor der Navigation -->
 	<a
 		href="#main-content"

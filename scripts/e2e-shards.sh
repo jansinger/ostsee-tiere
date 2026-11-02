@@ -174,6 +174,10 @@ form=(
 	# /barrierefreiheit (Spec darüber) bereits drei der fünf Routen
 	# kalt. Lokal 5 Tests, ~25 s.
 	e2e/axe-scan.spec.ts
+	# iframe-Höhe und Scrollen auf der Museumsseite (embed.js). Hierher,
+	# weil `form` seit #769 der kürzeste Shard ist und der Spec über
+	# die Einstiegsseite in Schritt 1 des Formulars führt.
+	e2e/iframe-embedding.spec.ts
 )
 
 # Die drei Shards laufen parallel; die Laufzeit des Jobs ist die des

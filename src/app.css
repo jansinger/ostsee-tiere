@@ -298,6 +298,14 @@ body {
 	padding: 0;
 }
 
+/* Eingebettet bestimmt der Inhalt die Höhe des iframes (embedMessages.ts).
+   `min-h-dvh` an der App-Hülle hielte sie auf mindestens Fensterhöhe — und das
+   Fenster ist hier der iframe selbst: Er könnte nach einem langen Schritt nie
+   wieder kleiner werden. */
+.iframe-mode > .min-h-dvh {
+	min-height: 0;
+}
+
 .iframe-mode .container,
 .iframe-mode main {
 	padding: var(--space-3);

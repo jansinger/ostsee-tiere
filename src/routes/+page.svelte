@@ -26,7 +26,6 @@
 	import { buildHomeQueryPath } from '#lib/report/homeQueryPath.ts';
 	import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '#lib/storage/localStorage.ts';
 	import type { SightingFormValues } from '#lib/types/Form.ts';
-	import { isNotIFrame } from '#lib/utils/client/isNotIFrame.ts';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 
 	const logger = createLogger('main:page');
@@ -350,11 +349,11 @@
 </svelte:head>
 <HreflangHead />
 
-<div
-	class="bg-base-100 mx-auto p-6"
-	class:max-w-[600px]={!isNotIFrame}
-	class:max-w-2xl={isNotIFrame}
->
+<!-- Eingebettet dieselbe Breite wie direkt aufgerufen: Bis 2026-11 hielt sich das
+     Formular im iframe auf 600px, und der Einbettungscode deckelte den iframe
+     zusätzlich auf 700px. Das Layout richtet sich nach der iframe-Breite (md =
+     768px), mit dem Deckel sah man darin immer die Mobilansicht. -->
+<div class="bg-base-100 mx-auto max-w-2xl p-6">
 	<div class="mb-8">
 		<!-- Form Content -->
 		{#if reportKind === null}

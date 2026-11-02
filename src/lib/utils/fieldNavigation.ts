@@ -2,6 +2,8 @@
  * Utility functions for navigating to form fields with errors
  */
 
+import { requestParentScroll } from '#lib/utils/client/embedMessages.ts';
+
 /**
  * Scrolls to the first field with an error and focuses it
  * @param errors - Object containing field errors (from Yup validation)
@@ -114,6 +116,9 @@ export function scrollToElement(element: HTMLElement | null, yOffset = -80): voi
 		top: elementTop,
 		behavior: 'smooth'
 	});
+	// Eingebettet ist der iframe so hoch wie sein Inhalt — dann scrollt die
+	// Museumsseite, und der Aufruf oben bewirkt nichts.
+	requestParentScroll(elementTop);
 }
 
 /**
