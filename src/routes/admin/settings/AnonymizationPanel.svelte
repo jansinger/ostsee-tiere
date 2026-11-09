@@ -142,7 +142,9 @@
 		</p>
 
 		{#if !status}
-			<div class="alert alert-warning mt-4" role="alert">
+			<!-- `status`, nicht `alert`: Ein fehlender Status ist ein Hinweis, keine
+			     Unterbrechung — dringlich ist die Hinweisleiste, wenn der Status rot ist. -->
+			<div class="alert alert-warning mt-4" role="status">
 				<Icon icon="lucide:triangle-alert" class="shrink-0" aria-hidden="true" />
 				<span class="text-sm">Status nicht ermittelbar — Datenbank prüfen.</span>
 			</div>

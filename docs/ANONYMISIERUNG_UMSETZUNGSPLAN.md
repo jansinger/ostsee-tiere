@@ -343,6 +343,35 @@ Eingang zeigt die Frist ab 14 Tagen vorher.
 `AdminSightingView.svelte`, `AdminSightingEditForm.svelte`,
 `SightingInboxCard.svelte`.
 
+**Umgesetzt (2026-11-09).** Abweichungen und Präzisierungen gegenüber dem Plan:
+
+- **Ampel** in `src/lib/utils/privacy/anonymizationHealth.ts`, im Browser und
+  auf dem Server dieselbe: vor der Freischaltung „inaktiv" (nicht rot — dann
+  liegt erwartungsgemäß fast der ganze Bestand über der Frist), danach rot bei
+  Meldungen über der Frist oder einem letzten Lauf vor mehr als 48 Stunden.
+  Gab es noch keinen Lauf, zählt die Freischaltung als Bezugspunkt.
+- **„Über der Frist"** heißt `created + 3 Monate <= jetzt`, also ohne den Tag
+  Puffer, mit dem der Job vorher leert (`overdueForAnonymization`).
+- **Freischaltung** über `POST /api/admin/anonymize/activate` (nur Superadmin,
+  nur Session). Der Server prüft dieselben Vorbedingungen wie die Checkliste im
+  Panel: Schlüssel gesetzt, keine Adresse ohne Hash, Spam-Nachbewertung
+  abgeschlossen — und dass die eingegebene Anzahl der aktuellen Vorschau
+  entspricht (sonst 409 mit der neuen Zahl). Audit
+  `privacy.anonymize_activate`. Das Panel hat keinen Gegenknopf.
+- **Hinweisleiste** im Admin-Layout. Das Layout lädt nur Ampel, Gründe und die
+  Zahl der Überfälligen; scheitert die Abfrage, bleibt die Leiste aus, statt
+  den Admin-Bereich zu sperren.
+- **Löschersuchen-Formular** (`ReporterErasurePanel.svelte`, nur für
+  Superadmins): erst suchen, dann nach Rückfrage löschen. Eine geänderte
+  Adresse verwirft das Suchergebnis; nach dem Löschen wird das Feld geleert.
+- **Bearbeitungsmaske** validiert mit dem Kontext `anonymized` (neue Option
+  `validationContext` in `createForm`) und sagt, dass geleerte Felder nicht
+  wieder befüllt werden können.
+- **Eingang:** „Rückfragen nur noch bis …" ab 14 Tagen vor dem Termin, an dem
+  der Job die Meldung leert; danach „Frist abgelaufen".
+- **Spam-Check:** neuer Drift-Fall `anonymized` mit eigenem Satz in Detailkarte
+  und Modal.
+
 **Größe:** M · `feat(admin): add anonymization approval and monitoring`
 
 ## PR 6 — Dokumentation

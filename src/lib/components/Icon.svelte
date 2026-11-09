@@ -4,6 +4,7 @@
 	import Activity from '~icons/lucide/activity';
 	import AlertCircle from '~icons/lucide/alert-circle';
 	import Anchor from '~icons/lucide/anchor';
+	import Eraser from '~icons/lucide/eraser';
 	import Archive from '~icons/lucide/archive';
 	import ArrowLeft from '~icons/lucide/arrow-left';
 	import Baby from '~icons/lucide/baby';
@@ -214,6 +215,7 @@
 		'lucide:baby': Baby,
 		'lucide:car': Car,
 		'lucide:clock': Clock,
+		'lucide:eraser': Eraser,
 		'lucide:cloud-rain': CloudRain,
 		'lucide:hash': Hash,
 		'lucide:external-link': ExternalLink,

@@ -8,7 +8,7 @@
  * einzelne Statuszeile aus der gemeinsamen Quelle `sightingStatus.ts`, wie in
  * der Metazeile von `AdminSightingView.svelte`.
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AdminSightingEditForm from './AdminSightingEditForm.svelte';
@@ -261,7 +261,16 @@ describe('AdminSightingEditForm — anonymisierte Meldung', () => {
 		// Ohne den Kontext `anonymized` hielt die Maske im Browser an Pflichtfeldern
 		// fest, die nach der Anonymisierung leer sind — der Server hätte die
 		// Meldung angenommen (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
-		const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => anonymisiert() });
+		// Nur der PUT bekommt eine Antwort. Die Upload-Konfiguration, die die Maske
+		// beim Laden holt, fällt wie in den übrigen Tests auf ihre Vorgabe zurück.
+		const originalFetch = globalThis.fetch;
+		onTestFinished(() => {
+			globalThis.fetch = originalFetch;
+		});
+		const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
+			if (init?.method === 'PUT') return { ok: true, json: async () => anonymisiert() };
+			throw new Error('nicht im Test');
+		});
 		globalThis.fetch = fetchMock as unknown as typeof fetch;
 		const onSave = vi.fn();
 		await render(AdminSightingEditForm, { sighting: anonymisiert(), onSave, onCancel: vi.fn() });
