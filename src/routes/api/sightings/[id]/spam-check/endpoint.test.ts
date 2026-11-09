@@ -129,6 +129,29 @@ describe('GET /api/sightings/[id]/spam-check', () => {
 		expect(body.recomputed).toMatchObject({ score: 0, isHighRisk: false, indicators: [] });
 	});
 
+	it('kennzeichnet eine anonymisierte Meldung', async () => {
+		// Die Neuberechnung läuft dann ohne Name und E-Mail und fällt
+		// systematisch zu mild aus. Die Oberfläche soll das sagen können, statt
+		// die Zahl unkommentiert neben den Erstbefund zu stellen
+		// (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
+		mockDbResult = [
+			{
+				...mockSighting,
+				firstName: null,
+				lastName: null,
+				email: null,
+				anonymizedAt: new Date('2026-11-09T03:15:00Z')
+			}
+		];
+		const body = await (await GET(createEvent('123'))).json();
+		expect(body.anonymized).toBe(true);
+	});
+
+	it('kennzeichnet eine nicht anonymisierte Meldung als solche', async () => {
+		const body = await (await GET(createEvent('123'))).json();
+		expect(body.anonymized).toBe(false);
+	});
+
 	it('liefert `stored: null` für nie bewerteten Altbestand', async () => {
 		// NULL ist nicht 0 (`docs/SPAM_DETECTION.md`). Ein `{ score: 0 }` hier
 		// läse sich als „damals geprüft, sauber" — das Gegenteil der Aussage.

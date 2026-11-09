@@ -5,6 +5,8 @@
  * lässt sich eine heutige Meldung mit einer verknüpfen, deren Adresse längst
  * gelöscht ist (docs/ANONYMISIERUNG_KONZEPT.md, Abschnitt 4).
  */
+import { PgDialect } from 'drizzle-orm/pg-core';
+import type { SQL } from 'drizzle-orm';
 import { db } from '#lib/server/db/index.ts';
 import { computeReporterHash } from '#lib/server/privacy/reporterHash.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -107,6 +109,15 @@ describe('Melder-Hash beim Speichern', () => {
 	});
 });
 
+/**
+ * Kontakt- und Hash-Spalten gehen gesperrt ins UPDATE
+ * (`guardAnonymizedColumns`): als `CASE`, das an anonymisierten Zeilen den
+ * alten Wert behält. Der neue Wert steht dann als Parameter darin.
+ */
+function guarded(value: unknown): { sql: string; params: unknown[] } {
+	return new PgDialect().sqlToQuery(value as SQL);
+}
+
 describe('Melder-Hash beim Aktualisieren', () => {
 	beforeEach(() => {
 		mockEnv.REPORTER_HASH_KEY = KEY;
@@ -118,10 +129,25 @@ describe('Melder-Hash beim Aktualisieren', () => {
 
 		await updateSighting(42, {} as never);
 
-		expect(updated()).toMatchObject({
-			reporterHash: computeReporterHash('max@example.invalid', KEY),
-			reporterInternal: false
-		});
+		expect(guarded(updated()?.reporterHash).params).toEqual([
+			computeReporterHash('max@example.invalid', KEY)
+		]);
+		expect(guarded(updated()?.reporterInternal).params).toEqual([false]);
+	});
+
+	it('schreibt Adresse und Hash nicht in eine anonymisierte Zeile zurück', async () => {
+		// Lief der Job zwischen Laden und Speichern der Maske, wäre die Adresse
+		// sonst wieder da — samt neuem Hash (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
+		mapped.email = 'max@example.invalid';
+		const updated = captureUpdate();
+
+		await updateSighting(42, {} as never);
+
+		for (const column of ['email', 'reporterHash', 'reporterInternal']) {
+			expect(guarded(updated()?.[column]).sql, column).toMatch(
+				/^CASE WHEN "sichtungen"\."anonymisiert_am" IS NULL THEN \$1 ELSE "sichtungen"\."[a-z_]+" END$/
+			);
+		}
 	});
 
 	it('lässt Hash und Kennzeichen unangetastet, wenn keine Adresse übergeben wird', async () => {

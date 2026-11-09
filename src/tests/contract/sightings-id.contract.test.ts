@@ -117,6 +117,24 @@ vi.mock('#lib/logger.ts', () => ({
 	createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })
 }));
 
+/** Wie `mockSighting`, aber nach der Anonymisierung ohne Namens-Einwilligung. */
+const ANONYMIZED_SIGHTING = {
+	...mockSighting,
+	firstName: null,
+	lastName: null,
+	email: null,
+	phone: null,
+	fax: null,
+	street: null,
+	zipCode: null,
+	city: null,
+	shipName: null,
+	homePort: null,
+	nameConsent: 0,
+	shipNameConsent: 0,
+	anonymizedAt: new Date('2024-09-15T03:15:00Z')
+};
+
 const validSightingBody = {
 	referenceId: 'ref-test-123',
 	firstName: 'Max',
@@ -143,6 +161,21 @@ describe('Contract: GET /api/sightings/{id}', () => {
 	});
 
 	it('returns 200 and satisfies the OpenAPI spec', async () => {
+		const event = createEvent('/api/sightings/123', {
+			params: { id: '123' },
+			locals: { user: mockAdminUser }
+		});
+		const res = await GET(event);
+		const apiRes = await asApiResponse(res, event);
+
+		expect(apiRes.status).toBe(200);
+		expect(apiRes).toSatisfyApiSpec();
+	});
+
+	it('liefert eine anonymisierte Meldung spec-konform aus', async () => {
+		// Nach der Anonymisierung sind Kontaktfelder NULL und `anonymizedAt`
+		// gesetzt (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
+		mockSelectLimit.mockResolvedValueOnce([{ ...ANONYMIZED_SIGHTING }]);
 		const event = createEvent('/api/sightings/123', {
 			params: { id: '123' },
 			locals: { user: mockAdminUser }

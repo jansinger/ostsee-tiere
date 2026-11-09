@@ -33,6 +33,7 @@ import type { SightingFormData } from '#lib/report/types.ts';
 import type { StoredWeatherData } from '#lib/services/weatherService.ts';
 import { db } from '#lib/server/db/index.ts';
 import { sightingFiles, sightings, type SightingSelect } from '#lib/server/db/schema.ts';
+import { guardAnonymizedColumns } from '#lib/server/privacy/anonymizationLock.ts';
 import { getReporterHashKey, reporterIdentityFor } from '#lib/server/privacy/reporterHash.ts';
 import { normalizeReporterKey } from '#lib/server/privacy/reporterKey.ts';
 import { getCachedWeatherData } from '#lib/server/services/weatherDeduplication.ts';
@@ -337,12 +338,13 @@ export const updateSighting = async (
 		Object.assign(updateData, reporterIdentityFor(updateData.email, getReporterHashKey()));
 	}
 
-	// Führe Update-Operation mit ID-Filter aus
+	// Führe Update-Operation mit ID-Filter aus. Kontakt-, Namens-, Schiffs- und
+	// Hash-Spalten gehen gesperrt hinein: An einer anonymisierten Zeile behalten
+	// sie ihren Wert, auch wenn der Job erst nach dem Laden der Maske lief
+	// (`anonymizationLock.ts`).
 	const [updatedSighting] = await db
 		.update(sightings)
-		.set({
-			...updateData
-		})
+		.set(guardAnonymizedColumns(updateData))
 		.where(eq(sightings.id, Number(id)))
 		.returning();
 

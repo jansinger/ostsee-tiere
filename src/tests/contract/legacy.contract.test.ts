@@ -347,6 +347,60 @@ describe('Contract: GET /sichtungen/showreports.json', () => {
 		expect(apiRes).toSatisfyApiSpec();
 	});
 
+	it('liefert anonymisierte Meldungen spec-konform und ohne nulls', async () => {
+		// Nach der Anonymisierung sind Name und Schiff ohne Einwilligung NULL.
+		// `na`/`sh` sind bedingte Felder: Ohne Einwilligung fehlen sie, wie
+		// schon vor der Anonymisierung — kein null, kein neuer Leerstring
+		// (docs/ANONYMISIERUNG_KONZEPT.md, 5.2; Legacy-Vertrag unverändert).
+		const anonymized = {
+			id: 900,
+			sichtungsdatum: new Date('2024-01-25T14:50:00Z'),
+			latitude: '54.646667',
+			longitude: '11.333333',
+			totalCount: 1,
+			juvenileCount: 0,
+			firstName: null,
+			lastName: null,
+			nameConsent: 0,
+			waterway: 'Fehmarnbelt',
+			shipName: null,
+			shipNameConsent: 0,
+			approvedAt: new Date(),
+			species: 0,
+			isDead: false
+		};
+		mockSelectLimit.mockResolvedValueOnce([
+			anonymized,
+			// Mit Einwilligung bleiben Name und Schiff auch nach der Anonymisierung.
+			{
+				...anonymized,
+				id: 901,
+				firstName: 'Max',
+				lastName: 'Mustermann',
+				nameConsent: 1,
+				shipName: 'Möwe',
+				shipNameConsent: 1
+			}
+		]);
+
+		const event = createEvent('/sichtungen/showreports.json');
+		const res = await getShowreports(event);
+		const apiRes = await asApiResponse(res, event);
+		const body = await res.clone().json();
+
+		expect(apiRes.status).toBe(200);
+		expect(apiRes).toSatisfyApiSpec();
+		for (const row of body) {
+			for (const [field, value] of Object.entries(row)) {
+				expect(value, `${row.id}.${field}`).not.toBeNull();
+			}
+		}
+		expect(body[0]).not.toHaveProperty('na');
+		expect(body[0]).not.toHaveProperty('sh');
+		expect(body[1].na).toBe('Max Mustermann');
+		expect(body[1].sh).toBe('Möwe');
+	});
+
 	it('lat/lon fields are strings (critical legacy requirement)', async () => {
 		mockSelectLimit.mockResolvedValueOnce([
 			{

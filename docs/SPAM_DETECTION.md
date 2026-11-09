@@ -179,6 +179,13 @@ wird von beiden Wegen benutzt. Sie lädt ausschließlich Zeilen mit
 `spam_score IS NULL` und ist damit idempotent — ein abgebrochener Lauf macht
 beim nächsten Aufruf dort weiter.
 
+**Anonymisierte Meldungen sind ausgenommen** (`anonymisiert_am IS NOT NULL`,
+seit 2026-11): Ihnen fehlen Name und E-Mail, der Score fiele systematisch zu
+mild aus, und über sie ist längst entschieden. Sie zählen auch nicht in
+`remaining`. Aus demselben Grund liefert `GET /api/sightings/[id]/spam-check`
+das Kennzeichen `anonymized` mit — die Neuberechnung läuft dann ohne die
+Kontaktfelder (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
+
 > **Nachträgliche Scores sind systematisch milder** als die einer echten
 > Einreichung: Formular-Token und Duplikat-Fenster („letzte 24 h") existieren
 > nur zum Meldezeitpunkt. Das ist gewollt und kein Fehler.

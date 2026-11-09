@@ -2,6 +2,7 @@ import { getAdminSightingSchema } from '#lib/form/validation/sightingSchema.ts';
 import { createLogger } from '#lib/logger.server.ts';
 import type { SightingFormData } from '#lib/report/types.ts';
 import { logAuditEvent } from '#lib/server/audit/auditService.ts';
+import { lockedFieldsIn } from '#lib/server/privacy/anonymizationLock.ts';
 import { omitReporterIdentity } from '#lib/server/privacy/reporterHash.ts';
 import { requireUserRole } from '#lib/server/auth/auth.ts';
 import { getClientIp } from '#lib/server/utils/getClientIp.ts';
@@ -107,14 +108,50 @@ export const PUT: RequestHandler = async ({ params, request, locals, url, getCli
 		// Lockerung im Browser wirkungslos: Der Server warf die Meldung als 500
 		// zurück, und der Admin las „Interner Serverfehler". Neue Meldungen laufen
 		// unverändert über `POST /api/sightings` und das strenge Schema.
-		await getAdminSightingSchema().validate(formData, { abortEarly: false });
-
-		// Load current state for changedFields diff
+		//
+		// Geladen wird vorher, weil die Validierung davon abhängt: An einer
+		// anonymisierten Meldung sind Name und E-Mail keine Pflicht mehr
+		// (Kontext `anonymized`), und geleerte Felder dürfen nicht wieder gefüllt
+		// werden (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4). Dieselbe Zeile
+		// dient danach dem changedFields-Diff.
 		const currentRecords = await db
 			.select()
 			.from(sightings)
 			.where(eq(sightings.id, Number(id)))
 			.limit(1);
+		const current = currentRecords[0];
+		const anonymized = current?.anonymizedAt != null;
+
+		await getAdminSightingSchema().validate(formData, {
+			abortEarly: false,
+			context: { anonymized }
+		});
+
+		// Vorabprüfung mit Rückmeldung. Die Sperre im UPDATE selbst
+		// (`guardAnonymizedColumns` in `updateSighting`) greift auch dann, wenn
+		// der Job erst nach diesem Lesen lief — dort allerdings stillschweigend.
+		const locked = current
+			? lockedFieldsIn(formData as Record<string, unknown>, {
+					anonymizedAt: current.anonymizedAt,
+					nameConsent: current.nameConsent,
+					shipNameConsent: current.shipNameConsent
+				})
+			: [];
+		if (locked.length > 0) {
+			logger.info({ id, fields: locked }, 'Sichtung abgelehnt: anonymisierte Felder');
+			return json(
+				{
+					success: false,
+					code: 'ANONYMIZED_FIELDS',
+					message:
+						'Diese Meldung ist anonymisiert. Geleerte Kontaktdaten können nicht wieder eingetragen werden.',
+					errors: Object.fromEntries(
+						locked.map((field) => [field, 'Nach der Anonymisierung nicht mehr änderbar.'])
+					)
+				},
+				{ status: 422 }
+			);
+		}
 
 		// `mediaUpload` wird abgeleitet, nicht durchgereicht: Das Bearbeitungs-
 		// formular kennt kein Ankreuzfeld dafür, und ein hier hochgeladenes Foto
@@ -140,9 +177,9 @@ export const PUT: RequestHandler = async ({ params, request, locals, url, getCli
 			uploadedFiles: uploadedFiles || []
 		});
 
-		if (currentRecords.length > 0 && updatedSighting) {
+		if (current && updatedSighting) {
 			const changedFields = getChangedFields(
-				currentRecords[0] as Record<string, unknown>,
+				current as Record<string, unknown>,
 				updatedSighting as unknown as Record<string, unknown>
 			);
 			const ipAddress = getClientIp(getClientAddress, request);

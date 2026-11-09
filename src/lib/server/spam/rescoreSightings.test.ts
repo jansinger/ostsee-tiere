@@ -1,3 +1,5 @@
+import { PgDialect } from 'drizzle-orm/pg-core';
+import type { SQL } from 'drizzle-orm';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('#lib/logger.server.ts', () => ({
@@ -35,27 +37,35 @@ import { detectSpamIndicators } from './spamDetector';
 const mockDetect = vi.mocked(detectSpamIndicators);
 
 let capturedLimit: number | undefined;
+const capturedWheres: unknown[] = [];
 
 function primeDb(rows: Array<Record<string, unknown>>, remainingCount: number): void {
 	capturedLimit = undefined;
+	capturedWheres.length = 0;
 	selectMock.mockReset();
 	// 1. Aufruf: Zeilen-Abfrage
 	selectMock.mockImplementationOnce(() => ({
 		from: () => ({
-			where: () => ({
-				orderBy: () => ({
-					limit: (n: number) => {
-						capturedLimit = n;
-						return Promise.resolve(rows);
-					}
-				})
-			})
+			where: (condition: unknown) => {
+				capturedWheres.push(condition);
+				return {
+					orderBy: () => ({
+						limit: (n: number) => {
+							capturedLimit = n;
+							return Promise.resolve(rows);
+						}
+					})
+				};
+			}
 		})
 	}));
 	// 2. Aufruf: Rest-Zählung
 	selectMock.mockImplementationOnce(() => ({
 		from: () => ({
-			where: () => Promise.resolve([{ count: remainingCount }])
+			where: (condition: unknown) => {
+				capturedWheres.push(condition);
+				return Promise.resolve([{ count: remainingCount }]);
+			}
 		})
 	}));
 }
@@ -78,6 +88,21 @@ function buildRow(id: number, overrides: Record<string, unknown> = {}): Record<s
 }
 
 describe('rescoreSightings', () => {
+	it('bewertet anonymisierte Meldungen nicht — weder geladen noch als offen gezählt', async () => {
+		// Ohne Name und E-Mail fiele der Score systematisch zu mild aus, und die
+		// Zeilen blieben sonst für immer „offen" (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
+		primeDb([], 0);
+
+		await rescoreSightings({});
+
+		expect(capturedWheres).toHaveLength(2);
+		for (const condition of capturedWheres) {
+			const { sql: text } = new PgDialect().sqlToQuery(condition as SQL);
+			expect(text).toContain('"sichtungen"."spam_score" is null');
+			expect(text).toContain('"sichtungen"."anonymisiert_am" is null');
+		}
+	});
+
 	beforeEach(() => {
 		vi.clearAllMocks();
 		updateSetCalls.length = 0;

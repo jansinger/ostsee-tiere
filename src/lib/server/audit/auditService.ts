@@ -11,6 +11,8 @@ export type AuditAction =
 	| 'sighting.weather.refresh'
 	| 'sighting.spam_rescore'
 	| 'sighting.reporter_hash_backfill'
+	| 'privacy.anonymize'
+	| 'privacy.erasure'
 	| 'file.delete'
 	| 'file.cleanup_orphans'
 	| 'config.update'

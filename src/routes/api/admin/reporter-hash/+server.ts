@@ -28,6 +28,7 @@ import {
 	RATE_LIMITS
 } from '#lib/server/middleware/rateLimit.ts';
 import { hashReporters, ReporterHashKeyMissingError } from '#lib/server/privacy/hashReporters.ts';
+import { describeDbError } from '#lib/server/privacy/describeDbError.ts';
 import { getClientIp } from '#lib/server/utils/getClientIp.ts';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
@@ -83,7 +84,9 @@ export const POST: RequestHandler = async ({ request, url, locals, getClientAddr
 			logger.error({ action: 'reporter_hash_key_missing' }, error.message);
 			return json({ error: error.message }, { status: 503, headers });
 		}
-		logger.error({ error }, 'Hash-Backfill fehlgeschlagen');
+		// Nicht das Fehlerobjekt: Ein DrizzleQueryError trägt die Parameter der
+		// Anweisung in seiner Meldung, beim Hash-Backfill also E-Mail-Adressen.
+		logger.error(describeDbError(error), 'Hash-Backfill fehlgeschlagen');
 		return json({ error: 'Hash-Backfill fehlgeschlagen' }, { status: 500, headers });
 	}
 };

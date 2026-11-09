@@ -16,6 +16,12 @@ const ADMIN_ACCESSIBLE_CONFIG_KEYS = new Set([
 ]);
 
 /**
+ * Präfixe, deren Schlüssel nur ihr eigenes Modul schreibt
+ * (`#lib/server/privacy/anonymizationState.ts`).
+ */
+const RESERVED_CONFIG_KEY_PREFIXES = ['privacy.anonymization.'];
+
+/**
  * Configuration keys that only superadmins can access (system-critical)
  */
 const SUPERADMIN_ONLY_CONFIG_KEYS = new Set([
@@ -65,6 +71,13 @@ const SUPERADMIN_ONLY_CONFIG_KEYS = new Set([
  */
 export function canUserAccessConfigKey(user: User | null | undefined, configKey: string): boolean {
 	if (!user) {
+		return false;
+	}
+
+	// Reservierte Schlüssel schreibt nur ihr Modul — auch kein Superadmin über
+	// die Einstellungs-API. Sonst ließe sich die einmalige Freischaltung der
+	// Anonymisierung über PUT/DELETE /api/config vorziehen oder zurücknehmen.
+	if (RESERVED_CONFIG_KEY_PREFIXES.some((prefix) => configKey.startsWith(prefix))) {
 		return false;
 	}
 

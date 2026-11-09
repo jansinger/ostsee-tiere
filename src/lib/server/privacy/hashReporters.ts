@@ -20,7 +20,7 @@
  * Datenbank ist dort von außen nicht erreichbar), lokal über
  * `npm run privacy:hash-reporters`.
  */
-import { and, count, eq, isNotNull, isNull, sql, type SQL } from 'drizzle-orm';
+import { and, count, eq, gt, isNotNull, isNull, sql, type SQL } from 'drizzle-orm';
 import { db } from '#lib/server/db/index.ts';
 import { sightings } from '#lib/server/db/schema.ts';
 import { getReporterHashKey, reporterIdentityFor } from '#lib/server/privacy/reporterHash.ts';
@@ -55,11 +55,25 @@ export interface HashReportersReport {
 	 * damit kein Aufrufer endlos läuft.
 	 */
 	stalled: boolean;
+	/** Höchste geladene ID — Cursor für den nächsten Aufruf (`afterId`), `null` ohne Zeilen */
+	lastId: number | null;
+	/**
+	 * Weniger Zeilen als das Limit geladen: Hinter dem Cursor gibt es keine
+	 * offene Zeile mehr. Anders als `done` auch bei `stalled` nur dann wahr,
+	 * wenn wirklich nichts mehr folgt.
+	 */
+	exhausted: boolean;
 }
 
 export interface HashReportersOptions {
 	/** Zeilen je Lauf, geklemmt auf `MAX_HASH_BATCH` */
 	limit?: number | undefined;
+	/**
+	 * Nur Zeilen mit höherer ID. Wer über den ganzen Bestand läuft, reicht hier
+	 * `lastId` des vorigen Aufrufs weiter: Ein voller Stapel unhashbarer
+	 * Adressen verdeckt sonst alle Zeilen dahinter (Review PR #1011).
+	 */
+	afterId?: number | null | undefined;
 }
 
 /**
@@ -71,7 +85,7 @@ export interface HashReportersOptions {
  * zu bekommen (Review PR #1007). Ganz deckungsgleich sind die beiden
  * Zeichenklassen nicht — was trotzdem durchrutscht, fängt `skipped`/`stalled`.
  */
-function pendingRows(): SQL {
+export function pendingHashRows(): SQL {
 	return and(
 		isNull(sightings.reporterHash),
 		isNull(sightings.anonymizedAt),
@@ -90,7 +104,11 @@ export async function hashReporters(options: HashReportersOptions): Promise<Hash
 	const rows = await db
 		.select({ id: sightings.id, email: sightings.email })
 		.from(sightings)
-		.where(pendingRows())
+		.where(
+			options.afterId == null
+				? pendingHashRows()
+				: and(pendingHashRows(), gt(sightings.id, options.afterId))
+		)
 		.orderBy(sightings.id)
 		.limit(limit);
 
@@ -111,12 +129,12 @@ export async function hashReporters(options: HashReportersOptions): Promise<Hash
 		const written = await db
 			.update(sightings)
 			.set(identity)
-			.where(and(eq(sightings.id, row.id), pendingRows(), eq(sightings.email, row.email ?? '')))
+			.where(and(eq(sightings.id, row.id), pendingHashRows(), eq(sightings.email, row.email ?? '')))
 			.returning({ id: sightings.id });
 		hashed += written.length;
 	}
 
-	const [remainingRow] = await db.select({ count: count() }).from(sightings).where(pendingRows());
+	const [remainingRow] = await db.select({ count: count() }).from(sightings).where(pendingHashRows());
 
 	// Festgefahren ist ein Batch nur, wenn KEINE geladene Zeile einen Hash
 	// bekommen kann. Kommen Updates leer zurück, weil ein paralleler Lauf oder
@@ -129,6 +147,8 @@ export async function hashReporters(options: HashReportersOptions): Promise<Hash
 		skipped,
 		remaining: Number(remainingRow?.count ?? 0),
 		done: rows.length < limit || stalled,
-		stalled
+		stalled,
+		lastId: rows.at(-1)?.id ?? null,
+		exhausted: rows.length < limit
 	};
 }
