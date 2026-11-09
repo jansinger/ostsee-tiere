@@ -15,13 +15,17 @@ import type { SightingFrom } from '#lib/report/formOptions/sightingFrom.ts';
 import type { Species } from '#lib/report/formOptions/species.ts';
 import type { Visibility } from '#lib/report/formOptions/visibility.ts';
 import type { sightings } from '#lib/server/db/schema.ts';
+import { omitReporterIdentity } from '#lib/server/privacy/reporterHash.ts';
 import type { FrontendSighting } from '#lib/types/index.ts';
 import type { InferSelectModel } from 'drizzle-orm';
 
 type SightingRow = InferSelectModel<typeof sightings>;
 
 export function toFrontendSighting(row: SightingRow): FrontendSighting {
-	const { location: _location, ...rest } = row;
+	// Ohne Geometrie und ohne Melder-Hash. Der Hash verlässt den Server nie
+	// (docs/ANONYMISIERUNG_KONZEPT.md, 6.2), und der XML-Export schreibt jedes
+	// Feld seines Objekts.
+	const { location: _location, ...rest } = omitReporterIdentity(row);
 
 	return {
 		...rest,

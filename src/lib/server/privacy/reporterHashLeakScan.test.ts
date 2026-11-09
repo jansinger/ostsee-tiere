@@ -9,6 +9,13 @@
  * (docs/ANONYMISIERUNG_KONZEPT.md, Abschnitt 6.2).
  *
  * Deshalb darf ihn kein Route- und kein Komponenten-Code beim Namen nennen.
+ *
+ * **Der Namensscan allein reicht nicht.** Ein `db.select()` ohne Spaltenliste
+ * lädt die ganze Zeile und gibt den Hash weiter, ohne ihn je zu nennen — so
+ * stand er im Review von PR #1007 noch in `GET /api/sightings/export`. Der
+ * zweite Teil unten verlangt deshalb für jede Route mit einem solchen
+ * `select()`, dass sie die Zeile bereinigt (`omitReporterIdentity`, oder
+ * `toFrontendSighting`, das es intern tut) oder begründet ausgenommen ist.
  * Ganze Zeilen werden vor der Ausgabe mit `omitReporterIdentity` bereinigt;
  * die Laufzeit-Tests dazu stehen neben den vier Handlern, die ganze Zeilen
  * ausliefern (`reporterIdentity.test.ts`). Verknüpft wird serverseitig über die
@@ -49,5 +56,40 @@ describe('Melder-Hash in Routen und Komponenten', () => {
 
 	it('führt keine Ausnahme für eine Datei, die es nicht mehr gibt', () => {
 		expect(Object.keys(ALLOWED).filter((file) => !SCANNED.includes(file))).toEqual([]);
+	});
+});
+
+/**
+ * Routen mit `select()` ohne Spaltenliste, die die Zeile nachweislich nicht
+ * ausliefern — mit Begründung.
+ */
+const FULL_ROW_ALLOWED: Readonly<Record<string, string>> = {
+	'src/routes/api/sightings/[id]/spam-check/+server.ts':
+		'liest die Zeile nur für die Neuberechnung; die Antwort enthält ausschließlich { stored, recomputed }'
+};
+
+const FULL_ROW_SELECT = /\.select\(\s*\)/;
+const SANITIZERS = /\b(omitReporterIdentity|toFrontendSighting)\b/;
+
+const ROUTES_WITH_FULL_ROW = sourceFiles('src/routes', /\.ts$/)
+	.filter((file) => !/\.test\.ts$|\.testutil\.ts$/.test(file))
+	.filter((file) => FULL_ROW_SELECT.test(stripComments(readFileSync(file, 'utf8'))));
+
+describe('Ganze Zeilen in Routen', () => {
+	it('findet überhaupt Routen mit ganzen Zeilen', () => {
+		expect(ROUTES_WITH_FULL_ROW.length).toBeGreaterThan(3);
+	});
+
+	it.each(ROUTES_WITH_FULL_ROW.filter((file) => !(file in FULL_ROW_ALLOWED)))(
+		'%s bereinigt die Zeile vor der Ausgabe',
+		(file) => {
+			expect(stripComments(readFileSync(file, 'utf8'))).toMatch(SANITIZERS);
+		}
+	);
+
+	it('führt keine Ausnahme für eine Route ohne ganze Zeile', () => {
+		expect(
+			Object.keys(FULL_ROW_ALLOWED).filter((file) => !ROUTES_WITH_FULL_ROW.includes(file))
+		).toEqual([]);
 	});
 });

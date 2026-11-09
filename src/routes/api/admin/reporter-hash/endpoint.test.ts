@@ -46,7 +46,13 @@ describe('POST /api/admin/reporter-hash', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockEnv.CLEANUP_TOKEN = TOKEN;
-		hashReporters.mockResolvedValue({ hashed: 3, remaining: 0, done: true });
+		hashReporters.mockResolvedValue({
+			hashed: 3,
+			skipped: 0,
+			remaining: 0,
+			done: true,
+			stalled: false
+		});
 	});
 
 	it('weist Aufrufe ohne Ausweis mit 401 ab', async () => {
@@ -73,7 +79,7 @@ describe('POST /api/admin/reporter-hash', () => {
 		const response = await POST(event({ user: ADMIN }));
 
 		expect(response.status).toBe(200);
-		expect(await response.json()).toEqual({ hashed: 3, remaining: 0, done: true });
+		expect(await response.json()).toMatchObject({ hashed: 3, remaining: 0, done: true });
 	});
 
 	it('lässt den Token-Weg durch (Cron ohne Session)', async () => {

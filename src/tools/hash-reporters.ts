@@ -44,6 +44,13 @@ try {
 		const report = await hashReporters({ limit: batch });
 		hashed += report.hashed;
 		console.log(`  ${hashed} gehasht, ${report.remaining} offen …`);
+		if (report.stalled) {
+			console.error(
+				`\nAbbruch: Der letzte Batch bestand nur aus Adressen ohne verwertbaren Inhalt ` +
+					`(${report.skipped} Zeilen, ${report.remaining} weiterhin ohne Hash). Von Hand prüfen.`
+			);
+			process.exit(1);
+		}
 		if (report.done) break;
 	}
 } catch (error) {
