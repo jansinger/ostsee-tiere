@@ -50,7 +50,9 @@ export function guardAnonymizedColumns<T extends Record<string, unknown>>(update
 		const column = key as SightingColumn;
 		const condition = writableWhen(column);
 		if (!condition) continue;
-		guarded[key] = sql`CASE WHEN ${condition} THEN ${value} ELSE ${sightings[column]} END`;
+		// Der neue Wert läuft durch den Encoder der Spalte, wie ein normales `.set()`.
+		const param = sql.param(value, sightings[column]);
+		guarded[key] = sql`CASE WHEN ${condition} THEN ${param} ELSE ${sightings[column]} END`;
 	}
 	return guarded as T;
 }

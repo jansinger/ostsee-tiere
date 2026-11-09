@@ -7,7 +7,8 @@
  */
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { describe, expect, it } from 'vitest';
-import { dueForAnonymization, groupByConsents } from './anonymizationQueries';
+import { groupByConsents } from './anonymizationPatch';
+import { dueForAnonymization } from './anonymizationQueries';
 
 const text = (): string => new PgDialect().sqlToQuery(dueForAnonymization()).sql;
 

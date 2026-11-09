@@ -54,3 +54,34 @@ export function buildAnonymizationPatch(
 	for (const column of clearedColumns(consents)) patch[column] = null;
 	return { ...(patch as Partial<typeof sightings.$inferInsert>), anonymizedAt: now };
 }
+
+export interface ConsentRow extends AnonymizationConsents {
+	id: number;
+}
+
+export interface ConsentGroup {
+	consents: AnonymizationConsents;
+	ids: number[];
+}
+
+/**
+ * Fasst Zeilen nach dem zusammen, was an ihnen geleert wird — höchstens vier
+ * Gruppen, also höchstens vier Updates je Stapel.
+ */
+export function groupByConsents(rows: ConsentRow[]): ConsentGroup[] {
+	const groups = new Map<string, ConsentGroup>();
+	for (const row of rows) {
+		const classes = clearedClasses(row);
+		const key = classes.join('+');
+		const group = groups.get(key) ?? {
+			consents: {
+				nameConsent: classes.includes('name') ? 0 : 1,
+				shipNameConsent: classes.includes('ship') ? 0 : 1
+			},
+			ids: []
+		};
+		group.ids.push(row.id);
+		groups.set(key, group);
+	}
+	return [...groups.values()];
+}

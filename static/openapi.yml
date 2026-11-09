@@ -1487,6 +1487,62 @@ paths:
             Nur bei `mode=execute`: `REPORTER_HASH_KEY` fehlt oder ist kürzer als
             32 Zeichen. Es wurde nichts geändert.
 
+  /api/admin/reporter-erasure:
+    post:
+      tags:
+        - Admin
+      summary: Löschersuchen nach Art. 17 DSGVO bearbeiten
+      description: >
+        Findet alle Sichtungen einer Person über die genannte E-Mail-Adresse —
+        über den Melder-Hash, also auch bereits anonymisierte — und
+        anonymisiert sie sofort nach derselben Feld-Matrix wie der tägliche
+        Lauf. Zusätzlich wird der Melder-Hash geleert: Die Sichtungen bleiben,
+        die Verknüpfung zur Person ist weg. Bereits anonymisierte Sichtungen
+        behalten ihr ursprüngliches `anonymisiert_am`.
+
+
+        **Erfordert die Rolle `superadmin`** und eine angemeldete Session; den
+        Cron-Token akzeptiert der Endpunkt nicht, weil schon die Vorschau
+        verrät, ob es zu einer Adresse Meldungen gibt. Die Adresse wird weder
+        geloggt noch im Audit-Eintrag gespeichert.
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  description: Adresse der Person; Groß-/Kleinschreibung und Leerraum am Rand zählen nicht.
+                mode:
+                  type: string
+                  enum: [preview, execute]
+                  default: preview
+      responses:
+        '200':
+          description: Vorschau oder Bearbeitung abgeschlossen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErasureReport'
+        '302':
+          $ref: '#/components/responses/LoginRedirect'
+        '400':
+          description: Keine oder keine verwertbare Adresse angegeben.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          description: Unerwarteter Fehler
+        '503':
+          description: >-
+            `REPORTER_HASH_KEY` fehlt oder ist kürzer als 32 Zeichen. Ohne ihn
+            fände die Suche die anonymisierten Sichtungen der Person nicht; es
+            wurde nichts geändert.
+
   /api/admin/test-email:
     post:
       tags:
@@ -3223,6 +3279,22 @@ components:
         done:
           type: boolean
           description: '`false` heißt: erneut aufrufen.'
+    ErasureReport:
+      type: object
+      required: [mode, matched, alreadyAnonymized, erased]
+      properties:
+        mode:
+          type: string
+          enum: [preview, execute]
+        matched:
+          type: integer
+          description: Sichtungen dieser Person.
+        alreadyAnonymized:
+          type: integer
+          description: Davon schon vorher anonymisiert.
+        erased:
+          type: integer
+          description: In diesem Aufruf bearbeitet (0 in der Vorschau).
     SpamRescoreReport:
       type: object
       required: [scored, skippedFailed, lastId, remaining, done, stalled, distribution]

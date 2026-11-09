@@ -17,11 +17,7 @@ import { db } from '#lib/server/db/index.ts';
 import { sightings } from '#lib/server/db/schema.ts';
 import { berlinDatePart } from '#lib/server/db/sqlTimeZone.ts';
 import { getReporterHashKey } from '#lib/server/privacy/reporterHash.ts';
-import {
-	buildAnonymizationPatch,
-	clearedClasses,
-	type AnonymizationConsents
-} from './anonymizationPatch';
+import { buildAnonymizationPatch, groupByConsents } from './anonymizationPatch';
 import type { AnonymizationPorts, DueSummary } from './anonymizeSightings';
 import { hashReporters, pendingHashRows } from './hashReporters';
 import { getActivatedAt, recordLastRun } from './anonymizationState';
@@ -35,37 +31,6 @@ export function dueForAnonymization(): SQL {
 		isNull(sightings.anonymizedAt),
 		sql`${sightings.created} + ${RETENTION} - INTERVAL '1 day' <= (NOW() AT TIME ZONE 'UTC')`
 	) as SQL;
-}
-
-export interface ConsentRow extends AnonymizationConsents {
-	id: number;
-}
-
-export interface ConsentGroup {
-	consents: AnonymizationConsents;
-	ids: number[];
-}
-
-/**
- * Fasst Zeilen nach dem zusammen, was an ihnen geleert wird — höchstens vier
- * Gruppen, also höchstens vier Updates je Stapel.
- */
-export function groupByConsents(rows: ConsentRow[]): ConsentGroup[] {
-	const groups = new Map<string, ConsentGroup>();
-	for (const row of rows) {
-		const classes = clearedClasses(row);
-		const key = classes.join('+');
-		const group = groups.get(key) ?? {
-			consents: {
-				nameConsent: classes.includes('name') ? 0 : 1,
-				shipNameConsent: classes.includes('ship') ? 0 : 1
-			},
-			ids: []
-		};
-		group.ids.push(row.id);
-		groups.set(key, group);
-	}
-	return [...groups.values()];
 }
 
 const hasText = (column: SQLWrapper): SQL => sql`${column} ~ '[^[:space:]]'`;
