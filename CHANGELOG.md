@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.25.0](https://github.com/jansinger/ostsee-tiere/compare/v2.24.1...v2.25.0) (2026-11-09)
+
+
+### Features
+
+* **db:** add reporter hash for linking reports without email ([#1007](https://github.com/jansinger/ostsee-tiere/issues/1007)) ([977d0b2](https://github.com/jansinger/ostsee-tiere/commit/977d0b28e4a47dc4dd9d0eff4109f5fe90c7da1b))
+* **report:** help block on the entry page, immediate iframe height report ([#1005](https://github.com/jansinger/ostsee-tiere/issues/1005)) ([6018944](https://github.com/jansinger/ostsee-tiere/commit/60189447794107903a949eb1bfd89d1792f3194a))
+
+
+### Bug Fixes
+
+* **security:** close reporter hash gaps found in review ([#1008](https://github.com/jansinger/ostsee-tiere/issues/1008)) ([11242f4](https://github.com/jansinger/ostsee-tiere/commit/11242f4edd72bde010a648e43e77cbb9b6b86c20))
+* **security:** redact address and ship fields in logs ([#1006](https://github.com/jansinger/ostsee-tiere/issues/1006)) ([0ac5b90](https://github.com/jansinger/ostsee-tiere/commit/0ac5b9093a8058f65abeaf0bbded905548aff982))
+
+
+### Dependencies
+
+* **deps:** bump @scalar/sveltekit from 0.3.30 to 0.3.35 ([#1002](https://github.com/jansinger/ostsee-tiere/issues/1002)) ([2383893](https://github.com/jansinger/ostsee-tiere/commit/23838939cddf24ba94d4706f7a0ec8fe2e7179ee))
+* **deps:** bump @tailwindcss/vite from 4.3.3 to 4.3.4 ([#1003](https://github.com/jansinger/ostsee-tiere/issues/1003)) ([b0708fc](https://github.com/jansinger/ostsee-tiere/commit/b0708fc45d7501b4fd3b5e0d265ad67ee11d0a6f))
+* **deps:** bump the dev-tooling group with 5 updates ([#1000](https://github.com/jansinger/ostsee-tiere/issues/1000)) ([f810841](https://github.com/jansinger/ostsee-tiere/commit/f8108418b9971c92fce70377db4ff36076c79bb7))
+* **deps:** bump the github-actions group with 2 updates ([#999](https://github.com/jansinger/ostsee-tiere/issues/999)) ([28dbc69](https://github.com/jansinger/ostsee-tiere/commit/28dbc69c73fad168e9c92881ea305894f25c22cd))
+* **deps:** bump the production-dependencies group with 2 updates ([#998](https://github.com/jansinger/ostsee-tiere/issues/998)) ([b0d8bb4](https://github.com/jansinger/ostsee-tiere/commit/b0d8bb4a1b08ba829a04d1e3a946f3d834fa8fa1))
+* **deps:** bump vite from 8.3.5 to 8.3.6 in the svelte-framework group ([#1001](https://github.com/jansinger/ostsee-tiere/issues/1001)) ([9e75a66](https://github.com/jansinger/ostsee-tiere/commit/9e75a660d38bd924f0584b1095f26890916711e7))
+
 ## [2.24.1](https://github.com/jansinger/ostsee-tiere/compare/v2.24.0...v2.24.1) (2026-11-02)
 
 
