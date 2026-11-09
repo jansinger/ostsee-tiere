@@ -3030,17 +3030,32 @@ components:
             ehrliche Zustand derselbe wie stored null: es wurde nichts bewertet.
     ReporterHashReport:
       type: object
-      required: [hashed, remaining, done]
+      required: [hashed, skipped, remaining, done, stalled]
       properties:
         hashed:
           type: integer
-          description: Zeilen, die in diesem Lauf einen Hash bekommen haben.
+          description: >-
+            Zeilen, die in diesem Lauf tatsächlich einen Hash bekommen haben.
+            Geschrieben wird nur, wenn sich die Zeile seit dem Lesen nicht
+            geändert hat.
+        skipped:
+          type: integer
+          description: >-
+            Geladene Zeilen, deren Adresse nach der Normalisierung leer ist
+            (z. B. nur Weißraum). Sie bekommen keinen Hash.
         remaining:
           type: integer
           description: Danach noch offene Zeilen (mit Adresse, ohne Hash, nicht anonymisiert).
         done:
           type: boolean
-          description: true, wenn weniger Zeilen als das Limit geladen wurden — nicht erneut aufrufen.
+          description: >-
+            true, wenn weniger Zeilen als das Limit geladen wurden oder der
+            Batch festgefahren ist — nicht erneut aufrufen.
+        stalled:
+          type: boolean
+          description: >-
+            true, wenn ein Batch keinen einzigen Hash geschrieben hat. Weitere
+            Aufrufe läsen dieselben Zeilen wieder.
     SpamRescoreReport:
       type: object
       required: [scored, skippedFailed, lastId, remaining, done, stalled, distribution]

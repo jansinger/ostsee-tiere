@@ -3,6 +3,7 @@ import { requireUserRole } from '#lib/server/auth/auth.ts';
 import { logAuditEvent } from '#lib/server/audit/auditService.ts';
 import { db } from '#lib/server/db/index.ts';
 import { sightings as sightingsTable } from '#lib/server/db/schema.ts';
+import { omitReporterIdentity } from '#lib/server/privacy/reporterHash.ts';
 import { json } from '@sveltejs/kit';
 import { and } from 'drizzle-orm';
 import { buildExportConditions, parseExportFilterParams } from './exportFilterParams';
@@ -44,8 +45,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		});
 
 		// Erfolgreiche Antwort zurückgeben
+		// Ohne Melder-Hash: Diese Antwort lädt `ExportModal.svelte` schon für die
+		// Vorschau in den Browser (docs/ANONYMISIERUNG_KONZEPT.md, 6.2).
 		return json({
-			sightings,
+			sightings: sightings.map(omitReporterIdentity),
 			count: sightings.length
 		});
 	} catch (error) {

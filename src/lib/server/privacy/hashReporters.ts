@@ -37,12 +37,23 @@ export class ReporterHashKeyMissingError extends Error {
 }
 
 export interface HashReportersReport {
-	/** In diesem Lauf gehashte Zeilen */
+	/** In diesem Lauf tatsächlich gehashte Zeilen */
 	hashed: number;
+	/**
+	 * Geladene Zeilen, deren Adresse nach der Normalisierung leer ist (etwa nur
+	 * ein Tab oder ein geschütztes Leerzeichen). Sie bekommen keinen Hash und
+	 * bleiben in `remaining`.
+	 */
+	skipped: number;
 	/** Danach noch offene Zeilen */
 	remaining: number;
 	/** `false` heißt: noch einmal aufrufen */
 	done: boolean;
+	/**
+	 * Ein Batch ohne einen einzigen Hash. Ein weiterer Aufruf läse dieselben
+	 * Zeilen wieder — `done` ist dann gesetzt, damit kein Aufrufer endlos läuft.
+	 */
+	stalled: boolean;
 }
 
 export interface HashReportersOptions {
@@ -50,12 +61,21 @@ export interface HashReportersOptions {
 	limit?: number | undefined;
 }
 
+/**
+ * Zeilen mit Adresse, ohne Hash, nicht anonymisiert.
+ *
+ * Die Leerprüfung ist ein Regex statt `trim(email) <> ''`: PostgreSQLs `trim`
+ * entfernt nur Leerzeichen, `normalizeReporterKey` dagegen jeden Weißraum.
+ * Eine Adresse aus einem Tab wäre sonst ausgewählt worden, ohne je einen Hash
+ * zu bekommen (Review PR #1007). Ganz deckungsgleich sind die beiden
+ * Zeichenklassen nicht — was trotzdem durchrutscht, fängt `skipped`/`stalled`.
+ */
 function pendingRows(): SQL {
 	return and(
 		isNull(sightings.reporterHash),
 		isNull(sightings.anonymizedAt),
 		isNotNull(sightings.email),
-		sql`trim(${sightings.email}) <> ''`
+		sql`${sightings.email} ~ '[^[:space:]]'`
 	) as SQL;
 }
 
@@ -73,20 +93,36 @@ export async function hashReporters(options: HashReportersOptions): Promise<Hash
 		.orderBy(sightings.id)
 		.limit(limit);
 
+	let hashed = 0;
+	let skipped = 0;
+
 	for (const row of rows) {
-		await db
+		const identity = reporterIdentityFor(row.email, key);
+		if (!identity.reporterHash) {
+			skipped++;
+			continue;
+		}
+
+		// Nur schreiben, wenn die Zeile seit dem Lesen unverändert ist. Ändert ein
+		// Admin dazwischen die Adresse, hat `updateSighting` schon den neuen Hash
+		// gesetzt — ihn mit dem der alten Adresse zu überschreiben, hängte die
+		// Meldung an die falsche Person (Review PR #1007).
+		const written = await db
 			.update(sightings)
-			.set(reporterIdentityFor(row.email, key))
-			.where(eq(sightings.id, row.id));
+			.set(identity)
+			.where(and(eq(sightings.id, row.id), pendingRows(), eq(sightings.email, row.email ?? '')))
+			.returning({ id: sightings.id });
+		hashed += written.length;
 	}
 
 	const [remainingRow] = await db.select({ count: count() }).from(sightings).where(pendingRows());
 
+	const stalled = rows.length > 0 && hashed === 0;
 	return {
-		hashed: rows.length,
+		hashed,
+		skipped,
 		remaining: Number(remainingRow?.count ?? 0),
-		// Jede geladene Zeile hat eine nicht leere Adresse und bekommt damit
-		// einen Hash — ein voller Batch kann also nicht ins Leere laufen.
-		done: rows.length < limit
+		done: rows.length < limit || stalled,
+		stalled
 	};
 }

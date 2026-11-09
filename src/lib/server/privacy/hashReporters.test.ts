@@ -11,10 +11,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const KEY = 'k'.repeat(32);
 
-const { mockEnv, selectMock, updateSetCalls } = vi.hoisted(() => ({
+const { mockEnv, selectMock, updateSetCalls, updateWheres, updateReturning } = vi.hoisted(() => ({
 	mockEnv: {} as { REPORTER_HASH_KEY?: string },
 	selectMock: vi.fn(),
-	updateSetCalls: [] as Array<Record<string, unknown>>
+	updateSetCalls: [] as Array<Record<string, unknown>>,
+	updateWheres: [] as unknown[],
+	// Je Update: was `.returning()` liefert. Leer = die Zeile hat sich seit dem
+	// Lesen geändert und wurde nicht geschrieben.
+	updateReturning: vi.fn((): Array<{ id: number }> => [{ id: 0 }])
 }));
 
 vi.mock('#lib/server/env.ts', () => ({ env: mockEnv }));
@@ -27,7 +31,12 @@ vi.mock('#lib/server/db/index.ts', () => ({
 		update: vi.fn(() => ({
 			set: vi.fn((values: Record<string, unknown>) => {
 				updateSetCalls.push(values);
-				return { where: vi.fn().mockResolvedValue(undefined) };
+				return {
+					where: vi.fn((condition: unknown) => {
+						updateWheres.push(condition);
+						return { returning: () => Promise.resolve(updateReturning()) };
+					})
+				};
 			})
 		}))
 	}
@@ -67,6 +76,9 @@ describe('hashReporters', () => {
 	beforeEach(() => {
 		mockEnv.REPORTER_HASH_KEY = KEY;
 		updateSetCalls.length = 0;
+		updateWheres.length = 0;
+		updateReturning.mockReset();
+		updateReturning.mockImplementation(() => [{ id: 0 }]);
 	});
 
 	it('bricht ohne Schlüssel ab, bevor es irgendetwas liest oder schreibt', async () => {
@@ -94,7 +106,7 @@ describe('hashReporters', () => {
 			{ reporterHash: computeReporterHash('erika@example.invalid', KEY), reporterInternal: false },
 			{ reporterHash: computeReporterHash('team@meeresmuseum.de', KEY), reporterInternal: true }
 		]);
-		expect(report).toEqual({ hashed: 2, remaining: 0, done: true });
+		expect(report).toEqual({ hashed: 2, skipped: 0, remaining: 0, done: true, stalled: false });
 	});
 
 	it('wählt nur Zeilen mit Adresse, ohne Hash und nicht anonymisiert', async () => {
@@ -106,7 +118,10 @@ describe('hashReporters', () => {
 		expect(text).toContain('"melder_hash" is null');
 		expect(text).toContain('"anonymisiert_am" is null');
 		expect(text).toContain('"email" is not null');
-		expect(text).toMatch(/trim\("sichtungen"\."email"\) <> ''/);
+		// Nicht `trim(email) <> ''`: PostgreSQLs `trim` entfernt nur Leerzeichen,
+		// `normalizeReporterKey` auch Tabs und Zeilenumbrüche (Review PR #1007).
+		expect(text).toContain(`"sichtungen"."email" ~ '[^[:space:]]'`);
+		expect(text).not.toContain('trim(');
 	});
 
 	it('ist nicht fertig, solange ein voller Batch zurückkam', async () => {
@@ -120,7 +135,7 @@ describe('hashReporters', () => {
 
 		const report = await hashReporters({ limit: 2 });
 
-		expect(report).toEqual({ hashed: 2, remaining: 5, done: false });
+		expect(report).toEqual({ hashed: 2, skipped: 0, remaining: 5, done: false, stalled: false });
 	});
 
 	it('klemmt das Limit auf das Maximum', async () => {
@@ -129,5 +144,67 @@ describe('hashReporters', () => {
 		await hashReporters({ limit: MAX_HASH_BATCH * 10 });
 
 		expect(capturedLimit).toBe(MAX_HASH_BATCH);
+	});
+
+	it('schreibt nur, wenn die Zeile seit dem Lesen unverändert ist', async () => {
+		// Ändert ein Admin zwischen Lesen und Schreiben die Adresse, hat
+		// `updateSighting` schon den neuen Hash gesetzt. Der Backfill darf ihn
+		// nicht mit dem der alten Adresse überschreiben (Review PR #1007).
+		primeDb([{ id: 7, email: 'alt@example.invalid' }], 0);
+
+		await hashReporters({});
+
+		const { sql: text, params } = new PgDialect().sqlToQuery(updateWheres[0] as SQL);
+		expect(text).toContain('"melder_hash" is null');
+		expect(text).toContain('"anonymisiert_am" is null');
+		expect(text).toContain('"email" =');
+		expect(params).toContain('alt@example.invalid');
+	});
+
+	it('zählt nur tatsächlich geschriebene Zeilen', async () => {
+		primeDb(
+			[
+				{ id: 1, email: 'a@example.invalid' },
+				{ id: 2, email: 'b@example.invalid' }
+			],
+			0
+		);
+		// Zeile 2 hat sich seit dem Lesen geändert
+		updateReturning.mockImplementationOnce(() => [{ id: 1 }]).mockImplementationOnce(() => []);
+
+		const report = await hashReporters({});
+
+		expect(report.hashed).toBe(1);
+	});
+
+	it('überspringt Adressen, die nach der Normalisierung leer sind, ohne zu schreiben', async () => {
+		primeDb(
+			[
+				{ id: 1, email: '\t' },
+				{ id: 2, email: 'b@example.invalid' }
+			],
+			1
+		);
+
+		const report = await hashReporters({});
+
+		expect(updateSetCalls).toHaveLength(1);
+		expect(report).toMatchObject({ hashed: 1, skipped: 1 });
+	});
+
+	it('meldet einen Batch ohne Fortschritt als festgefahren statt endlos weiterzulaufen', async () => {
+		// Ein voller Batch, in dem keine Zeile einen Hash bekommen kann: Ein
+		// weiterer Aufruf läse dieselben Zeilen wieder.
+		primeDb(
+			[
+				{ id: 1, email: '\t' },
+				{ id: 2, email: '\u00a0' }
+			],
+			2
+		);
+
+		const report = await hashReporters({ limit: 2 });
+
+		expect(report).toEqual({ hashed: 0, skipped: 2, remaining: 2, done: true, stalled: true });
 	});
 });
