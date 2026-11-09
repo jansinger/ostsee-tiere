@@ -53,7 +53,12 @@ function event(body: unknown) {
 describe('POST /api/admin/anonymize/activate', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		anonymizeSightings.mockResolvedValue({ keyConfigured: true, activatedAt: null, due: 19873 });
+		anonymizeSightings.mockResolvedValue({
+			keyConfigured: true,
+			activatedAt: null,
+			due: 19873,
+			pendingHashes: 0
+		});
 		getAnonymizationStatus.mockResolvedValue({ unscoredSpam: 0 });
 		activateAnonymization.mockResolvedValue({ activated: true });
 	});
@@ -123,6 +128,24 @@ describe('POST /api/admin/anonymize/activate', () => {
 
 		expect(response.status).toBe(409);
 		expect(body).toMatchObject({ code: 'SPAM_RESCORE_PENDING', unscoredSpam: 12 });
+		expect(activateAnonymization).not.toHaveBeenCalled();
+	});
+
+	it('schaltet nicht frei, solange Adressen ohne Kennzeichen sind', async () => {
+		anonymizeSightings.mockResolvedValue({
+			keyConfigured: true,
+			activatedAt: null,
+			due: 19873,
+			pendingHashes: 7
+		});
+
+		const response = await POST(event({ confirmedDue: 19873 }));
+
+		expect(response.status).toBe(409);
+		expect(await response.json()).toMatchObject({
+			code: 'HASH_BACKFILL_PENDING',
+			pendingHashes: 7
+		});
 		expect(activateAnonymization).not.toHaveBeenCalled();
 	});
 

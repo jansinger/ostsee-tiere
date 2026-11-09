@@ -9,8 +9,8 @@
  * - bestätigt durch die Eingabe der aktuellen Anzahl fälliger Meldungen.
  *   Weicht sie von der Vorschau ab, die das Museum freigegeben hat, ist das
  *   der Moment anzuhalten;
- * - erst, wenn der Schlüssel gesetzt und die Spam-Nachbewertung
- *   abgeschlossen ist (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, „Freigabe des
+ * - erst, wenn der Schlüssel gesetzt, jede Adresse gehasht und die
+ *   Spam-Nachbewertung abgeschlossen ist (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, „Freigabe des
  *   ersten Laufs", Schritte 1 und 5);
  * - nur einmal: eine bestehende Freischaltung bleibt unverändert.
  */
@@ -53,6 +53,16 @@ export const POST: RequestHandler = async ({ request, url, locals, getClientAddr
 	}
 	if (!preview.keyConfigured) {
 		return json({ code: 'KEY_MISSING', error: 'REPORTER_HASH_KEY fehlt' }, { status: 503 });
+	}
+
+	// Eine Adresse ohne Kennzeichen verlöre beim Leeren die Verknüpfung zur
+	// Person. Der Job holt sie zwar vor jedem Lauf nach — vor der Freigabe soll
+	// der Bestand aber nachweislich vollständig sein.
+	if (preview.pendingHashes > 0) {
+		return json(
+			{ code: 'HASH_BACKFILL_PENDING', pendingHashes: preview.pendingHashes },
+			{ status: 409 }
+		);
 	}
 
 	const { unscoredSpam } = await getAnonymizationStatus();

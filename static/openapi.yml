@@ -1502,7 +1502,8 @@ paths:
         **Erfordert die Rolle `superadmin`** und eine angemeldete Session; den
         Cron-Token akzeptiert der Endpunkt nicht. Bestätigt wird durch die
         Anzahl der aktuell fälligen Sichtungen (`due` der Vorschau). Vorbedingungen:
-        `REPORTER_HASH_KEY` gesetzt, Spam-Nachbewertung abgeschlossen.
+        `REPORTER_HASH_KEY` gesetzt, jede Adresse gehasht, Spam-Nachbewertung
+        abgeschlossen.
       security:
         - adminAuth: []
       requestBody:
@@ -1538,8 +1539,8 @@ paths:
           description: >-
             Nicht freigeschaltet. `code` nennt den Grund — `ALREADY_ACTIVATED`
             (mit `activatedAt`, sofern bekannt), `COUNT_MISMATCH` (mit der
-            aktuellen Anzahl `due`) oder `SPAM_RESCORE_PENDING` (mit
-            `unscoredSpam`).
+            aktuellen Anzahl `due`), `HASH_BACKFILL_PENDING` (mit
+            `pendingHashes`) oder `SPAM_RESCORE_PENDING` (mit `unscoredSpam`).
           content:
             application/json:
               schema:
@@ -1548,7 +1549,10 @@ paths:
                 properties:
                   code:
                     type: string
-                    enum: [ALREADY_ACTIVATED, COUNT_MISMATCH, SPAM_RESCORE_PENDING]
+                    enum:
+                      [ALREADY_ACTIVATED, COUNT_MISMATCH, HASH_BACKFILL_PENDING, SPAM_RESCORE_PENDING]
+                  pendingHashes:
+                    type: integer
                   activatedAt:
                     type: string
                     format: date-time
