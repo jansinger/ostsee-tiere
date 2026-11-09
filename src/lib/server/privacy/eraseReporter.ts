@@ -61,7 +61,9 @@ export interface EraseReporterOptions {
 function matchesReporter(hash: string, normalized: string): SQL {
 	return or(
 		sql`${sightings.reporterHash} = ${hash}`,
-		sql`lower(btrim(${sightings.email})) = ${normalized}`
+		// Nicht `btrim`: Das entfernt nur Leerzeichen, `normalizeReporterKey`
+		// auch Tabs und Zeilenumbrüche (Review PR #1011).
+		sql`lower(regexp_replace(${sightings.email}, '^[[:space:]]+|[[:space:]]+$', '', 'g')) = ${normalized}`
 	) as SQL;
 }
 
@@ -109,7 +111,14 @@ export async function eraseReporter(options: EraseReporterOptions): Promise<Eras
 				// `sql.param` mit der Spalte als Encoder: Ein rohes `Date` im
 				// Template nimmt der Treiber nicht an (am echten PostgreSQL gefunden).
 				anonymizedAt: sql`COALESCE(${sightings.anonymizedAt}, ${sql.param(options.now, sightings.anonymizedAt)})`,
-				reporterHash: null
+				reporterHash: null,
+				// Die Rücknahme der Einwilligung festhalten. Sonst ließe die Sperre
+				// beim Bearbeiten Name und Schiff weiter zu, und ein veraltetes
+				// Speichern brächte sie zurück (Review PR #1011). Die Nachweise der
+				// ursprünglichen Einwilligung (`*ConsentAt`, `*ConsentVersion`)
+				// bleiben stehen.
+				nameConsent: 0,
+				shipNameConsent: 0
 			})
 			.where(
 				inArray(

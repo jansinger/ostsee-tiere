@@ -19,7 +19,7 @@ import { berlinDatePart } from '#lib/server/db/sqlTimeZone.ts';
 import { getReporterHashKey } from '#lib/server/privacy/reporterHash.ts';
 import { buildAnonymizationPatch, groupByConsents } from './anonymizationPatch';
 import type { AnonymizationPorts, DueSummary } from './anonymizeSightings';
-import { hashReporters, pendingHashRows } from './hashReporters';
+import { hashReporters, MAX_HASH_BATCH, pendingHashRows } from './hashReporters';
 import { getActivatedAt, recordLastRun } from './anonymizationState';
 
 /** Ganzzahlige Konstante — als Literal eingebettet, damit der Ausdruck lesbar bleibt. */
@@ -31,6 +31,18 @@ export function dueForAnonymization(): SQL {
 		isNull(sightings.anonymizedAt),
 		sql`${sightings.created} + ${RETENTION} - INTERVAL '1 day' <= (NOW() AT TIME ZONE 'UTC')`
 	) as SQL;
+}
+
+/**
+ * Eingang der jüngsten fälligen Meldung, dekodiert wie die Spalte selbst.
+ *
+ * Ein rohes `sql<Date>` bekäme vom Treiber den Text ohne Zonenangabe, und
+ * `new Date()` läse ihn als Ortszeit — unter TZ=Europe/Berlin um bis zu zwei
+ * Stunden verschoben (Review PR #1011). `mapWith` hängt den UTC-Decoder der
+ * Spalte an.
+ */
+export function newestCreated(): SQL<Date | null> {
+	return sql<Date | null>`MAX(${sightings.created})`.mapWith(sightings.created);
 }
 
 const hasText = (column: SQLWrapper): SQL => sql`${column} ~ '[^[:space:]]'`;
@@ -51,7 +63,7 @@ async function summarizeDue(): Promise<DueSummary> {
 			shipsCleared: sql<number>`COUNT(*) FILTER (WHERE ${hasShip} AND NOT (${shipGiven}))::integer`,
 			shipsKept: sql<number>`COUNT(*) FILTER (WHERE ${hasShip} AND ${shipGiven})::integer`,
 			pending: sql<number>`COUNT(*) FILTER (WHERE ${pendingOnly()})::integer`,
-			newest: sql<Date | null>`MAX(${sightings.created})`
+			newest: newestCreated()
 		})
 		.from(sightings)
 		.where(dueForAnonymization())
@@ -60,7 +72,7 @@ async function summarizeDue(): Promise<DueSummary> {
 
 	let newest: Date | null = null;
 	for (const row of rows) {
-		const value = row.newest === null ? null : new Date(row.newest);
+		const value = row.newest;
 		if (value && (!newest || value > newest)) newest = value;
 	}
 
@@ -118,7 +130,7 @@ export function createAnonymizationPorts(): AnonymizationPorts {
 		activatedAt: getActivatedAt,
 		pendingHashes,
 		summarizeDue,
-		backfillHashes: () => hashReporters({ limit: Number.MAX_SAFE_INTEGER }),
+		backfillHashes: (afterId) => hashReporters({ limit: MAX_HASH_BATCH, afterId }),
 		anonymizeBatch,
 		recordLastRun
 	};

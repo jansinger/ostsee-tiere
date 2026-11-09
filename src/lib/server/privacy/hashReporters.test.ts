@@ -106,7 +106,15 @@ describe('hashReporters', () => {
 			{ reporterHash: computeReporterHash('erika@example.invalid', KEY), reporterInternal: false },
 			{ reporterHash: computeReporterHash('team@meeresmuseum.de', KEY), reporterInternal: true }
 		]);
-		expect(report).toEqual({ hashed: 2, skipped: 0, remaining: 0, done: true, stalled: false });
+		expect(report).toEqual({
+			hashed: 2,
+			skipped: 0,
+			remaining: 0,
+			done: true,
+			stalled: false,
+			lastId: 2,
+			exhausted: true
+		});
 	});
 
 	it('wählt nur Zeilen mit Adresse, ohne Hash und nicht anonymisiert', async () => {
@@ -135,7 +143,15 @@ describe('hashReporters', () => {
 
 		const report = await hashReporters({ limit: 2 });
 
-		expect(report).toEqual({ hashed: 2, skipped: 0, remaining: 5, done: false, stalled: false });
+		expect(report).toEqual({
+			hashed: 2,
+			skipped: 0,
+			remaining: 5,
+			done: false,
+			stalled: false,
+			lastId: 2,
+			exhausted: false
+		});
 	});
 
 	it('klemmt das Limit auf das Maximum', async () => {
@@ -205,7 +221,15 @@ describe('hashReporters', () => {
 
 		const report = await hashReporters({ limit: 2 });
 
-		expect(report).toEqual({ hashed: 0, skipped: 2, remaining: 2, done: true, stalled: true });
+		expect(report).toEqual({
+			hashed: 0,
+			skipped: 2,
+			remaining: 2,
+			done: true,
+			stalled: true,
+			lastId: 2,
+			exhausted: false
+		});
 	});
 
 	it('hält einen Batch nicht für festgefahren, den ein paralleler Lauf schon erledigt hat', async () => {
@@ -223,6 +247,35 @@ describe('hashReporters', () => {
 
 		const report = await hashReporters({ limit: 2 });
 
-		expect(report).toEqual({ hashed: 0, skipped: 0, remaining: 3, done: false, stalled: false });
+		expect(report).toEqual({
+			hashed: 0,
+			skipped: 0,
+			remaining: 3,
+			done: false,
+			stalled: false,
+			lastId: 2,
+			exhausted: false
+		});
+	});
+
+	it('setzt hinter einem Cursor fort, statt übersprungene Zeilen erneut zu laden', async () => {
+		// Ein voller Stapel unhashbarer Adressen verdeckte sonst alle Zeilen mit
+		// höherer ID — der Anonymisierungs-Job hielte den Backfill für fertig und
+		// leerte deren Adressen ohne Hash (Review PR #1011).
+		primeDb([{ id: 9, email: 'a@example.invalid' }], 0);
+
+		await hashReporters({ afterId: 8 });
+
+		const { sql: text, params } = new PgDialect().sqlToQuery(capturedWhere as SQL);
+		expect(text).toContain('"sichtungen"."id" > $');
+		expect(params).toContain(8);
+	});
+
+	it('meldet einen leeren Stapel als ausgeschöpft, ohne Cursor', async () => {
+		primeDb([], 0);
+
+		const report = await hashReporters({});
+
+		expect(report).toMatchObject({ lastId: null, exhausted: true });
 	});
 });

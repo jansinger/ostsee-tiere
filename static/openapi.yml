@@ -3171,8 +3171,21 @@ components:
             ehrliche Zustand derselbe wie stored null: es wurde nichts bewertet.
     ReporterHashReport:
       type: object
-      required: [hashed, skipped, remaining, done, stalled]
+      required: [hashed, skipped, remaining, done, stalled, lastId, exhausted]
       properties:
+        lastId:
+          type: integer
+          nullable: true
+          description: >-
+            Höchste geladene ID; `null`, wenn keine Zeile geladen wurde. Dient
+            intern als Cursor, damit ein voller Stapel unhashbarer Adressen
+            die Zeilen dahinter nicht verdeckt.
+        exhausted:
+          type: boolean
+          description: >-
+            Weniger Zeilen als das Limit geladen — hinter dem Cursor folgt keine
+            offene Zeile mehr. Anders als `done` auch bei `stalled` nur dann
+            true, wenn wirklich nichts mehr folgt.
         hashed:
           type: integer
           description: >-
@@ -3280,7 +3293,10 @@ components:
           description: Danach noch fällige Sichtungen.
         done:
           type: boolean
-          description: '`false` heißt: erneut aufrufen.'
+          description: >-
+            `false` heißt: erneut aufrufen. `true` mit `remaining > 0` heißt:
+            kein Fortschritt möglich (etwa weil Zeilen gerade von einer anderen
+            Transaktion gesperrt sind); der nächste Lauf holt sie nach.
     ErasureReport:
       type: object
       required: [mode, matched, alreadyAnonymized, erased]

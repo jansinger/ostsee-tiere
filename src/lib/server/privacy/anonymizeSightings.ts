@@ -58,7 +58,8 @@ export interface AnonymizationPorts {
 	/** Zeilen mit Adresse, ohne Hash, nicht anonymisiert */
 	pendingHashes(): Promise<number>;
 	summarizeDue(): Promise<DueSummary>;
-	backfillHashes(): Promise<HashReportersReport>;
+	/** Ein Backfill-Stapel hinter `afterId` (`null` = von vorn). */
+	backfillHashes(afterId: number | null): Promise<HashReportersReport>;
 	/** Leert bis zu `limit` fällige Meldungen; liefert die Anzahl. */
 	anonymizeBatch(limit: number, now: Date): Promise<number>;
 	recordLastRun(run: AnonymizationLastRun): Promise<void>;
@@ -142,22 +143,29 @@ export async function anonymizeSightings(options: AnonymizeOptions): Promise<Ano
 
 	if (!activatedAt) return finish({ skipped: 'not_activated' });
 
+	// Über den Cursor, nicht von vorn: Ein voller Stapel unhashbarer Adressen
+	// (`stalled`) beweist nichts über die Zeilen dahinter. Fertig ist der
+	// Backfill erst, wenn hinter dem Cursor nichts mehr kommt (Review PR #1011).
 	let backfillDone = false;
+	let afterId: number | null = null;
 	for (let round = 0; round < MAX_BACKFILL_ROUNDS && !backfillDone; round++) {
-		const backfill = await ports.backfillHashes();
+		const backfill = await ports.backfillHashes(afterId);
 		report.hashed += backfill.hashed;
-		// `stalled` ist auch fertig: Die Restzeilen haben keine verwertbare
-		// Adresse und bekämen nie einen Hash (`hashReporters`).
-		backfillDone = backfill.done;
+		afterId = backfill.lastId;
+		backfillDone = backfill.exhausted;
 	}
 	if (!backfillDone) return finish({ skipped: 'hash_backfill_incomplete', done: false });
 
 	const anonymized = await ports.anonymizeBatch(limit, now);
 	const after = await ports.summarizeDue();
+	// Fertig heißt: nichts mehr fällig — oder kein Fortschritt möglich. Ein
+	// kurzer Stapel allein genügt nicht: `FOR UPDATE SKIP LOCKED` lässt gerade
+	// bearbeitete Zeilen aus. Ohne Fortschritt aufhören, damit kein Aufrufer
+	// endlos läuft; `remaining` zeigt dann, was liegen blieb (Review PR #1011).
 	return finish({
 		executed: true,
 		anonymized,
 		remaining: after.total,
-		done: after.total === 0 || anonymized < limit
+		done: after.total === 0 || anonymized === 0
 	});
 }

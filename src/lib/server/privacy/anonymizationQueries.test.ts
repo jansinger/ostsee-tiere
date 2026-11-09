@@ -8,7 +8,7 @@
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { describe, expect, it } from 'vitest';
 import { groupByConsents } from './anonymizationPatch';
-import { dueForAnonymization } from './anonymizationQueries';
+import { dueForAnonymization, newestCreated } from './anonymizationQueries';
 
 const text = (): string => new PgDialect().sqlToQuery(dueForAnonymization()).sql;
 
@@ -52,5 +52,23 @@ describe('groupByConsents', () => {
 		]);
 
 		expect(groups).toEqual([{ consents: { nameConsent: 0, shipNameConsent: 0 }, ids: [1, 2] }]);
+	});
+});
+
+describe('newestCreated', () => {
+	it('liest den Aggregat-Zeitstempel als UTC, wie die Spalte selbst', () => {
+		// `created` ist `timestamp` ohne Zone in UTC. Ein rohes `sql<Date>` bekäme
+		// den Text ohne Zonenangabe; `new Date()` läse ihn als Ortszeit und
+		// verschöbe die Grenze unter TZ=Europe/Berlin um bis zu zwei Stunden
+		// (Review PR #1011).
+		const expression = newestCreated();
+		// `decoder` ist in Drizzles Typen nicht öffentlich, zur Laufzeit aber da.
+		const { decoder } = expression as unknown as {
+			decoder: { mapFromDriverValue(value: unknown): unknown };
+		};
+		const decoded = decoder.mapFromDriverValue('2026-08-08 12:00:00');
+
+		expect(decoded).toEqual(new Date('2026-08-08T12:00:00Z'));
+		expect(new PgDialect().sqlToQuery(expression).sql).toBe('MAX("sichtungen"."created")');
 	});
 });

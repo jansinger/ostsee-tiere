@@ -114,7 +114,12 @@ describe('eraseReporter', () => {
 		expect(sql).toContain('"sichtungen"."melder_hash" = $1');
 		expect(params[0]).toBe(computeReporterHash('erika@example.invalid', KEY));
 		expect(params).toContain('erika@example.invalid');
-		expect(sql).toMatch(/lower\(btrim\("sichtungen"\."email"/i);
+		// Nicht `btrim`: Das entfernt nur Leerzeichen, `normalizeReporterKey`
+		// auch Tabs und Zeilenumbrüche (Review PR #1011).
+		expect(sql).not.toMatch(/btrim/i);
+		expect(sql).toContain(
+			`lower(regexp_replace("sichtungen"."email", '^[[:space:]]+|[[:space:]]+$', '', 'g'))`
+		);
 	});
 
 	it('zeigt in der Vorschau nur Zahlen und ändert nichts', async () => {
@@ -170,5 +175,25 @@ describe('eraseReporter', () => {
 		});
 		expect(render(updateWheres[0]).params).toEqual([1, 2]);
 		expect(report.erased).toBe(2);
+	});
+
+	it('zieht die Einwilligungen zurück, damit kein späteres Speichern Name oder Schiff zurückbringt', async () => {
+		// Die Sperre beim Bearbeiten lässt Name und Schiff bei Einwilligung
+		// schreibbar. Bliebe das Flag stehen, schriebe ein veraltetes Speichern
+		// der Maske die gelöschten Werte zurück — und veröffentlichte sie
+		// (Review PR #1011). Die Nachweise der ursprünglichen Einwilligung bleiben.
+		selectRows.mockReturnValue([{ id: 2, nameConsent: 1, shipNameConsent: 1 }]);
+
+		await eraseReporter({ email: 'a@example.invalid', now: NOW, mode: 'execute' });
+
+		expect(updateSets[0]).toMatchObject({ nameConsent: 0, shipNameConsent: 0 });
+		for (const proof of [
+			'nameConsentAt',
+			'nameConsentVersion',
+			'shipNameConsentAt',
+			'shipNameConsentVersion'
+		]) {
+			expect(updateSets[0]).not.toHaveProperty(proof);
+		}
 	});
 });

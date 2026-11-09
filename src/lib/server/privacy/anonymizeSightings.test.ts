@@ -45,7 +45,9 @@ const doneBackfill: HashReportersReport = {
 	skipped: 0,
 	remaining: 0,
 	done: true,
-	stalled: false
+	stalled: false,
+	lastId: null,
+	exhausted: true
 };
 
 /** Protokolliert jeden Port-Aufruf, um die Reihenfolge prüfen zu können. */
@@ -154,28 +156,38 @@ describe('anonymizeSightings', () => {
 			expect(report).toMatchObject({ executed: true, skipped: null, anonymized: 3, remaining: 0 });
 		});
 
-		it('wiederholt den Backfill, bis er fertig ist', async () => {
+		it('wiederholt den Backfill hinter dem Cursor, bis er ausgeschöpft ist', async () => {
 			const backfillHashes = vi
 				.fn<AnonymizationPorts['backfillHashes']>()
-				.mockResolvedValueOnce({ ...doneBackfill, hashed: 2000, remaining: 5, done: false })
-				.mockResolvedValueOnce({ ...doneBackfill, hashed: 5 });
+				.mockResolvedValueOnce({
+					...doneBackfill,
+					hashed: 2000,
+					remaining: 5,
+					done: false,
+					lastId: 2000,
+					exhausted: false
+				})
+				.mockResolvedValueOnce({ ...doneBackfill, hashed: 5, lastId: 2005 });
 			const { ports } = fakePorts({ backfillHashes });
 
 			const report = await anonymizeSightings({ mode: 'execute', now: NOW, ports });
 
-			expect(backfillHashes).toHaveBeenCalledTimes(2);
+			expect(backfillHashes.mock.calls).toEqual([[null], [2000]]);
 			expect(report.hashed).toBe(2005);
 			expect(report.executed).toBe(true);
 		});
 
-		it('leert nichts, solange der Backfill nicht fertig wird', async () => {
+		it('leert nichts, solange der Backfill nicht ausgeschöpft ist', async () => {
 			// Sonst verlöre eine Meldung mit Adresse, aber ohne Hash, ihre
 			// Verknüpfung zur Person für immer.
+			let cursor = 0;
 			const backfillHashes = vi.fn(async () => ({
 				...doneBackfill,
 				hashed: 2000,
 				remaining: 99,
-				done: false
+				done: false,
+				lastId: (cursor += 2000),
+				exhausted: false
 			}));
 			const { ports, calls } = fakePorts({ backfillHashes });
 
@@ -191,18 +203,27 @@ describe('anonymizeSightings', () => {
 			expect(calls.at(-1)).toBe('recordLastRun');
 		});
 
-		it('leert trotz festgefahrenem Backfill: die Restzeilen haben keine verwertbare Adresse', async () => {
-			const backfillHashes = vi.fn(async () => ({
-				...doneBackfill,
-				skipped: 2,
-				remaining: 2,
-				stalled: true
-			}));
+		it('läuft hinter einem festgefahrenen Stapel weiter (Review PR #1011)', async () => {
+			// Ein voller Stapel unhashbarer Adressen beweist nichts über die Zeilen
+			// dahinter. `stalled` darf den Backfill nicht beenden.
+			const backfillHashes = vi
+				.fn<AnonymizationPorts['backfillHashes']>()
+				.mockResolvedValueOnce({
+					...doneBackfill,
+					skipped: 2000,
+					remaining: 2001,
+					done: true,
+					stalled: true,
+					lastId: 2000,
+					exhausted: false
+				})
+				.mockResolvedValueOnce({ ...doneBackfill, hashed: 1, remaining: 2000, lastId: 2001 });
 			const { ports } = fakePorts({ backfillHashes });
 
 			const report = await anonymizeSightings({ mode: 'execute', now: NOW, ports });
 
-			expect(report.executed).toBe(true);
+			expect(backfillHashes.mock.calls).toEqual([[null], [2000]]);
+			expect(report).toMatchObject({ executed: true, hashed: 1 });
 		});
 
 		it('klemmt das Limit auf das Maximum', async () => {
@@ -219,6 +240,31 @@ describe('anonymizeSightings', () => {
 			const report = await anonymizeSightings({ mode: 'execute', now: NOW, ports, limit: 2 });
 
 			expect(report).toMatchObject({ anonymized: 2, remaining: 1, done: false });
+		});
+
+		it('ist nicht fertig, wenn gesperrte Zeilen fällig geblieben sind (Review PR #1011)', async () => {
+			// FOR UPDATE SKIP LOCKED: Ein kurzer Stapel heißt nicht, dass nichts
+			// mehr fällig ist.
+			let due = 2;
+			const { ports } = fakePorts({
+				summarizeDue: vi.fn(async () => summary(due)),
+				anonymizeBatch: vi.fn(async () => {
+					due -= 1;
+					return 1;
+				})
+			});
+
+			const report = await anonymizeSightings({ mode: 'execute', now: NOW, ports, limit: 500 });
+
+			expect(report).toMatchObject({ anonymized: 1, remaining: 1, done: false });
+		});
+
+		it('hört auf, wenn kein Fortschritt möglich ist, und lässt `remaining` stehen', async () => {
+			const { ports } = fakePorts({ anonymizeBatch: vi.fn(async () => 0) });
+
+			const report = await anonymizeSightings({ mode: 'execute', now: NOW, ports });
+
+			expect(report).toMatchObject({ anonymized: 0, remaining: 3, done: true });
 		});
 
 		it('ein zweiter Lauf ändert nichts', async () => {

@@ -61,7 +61,18 @@ try {
 		}
 		anonymized += report.anonymized;
 		console.log(`  ${anonymized} anonymisiert, ${report.remaining} fällig …`);
-		if (report.done) break;
+		if (report.done) {
+			// Kein Fortschritt mehr, aber noch fällige Zeilen — etwa von einer
+			// anderen Transaktion gesperrt. Kein Erfolg, sondern ein Fall zum
+			// Nachsehen; der nächste Lauf holt sie nach.
+			if (report.remaining > 0) {
+				console.error(
+					`\nUnvollständig: ${anonymized} anonymisiert, ${report.remaining} weiterhin fällig.`
+				);
+				process.exit(1);
+			}
+			break;
+		}
 	}
 	console.log(`\nFertig: ${anonymized} Sichtungen anonymisiert.`);
 	process.exit(0);
