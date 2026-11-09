@@ -278,6 +278,51 @@ Top 10, `/about`). Erwartet: Die neue Zahl entspricht der alten Zählung über
 - Admin-Schema, Sperre in `updateSighting`, Ausnahme in `rescoreSightings`,
   Hinweis in `spam-check`.
 
+**Umgesetzt (2026-11-09).** Abweichungen und Präzisierungen gegenüber dem Plan:
+
+- **Aufteilung.** Der Ablauf (`anonymizeSightings.ts`) kennt die Datenbank nur
+  über `AnonymizationPorts`; das SQL steht in `anonymizationQueries.ts`, die
+  Freischaltung und der letzte Lauf in `anonymizationState.ts`, die
+  Fälligkeit zur Anzeige in `src/lib/utils/privacy/anonymizationCutoff.ts`.
+  Die SQL-Rechnung ist für die Monatsenden und beide Zeitumstellungen gegen
+  PostgreSQL 16 nachgerechnet und stimmt mit der Nachbildung überein.
+- **Backfill vor dem Leeren.** Wird er in 20 Stapeln à 2.000 nicht fertig,
+  leert der Lauf nichts (`skipped: "hash_backfill_incomplete"`). Ein
+  festgefahrener Backfill (`stalled`) gilt als fertig: Die Restzeilen haben
+  keine verwertbare Adresse.
+- **Vorschau ohne Schlüssel.** Die Vorschau läuft auch ohne
+  `REPORTER_HASH_KEY` und meldet `keyConfigured: false` — das Panel (PR 5)
+  braucht sie als Checkliste. Nur `mode=execute` antwortet ohne Schlüssel mit 503.
+- **Freischaltung** als `privacy.anonymization.activatedAt` in `app_config`,
+  geschrieben mit `ON CONFLICT DO NOTHING`, gelesen ohne Cache. Der Präfix
+  `privacy.anonymization.` ist für `PUT`/`DELETE /api/config` gesperrt, auch
+  für Superadmins — sonst ließe sich die Sperre dort vorziehen oder
+  zurücknehmen. Gesetzt wird sie über `activateAnonymization()`; das
+  Bedienelement kommt mit PR 5.
+- **Sperre im UPDATE.** `updateSighting` schreibt Kontakt-, Namens-, Schiffs-
+  und Hash-Spalten als `CASE WHEN anonymisiert_am IS NULL … ELSE <alt> END`
+  (mit Einwilligung bleiben Name bzw. Schiff schreibbar). Das hält auch, wenn
+  der Job zwischen Laden und Speichern der Maske lief. Die Route weist das
+  Wiederbefüllen vorher mit 422 `ANONYMIZED_FIELDS` ab und nennt die Felder.
+- **Admin-Schema** über den Yup-Kontext `anonymized`, den
+  `PUT /api/sightings/[id]` aus der geladenen Zeile setzt. Die
+  Bearbeitungsmaske im Browser validiert noch ohne Kontext; das zieht PR 5 mit
+  `AdminSightingEditForm.svelte` nach. Bis zur Freischaltung gibt es keine
+  anonymisierte Zeile, an der das auffiele.
+- **Löschersuchen** als `POST /api/admin/reporter-erasure` (nur Superadmin,
+  nur Session, Vorschau als Standard). Gefunden wird über den Hash und über
+  die noch vorhandene Adresse (Altsystem-Zeilen vor dem Backfill). Die
+  Feld-Matrix gilt wie im täglichen Lauf; bereits anonymisierte Zeilen
+  behalten ihr Datum. Ein anschließender Job-Lauf stellt den Hash nicht wieder
+  her (gegen PostgreSQL geprüft). Eine Oberfläche dafür ist nicht Teil von
+  PR 5 und wäre bei Bedarf nachzuziehen.
+- **Fehler-Logging.** Ein `DrizzleQueryError` trägt die Parameter der
+  Anweisung in seiner Meldung, beim Backfill also E-Mail-Adressen. Die
+  Endpunkte `anonymize`, `reporter-hash` und `reporter-erasure` loggen deshalb
+  nur Fehlertyp und SQLSTATE (`describeDbError.ts`).
+- **Rate-Limit** wie `cleanup-orphans`: 30 Aufrufe je Stunde. Der erste Lauf
+  braucht bei ~20.000 Meldungen mit `limit=2000` etwa zehn Aufrufe.
+
 **Größe:** M · `feat(security): anonymize reporter data 3 months after receipt`
 
 ## PR 5 — Oberfläche: Freigabe, Überwachung, Hinweise
