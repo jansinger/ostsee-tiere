@@ -92,9 +92,17 @@ CLEANUP_TOKEN=$(openssl rand -hex 32)
 Aufruf im Cron:
 
 ```bash
-curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" \
   "https://<host>/api/admin/cleanup-orphans?mode=execute"
 ```
+
+> **`Content-Type: application/json` ist Pflicht** (seit SvelteKit 3, ab
+> Release 2.24.0). Der CSRF-Schutz behandelt eine POST-Anfrage **ohne**
+> `Content-Type` und ohne `Origin`-Header wie ein Formular von einer fremden
+> Seite und weist sie mit `403 Cross-site POST form submissions are forbidden`
+> ab — noch bevor das Token geprüft wird. `curl -X POST` ohne Body schickt
+> keinen `Content-Type`. Einen Body brauchen die Wartungs-Endpunkte nicht; der
+> Header allein genügt. Ein Cron ohne ihn scheitert jede Nacht mit 403.
 
 ### `REPORTER_HASH_KEY`
 
@@ -129,7 +137,7 @@ Inhalt (etwa nur Weißraum); weitere Aufrufe ändern dann nichts,
 die Zeilen gehören von Hand geprüft:
 
 ```bash
-curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" \
   "https://<host>/api/admin/reporter-hash"
 ```
 

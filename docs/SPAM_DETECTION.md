@@ -199,7 +199,7 @@ TypeScript-Logik braucht. Deshalb:
 
 ```bash
 curl -sS -X POST "https://<host>/api/admin/spam-rescore?limit=500" \
-  -H "Authorization: Bearer $CLEANUP_TOKEN"
+  -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json"
 ```
 
 Antwort (`SpamRescoreReport`):
@@ -220,7 +220,7 @@ Antwort (`SpamRescoreReport`):
 
 ```bash
 while true; do
-  r=$(curl -sS -X POST "https://<host>/api/admin/spam-rescore?limit=500" -H "Authorization: Bearer $CLEANUP_TOKEN")
+  r=$(curl -sS -X POST "https://<host>/api/admin/spam-rescore?limit=500" -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json")
   echo "$r"
   echo "$r" | grep -q '"done":true' && break
 done

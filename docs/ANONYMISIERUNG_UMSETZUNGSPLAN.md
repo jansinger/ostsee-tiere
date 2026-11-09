@@ -232,11 +232,11 @@ Top 10, `/about`). Erwartet: Die neue Zahl entspricht der alten Zählung über
 | Test                          | Prüft                                                                                                                                                                                                                |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `anonymizationPatch.test.ts`  | Feld-Matrix für alle vier Kombinationen `namensnennung` × `schiffnamensnennung`; Freitexte, Hash und Einwilligungsnachweise unberührt                                                                                |
-| `anonymizationCutoff.test.ts` | vorwärts vom Eingang gerechnet, in UTC; genau an der Grenze, ein Tag davor und danach; Monatsende (31. Mai, 30. November → Februar); beide Zeitumstellungen                                                                                                           |
+| `anonymizationCutoff.test.ts` | vorwärts vom Eingang gerechnet, in UTC; genau an der Grenze, ein Tag davor und danach; Monatsende (31. Mai, 30. November → Februar); beide Zeitumstellungen                                                          |
 | `anonymizeSightings.test.ts`  | holt Hashes nach, bevor geleert wird; ohne Schlüssel Abbruch vor jeder Änderung; ohne Freischaltung nur Vorschau; Vorschau ändert nichts; zweiter Lauf ändert nichts; maßgeblich ist `created`, nicht der Prüfstatus |
 | Endpunkt                      | 401 ohne Session/Token; Vorschau ist Standard; `mode=execute` leert; Audit-Eintrag ohne personenbezogene Werte; 503 ohne Schlüssel                                                                                   |
 | Admin-Schema                  | anonymisierte Meldung ohne Name/E-Mail ist speicherbar; nicht anonymisierte weiterhin nur mit                                                                                                                        |
-| Löschersuchen                 | anonymisiert die Treffer sofort und leert den Hash; ein anschließender Job-Lauf (Backfill eingeschlossen) stellt den Hash nicht wieder her |
+| Löschersuchen                 | anonymisiert die Treffer sofort und leert den Hash; ein anschließender Job-Lauf (Backfill eingeschlossen) stellt den Hash nicht wieder her                                                                           |
 | `updateSighting`              | Kontaktfelder einer anonymisierten Zeile werden abgewiesen                                                                                                                                                           |
 | `rescoreSightings`            | anonymisierte Zeilen werden nicht bewertet                                                                                                                                                                           |
 
@@ -320,7 +320,7 @@ Auf **Staging** wird derselbe Ablauf vorher einmal vollständig durchgespielt.
 denselben Endpunkt auf wie die Aufräum-Routine:
 
 ```bash
-curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" \
   "https://<host>/api/admin/anonymize?mode=execute"
 ```
 

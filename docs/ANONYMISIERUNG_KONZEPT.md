@@ -137,9 +137,7 @@ Personenbezug und sollte in der Admin-Maske gesperrt sein (siehe 7).
 
 - **Vorwärts gerechnet, vom Eingang aus.** Eine rückwärts gerechnete Grenze
   (`created < now() - interval '3 months' + …`) lässt an Monatsenden Meldungen
-  liegen: Am 28. Februar ergibt sie den 28. November, ein Eingang vom
-  30. November ist nach PostgreSQL-Rechnung (`+ 3 months` kappt auf den
-  28. Februar) aber schon fällig. Gefunden im Review von PR #1006.
+  liegen: Am 28. Februar ergibt sie den 28. November, ein Eingang vom 30. November ist nach PostgreSQL-Rechnung (`+ 3 months` kappt auf den 28. Februar) aber schon fällig. Gefunden im Review von PR #1006.
 - In UTC verglichen, weil `created` ein `timestamp` ohne Zone in UTC ist.
 - Maßgeblich ist `created` (Eingang), **nicht** der Prüfstatus. Sonst blieben
   ungeprüfte oder abgelehnte Meldungen unbegrenzt liegen.
