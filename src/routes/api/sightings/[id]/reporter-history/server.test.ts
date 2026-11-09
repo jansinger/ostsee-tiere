@@ -39,9 +39,7 @@ function aufruf(id: string) {
 describe('GET /api/sightings/[id]/reporter-history', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		limit.mockResolvedValue([
-			{ id: 42, email: 'melder@example.org', approvedAt: null, rejectedAt: null }
-		]);
+		limit.mockResolvedValue([{ id: 42, approvedAt: null, rejectedAt: null }]);
 		findReporterHistory.mockResolvedValue({
 			42: { approved: 12, rejected: 0, open: 1, since: '2019-03-04T08:00:00Z' }
 		});

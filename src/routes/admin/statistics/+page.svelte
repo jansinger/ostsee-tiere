@@ -520,8 +520,12 @@
 							<div class="stat-value text-accent-strong">
 								{formatNumber(data.shipStats?.uniqueShips || 0)}
 							</div>
+							<!-- Ohne Einwilligung zur Schiffsnamen-Nennung wird der Name 3 Monate
+							     nach Eingang geleert (Entscheidung E2, mit dem Museum abgestimmt).
+							     Die Zahl umfasst damit nur noch vorhandene Namen. -->
 							<div class="stat-desc">
-								{formatNumber(data.shipStats?.totalWithShipName || 0)} mit Namen
+								{formatNumber(data.shipStats?.totalWithShipName || 0)} mit Namen · nur noch vorhandene
+								Namen
 							</div>
 						</div>
 					</div>
@@ -585,7 +589,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								{#each data.topObservers as observer, index (observer.email)}
+								{#each data.topObservers as observer, index (index)}
 									{@const daysDiff =
 										Math.ceil(
 											(new Date(observer.lastSighting).getTime() -
@@ -593,9 +597,16 @@
 												(1000 * 3600 * 24)
 										) + 1}
 									<tr>
+										<!-- Gruppiert wird über den Melder-Hash. Sind alle Meldungen einer
+										     Person anonymisiert, gibt es keine Adresse mehr — die Zeile
+										     bleibt trotzdem, sonst fiele die Person aus der Rangliste. -->
 										<td class="font-mono text-sm">
 											<span class="badge badge-ghost">#{index + 1}</span>
-											{observer.email}
+											{#if observer.email}
+												{observer.email}
+											{:else}
+												<span class="text-support font-sans italic">anonymisiert</span>
+											{/if}
 										</td>
 										<td>
 											<span class="font-semibold">{formatNumber(observer.sightingCount)}</span>

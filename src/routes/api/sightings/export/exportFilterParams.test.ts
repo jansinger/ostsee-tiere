@@ -19,6 +19,15 @@ vi.mock('drizzle-orm', () => ({
 	ilike: vi.fn((column, value) => ({ op: 'ilike', column, value }))
 }));
 
+// Die Bedingung selbst prüft `sameReporterFilter.test.ts`; hier zählt nur,
+// dass der Export sie mit demselben Parameter wie die Tabelle anhängt.
+vi.mock('#lib/server/db/sameReporterFilter.ts', () => ({
+	SAME_REPORTER_PARAM: 'gleicherMelder',
+	sameReporterCondition: vi.fn((raw: string | null | undefined) =>
+		raw ? { op: 'sameReporter', value: raw } : undefined
+	)
+}));
+
 vi.mock('#lib/server/db/schema.ts', () => ({
 	sightings: {
 		sightingDate: 'sightingDate',
@@ -352,5 +361,35 @@ describe('Export-Filter — Freitext-Suche', () => {
 	it('ein leerer Suchbegriff erzeugt keine Bedingung', () => {
 		expect(buildExportConditions({ ...noFilters, q: null })).toHaveLength(0);
 		expect(buildExportConditions({ ...noFilters, q: '   ' })).toHaveLength(0);
+	});
+});
+
+/**
+ * „Alle Meldungen dieses Melders" (`?gleicherMelder=<id>`) muss auch im Export
+ * gelten — sonst enthielte die Datei mehr Zeilen, als die Tabelle zeigte.
+ */
+describe('Export — gleicher Melder', () => {
+	it('liest gleicherMelder aus der URL', () => {
+		const result = parseExportFilterParams(
+			new URL('https://x/api/sightings/export?gleicherMelder=42')
+		);
+
+		expect(result).toMatchObject({ params: { gleicherMelder: '42' } });
+	});
+
+	it('hängt die Bedingung an, wenn der Parameter gesetzt ist', () => {
+		const conditions = buildExportConditions({
+			fromDate: '',
+			toDate: '',
+			verified: null,
+			entryChannel: null,
+			mediaUpload: null,
+			deadFinding: null,
+			balticSea: null,
+			q: null,
+			gleicherMelder: '42'
+		}) as unknown as Array<{ op: string; value?: unknown }>;
+
+		expect(conditions).toContainEqual({ op: 'sameReporter', value: '42' });
 	});
 });

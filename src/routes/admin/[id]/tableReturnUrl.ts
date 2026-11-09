@@ -34,6 +34,7 @@ export const TABELLEN_PARAMETER = [
 	'balticSea',
 	'deadFinding',
 	'q',
+	'gleicherMelder',
 	'sort',
 	'order',
 	'page',

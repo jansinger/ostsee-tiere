@@ -22,6 +22,7 @@ import { and, sql, type SQL, type SQLWrapper } from 'drizzle-orm';
 import { isRedirect, type Redirect } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { searchCondition } from '#lib/server/db/sightingSearchFilter.ts';
+import { sameReporterCondition } from '#lib/server/db/sameReporterFilter.ts';
 import {
 	MEDIA_UPLOAD_ANNOUNCED_MISSING,
 	mediaUploadCondition
@@ -501,5 +502,34 @@ describe('admin/sichtungen/+page.server load() — Zähler sind Zahlen, keine St
 		expect(result.pagination.total).toBe(42);
 		expect(typeof result.pagination.total).toBe('number');
 		expect(result.pagination.totalPages).toBe(3);
+	});
+});
+
+/**
+ * „Alle Meldungen dieses Melders" (`?gleicherMelder=<id>`): Die Bedingung prüft
+ * `sameReporterFilter.test.ts`, hier zählt die Verdrahtung in Liste und Zähler.
+ */
+describe('admin/sichtungen/+page.server load() — gleicher Melder', () => {
+	beforeEach(() => {
+		recordedSelects = [];
+		resolvedRows = [[{ id: 1 }], [{ count: 5 }], [{ count: 2 }]];
+	});
+
+	it('?gleicherMelder=… filtert Liste und Zähler mit derselben Bedingung', async () => {
+		await load({
+			url: makeUrl({ gleicherMelder: '42' })
+		} as unknown as Parameters<typeof load>[0]);
+
+		const expected = toSqlText(sameReporterCondition('42') as unknown as SQLWrapper);
+		expect(recordedSelects[0]?.whereSql).toBe(expected);
+		expect(recordedSelects[1]?.whereSql).toBe(expected);
+	});
+
+	it('ein ungültiger Wert filtert gar nicht', async () => {
+		await load({
+			url: makeUrl({ gleicherMelder: 'abc' })
+		} as unknown as Parameters<typeof load>[0]);
+
+		expect(recordedSelects[0]?.whereSql).toBeUndefined();
 	});
 });

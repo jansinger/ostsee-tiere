@@ -4,6 +4,7 @@ import { berlinCalendarDate } from '#lib/server/db/sqlTimeZone.ts';
 import { mediaUploadCondition } from '#lib/server/db/mediaUploadFilter.ts';
 import { balticSeaCondition } from '#lib/server/db/balticSeaFilter.ts';
 import { deadFindingCondition } from '#lib/server/db/deadFindingFilter.ts';
+import { sameReporterCondition } from '#lib/server/db/sameReporterFilter.ts';
 import { searchCondition, normalizeSearchTerm } from '#lib/server/db/sightingSearchFilter.ts';
 import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
 import { and, eq, sql, type SQL } from 'drizzle-orm';
@@ -100,6 +101,16 @@ export const load: PageServerLoad = async ({ url }) => {
 	const searchFilterCondition = searchCondition(q);
 	if (searchFilterCondition) {
 		conditions.push(searchFilterCondition);
+	}
+
+	// „Alle Meldungen dieses Melders" aus der Detailansicht: gleicher Melder-Hash
+	// wie die genannte Meldung. Verknüpft über deren ID, der Hash bleibt auf dem
+	// Server — siehe sameReporterFilter.ts.
+	// Wörtlich gelesen, nicht über SAME_REPORTER_PARAM: `tableReturnUrl.test.ts`
+	// gleicht die gelesenen Parameter textuell mit dem Rückweg ab.
+	const sameReporterFilterCondition = sameReporterCondition(url.searchParams.get('gleicherMelder'));
+	if (sameReporterFilterCondition) {
+		conditions.push(sameReporterFilterCondition);
 	}
 
 	// Kombinierte WHERE-Bedingung erstellen

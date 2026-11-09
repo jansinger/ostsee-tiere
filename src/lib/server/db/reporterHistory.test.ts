@@ -1,5 +1,5 @@
 /**
- * @fileoverview Melder-Historie — Aggregat über die Meldungen derselben E-Mail.
+ * @fileoverview Melder-Historie — Aggregat über die Meldungen derselben Person.
  *
  * Geprüft wird, was an dieser Abfrage schiefgehen kann:
  *
@@ -14,6 +14,11 @@
  * 3. **Die eigene Zeile zählt nicht mit.** Die Karte beantwortet „was wissen
  *    wir sonst über diesen Melder"; die Meldung, die man gerade ansieht, ist
  *    nicht Teil ihrer eigenen Vorgeschichte.
+ * 4. **Gruppiert wird über `melder_hash`, nicht über die E-Mail** — nach der
+ *    Anonymisierung gibt es keine Adresse mehr, über die sich zählen ließe
+ *    (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 3). Der Hash wird in SQL
+ *    nachgeschlagen und verlässt die Datenbank nicht: Der Aufrufer übergibt
+ *    nur Sichtungs-IDs, das Ergebnis ist nach ID geschlüsselt.
  */
 import { PgDialect } from 'drizzle-orm/pg-core';
 import type { SQL } from 'drizzle-orm';
@@ -40,16 +45,16 @@ function letzteAbfrage(): { sql: string; params: unknown[] } {
 function eingang(overrides: Partial<Parameters<typeof findReporterHistory>[0][number]> = {}) {
 	return {
 		id: 1,
-		email: 'Melder@Example.org',
 		approvedAt: null,
 		rejectedAt: null,
 		...overrides
 	};
 }
 
+/** Eine Ergebniszeile der Abfrage: das Aggregat des Melders, geschlüsselt nach Sichtung. */
 function aggregat(overrides: Record<string, unknown> = {}) {
 	return {
-		reporter: 'melder@example.org',
+		id: 1,
 		approved: 12,
 		rejected: 0,
 		open: 1,
@@ -80,24 +85,31 @@ describe('findReporterHistory', () => {
 		expect(mockDb.execute).not.toHaveBeenCalled();
 	});
 
-	it('fragt auch ohne verwertbare Adresse nicht die Datenbank', async () => {
-		await expect(findReporterHistory([eingang({ email: '  ' })])).resolves.toEqual({});
-		expect(mockDb.execute).not.toHaveBeenCalled();
-	});
-
-	it('holt alle Melder in genau einer Abfrage, normalisiert als Parameter', async () => {
-		await findReporterHistory([
-			eingang({ id: 1, email: 'A@example.org' }),
-			eingang({ id: 2, email: 'a@EXAMPLE.org' }),
-			eingang({ id: 3, email: 'b@example.org' })
-		]);
+	it('holt alle Sichtungen in genau einer Abfrage, mit den IDs als Parameter', async () => {
+		await findReporterHistory([eingang({ id: 1 }), eingang({ id: 2 }), eingang({ id: 3 })]);
 
 		expect(mockDb.execute).toHaveBeenCalledTimes(1);
 		const { params } = letzteAbfrage();
-		// Zwei Adressen, nicht drei: die ersten beiden sind derselbe Melder.
-		expect(params).toContain('a@example.org');
-		expect(params).toContain('b@example.org');
-		expect(params.filter((p) => p === 'a@example.org')).toHaveLength(1);
+		expect(params).toEqual(expect.arrayContaining([1, 2, 3]));
+	});
+
+	it('gruppiert über den Melder-Hash, nicht über die E-Mail', async () => {
+		await findReporterHistory([eingang()]);
+
+		const { sql } = letzteAbfrage();
+		expect(sql).toContain('"melder_hash"');
+		// Nach der Anonymisierung ist die Adresse leer — über sie ließe sich nichts zählen.
+		expect(sql).not.toMatch(/lower\(\s*trim\(/i);
+		expect(sql).not.toContain('"email"');
+	});
+
+	it('gibt den Hash nicht als Ergebnisspalte aus', async () => {
+		// Ergebnis nach Sichtungs-ID: Der Hash bleibt in der Datenbank.
+		await findReporterHistory([eingang()]);
+
+		const { sql } = letzteAbfrage();
+		const outerSelect = sql.slice(sql.lastIndexOf('SELECT'));
+		expect(outerSelect).not.toMatch(/melder_hash\s+(AS|,)/i);
 	});
 
 	it('zählt die drei Zustände über die Prädikate aus approvalFilter', async () => {
@@ -124,12 +136,6 @@ describe('findReporterHistory', () => {
 		);
 	});
 
-	it('gruppiert ohne Groß-/Kleinschreibung und ohne Randweißraum', async () => {
-		await findReporterHistory([eingang()]);
-
-		expect(letzteAbfrage().sql).toMatch(/lower\(\s*trim\(/i);
-	});
-
 	it('trägt die Zonenangabe schon aus der Datenbank', async () => {
 		await findReporterHistory([eingang()]);
 
@@ -140,12 +146,12 @@ describe('findReporterHistory', () => {
 	});
 
 	it('ordnet das Aggregat jeder Sichtung desselben Melders zu', async () => {
-		mockDb.execute.mockResolvedValue([aggregat({ approved: 12, open: 2 })]);
-
-		const result = await findReporterHistory([
-			eingang({ id: 1 }),
-			eingang({ id: 2, email: 'melder@example.org' })
+		mockDb.execute.mockResolvedValue([
+			aggregat({ id: 1, approved: 12, open: 2 }),
+			aggregat({ id: 2, approved: 12, open: 2 })
 		]);
+
+		const result = await findReporterHistory([eingang({ id: 1 }), eingang({ id: 2 })]);
 
 		// Beide offen: je 12 Freigaben, und die andere offene Karte bleibt sichtbar.
 		expect(result[1]).toEqual({
@@ -163,7 +169,10 @@ describe('findReporterHistory', () => {
 	});
 
 	it('zieht die eigene Zeile aus dem Topf ab, in dem sie steckt', async () => {
-		mockDb.execute.mockResolvedValue([aggregat({ approved: 12, rejected: 3, open: 1 })]);
+		mockDb.execute.mockResolvedValue([
+			aggregat({ id: 1, approved: 12, rejected: 3, open: 1 }),
+			aggregat({ id: 2, approved: 12, rejected: 3, open: 1 })
+		]);
 
 		const result = await findReporterHistory([
 			eingang({ id: 1, approvedAt: new Date('2026-08-01T10:00:00Z') }),
@@ -196,5 +205,15 @@ describe('findReporterHistory', () => {
 		mockDb.execute.mockRejectedValue(new Error('DB nicht erreichbar'));
 
 		await expect(findReporterHistory([eingang()])).resolves.toEqual({});
+	});
+
+	it('lässt Sichtungen ohne Hash aus, statt ein Nullaggregat zu behaupten', async () => {
+		// Ohne Adresse (oder vor dem Backfill) gibt es keine Zeile im Ergebnis.
+		mockDb.execute.mockResolvedValue([aggregat({ id: 1 })]);
+
+		const result = await findReporterHistory([eingang({ id: 1 }), eingang({ id: 2 })]);
+
+		expect(result).toHaveProperty('1');
+		expect(result).not.toHaveProperty('2');
 	});
 });

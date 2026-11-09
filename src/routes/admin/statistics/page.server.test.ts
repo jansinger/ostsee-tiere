@@ -40,7 +40,12 @@ let recordedWhereClauses: SQLWrapper[] = [];
  * ist sie aber der Kern der Aussage: Die Kopfzahlen müssen das gewählte Jahr
  * tragen, die Jahrestrends gerade nicht (sie sind der Kontext der Auswahl).
  */
-let recordedQueries: Array<{ columns: Record<string, unknown>; where?: SQLWrapper }> = [];
+type RecordedQuery = {
+	columns: Record<string, unknown>;
+	where?: SQLWrapper;
+	groupBy?: SQLWrapper[];
+};
+let recordedQueries: RecordedQuery[] = [];
 
 /**
  * Minimaler, aufzeichnender Drizzle-Query-Builder.
@@ -50,7 +55,7 @@ let recordedQueries: Array<{ columns: Record<string, unknown>; where?: SQLWrappe
  * löst beim `await` auf eine leere Ergebnisliste auf — die Werte selbst sind
  * für diesen Test irrelevant, nur die Spalten-Definitionen zählen.
  */
-function createRecordingBuilder(eintrag: { columns: Record<string, unknown>; where?: SQLWrapper }) {
+function createRecordingBuilder(eintrag: RecordedQuery) {
 	const builder = {
 		from: () => builder,
 		innerJoin: () => builder,
@@ -61,7 +66,10 @@ function createRecordingBuilder(eintrag: { columns: Record<string, unknown>; whe
 			}
 			return builder;
 		},
-		groupBy: () => builder,
+		groupBy: (...keys: SQLWrapper[]) => {
+			eintrag.groupBy = keys;
+			return builder;
+		},
 		orderBy: () => builder,
 		having: () => builder,
 		limit: () => builder,
@@ -77,7 +85,7 @@ vi.mock('#lib/server/db/index.ts', () => ({
 	db: {
 		select: (columns?: Record<string, unknown>) => {
 			if (columns) recordedSelectColumns.push(columns);
-			const eintrag = { columns: columns ?? {} };
+			const eintrag: RecordedQuery = { columns: columns ?? {} };
 			recordedQueries.push(eintrag);
 			return createRecordingBuilder(eintrag);
 		}
@@ -530,5 +538,62 @@ describe('admin/statistics load() — dieselbe Rechnung wie die öffentliche Sta
 		);
 		expect(verhalten).toHaveLength(1);
 		expect(toSqlText(verhalten[0]!.where!)).toContain(toSqlText(isBehaviorAnswered()));
+	});
+});
+
+/**
+ * Melder-Kennzahlen über `melder_hash` (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md,
+ * PR 3). Über die E-Mail gezählt, fielen sie nach der Anonymisierung der
+ * Kontaktdaten auf die letzten 3 Monate zurück; außerdem zählte
+ * `COUNT(DISTINCT email)` `Erika@…` und `erika@…` doppelt (Production:
+ * 6.747 statt 6.578).
+ */
+describe('admin/statistics load() — Melder über den Hash', () => {
+	const sqlVon = (eintrag: RecordedQuery | undefined, spalte: string): string =>
+		toSqlText(eintrag!.columns[spalte] as SQL);
+
+	it('zählt eindeutige Melder über melder_hash', async () => {
+		recordedQueries = [];
+		await ladeSeite();
+
+		const abfrage = recordedQueries.find((eintrag) => 'uniqueUsers' in eintrag.columns);
+		expect(sqlVon(abfrage, 'uniqueUsers')).toContain('"melder_hash"');
+		expect(sqlVon(abfrage, 'uniqueUsers')).not.toContain('email');
+	});
+
+	it('gruppiert Wiederholungs-Melder über melder_hash und gibt den Hash nicht aus', async () => {
+		recordedQueries = [];
+		await ladeSeite();
+
+		const abfrage = recordedQueries.find(
+			(eintrag) =>
+				'count' in eintrag.columns &&
+				eintrag.groupBy &&
+				!('email' in eintrag.columns) &&
+				eintrag.groupBy.some((key) => toSqlText(key).includes('melder_hash'))
+		);
+		expect(abfrage, 'Wiederholungs-Melder-Abfrage über melder_hash nicht gefunden').toBeDefined();
+		for (const spalte of Object.values(abfrage!.columns)) {
+			expect(toSqlText(spalte as SQL)).not.toBe('"sichtungen"."melder_hash"');
+		}
+	});
+
+	it('ermittelt Top-Beobachter über melder_hash, ohne Museum per melder_intern', async () => {
+		recordedQueries = [];
+		await ladeSeite();
+
+		const abfrage = recordedQueries.find((eintrag) => 'firstSighting' in eintrag.columns);
+		expect(abfrage, 'Top-Beobachter-Abfrage nicht gefunden').toBeDefined();
+		expect(abfrage!.groupBy?.map((key) => toSqlText(key))).toEqual(['"sichtungen"."melder_hash"']);
+
+		const where = toSqlText(abfrage!.where!).toLowerCase();
+		expect(where).toContain('"melder_intern" is not true');
+		expect(where).not.toContain('meeresmuseum.de');
+
+		// Angezeigt wird die jüngste noch vorhandene Adresse, nie der Hash.
+		expect(sqlVon(abfrage, 'email')).toContain('array_agg');
+		for (const spalte of Object.values(abfrage!.columns)) {
+			expect(toSqlText(spalte as SQL)).not.toBe('"sichtungen"."melder_hash"');
+		}
 	});
 });

@@ -194,7 +194,7 @@ solange die E-Mail-Adressen noch vorhanden sind. Wiederholen, bis die Antwort
 `"done": true` enthält:
 
 ```bash
-curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" \
   "https://deine-domain.de/api/admin/reporter-hash"
 ```
 
@@ -207,9 +207,17 @@ Stunden gelöscht werden** — eingehalten wird das nur, wenn ein Job den Endpun
 regelmäßig aufruft.
 
 ```bash
-curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" \
   "https://deine-domain.de/api/admin/cleanup-orphans?mode=execute"
 ```
+
+> **`Content-Type: application/json` ist Pflicht** (seit SvelteKit 3, ab
+> Release 2.24.0). Der CSRF-Schutz behandelt eine POST-Anfrage **ohne**
+> `Content-Type` und ohne `Origin`-Header wie ein Formular von einer fremden
+> Seite und weist sie mit `403 Cross-site POST form submissions are forbidden`
+> ab — noch bevor das Token geprüft wird. `curl -X POST` ohne Body schickt
+> keinen `Content-Type`. Einen Body brauchen die Wartungs-Endpunkte nicht; der
+> Header allein genügt. Ein Cron ohne ihn scheitert jede Nacht mit 403.
 
 Einmal täglich genügt. `-f` sorgt dafür, dass ein Fehlerstatus beim Cron-Dienst
 als Fehlschlag ankommt. Ohne `mode=execute` läuft der Aufruf als reine Vorschau
@@ -219,7 +227,7 @@ räumt trotzdem nichts weg.
 Vorschau zum Prüfen des Bestands:
 
 ```bash
-curl -sk -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+curl -sk -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" \
   "https://deine-domain.de/api/admin/cleanup-orphans"
 ```
 
@@ -242,7 +250,7 @@ install -m 600 /dev/null ~/.ostsee-cleanup.env
 ```
 
 ```
-15 3 * * * . $HOME/.ostsee-cleanup.env && curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" "https://$HOST/api/admin/cleanup-orphans?mode=execute" >> $HOME/cleanup.log 2>&1
+15 3 * * * . $HOME/.ostsee-cleanup.env && curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" "https://$HOST/api/admin/cleanup-orphans?mode=execute" >> $HOME/cleanup.log 2>&1
 ```
 
 Cron führt die Zeile mit `/bin/sh` aus; `.` und die Expansion von `$HOST` nach dem
@@ -254,7 +262,7 @@ mit und ohne das Flag gleich. Ein Probelauf, der dabei echte Produktionsdaten
 löscht, ist kein Test:
 
 ```bash
-/bin/sh -c '. $HOME/.ostsee-cleanup.env && curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" "https://$HOST/api/admin/cleanup-orphans"'
+/bin/sh -c '. $HOME/.ostsee-cleanup.env && curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" "https://$HOST/api/admin/cleanup-orphans"'
 ```
 
 Ein `%` im Crontab ist ein Zeilenumbruch-Sonderzeichen und muss als `\%` escaped

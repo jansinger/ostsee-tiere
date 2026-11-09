@@ -24,7 +24,7 @@ vi.mock('$app/navigation', () => ({
 vi.mock('$app/state', () => ({
 	page: {
 		url: new URL(
-			'https://localhost:4000/admin/sichtungen?fromDate=2026-06-01&q=delfin&verified=approved&page=7'
+			'https://localhost:4000/admin/sichtungen?fromDate=2026-06-01&q=delfin&verified=approved&gleicherMelder=42&page=7'
 		)
 	}
 }));
@@ -77,6 +77,27 @@ describe('Sichtungstabelle — Chip-Zeile der aktiven Filter', () => {
 	   dieses Namens im DOM — der Chip-Zeile und je einer in Kartenliste und
 	   Tabelle. Dass sie gleich heißen, ist Absicht (gleiche Aktion, gleiche
 	   Beschriftung); die Chip-Zeile steht im Markup vor beiden Listen. */
+	it('zeigt den Melder-Filter als entfernbaren Chip', async () => {
+		const screen = await render(SichtungenSeite, { data: daten([]) });
+
+		await expect
+			.element(screen.getByLabelText('Filter Gleicher Melder wie Meldung #42 entfernen'))
+			.toBeVisible();
+	});
+
+	/* „Alle Filter zurücksetzen" heißt alle — ein stehengebliebener Melder-Filter
+	   zeigte danach eine Tabelle, die gefiltert ist, ohne dass ein Chip es sagt. */
+	it('setzt beim Zurücksetzen auch den Melder-Filter zurück', async () => {
+		vi.mocked(goto).mockClear();
+		const screen = await render(SichtungenSeite, { data: daten([]) });
+
+		await screen.getByRole('button', { name: 'Alle Filter zurücksetzen' }).first().click();
+
+		const ziel = new URL(String(vi.mocked(goto).mock.calls.at(-1)?.[0]));
+		expect(ziel.searchParams.get('gleicherMelder')).toBeNull();
+		expect(ziel.searchParams.get('q')).toBeNull();
+	});
+
 	it('bietet ab zwei Chips das Zurücksetzen aller Filter an', async () => {
 		const screen = await render(SichtungenSeite, { data: daten([]) });
 

@@ -273,7 +273,7 @@ describe('AdminSightingView — Melder-Historie', () => {
 		await expect.element(page.getByText('Melder seit 03/2019')).toBeVisible();
 		await expect
 			.element(page.getByRole('link', { name: 'Alle Meldungen dieses Melders' }))
-			.toHaveAttribute('href', '/admin/sichtungen?q=melder%40example.org');
+			.toHaveAttribute('href', '/admin/sichtungen?gleicherMelder=1');
 	});
 
 	/* Der Monat wird aus den UTC-Feldern zusammengesetzt und nicht über
@@ -343,6 +343,31 @@ describe('AdminSightingView — Melder-Historie', () => {
 		});
 
 		await expect.element(page.getByTestId('reporter-history-block')).not.toBeInTheDocument();
+	});
+
+	/* Nach der Anonymisierung fehlt die Adresse, der Melder-Hash bleibt — die
+	   Historie kommt weiter an, und der Link führt über die Meldungs-ID zu den
+	   übrigen Meldungen derselben Person. Früher hing er an der Adresse und
+	   verschwand mit ihr. */
+	it('verlinkt die Meldungen der Person auch ohne Adresse, solange eine Historie da ist', async () => {
+		const props = basisProps();
+		await render(AdminSightingView, {
+			...props,
+			sighting: { ...props.sighting, email: null },
+			reporterHistory: { approved: 4, rejected: 0, open: 0, since: '2019-03-04T08:00:00Z' }
+		});
+
+		await expect
+			.element(page.getByRole('link', { name: 'Alle Meldungen dieses Melders' }))
+			.toHaveAttribute('href', '/admin/sichtungen?gleicherMelder=1');
+	});
+
+	it('zeigt den Link nicht ohne Historie — ohne Hash gäbe es nichts zu finden', async () => {
+		await render(AdminSightingView, { ...basisProps(), reporterHistory: null });
+
+		await expect
+			.element(page.getByRole('link', { name: 'Alle Meldungen dieses Melders' }))
+			.not.toBeInTheDocument();
 	});
 });
 

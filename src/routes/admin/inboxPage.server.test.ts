@@ -94,14 +94,15 @@ vi.mock('#lib/server/db/duplicateCandidates.ts', () => ({
 const findReporterHistory = vi
 	.fn<
 		(
-			rows: { id: number; email: string | null }[]
+			rows: { id: number; approvedAt: null; rejectedAt: null }[]
 		) => Promise<
 			Record<number, { approved: number; rejected: number; open: number; since: string | null }>
 		>
 	>()
 	.mockResolvedValue({});
 vi.mock('#lib/server/db/reporterHistory.ts', () => ({
-	findReporterHistory: (rows: { id: number; email: string | null }[]) => findReporterHistory(rows)
+	findReporterHistory: (rows: { id: number; approvedAt: null; rejectedAt: null }[]) =>
+		findReporterHistory(rows)
 }));
 
 function makeUrl(params: Record<string, string> = {}): URL {
@@ -231,8 +232,10 @@ describe('Eingangs-Load', () => {
 
 		expect(findReporterHistory).toHaveBeenCalledTimes(1);
 		expect(findReporterHistory).toHaveBeenCalledWith([
-			{ id: 1, email: 'melder-eins@example.com', approvedAt: null, rejectedAt: null },
-			{ id: 2, email: 'melder-zwei@example.com', approvedAt: null, rejectedAt: null }
+			// Nur IDs und Status — der Melder-Hash wird in SQL nachgeschlagen und
+			// verlässt die Datenbank nicht (reporterHistory.ts).
+			{ id: 1, approvedAt: null, rejectedAt: null },
+			{ id: 2, approvedAt: null, rejectedAt: null }
 		]);
 		expect(result.reporterHistoryBySighting).toEqual({
 			1: { approved: 3, rejected: 0, open: 0, since: '2019-03-04T08:00:00Z' }

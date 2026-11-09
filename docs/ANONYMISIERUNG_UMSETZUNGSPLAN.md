@@ -223,6 +223,27 @@ nebeneinander gerechnet (je Jahr: eindeutige Melder, Wiederholungs-Melder,
 Top 10, `/about`). Erwartet: Die neue Zahl entspricht der alten Zählung über
 `lower(trim(email))` exakt. Das Ergebnis geht mit der Vorschau an das Museum.
 
+**Umgesetzt (2026-11-09).** Abweichungen und Präzisierungen gegenüber dem Plan:
+
+- **Melder-Historie bekommt nur noch IDs.** `findReporterHistory` schlägt den
+  Hash in SQL selbst nach und liefert das Aggregat nach Sichtungs-ID. So muss der
+  Hash nicht in `INBOX_COLUMNS`, die an den Browser gehen.
+- **Bausteine statt Hash-Namen in Routen.** Statistik und `/about` nutzen
+  `src/lib/server/db/reporterAggregates.ts`, der Filter steht in
+  `src/lib/server/db/sameReporterFilter.ts`. Keine Route nennt den Hash; der
+  Guard `reporterHashLeakScan.test.ts` braucht dafür keine Ausnahme.
+- **`gleicherMelder` gilt überall, wo Filter gelten:** Liste, Zähler, Export,
+  Rückweg aus der Detailansicht, eigener Chip und „Alle Filter zurücksetzen".
+- **Der Link „Alle Meldungen dieses Melders"** erscheint, sobald eine Historie
+  vorliegt, also auch für anonymisierte Meldungen ohne Adresse.
+- **Suche:** Eine vollständige Adresse findet zusätzlich über den Hash, ohne
+  Schlüssel bleibt es bei der ILIKE-Suche.
+- **Top-Beobachter** zeigen die jüngste noch vorhandene Adresse der Person,
+  sonst „anonymisiert". Der Hash wird nicht ausgegeben.
+- **Nachweis erbracht** (Production, nach dem Backfill aus PR 2): 6.578 Personen
+  über den Hash = 6.578 über `lower(trim(email))`. Die bisherige Statistik zeigte
+  6.747 (`COUNT(DISTINCT email)` ohne Normalisierung).
+
 **Größe:** M · `feat(admin): read reporter identity from reporter hash`
 
 ## PR 4 — Anonymisierungs-Job
@@ -232,11 +253,11 @@ Top 10, `/about`). Erwartet: Die neue Zahl entspricht der alten Zählung über
 | Test                          | Prüft                                                                                                                                                                                                                |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `anonymizationPatch.test.ts`  | Feld-Matrix für alle vier Kombinationen `namensnennung` × `schiffnamensnennung`; Freitexte, Hash und Einwilligungsnachweise unberührt                                                                                |
-| `anonymizationCutoff.test.ts` | vorwärts vom Eingang gerechnet, in UTC; genau an der Grenze, ein Tag davor und danach; Monatsende (31. Mai, 30. November → Februar); beide Zeitumstellungen                                                                                                           |
+| `anonymizationCutoff.test.ts` | vorwärts vom Eingang gerechnet, in UTC; genau an der Grenze, ein Tag davor und danach; Monatsende (31. Mai, 30. November → Februar); beide Zeitumstellungen                                                          |
 | `anonymizeSightings.test.ts`  | holt Hashes nach, bevor geleert wird; ohne Schlüssel Abbruch vor jeder Änderung; ohne Freischaltung nur Vorschau; Vorschau ändert nichts; zweiter Lauf ändert nichts; maßgeblich ist `created`, nicht der Prüfstatus |
 | Endpunkt                      | 401 ohne Session/Token; Vorschau ist Standard; `mode=execute` leert; Audit-Eintrag ohne personenbezogene Werte; 503 ohne Schlüssel                                                                                   |
 | Admin-Schema                  | anonymisierte Meldung ohne Name/E-Mail ist speicherbar; nicht anonymisierte weiterhin nur mit                                                                                                                        |
-| Löschersuchen                 | anonymisiert die Treffer sofort und leert den Hash; ein anschließender Job-Lauf (Backfill eingeschlossen) stellt den Hash nicht wieder her |
+| Löschersuchen                 | anonymisiert die Treffer sofort und leert den Hash; ein anschließender Job-Lauf (Backfill eingeschlossen) stellt den Hash nicht wieder her                                                                           |
 | `updateSighting`              | Kontaktfelder einer anonymisierten Zeile werden abgewiesen                                                                                                                                                           |
 | `rescoreSightings`            | anonymisierte Zeilen werden nicht bewertet                                                                                                                                                                           |
 
@@ -320,7 +341,7 @@ Auf **Staging** wird derselbe Ablauf vorher einmal vollständig durchgespielt.
 denselben Endpunkt auf wie die Aufräum-Routine:
 
 ```bash
-curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" \
+curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" \
   "https://<host>/api/admin/anonymize?mode=execute"
 ```
 

@@ -1,7 +1,16 @@
 import { PgDialect } from 'drizzle-orm/pg-core';
 import type { SQLWrapper } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const { mockEnv } = vi.hoisted(() => ({
+	mockEnv: {} as { REPORTER_HASH_KEY?: string }
+}));
+vi.mock('#lib/server/env.ts', () => ({ env: mockEnv }));
+
+import { computeReporterHash } from '#lib/server/privacy/reporterHash.ts';
 import { normalizeSearchTerm, searchCondition } from './sightingSearchFilter';
+
+const KEY = 'k'.repeat(32);
 
 const dialect = new PgDialect();
 const compile = (condition: SQLWrapper) => dialect.sqlToQuery(condition.getSQL());
@@ -52,5 +61,40 @@ describe('searchCondition', () => {
 		const { params } = compile(searchCondition('a\\b') as SQLWrapper);
 
 		expect(params[0]).toBe('%a\\\\b%');
+	});
+});
+
+/**
+ * Nach der Anonymisierung steht keine Adresse mehr in der Zeile — eine Suche
+ * nach der vollständigen Adresse findet die Meldungen der Person trotzdem, über
+ * den Hash (Auskunftsersuchen, Rückfragen). Teilbegriffe suchen wie bisher nur
+ * per ILIKE: Der Hash lässt sich nur zu einer ganzen Adresse bilden.
+ */
+describe('searchCondition — vollständige Adresse über den Melder-Hash', () => {
+	beforeEach(() => {
+		mockEnv.REPORTER_HASH_KEY = KEY;
+	});
+
+	it('findet bei einer vollständigen Adresse zusätzlich über melder_hash', () => {
+		const { sql, params } = compile(searchCondition(' Erika@Example.org ') as SQLWrapper);
+
+		expect(sql).toContain('"melder_hash" =');
+		expect(params).toContain(computeReporterHash('erika@example.org', KEY));
+	});
+
+	it.each(['müller', 'erika@', '@example.org', 'erika example.org'])(
+		'sucht bei %j nicht über den Hash',
+		(begriff) => {
+			expect(compile(searchCondition(begriff) as SQLWrapper).sql).not.toContain('melder_hash');
+		}
+	);
+
+	it('sucht ohne Schlüssel weiter per ILIKE, ohne Fehler', () => {
+		delete mockEnv.REPORTER_HASH_KEY;
+
+		const { sql } = compile(searchCondition('erika@example.org') as SQLWrapper);
+
+		expect(sql).toContain('"email" ilike');
+		expect(sql).not.toContain('melder_hash');
 	});
 });

@@ -2,9 +2,20 @@
  * @fileoverview Melder-Historie für Eingang und Detailansicht.
  *
  * Beantwortet zu einer Meldung: Wie viele **andere** Meldungen derselben
- * E-Mail-Adresse wurden freigegeben, abgelehnt, sind noch offen — und seit wann
- * meldet diese Adresse. Reine Anzeige: Es wird nichts gefiltert, nichts
- * sortiert und nichts entschieden.
+ * Person wurden freigegeben, abgelehnt, sind noch offen — und seit wann meldet
+ * sie. Reine Anzeige: Es wird nichts gefiltert, nichts sortiert und nichts
+ * entschieden.
+ *
+ * **Dieselbe Person heißt: derselbe `melder_hash`** (HMAC der normalisierten
+ * E-Mail, siehe `#lib/server/privacy/reporterHash.ts`). Bis 2026-11 wurde über
+ * `lower(trim(email))` gruppiert; nach der Anonymisierung der Kontaktdaten gibt
+ * es diese Adresse nicht mehr, der Hash bleibt. Die Gleichheit ist dieselbe —
+ * auf Production nachgezählt: 6.578 Personen über beide Wege.
+ *
+ * **Der Hash verlässt die Datenbank nicht.** Der Aufrufer übergibt nur
+ * Sichtungs-IDs, die Abfrage schlägt den Hash selbst nach und liefert das
+ * Aggregat nach Sichtungs-ID. So muss er weder in `INBOX_COLUMNS` (die an den
+ * Browser gehen) noch sonst in eine Antwort.
  *
  * **Eine Abfrage für alle gelisteten Sichtungen, nicht eine pro Karte.** Der
  * Eingang listet bis zu 50 Karten; ein Query je Karte kostete 50 Roundtrips für
@@ -19,15 +30,13 @@
  * deshalb nicht in SQL ausgeschlossen, sondern in JavaScript abgezogen —
  * exakt, weil ihr Zustand mitgeliefert wird.
  *
- * **Kein Index auf `lower(trim(email))`.** Gemessen auf der lokalen DB
- * (~20.000 Zeilen, 2026-08-10): 22 ms als Seq Scan für 50 Adressen. Dieselbe
- * Lage wie bei den Duplikat-Abfragen der Spam-Erkennung; bei deutlichem
- * Wachstum wäre ein Ausdrucksindex der nächste Schritt.
+ * Die Gruppierung nutzt `idx_melder_hash`.
  */
 import { sql } from 'drizzle-orm';
 import { db } from '#lib/server/db/index.ts';
 import { createLogger } from '#lib/logger.server.ts';
 import { approvedOnly, openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
+import { sightings } from '#lib/server/db/schema.ts';
 import { normalizeReporterKey } from '#lib/server/privacy/reporterKey.ts';
 import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 
@@ -39,13 +48,13 @@ export { normalizeReporterKey };
 /** Was der Aufrufer je Sichtung mitbringt — mehr wird nicht gelesen. */
 export interface ReporterHistoryInput {
 	id: number;
-	email: string | null;
 	approvedAt: Date | string | null;
 	rejectedAt: Date | string | null;
 }
 
+/** Eine Ergebniszeile: das Aggregat des Melders, geschlüsselt nach Sichtung. */
 interface AggregateRow {
-	reporter: string;
+	id: number | string;
 	approved: number | string;
 	rejected: number | string;
 	open: number | string;
@@ -55,17 +64,10 @@ interface AggregateRow {
 export async function findReporterHistory(
 	rows: ReporterHistoryInput[]
 ): Promise<Record<number, ReporterHistory>> {
-	const keyById = new Map<number, string>();
-	for (const row of rows) {
-		const key = normalizeReporterKey(row.email);
-		if (key) keyById.set(row.id, key);
-	}
+	if (rows.length === 0) return {};
 
-	const keys = [...new Set(keyById.values())];
-	if (keys.length === 0) return {};
-
-	const keyListe = sql.join(
-		keys.map((key) => sql`${key}`),
+	const idListe = sql.join(
+		rows.map((row) => sql`${row.id}`),
 		sql`, `
 	);
 
@@ -74,26 +76,38 @@ export async function findReporterHistory(
 		   (`postgresTypes.ts`) liefert `timestamp without time zone` als Text, und
 		   eine `db.execute`-Abfrage läuft an Drizzles Spalten-Mapping vorbei. Ein
 		   String ohne Zonenangabe wird von `new Date(...)` als Ortszeit gelesen —
-		   im Sommer zwei Stunden daneben, und zwar lautlos. */
+		   im Sommer zwei Stunden daneben, und zwar lautlos.
+
+		   Beide CTEs lesen `sichtungen` ohne Alias, damit die Freigabe-Prädikate
+		   interpoliert werden können (siehe Dateikopf). Die Ausgabe nennt nur die
+		   Sichtungs-ID und die Zähler, nie den Hash. */
 		const result = await db.execute(sql`
-			SELECT
-				lower(trim(email)) AS reporter,
-				count(*) filter (WHERE ${approvedOnly()}) AS approved,
-				count(*) filter (WHERE ${rejectedOnly()}) AS rejected,
-				count(*) filter (WHERE ${openOnly()}) AS open,
-				to_char(min(created), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS since
-			FROM sichtungen
-			WHERE lower(trim(email)) IN (${keyListe})
-			GROUP BY 1
+			WITH gelistet AS (
+				SELECT ${sightings.id} AS id, ${sightings.reporterHash} AS hash
+				FROM sichtungen
+				WHERE ${sightings.id} IN (${idListe}) AND ${sightings.reporterHash} IS NOT NULL
+			),
+			aggregat AS (
+				SELECT
+					${sightings.reporterHash} AS hash,
+					count(*) filter (WHERE ${approvedOnly()}) AS approved,
+					count(*) filter (WHERE ${rejectedOnly()}) AS rejected,
+					count(*) filter (WHERE ${openOnly()}) AS open,
+					to_char(min(${sightings.created}), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS since
+				FROM sichtungen
+				WHERE ${sightings.reporterHash} IN (SELECT hash FROM gelistet)
+				GROUP BY 1
+			)
+			SELECT gelistet.id, aggregat.approved, aggregat.rejected, aggregat.open, aggregat.since
+			FROM gelistet JOIN aggregat ON aggregat.hash = gelistet.hash
 		`);
 
 		const rowsOut = (Array.isArray(result) ? result : []) as AggregateRow[];
-		const byKey = new Map(rowsOut.map((row) => [row.reporter, row]));
+		const byId = new Map(rowsOut.map((row) => [Number(row.id), row]));
 
 		const history: Record<number, ReporterHistory> = {};
 		for (const row of rows) {
-			const key = keyById.get(row.id);
-			const aggregate = key ? byKey.get(key) : undefined;
+			const aggregate = byId.get(row.id);
 			if (!aggregate) continue;
 
 			/* `count(*)` ist bigint und kommt je nach Treiber als String zurück.

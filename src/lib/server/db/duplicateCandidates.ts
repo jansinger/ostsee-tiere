@@ -7,9 +7,15 @@
  * Entscheidung trifft der Bearbeiter in der Detailansicht.
  *
  * Die Heuristik hat zwei Zweige, weil derselbe Vorfall auf zwei Wegen doppelt
- * ankommt: Ein Melder schickt sein Formular zweimal ab (gleiche E-Mail,
+ * ankommt: Ein Melder schickt sein Formular zweimal ab (gleiche Person,
  * gleiche Zeit), oder zwei Menschen sehen dieselben Tiere (gleicher Ort,
  * ähnliche Zeit).
+ *
+ * „Gleiche Person" heißt gleicher `melder_hash` (HMAC der normalisierten
+ * E-Mail, `#lib/server/privacy/reporterHash.ts`), seit 2026-11 statt
+ * `lower(email)`: Die Kontaktdaten werden nach 3 Monaten anonymisiert, der Hash
+ * bleibt. Der Grund heißt im Ergebnis weiter `'email'` — die Oberfläche
+ * beschriftet ihn, und für sie hat sich nichts geändert.
  *
  * **Eine Abfrage für alle Sichtungen, nicht eine pro Karte.** Die
  * Eingangsseite listet bis zu 50 Karten; der naheliegende Rückfall auf einen
@@ -125,8 +131,8 @@ export async function findDuplicateCandidates(
 				FROM sichtungen k
 				JOIN sichtungen c ON c.id <> k.id
 				WHERE k.id IN (${idListe})
-					AND k.email IS NOT NULL AND c.email IS NOT NULL
-					AND lower(k.email) = lower(c.email)
+					AND k.melder_hash IS NOT NULL
+					AND k.melder_hash = c.melder_hash
 					AND date_trunc('hour', k.sichtungsdatum) = date_trunc('hour', c.sichtungsdatum)
 
 				UNION ALL
