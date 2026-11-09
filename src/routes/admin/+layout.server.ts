@@ -7,6 +7,14 @@ import type { LayoutServerLoad } from './$types';
 export const load = (async ({ locals, url }) => {
 	requireUserRole(url, locals.user, ['admin', 'superadmin']);
 
+	// Bewusst gelesen: SvelteKit lädt dieses Layout bei Client-Navigation nur
+	// neu, wenn `load` etwas liest, das sich ändert. Ohne diese Zeile bliebe die
+	// Hinweisleiste der Anonymisierung bis zum nächsten harten Reload auf dem
+	// Stand der ersten Seite — ein ausgefallener Cron fiele niemandem auf
+	// (Review PR #1013). Kosten: zwei Konfigurationswerte und zwei Zählungen je
+	// Navigation im Admin-Bereich.
+	void url.pathname;
+
 	// Security: Only send minimal admin user data to frontend
 	const adminUser: PublicUser | null = locals.user
 		? {

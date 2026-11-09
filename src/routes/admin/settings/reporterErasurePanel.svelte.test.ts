@@ -94,4 +94,42 @@ describe('ReporterErasurePanel', () => {
 
 		expect(page.getByRole('button', { name: 'Löschen', exact: true }).elements()).toHaveLength(0);
 	});
+
+	it('verwirft eine Antwort, die erst nach einer Adressänderung eintrifft', async () => {
+		// Läuft die Suche zu A noch, während B eingetippt wird, darf A's Ergebnis
+		// nicht als Ergebnis für B erscheinen — „Löschen" träfe sonst B, ohne dass
+		// B je gesucht wurde (Review PR #1013).
+		let release: () => void = () => {};
+		const fetchMock = vi.fn(
+			(_url: string, init?: RequestInit) =>
+				new Promise((resolve) => {
+					const body = JSON.parse(String(init?.body ?? '{}'));
+					release = () =>
+						resolve({
+							ok: true,
+							status: 200,
+							json: async () => ({
+								mode: 'preview',
+								matched: body.email === ADDRESS ? 5 : 0,
+								alreadyAnonymized: 0,
+								erased: 0
+							})
+						});
+				})
+		);
+		globalThis.fetch = fetchMock as unknown as typeof fetch;
+		render(ReporterErasurePanel);
+		const input = page.getByLabelText('E-Mail-Adresse der Person');
+
+		await userEvent.fill(input, ADDRESS);
+		await page.getByRole('button', { name: 'Meldungen suchen' }).click();
+		await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+		await userEvent.fill(input, 'max@example.invalid');
+		release();
+
+		await vi.waitFor(() => expect((input.element() as HTMLInputElement).value).toBe('max@example.invalid'));
+		await new Promise((resolve) => setTimeout(resolve, 50));
+		expect(page.getByText(/Meldungen gefunden/).elements()).toHaveLength(0);
+		expect(page.getByRole('button', { name: 'Löschen', exact: true }).elements()).toHaveLength(0);
+	});
 });

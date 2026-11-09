@@ -1447,7 +1447,8 @@ paths:
         Leeren holt jeder Lauf fehlende Melder-Hashes nach; wird das nicht
         fertig, wird nichts geleert (`skipped: "hash_backfill_incomplete"`).
         Idempotent; bei `done: false` erneut aufrufen. Zugang über
-        Admin-Session oder Bearer-Token (`CLEANUP_TOKEN`) für den täglichen Cron.
+        Admin- oder Superadmin-Session oder Bearer-Token (`CLEANUP_TOKEN`) für
+        den täglichen Cron.
       security:
         - adminAuth: []
         - cleanupToken: []

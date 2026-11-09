@@ -23,11 +23,11 @@
 
 	const currentPreview = $derived(preview && previewFor === email ? preview : null);
 
-	async function request(mode: 'preview' | 'execute'): Promise<ErasureReport> {
+	async function request(address: string, mode: 'preview' | 'execute'): Promise<ErasureReport> {
 		const response = await fetch('/api/admin/reporter-erasure', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(mode === 'execute' ? { email, mode } : { email })
+			body: JSON.stringify(mode === 'execute' ? { email: address, mode } : { email: address })
 		});
 		const body = await response.json().catch(() => ({}));
 		if (!response.ok) throw new Error(body.error ?? `Status ${response.status}`);
@@ -36,12 +36,19 @@
 
 	async function search(event: SubmitEvent): Promise<void> {
 		event.preventDefault();
+		// Vor dem Warten festhalten: Ändert sich das Feld, solange die Anfrage
+		// läuft, gehört die Antwort zur alten Adresse und wird verworfen — sonst
+		// stünde ihre Trefferzahl an der neuen, und „Löschen" träfe eine nie
+		// gesuchte Adresse (Review PR #1013).
+		const searched = email;
 		busy = true;
 		errorMessage = null;
 		result = null;
 		try {
-			preview = await request('preview');
-			previewFor = email;
+			const report = await request(searched, 'preview');
+			if (email !== searched) return;
+			preview = report;
+			previewFor = searched;
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
 		} finally {
@@ -50,10 +57,13 @@
 	}
 
 	async function erase(): Promise<void> {
+		// Gelöscht wird genau die gesuchte Adresse, nicht der aktuelle Feldinhalt.
+		const target = previewFor;
+		if (!target) return;
 		busy = true;
 		errorMessage = null;
 		try {
-			result = await request('execute');
+			result = await request(target, 'execute');
 			email = '';
 			preview = null;
 			previewFor = null;

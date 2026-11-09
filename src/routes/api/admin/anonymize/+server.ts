@@ -17,7 +17,7 @@
 import { env } from '#lib/server/env.ts';
 import { createLogger } from '#lib/logger.server.ts';
 import { logAuditEvent } from '#lib/server/audit/auditService.ts';
-import { isAdminUser } from '#lib/server/auth/auth.ts';
+import { isAdminUser, isSuperAdminUser } from '#lib/server/auth/auth.ts';
 import { isValidCleanupToken, MIN_TOKEN_LENGTH } from '#lib/server/media/cleanupAuth.ts';
 import {
 	buildRateLimitHeaders,
@@ -36,7 +36,9 @@ import type { RequestHandler } from './$types';
 const logger = createLogger('api:admin:anonymize');
 
 export const POST: RequestHandler = async ({ request, url, locals, getClientAddress }) => {
-	const bySession = isAdminUser(locals.user);
+	// Auch reine Superadmins: Sie bedienen das Panel und schalten frei —
+	// `isAdminUser` kennt nur die Rolle `admin` (Review PR #1013).
+	const bySession = isAdminUser(locals.user) || isSuperAdminUser(locals.user);
 	const byToken = isValidCleanupToken(request.headers.get('authorization'), env.CLEANUP_TOKEN);
 
 	if (!bySession && !byToken) {

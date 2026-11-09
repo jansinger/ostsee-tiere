@@ -91,6 +91,18 @@ describe('POST /api/admin/anonymize', () => {
 		expect(anonymizeSightings).not.toHaveBeenCalled();
 	});
 
+	it('lässt eine Session nur mit der Rolle superadmin durch', async () => {
+		// Das Panel liegt in den Einstellungen, die auch reine Superadmins öffnen —
+		// und nur sie dürfen freischalten. Ohne das scheiterte schon die Vorschau
+		// (Review PR #1013).
+		const response = await POST(
+			event({ user: { sub: 's1', email: 's@b.de', roles: ['superadmin'] } })
+		);
+
+		expect(response.status).toBe(200);
+		expect(anonymizeSightings).toHaveBeenCalled();
+	});
+
 	it('weist ein falsches Token mit 401 ab', async () => {
 		const response = await POST(event({ token: 'x'.repeat(MIN_TOKEN_LENGTH) }));
 
