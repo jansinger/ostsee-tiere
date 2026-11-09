@@ -383,6 +383,14 @@
 
 	const contactRows = $derived(
 		[
+			// Nach der Anonymisierung sind die Zeilen darunter leer — ohne diese
+			// Zeile läse sich das wie eine Meldung ohne Kontaktangaben.
+			currentSighting.anonymizedAt
+				? DataRow(
+						'Kontaktdaten',
+						`anonymisiert am ${formatLocalDateTime(currentSighting.anonymizedAt, 'date')}`
+					)
+				: undefined,
 			DataRow('Email', currentSighting.email, hasValue(currentSighting.email)),
 			DataRow('Name', contactName),
 			DataRow('Telefon', currentSighting.phone, hasValue(currentSighting.phone)),

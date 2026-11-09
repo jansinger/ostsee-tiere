@@ -87,10 +87,13 @@ export function getSpamRiskFromResult(result: SpamCheckResult): SpamRisk {
  * gar nicht durchgelaufen (`failed`). Beide Male fehlt eine der zwei Seiten —
  * eine Differenz zu bilden hieße, mit einer Null zu rechnen, die keine ist.
  */
-export type SpamDrift = 'incomparable' | 'unchanged' | 'lower' | 'higher';
+export type SpamDrift = 'incomparable' | 'unchanged' | 'lower' | 'higher' | 'anonymized';
 
 export function getSpamDrift(response: SpamCheckResponse): SpamDrift {
 	const { stored, recomputed } = response;
+	// Vor jedem Vergleich: Einer anonymisierten Meldung fehlen Name und E-Mail,
+	// die Neuberechnung ist dann gar nicht vergleichbar.
+	if (response.anonymized) return 'anonymized';
 	if (stored == null || recomputed.failed) return 'incomparable';
 	if (recomputed.score === stored.score) return 'unchanged';
 	return recomputed.score < stored.score ? 'lower' : 'higher';
@@ -106,6 +109,11 @@ export function getSpamDrift(response: SpamCheckResponse): SpamDrift {
 export const SPAM_DRIFT_PRESENTATION: Record<SpamDrift, { note: string | null }> = {
 	incomparable: { note: null },
 	unchanged: { note: null },
+	anonymized: {
+		note:
+			'Die Meldung ist anonymisiert: Die Neuberechnung lief ohne Name und E-Mail und fällt ' +
+			'deshalb zu mild aus. Maßgeblich bleibt der Erstbefund.'
+	},
 	lower: {
 		note:
 			'Niedriger als beim Eingang — das ist der Normalfall: Formular-Token, Absendedauer ' +

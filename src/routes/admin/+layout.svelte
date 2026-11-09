@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { ADMIN_BEREICHE, aktiverAdminBereich } from '#lib/config/adminNav.ts';
 	import AdminFooter from '#lib/components/admin/AdminFooter.svelte';
+	import AnonymizationAlert from '#lib/components/admin/AnonymizationAlert.svelte';
 	import type { LayoutData } from './$types';
 
 	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
@@ -54,6 +55,9 @@
 			</a>
 		{/each}
 	</nav>
+
+	<!-- Rot bei Meldungen über der Frist oder einem alten letzten Lauf; sonst leer. -->
+	<AnonymizationAlert banner={data.anonymization ?? null} />
 
 	<div class="w-full flex-1">
 		{@render children()}

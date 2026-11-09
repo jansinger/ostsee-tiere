@@ -247,6 +247,47 @@ describe('createForm — handleSubmit (success path)', () => {
 	});
 });
 
+describe('createForm — validationContext', () => {
+	// Die Admin-Maske validiert eine anonymisierte Meldung mit dem Kontext
+	// `anonymized` — dieselbe Regel wie der Server (PUT /api/sightings/[id]).
+	const contextSchema = yup.object({
+		email: yup.string().when('$anonymized', {
+			is: true,
+			then: (schema) => schema.notRequired(),
+			otherwise: (schema) => schema.required('Pflicht')
+		})
+	});
+
+	it('reicht den Kontext an Yup weiter', async () => {
+		const onSubmit = vi.fn().mockResolvedValue(undefined);
+		const { handleSubmit, errors } = createForm({
+			initialValues: { email: '' },
+			validationSchema: contextSchema,
+			validationContext: { anonymized: true },
+			onSubmit
+		});
+
+		await handleSubmit(new Event('submit'));
+
+		expect(get(errors)).toEqual({});
+		expect(onSubmit).toHaveBeenCalledOnce();
+	});
+
+	it('validiert ohne Kontext wie bisher', async () => {
+		const onSubmit = vi.fn().mockResolvedValue(undefined);
+		const { handleSubmit, errors } = createForm({
+			initialValues: { email: '' },
+			validationSchema: contextSchema,
+			onSubmit
+		});
+
+		await handleSubmit(new Event('submit'));
+
+		expect(get(errors)).toEqual({ email: 'Pflicht' });
+		expect(onSubmit).not.toHaveBeenCalled();
+	});
+});
+
 describe('createForm — handleSubmit (validation failure)', () => {
 	it('sets errors from Yup ValidationError (abortEarly: false)', async () => {
 		const onSubmit = vi.fn();

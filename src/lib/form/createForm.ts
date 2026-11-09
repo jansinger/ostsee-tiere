@@ -27,10 +27,22 @@ export interface FormProps<T extends Record<string, unknown> = Record<string, un
 	onSubmit: (values: T) => unknown;
 	validationSchema?: ValidationSchemaOption<T> | null;
 	validate?: ((values: T) => Record<string, string> | Promise<Record<string, string>>) | null;
+	/**
+	 * Yup-Kontext (`$name` in `when()`). Die Admin-Maske setzt `anonymized`,
+	 * damit sie eine anonymisierte Meldung nach derselben Regel prüft wie
+	 * `PUT /api/sightings/[id]`.
+	 */
+	validationContext?: Record<string, unknown> | undefined;
 }
 
 export function createForm<T extends Record<string, unknown>>(options: FormProps<T>) {
-	const { initialValues, onSubmit, validationSchema = null, validate = null } = options;
+	const {
+		initialValues,
+		onSubmit,
+		validationSchema = null,
+		validate = null,
+		validationContext
+	} = options;
 
 	const form = writable<T>({ ...initialValues });
 	const errors = writable<Record<string, string>>({});
@@ -94,7 +106,10 @@ export function createForm<T extends Record<string, unknown>>(options: FormProps
 				const schema =
 					typeof validationSchema === 'function' ? validationSchema(values) : validationSchema;
 				// validate() with abortEarly: false returns all errors + applies .transform()
-				const validated = await schema.validate(values, { abortEarly: false });
+				const validated = await schema.validate(values, {
+					abortEarly: false,
+					...(validationContext ? { context: validationContext } : {})
+				});
 				await onSubmit(validated as T);
 			} else {
 				await onSubmit(values);

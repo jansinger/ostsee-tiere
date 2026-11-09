@@ -45,6 +45,8 @@
 		onSubmit = onSubmitDefault,
 		validate = null,
 		validationSchema = null,
+		// Ausdrücklich herausgezogen: Alles Übrige landet als Attribut am <form>.
+		validationContext,
 		...restProps
 	} = untrack(() => formAndRestProps);
 
@@ -56,7 +58,8 @@
 			initialValues,
 			onSubmit: onSubmit as FormProps['onSubmit'],
 			validate,
-			validationSchema
+			validationSchema,
+			validationContext
 		}),
 		mediaStore
 	} as unknown as FormContext;

@@ -238,6 +238,57 @@ describe('AdminSightingEditForm — Speichern-Knopf', () => {
 	});
 });
 
+describe('AdminSightingEditForm — anonymisierte Meldung', () => {
+	const anonymisiert = () =>
+		gueltigeSichtung({
+			firstName: null,
+			lastName: null,
+			email: null,
+			anonymizedAt: '2026-11-01T03:15:00.000Z'
+		});
+
+	it('sagt, dass die Kontaktdaten anonymisiert sind', async () => {
+		await render(AdminSightingEditForm, {
+			sighting: anonymisiert(),
+			onSave: vi.fn(),
+			onCancel: vi.fn()
+		});
+
+		await expect.element(page.getByText(/Kontaktdaten anonymisiert am/)).toBeVisible();
+	});
+
+	it('lässt sie ohne Name und E-Mail speichern', async () => {
+		// Ohne den Kontext `anonymized` hielt die Maske im Browser an Pflichtfeldern
+		// fest, die nach der Anonymisierung leer sind — der Server hätte die
+		// Meldung angenommen (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
+		const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => anonymisiert() });
+		globalThis.fetch = fetchMock as unknown as typeof fetch;
+		const onSave = vi.fn();
+		await render(AdminSightingEditForm, { sighting: anonymisiert(), onSave, onCancel: vi.fn() });
+
+		await page.getByRole('button', { name: 'Speichern' }).click();
+
+		await vi.waitFor(() => expect(onSave).toHaveBeenCalled());
+		// Der erste fetch der Maske lädt die Upload-Konfiguration — gesucht ist der PUT.
+		const put = fetchMock.mock.calls.find((call) => call[1]?.method === 'PUT');
+		expect(String(put?.[0])).toBe('/api/sightings/1');
+	});
+
+	it('verlangt Name und E-Mail weiterhin bei nicht anonymisierten Meldungen', async () => {
+		const onSave = vi.fn();
+		await render(AdminSightingEditForm, {
+			sighting: gueltigeSichtung({ firstName: null, lastName: null, email: null }),
+			onSave,
+			onCancel: vi.fn()
+		});
+
+		await page.getByRole('button', { name: 'Speichern' }).click();
+
+		await expect.element(page.getByText(/Eingabefehler gefunden/)).toBeVisible();
+		expect(onSave).not.toHaveBeenCalled();
+	});
+});
+
 describe('AdminSightingEditForm — Schutz vor ungespeicherten Änderungen', () => {
 	let bestaetigung: ReturnType<typeof vi.spyOn>;
 
