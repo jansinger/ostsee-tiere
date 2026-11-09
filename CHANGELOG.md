@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.26.0](https://github.com/jansinger/ostsee-tiere/compare/v2.25.0...v2.26.0) (2026-11-09)
+
+
+### Features
+
+* **admin:** read reporter identity from reporter hash ([#1009](https://github.com/jansinger/ostsee-tiere/issues/1009)) ([1c68c23](https://github.com/jansinger/ostsee-tiere/commit/1c68c23c9327297e7e02851a9cb9337b8028e49a))
+
 ## [2.25.0](https://github.com/jansinger/ostsee-tiere/compare/v2.24.1...v2.25.0) (2026-11-09)
 
 
