@@ -1410,6 +1410,66 @@ paths:
             `REPORTER_HASH_KEY` fehlt oder ist kürzer als 32 Zeichen. Es wurde
             nichts geschrieben.
 
+  /api/admin/anonymize:
+    post:
+      tags:
+        - Admin
+      summary: Kontaktdaten 3 Monate nach Eingang anonymisieren
+      description: >
+        Leert bei fälligen Sichtungen die Kontaktdaten der meldenden Person
+        (E-Mail, Telefon, Fax, Anschrift immer; Vor- und Nachname ohne
+        Namens-Einwilligung; Schiffsname und Heimathafen ohne
+        Schiffsnamen-Einwilligung) und setzt `anonymisiert_am`. Fällig ist eine
+        Sichtung, wenn `created + 3 Monate − 1 Tag` erreicht ist, unabhängig vom
+        Prüfstatus. Freitexte und der Melder-Hash bleiben.
+
+
+        Vorgabe ist die Vorschau; geleert wird nur mit `mode=execute`, und auch
+        dann erst nach der einmaligen Freischaltung — vorher antwortet der
+        Endpunkt mit `executed: false` und `skipped: "not_activated"`. Vor dem
+        Leeren holt jeder Lauf fehlende Melder-Hashes nach; wird das nicht
+        fertig, wird nichts geleert (`skipped: "hash_backfill_incomplete"`).
+        Idempotent; bei `done: false` erneut aufrufen. Zugang über
+        Admin-Session oder Bearer-Token (`CLEANUP_TOKEN`) für den täglichen Cron.
+      security:
+        - adminAuth: []
+        - cleanupToken: []
+      parameters:
+        - name: mode
+          in: query
+          description: '`execute` leert. Jeder andere Wert oder kein Wert: Vorschau.'
+          schema:
+            type: string
+            enum: [preview, execute]
+            default: preview
+        - name: limit
+          in: query
+          description: Höchstens so viele Sichtungen je Aufruf. Unlesbare Werte fallen auf die Vorgabe zurück.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2000
+            default: 500
+      responses:
+        '200':
+          description: Vorschau oder Lauf abgeschlossen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnonymizationReport'
+        '401':
+          description: >-
+            Nicht autorisiert — erforderlich ist eine angemeldete Admin-Session
+            oder ein gültiges `CLEANUP_TOKEN`.
+        '429':
+          description: Rate Limit überschritten
+        '500':
+          description: Unerwarteter Fehler
+        '503':
+          description: >-
+            Nur bei `mode=execute`: `REPORTER_HASH_KEY` fehlt oder ist kürzer als
+            32 Zeichen. Es wurde nichts geändert.
+
   /api/admin/test-email:
     post:
       tags:
@@ -3057,6 +3117,89 @@ components:
             true, wenn jede geladene Zeile des Batches übersprungen wurde
             (`skipped`). Weitere Aufrufe läsen dieselben Zeilen wieder. Leere
             Updates wegen paralleler Änderungen zählen nicht dazu.
+    AnonymizationReport:
+      type: object
+      required:
+        - mode
+        - executed
+        - skipped
+        - keyConfigured
+        - activatedAt
+        - due
+        - newestDueReceivedAt
+        - byYear
+        - pendingHashes
+        - hashed
+        - anonymized
+        - remaining
+        - done
+      properties:
+        mode:
+          type: string
+          enum: [preview, execute]
+        executed:
+          type: boolean
+          description: true nur, wenn in diesem Aufruf tatsächlich geleert werden durfte.
+        skipped:
+          type: string
+          nullable: true
+          enum: [not_activated, hash_backfill_incomplete, null]
+          description: Grund, warum bei `mode=execute` nichts geleert wurde.
+        keyConfigured:
+          type: boolean
+          description: '`REPORTER_HASH_KEY` ist gesetzt und lang genug.'
+        activatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Zeitpunkt der einmaligen Freischaltung, `null` solange nicht freigeschaltet.
+        due:
+          type: integer
+          description: Fällige Sichtungen vor diesem Aufruf.
+        newestDueReceivedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Eingang der jüngsten fälligen Sichtung — die tatsächliche Grenze.
+        byYear:
+          type: array
+          description: Aufschlüsselung der fälligen Sichtungen nach Eingangsjahr (Berliner Zeit).
+          items:
+            type: object
+            required: [year, total, namesCleared, namesKept, shipsCleared, shipsKept, pending]
+            properties:
+              year:
+                type: integer
+              total:
+                type: integer
+              namesCleared:
+                type: integer
+                description: Name vorhanden, ohne Einwilligung — wird geleert.
+              namesKept:
+                type: integer
+                description: Name vorhanden, mit Einwilligung — bleibt.
+              shipsCleared:
+                type: integer
+              shipsKept:
+                type: integer
+              pending:
+                type: integer
+                description: Davon noch nicht freigegeben.
+        pendingHashes:
+          type: integer
+          description: Sichtungen mit Adresse, aber ohne Melder-Hash — vor diesem Aufruf.
+        hashed:
+          type: integer
+          description: In diesem Aufruf nachgeholte Melder-Hashes.
+        anonymized:
+          type: integer
+          description: In diesem Aufruf anonymisierte Sichtungen.
+        remaining:
+          type: integer
+          description: Danach noch fällige Sichtungen.
+        done:
+          type: boolean
+          description: '`false` heißt: erneut aufrufen.'
     SpamRescoreReport:
       type: object
       required: [scored, skippedFailed, lastId, remaining, done, stalled, distribution]

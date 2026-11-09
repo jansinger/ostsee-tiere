@@ -71,7 +71,7 @@ export interface HashReportersOptions {
  * zu bekommen (Review PR #1007). Ganz deckungsgleich sind die beiden
  * Zeichenklassen nicht — was trotzdem durchrutscht, fängt `skipped`/`stalled`.
  */
-function pendingRows(): SQL {
+export function pendingHashRows(): SQL {
 	return and(
 		isNull(sightings.reporterHash),
 		isNull(sightings.anonymizedAt),
@@ -90,7 +90,7 @@ export async function hashReporters(options: HashReportersOptions): Promise<Hash
 	const rows = await db
 		.select({ id: sightings.id, email: sightings.email })
 		.from(sightings)
-		.where(pendingRows())
+		.where(pendingHashRows())
 		.orderBy(sightings.id)
 		.limit(limit);
 
@@ -111,12 +111,12 @@ export async function hashReporters(options: HashReportersOptions): Promise<Hash
 		const written = await db
 			.update(sightings)
 			.set(identity)
-			.where(and(eq(sightings.id, row.id), pendingRows(), eq(sightings.email, row.email ?? '')))
+			.where(and(eq(sightings.id, row.id), pendingHashRows(), eq(sightings.email, row.email ?? '')))
 			.returning({ id: sightings.id });
 		hashed += written.length;
 	}
 
-	const [remainingRow] = await db.select({ count: count() }).from(sightings).where(pendingRows());
+	const [remainingRow] = await db.select({ count: count() }).from(sightings).where(pendingHashRows());
 
 	// Festgefahren ist ein Batch nur, wenn KEINE geladene Zeile einen Hash
 	// bekommen kann. Kommen Updates leer zurück, weil ein paralleler Lauf oder
