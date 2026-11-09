@@ -223,6 +223,27 @@ nebeneinander gerechnet (je Jahr: eindeutige Melder, Wiederholungs-Melder,
 Top 10, `/about`). Erwartet: Die neue Zahl entspricht der alten Zählung über
 `lower(trim(email))` exakt. Das Ergebnis geht mit der Vorschau an das Museum.
 
+**Umgesetzt (2026-11-09).** Abweichungen und Präzisierungen gegenüber dem Plan:
+
+- **Melder-Historie bekommt nur noch IDs.** `findReporterHistory` schlägt den
+  Hash in SQL selbst nach und liefert das Aggregat nach Sichtungs-ID. So muss der
+  Hash nicht in `INBOX_COLUMNS`, die an den Browser gehen.
+- **Bausteine statt Hash-Namen in Routen.** Statistik und `/about` nutzen
+  `src/lib/server/db/reporterAggregates.ts`, der Filter steht in
+  `src/lib/server/db/sameReporterFilter.ts`. Keine Route nennt den Hash; der
+  Guard `reporterHashLeakScan.test.ts` braucht dafür keine Ausnahme.
+- **`gleicherMelder` gilt überall, wo Filter gelten:** Liste, Zähler, Export,
+  Rückweg aus der Detailansicht, eigener Chip und „Alle Filter zurücksetzen".
+- **Der Link „Alle Meldungen dieses Melders"** erscheint, sobald eine Historie
+  vorliegt, also auch für anonymisierte Meldungen ohne Adresse.
+- **Suche:** Eine vollständige Adresse findet zusätzlich über den Hash, ohne
+  Schlüssel bleibt es bei der ILIKE-Suche.
+- **Top-Beobachter** zeigen die jüngste noch vorhandene Adresse der Person,
+  sonst „anonymisiert". Der Hash wird nicht ausgegeben.
+- **Nachweis erbracht** (Production, nach dem Backfill aus PR 2): 6.578 Personen
+  über den Hash = 6.578 über `lower(trim(email))`. Die bisherige Statistik zeigte
+  6.747 (`COUNT(DISTINCT email)` ohne Normalisierung).
+
 **Größe:** M · `feat(admin): read reporter identity from reporter hash`
 
 ## PR 4 — Anonymisierungs-Job

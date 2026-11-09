@@ -110,3 +110,11 @@ describe('getActiveFiltersDisplay', () => {
 		]);
 	});
 });
+
+describe('getActiveFiltersDisplay — gleicher Melder', () => {
+	it('nennt den Melder-Filter wie der Chip der Tabelle', () => {
+		expect(getActiveFiltersDisplay({ gleicherMelder: '42' })).toEqual([
+			'Gleicher Melder wie Meldung #42'
+		]);
+	});
+});

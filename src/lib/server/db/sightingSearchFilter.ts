@@ -10,7 +10,8 @@
  * der Nutzer in der Tabelle gesehen hat.
  *
  * **Gesucht wird über fünf Felder** — Referenz-ID, E-Mail, Vor- und Nachname
- * und Fahrwasser. Das sind die Angaben, mit denen eine Rückfrage
+ * und Fahrwasser —, bei einer vollständigen Adresse zusätzlich über den
+ * Melder-Hash. Das sind die Angaben, mit denen eine Rückfrage
  * hereinkommt („Meine Meldung von gestern", eine weitergeleitete
  * Bestätigungsmail, ein Anruf). Bewusst **nicht** dabei: `bemerkungen` und
  * `kommentar_intern` — Freitextfelder, in denen jeder zweite Suchbegriff
@@ -27,8 +28,9 @@
  * `CREATE EXTENSION pg_trgm` plus je ein `gin_trgm_ops`-Index pro Spalte der
  * nächste Schritt.
  */
-import { ilike, or, type SQL } from 'drizzle-orm';
+import { eq, ilike, or, type SQL } from 'drizzle-orm';
 import { sightings } from '#lib/server/db/schema.ts';
+import { computeReporterHash, getReporterHashKey } from '#lib/server/privacy/reporterHash.ts';
 
 /** Spalten, über die gesucht wird — Reihenfolge bestimmt die `OR`-Kette. */
 const SUCHSPALTEN = [
@@ -78,5 +80,18 @@ export function searchCondition(q: string | null | undefined): SQL | undefined {
 	if (!begriff) return undefined;
 
 	const muster = `%${escapeLikePattern(begriff)}%`;
-	return or(...SUCHSPALTEN.map((spalte) => ilike(spalte, muster)));
+	const treffer = SUCHSPALTEN.map((spalte) => ilike(spalte, muster));
+
+	// Eine vollständige Adresse findet zusätzlich über den Melder-Hash — auch
+	// Meldungen, deren Kontaktdaten schon anonymisiert sind (Rückfragen,
+	// Auskunftsersuchen). Teilbegriffe nicht: Der Hash lässt sich nur zu einer
+	// ganzen Adresse bilden. Ohne Schlüssel bleibt es bei der ILIKE-Suche.
+	const schluessel = VOLLSTAENDIGE_ADRESSE.test(begriff) ? getReporterHashKey() : null;
+	const hash = schluessel ? computeReporterHash(begriff, schluessel) : null;
+	if (hash) treffer.push(eq(sightings.reporterHash, hash));
+
+	return or(...treffer);
 }
+
+/** Grob genug, um Teilbegriffe auszuschließen; mehr muss es nicht prüfen. */
+const VOLLSTAENDIGE_ADRESSE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

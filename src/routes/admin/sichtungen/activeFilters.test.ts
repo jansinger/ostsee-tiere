@@ -21,7 +21,8 @@ const LEER: FilterParams = {
 	mediaUpload: '',
 	balticSea: '',
 	deadFinding: '',
-	q: ''
+	q: '',
+	gleicherMelder: ''
 };
 
 /* Eine Typ-Zusicherung und kein Laufzeittest: Dass `verified` nur Statuswerte
@@ -49,7 +50,7 @@ describe('readFilterParams', () => {
 	   (`deadFindingFilter.ts`). Eine Fixture mit erfundenen Werten liest sich
 	   wie eine Zusicherung, dass die Tabelle danach filtert — sie tut es nicht,
 	   der Server verwirft sie stillschweigend. */
-	it('liest alle acht Parameter aus der URL', () => {
+	it('liest alle neun Parameter aus der URL', () => {
 		const params = new URLSearchParams({
 			fromDate: '2026-01-01',
 			toDate: '2026-01-31',
@@ -58,7 +59,8 @@ describe('readFilterParams', () => {
 			mediaUpload: MEDIA_UPLOAD_ANNOUNCED_MISSING,
 			balticSea: 'outside',
 			deadFinding: '1',
-			q: 'müller'
+			q: 'müller',
+			gleicherMelder: '42'
 		});
 
 		expect(readFilterParams(params)).toEqual({
@@ -69,7 +71,8 @@ describe('readFilterParams', () => {
 			mediaUpload: MEDIA_UPLOAD_ANNOUNCED_MISSING,
 			balticSea: 'outside',
 			deadFinding: '1',
-			q: 'müller'
+			q: 'müller',
+			gleicherMelder: '42'
 		});
 	});
 

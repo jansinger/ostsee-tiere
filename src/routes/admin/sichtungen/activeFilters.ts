@@ -36,6 +36,11 @@ export type FilterParams = {
 	balticSea: string;
 	deadFinding: string;
 	q: string;
+	/**
+	 * „Gleicher Melder wie Meldung X" — eine Meldungs-ID, nie der Hash selbst
+	 * (`#lib/server/db/sameReporterFilter.ts`).
+	 */
+	gleicherMelder: string;
 };
 
 export function readFilterParams(searchParams: ReadonlyURLSearchParams): FilterParams {
@@ -64,6 +69,7 @@ export function readFilterParams(searchParams: ReadonlyURLSearchParams): FilterP
 		mediaUpload: lies('mediaUpload'),
 		balticSea: lies('balticSea'),
 		deadFinding: lies('deadFinding'),
-		q: lies('q')
+		q: lies('q'),
+		gleicherMelder: lies('gleicherMelder')
 	};
 }

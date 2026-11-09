@@ -33,7 +33,6 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
 		const rows = await db
 			.select({
 				id: sightings.id,
-				email: sightings.email,
 				approvedAt: sightings.approvedAt,
 				rejectedAt: sightings.rejectedAt
 			})
@@ -51,7 +50,8 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
 		   Fehlschlag der Abfrage ist nichts ermittelt worden, und ein Nullaggregat
 		   behauptete das Gegenteil.
 		   `null` fasst dabei zwei Ursachen zusammen, die von hier aus nicht zu
-		   unterscheiden sind: keine E-Mail-Adresse hinterlegt, oder die Abfrage in
+		   unterscheiden sind: kein Melder-Hash (keine E-Mail-Adresse, oder vor dem
+		   Backfill), oder die Abfrage in
 		   `findReporterHistory` ist fail-open fehlgeschlagen. Beides zeigt die
 		   Detailansicht identisch (kein Badge) — das ist der Preis des Fail-open
 		   und bewusst so. Ein eigener Fehlertext existiert dort nur für den

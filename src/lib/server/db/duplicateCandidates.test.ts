@@ -69,12 +69,16 @@ describe('findDuplicateCandidates', () => {
 		expect(letzteAbfrage().params).toEqual(expect.arrayContaining([1, 2, 3, 4, 5]));
 	});
 
-	it('prüft E-Mail-Gleichheit auf dieselbe Kalenderstunde und ohne Groß-/Kleinschreibung', async () => {
+	it('prüft denselben Melder über den Melder-Hash auf dieselbe Kalenderstunde', async () => {
 		await findDuplicateCandidates([1]);
 
 		const { sql } = letzteAbfrage();
 		expect(sql).toContain("date_trunc('hour'");
-		expect(sql).toMatch(/lower\([^)]*email\)\s*=\s*lower\([^)]*email\)/i);
+		// Über den Hash, nicht über die Adresse: Er normalisiert wie zuvor
+		// `lower(email)` (plus Randweißraum) und bleibt nach der Anonymisierung.
+		expect(sql).toMatch(/k\.melder_hash\s*=\s*c\.melder_hash/i);
+		expect(sql).toMatch(/k\.melder_hash\s+IS\s+NOT\s+NULL/i);
+		expect(sql).not.toMatch(/lower\([^)]*email\)/i);
 	});
 
 	it('prüft die Position per ST_DWithin mit 1 km und 2 h Zeitfenster', async () => {

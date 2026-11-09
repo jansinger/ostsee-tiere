@@ -29,7 +29,8 @@ const LEER: FilterParams = {
 	mediaUpload: '',
 	balticSea: '',
 	deadFinding: '',
-	q: ''
+	q: '',
+	gleicherMelder: ''
 };
 
 /** Ein Filter gesetzt, alle anderen leer. */
@@ -169,5 +170,15 @@ describe('removeFilterParam', () => {
 		const mitSortierung = new URL('https://example.test/admin/sichtungen?q=delfin&sort=created');
 
 		expect(removeFilterParam(mitSortierung, 'q').searchParams.get('sort')).toBe('created');
+	});
+});
+
+describe('buildFilterChips — gleicher Melder', () => {
+	it('benennt den Filter über die Meldung, von der er ausging', () => {
+		// Der Hash verlässt den Server nie; der Chip nennt die Meldungs-ID.
+		const chips = buildFilterChips({ ...LEER, q: 'delfin', gleicherMelder: '42' });
+
+		expect(chips.map((chip) => chip.param)).toEqual(['q', 'gleicherMelder']);
+		expect(chips[1]?.label).toBe('Gleicher Melder wie Meldung #42');
 	});
 });

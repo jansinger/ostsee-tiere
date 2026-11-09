@@ -2,9 +2,10 @@ import { version } from '../../../package.json';
 import { createLogger } from '#lib/logger.server.ts';
 import { db } from '#lib/server/db/index.ts';
 import { approvedOnly } from '#lib/server/db/approvalFilter.ts';
+import { distinctReporterCount, hasReporter } from '#lib/server/db/reporterAggregates.ts';
 import { sightings } from '#lib/server/db/schema.ts';
 import { berlinDatePart } from '#lib/server/db/sqlTimeZone.ts';
-import { and, count, countDistinct, isNotNull, ne, sql } from 'drizzle-orm';
+import { and, count, isNotNull, sql } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 const logger = createLogger('about:page');
@@ -16,10 +17,13 @@ export const load: PageServerLoad = async () => {
 		// nachweislich dieselbe Grundmenge zählen.
 		const [totalResult] = await db.select({ count: count() }).from(sightings).where(approvedOnly());
 
+		// Melder über den Melder-Hash, nicht über die E-Mail: Nach der
+		// Anonymisierung der Kontaktdaten (3 Monate) bräche diese öffentliche Zahl
+		// sonst auf die letzten drei Monate ein. Siehe `reporterAggregates.ts`.
 		const [observersResult] = await db
-			.select({ count: countDistinct(sightings.email) })
+			.select({ count: distinctReporterCount })
 			.from(sightings)
-			.where(and(approvedOnly(), isNotNull(sightings.email), ne(sightings.email, '')));
+			.where(and(approvedOnly(), hasReporter()));
 
 		// Jahr der ältesten freigegebenen Sichtung. Stand bis 2026-07-30 als „2011"
 		// fest im Template — eine Zahl ohne Quelle, die zu keinem Datum passte: die

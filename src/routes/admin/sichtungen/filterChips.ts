@@ -76,7 +76,8 @@ const CHIP_ORDER = [
 	'entryChannel',
 	'mediaUpload',
 	'balticSea',
-	'q'
+	'q',
+	'gleicherMelder'
 ] as const satisfies readonly (keyof FilterParams)[];
 
 /**
@@ -114,7 +115,8 @@ const CHIP_LABEL: Record<keyof FilterParams, (value: string) => string> = {
 		`Aufnahme: ${isAufnahmeFilterWert(value) ? AUFNAHME_LABEL[value] : value}`,
 	balticSea: (value) =>
 		`Ostsee: ${isBalticSeaStatus(value) ? BALTIC_SEA_STATUS_PRESENTATION[value].label : value}`,
-	q: (value) => `Suche: „${value}“`
+	q: (value) => `Suche: „${value}“`,
+	gleicherMelder: (value) => `Gleicher Melder wie Meldung #${value}`
 };
 
 /** Ein Chip je gesetztem Filter, in der Reihenfolge des Panels. */

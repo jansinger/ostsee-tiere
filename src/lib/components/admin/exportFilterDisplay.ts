@@ -121,6 +121,10 @@ export function getActiveFiltersDisplay(
 	if (searchTerm) {
 		filterDisplays.push(`Suche: „${searchTerm}"`);
 	}
+	// Wortgleich mit dem Chip der Tabelle (`filterChips.ts`).
+	if (typeof currentFilters.gleicherMelder === 'string' && currentFilters.gleicherMelder) {
+		filterDisplays.push(`Gleicher Melder wie Meldung #${currentFilters.gleicherMelder}`);
+	}
 
 	return filterDisplays.length > 0 ? filterDisplays : ['Keine Filter aktiv'];
 }

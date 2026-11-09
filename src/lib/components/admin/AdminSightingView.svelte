@@ -432,16 +432,14 @@
 			: null
 	);
 
-	/* Der Link trifft eine andere Menge als das Badge zählt: Die Tabellensuche
-	   dahinter (`/admin/sichtungen?q=…`) arbeitet mit `ILIKE '%…%'` über mehrere
-	   Spalten, das Badge dagegen mit exakter, normalisierter Adressgleichheit
-	   (`normalizeReporterKey` in reporterHistory.ts). `a@b.de` listet dort z. B.
-	   auch `xa@b.de` mit. Kein Fehler, aber eine Ungenauigkeit — nicht mit einem
-	   Zählfehler des Badges verwechseln. */
+	/* Der Link trifft genau die Menge, die das Badge zählt: gleicher Melder-Hash
+	   wie diese Meldung (`sameReporterFilter.ts`, `reporterHistory.ts`). Bis
+	   2026-11 lief er über `?q=<email>` per `ILIKE '%…%'` — `a@b.de` fand dort
+	   auch `xa@b.de`, und nach der Anonymisierung der Kontaktdaten fände er
+	   nichts mehr. Verknüpft wird über die Meldungs-ID; der Hash verlässt den
+	   Server nie. Ohne Historie gibt es keinen Hash und damit nichts zu finden. */
 	const reporterSearchHref = $derived(
-		currentSighting.email
-			? `/admin/sichtungen?q=${encodeURIComponent(currentSighting.email.trim().toLowerCase())}`
-			: null
+		reporterHistory ? `/admin/sichtungen?gleicherMelder=${currentSighting.id}` : null
 	);
 
 	// Status — Freigabe/Ablehnung stehen seit Task 7 als eigene Leiste im

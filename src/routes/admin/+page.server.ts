@@ -90,7 +90,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		   mitgelesen werden, sonst zöge eine bereits entschiedene Sichtung ihre
 		   eigene Zeile aus dem falschen Topf ab. */
 		const reporterHistoryPromise = findReporterHistory(
-			open.map((s) => ({ id: s.id, email: s.email, approvedAt: null, rejectedAt: null }))
+			open.map((s) => ({ id: s.id, approvedAt: null, rejectedAt: null }))
 		);
 		const imageRows = ids.length
 			? await db

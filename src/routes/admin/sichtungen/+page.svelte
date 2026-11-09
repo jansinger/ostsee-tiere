@@ -435,6 +435,9 @@
 		url.searchParams.delete('balticSea');
 		url.searchParams.delete('deadFinding');
 		url.searchParams.delete('q');
+		// Kein Feld im Panel, aber ein Filter mit eigenem Chip (`filterChips.ts`):
+		// „Alle zurücksetzen" heißt auch dieser.
+		url.searchParams.delete('gleicherMelder');
 		url.searchParams.set('page', '1');
 		goto(url);
 	}

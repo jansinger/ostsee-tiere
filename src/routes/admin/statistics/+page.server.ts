@@ -7,6 +7,13 @@ import {
 	rejectedOnly
 } from '#lib/server/db/approvalFilter.ts';
 import { isBehaviorAnswered } from '#lib/server/db/optionalFields.ts';
+import {
+	distinctReporterCount,
+	hasReporter,
+	latestContactEmail,
+	notInternalReporter,
+	reporterKey
+} from '#lib/server/db/reporterAggregates.ts';
 import { sightings } from '#lib/server/db/schema.ts';
 import { hasMediaFiles } from '#lib/server/db/statisticsPredicates.ts';
 import { EARLIEST_PLAUSIBLE_SIGHTING_DATE } from '#lib/server/db/sightingRepository.ts';
@@ -315,23 +322,22 @@ export const load: PageServerLoad = async ({ url }) => {
 			.orderBy(sql`${berlinCalendarDate(sightings.created)} DESC`)
 			.limit(30);
 
-		// User engagement statistics - simple version
+		// Melder-Kennzahlen über den Melder-Hash statt über die E-Mail: Nach der
+		// Anonymisierung der Kontaktdaten (3 Monate) gibt es keine Adresse mehr,
+		// und `COUNT(DISTINCT email)` zählte `Erika@…` und `erika@…` doppelt.
+		// Bausteine und Begründung: `reporterAggregates.ts`.
 		const [userCount] = await db
-			.select({
-				uniqueUsers: sql<number>`COUNT(DISTINCT email)::integer`
-			})
+			.select({ uniqueUsers: distinctReporterCount })
 			.from(sightings)
-			.where(mitJahr(and(sql`email IS NOT NULL AND email != ''`, approvedOnly()) as SQL));
+			.where(mitJahr(and(hasReporter(), approvedOnly()) as SQL));
 
-		// Repeat users count - safe subquery approach
+		// Wiederholungs-Melder: nur gezählt, der Gruppierungsschlüssel wird nicht
+		// ausgegeben.
 		const repeatUsers = await db
-			.select({
-				email: sql<string>`email`,
-				count: sql<number>`COUNT(*)::integer`
-			})
+			.select({ count: sql<number>`COUNT(*)::integer` })
 			.from(sightings)
-			.where(mitJahr(and(sql`email IS NOT NULL AND email != ''`, approvedOnly()) as SQL))
-			.groupBy(sql`email`)
+			.where(mitJahr(and(hasReporter(), approvedOnly()) as SQL))
+			.groupBy(reporterKey)
 			.having(sql`COUNT(*) > 1`);
 
 		const userStats = {
@@ -361,10 +367,13 @@ export const load: PageServerLoad = async ({ url }) => {
 			}
 		];
 
-		// Top observers - admin view with email addresses
+		// Top-Beobachter, gruppiert über den Melder-Hash. Angezeigt wird die jüngste
+		// noch vorhandene Adresse der Person, `null` wenn alle ihre Meldungen
+		// anonymisiert sind. Das Museum fällt über `melder_intern` heraus statt über
+		// die Domain, die es nach der Anonymisierung nicht mehr gibt.
 		const topObservers = await db
 			.select({
-				email: sightings.email,
+				email: latestContactEmail,
 				sightingCount: sql<number>`COUNT(*)::integer`,
 				// Berlin-Kalendertag statt naivem UTC-Cast (M1) — sonst rutscht eine
 				// Sichtung um 00:30 Ortszeit auf den UTC-Vortag.
@@ -373,15 +382,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				avgGroupSize: sql<number>`AVG(${sightings.totalCount})::numeric`
 			})
 			.from(sightings)
-			.where(
-				mitJahr(
-					and(
-						sql`${sightings.email} IS NOT NULL AND ${sightings.email} != '' AND ${sightings.email} NOT LIKE '%@meeresmuseum.de'`,
-						approvedOnly()
-					) as SQL
-				)
-			)
-			.groupBy(sightings.email)
+			.where(mitJahr(and(hasReporter(), notInternalReporter(), approvedOnly()) as SQL))
+			.groupBy(reporterKey)
 			.having(sql`COUNT(*) > 1`)
 			.orderBy(sql`COUNT(*) DESC`)
 			.limit(10);

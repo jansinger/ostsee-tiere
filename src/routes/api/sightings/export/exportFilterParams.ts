@@ -6,6 +6,7 @@ import { mediaUploadCondition } from '#lib/server/db/mediaUploadFilter.ts';
 import { balticSeaCondition } from '#lib/server/db/balticSeaFilter.ts';
 import { deadFindingCondition } from '#lib/server/db/deadFindingFilter.ts';
 import { statusCondition } from '../../../admin/sichtungen/statusFilter';
+import { SAME_REPORTER_PARAM, sameReporterCondition } from '#lib/server/db/sameReporterFilter.ts';
 import { searchCondition } from '#lib/server/db/sightingSearchFilter.ts';
 
 export function xmlEscape(str: string | null | undefined): string {
@@ -27,6 +28,8 @@ export type ExportFilterParams = {
 	deadFinding: string | null;
 	balticSea: string | null;
 	q: string | null;
+	/** „Gleicher Melder wie Meldung X" — siehe `sameReporterFilter.ts`. */
+	gleicherMelder?: string | null;
 };
 
 type ValidationError = { field: 'fromDate' | 'toDate'; message: string };
@@ -41,6 +44,7 @@ export function parseExportFilterParams(url: URL): ParseExportFilterResult {
 	const deadFinding = url.searchParams.get('deadFinding');
 	const balticSea = url.searchParams.get('balticSea');
 	const q = url.searchParams.get('q');
+	const gleicherMelder = url.searchParams.get(SAME_REPORTER_PARAM);
 
 	if (fromDate && !isValidDateParam(fromDate)) {
 		return {
@@ -54,7 +58,17 @@ export function parseExportFilterParams(url: URL): ParseExportFilterResult {
 	}
 
 	return {
-		params: { fromDate, toDate, verified, entryChannel, mediaUpload, deadFinding, balticSea, q }
+		params: {
+			fromDate,
+			toDate,
+			verified,
+			entryChannel,
+			mediaUpload,
+			deadFinding,
+			balticSea,
+			q,
+			gleicherMelder
+		}
 	};
 }
 
@@ -112,6 +126,11 @@ export function buildExportConditions(params: ExportFilterParams) {
 	const searchFilterCondition = searchCondition(q);
 	if (searchFilterCondition) {
 		conditions.push(searchFilterCondition);
+	}
+	// Dieselbe Melder-Bedingung wie die Admin-Liste, siehe sameReporterFilter.ts.
+	const sameReporterFilterCondition = sameReporterCondition(params.gleicherMelder);
+	if (sameReporterFilterCondition) {
+		conditions.push(sameReporterFilterCondition);
 	}
 
 	return conditions;
