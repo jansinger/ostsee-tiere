@@ -123,6 +123,8 @@ Nachteil: Ändert sich das Skript, muss das Museum den Block neu kopieren. Bishe
 
 **Höhe:** Das Formular meldet seine Höhe per `postMessage`, das Skript setzt sie am iframe. Der iframe ist damit auf jedem Schritt so hoch wie sein Inhalt. Vorher stand er fest auf 3350px; auf der Einstiegsseite (rund 440px Inhalt) blieben so etwa 2.900px Leerraum stehen.
 
+Die erste Meldung geht direkt beim Start des Formulars raus und wartet nicht auf einen `ResizeObserver`: Chromium rendert einen fremden iframe außerhalb des Sichtfelds gar nicht, der Observer feuert dort nie. Liegt der iframe unterhalb des sichtbaren Bereichs, blieb er bis 2026-11 auf 3350px stehen, bis jemand hineinscrollte (auf der Museumsseite gemessen: iframe-Oberkante bei 1159px, danach 453px). Spätere Höhenänderungen laufen weiter über den Observer und greifen deshalb erst, wenn der iframe im Sichtfeld liegt.
+
 **Scrollen:** Beim Wechsel zum nächsten Formularschritt springt die Museumsseite zum Kopf des neuen Schritts. Ohne das bliebe man unten beim „Weiter"-Knopf stehen, mitten im neuen Schritt — sobald der iframe so hoch ist wie sein Inhalt, scrollt nicht mehr das Formular, sondern die Museumsseite.
 
 **Ohne Skript** bleibt alles wie bisher: `height:3350px` im Einbettungscode ist die Starthöhe bis zur ersten Meldung und zugleich der Rückfall, falls das Skript nicht lädt. Deshalb bleibt der Wert stehen.

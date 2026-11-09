@@ -47,6 +47,8 @@ interface EmbedOptions {
 	inline?: boolean;
 	/** `data-scroll-offset` am `<script>` (fest stehende Kopfleiste der Elternseite). */
 	scrollOffset?: number;
+	/** Höhe des Inhalts über dem iframe in px. Größer als der Viewport: iframe startet außer Sicht. */
+	contentAboveHeight?: number;
 }
 
 function embedScript(baseURL: string, { inline, scrollOffset }: EmbedOptions): string {
@@ -72,7 +74,7 @@ async function openEmbedded(
 	parentHtml = `<!doctype html>
 <html lang="de"><head><meta charset="utf-8"><title>Elternseite</title></head>
 <body style="margin:0">
-	<div style="height:600px">Inhalt der Museumsseite davor</div>
+	<div style="height:${options.contentAboveHeight ?? 600}px">Inhalt der Museumsseite davor</div>
 	<iframe id="app" src="${new URL(options.path ?? '/', baseURL).href}" title="Sichtung melden"
 		style="display:block; width:100%; min-width:320px; height:${START_HEIGHT}px; border:0;"></iframe>
 	${embedScript(baseURL, options)}
@@ -128,6 +130,37 @@ test.describe('iframe-Einbettung', () => {
 		await expect(page.frameLocator('#app').getByTestId('report-kind-choice')).toBeVisible();
 
 		await expect.poll(() => iframeHeight(page)).toBeLessThan(1500);
+	});
+
+	/**
+	 * Anlass (Stand 2026-11-09, Museumsseite, Chromium, 1200×800): iframe-Oberkante
+	 * bei 1159px, also außer Sicht. Er blieb 6 s auf der Starthöhe 3350px und sprang
+	 * erst nach dem Hineinscrollen auf 453px. Vermutung: Chromium drosselt das
+	 * Rendering fremder iframes außerhalb des Sichtfelds, der `ResizeObserver` feuert
+	 * dort nicht.
+	 *
+	 * Nichts in diesem Test darf ins Sichtfeld scrollen — kein `click`, kein
+	 * `scrollIntoViewIfNeeded`; das würde genau den Zustand beenden, um den es geht.
+	 * `toBeVisible` im Frame scrollt nicht.
+	 */
+	test('der iframe außerhalb des Sichtfelds nimmt die Höhe an, ohne dass gescrollt wird', async ({
+		page,
+		baseURL
+	}) => {
+		await page.setViewportSize({ width: 1200, height: 800 });
+		await openEmbedded(page, baseURL!, { contentAboveHeight: 3000 });
+		await expect(page.frameLocator('#app').getByTestId('report-kind-choice')).toBeVisible();
+
+		// Großzügiger als der Default: Rot soll heißen „keine Meldung", nicht „Vite war kalt".
+		await expect.poll(() => iframeHeight(page), { timeout: 15_000 }).toBeLessThan(1500);
+
+		const { scrollY, frameTop, viewportHeight } = await page.locator('#app').evaluate((el) => ({
+			scrollY: window.scrollY,
+			frameTop: el.getBoundingClientRect().top,
+			viewportHeight: window.innerHeight
+		}));
+		expect(scrollY).toBe(0);
+		expect(frameTop).toBeGreaterThan(viewportHeight);
 	});
 
 	/**

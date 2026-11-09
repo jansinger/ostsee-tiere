@@ -1,6 +1,63 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { FormPage } from './pages/FormPage';
 import { fillStep1, fillStep4, waitForNextEnabled } from './helpers/form-helpers';
+
+const HELP_TITLE = 'Hilfe & Tipps für eine wertvolle Meldung';
+
+/**
+ * Der Hilfeblock gehört auf die Einstiegsseite und ins Formular, und zwar als
+ * EINE Instanz in `+page.svelte`: Nur dann überlebt sein Auf-/Zu-Zustand den
+ * Wechsel zwischen beiden. Die Erfolgsseite trägt ihn nicht (geprüft unten im
+ * Absende-Test von B2/B3).
+ */
+test.describe('Hilfeblock auf Einstiegsseite und im Formular', () => {
+	const helpDetails = (page: Page): Locator =>
+		page.locator('details').filter({ has: page.locator('summary', { hasText: HELP_TITLE }) });
+
+	test('steht auf der Einstiegsseite unter beiden Karten und ist zugeklappt', async ({ page }) => {
+		await page.goto('/');
+
+		const help = page.getByText(HELP_TITLE);
+		await expect(help).toBeVisible();
+
+		const helpBox = await help.boundingBox();
+		for (const testId of ['report-kind-option-lebend', 'report-kind-option-totfund']) {
+			const card = await page.getByTestId(testId).boundingBox();
+			expect(card, `Karte ${testId} hat keine Box`).not.toBeNull();
+			expect(helpBox!.y, `Hilfeblock steht nicht unter ${testId}`).toBeGreaterThanOrEqual(
+				card!.y + card!.height
+			);
+		}
+
+		await expect(helpDetails(page)).toHaveJSProperty('open', false);
+	});
+
+	test('bleibt beim Wechsel von der Einstiegsseite ins Formular aufgeklappt', async ({ page }) => {
+		await page.goto('/');
+		// Vor dem Klick hydratisiert sein — sonst navigiert die Karte nativ über den
+		// `href`, das Dokument wäre neu und der Zustand schon deshalb weg.
+		await page.waitForLoadState('networkidle');
+
+		await page.locator('summary', { hasText: HELP_TITLE }).click();
+		await expect(helpDetails(page)).toHaveJSProperty('open', true);
+
+		await page.getByTestId('report-kind-option-lebend').click();
+		await expect(
+			page.getByRole('heading', { name: 'Position & Zeitpunkt', exact: true })
+		).toBeVisible();
+
+		await expect(helpDetails(page)).toHaveJSProperty('open', true);
+	});
+
+	test('kommt im Formular genau einmal vor', async ({ page }) => {
+		await page.goto('/?meldung=lebend');
+		await expect(
+			page.getByRole('heading', { name: 'Position & Zeitpunkt', exact: true })
+		).toBeVisible();
+
+		await expect(page.getByText(HELP_TITLE)).toHaveCount(1);
+	});
+});
 
 test.describe('Einstiegsseite des Meldeformulars', () => {
 	/**
@@ -344,6 +401,9 @@ test.describe('Nach dem Absenden verlässt der Zweig den Speicher, und „Weiter
 		await expect(page.getByRole('heading', { name: /Vielen Dank/i })).toBeVisible({
 			timeout: 10000
 		});
+
+		// Der Hilfeblock begleitet das Ausfüllen; die Erfolgsseite trägt ihn nicht.
+		await expect(page.getByText(HELP_TITLE)).toHaveCount(0);
 
 		// B3: Der gemerkte Zweig ist mit den Formulardaten aus dem Storage
 		// verschwunden — nicht erst, wenn „Weitere Meldung" geklickt wird.

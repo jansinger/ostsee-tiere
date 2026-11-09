@@ -55,6 +55,46 @@ describe('startHeightReporting', () => {
 		expect(message.height).toBeGreaterThanOrEqual(420);
 	});
 
+	/**
+	 * Anlass (2026-11-09, Museumsseite, Chromium, 1200×800): Der iframe lag bei
+	 * 1159px außerhalb des Sichtfelds und blieb 6 s auf der Starthöhe 3350px; erst
+	 * nach dem Hineinscrollen sprang er auf 453px. Die erste Meldung hing allein am
+	 * `ResizeObserver` — vermutlich drosselt Chromium das Rendering fremder iframes
+	 * außerhalb des Sichtfelds, und der Observer feuert dort nicht. Deshalb bewusst
+	 * ohne `await`: Die Meldung darf nicht auf einen Rendering-Durchlauf warten.
+	 */
+	it('meldet die Höhe synchron beim Start, ohne auf den ResizeObserver zu warten', () => {
+		const win = fakeWindow(true);
+		cleanups.push(startHeightReporting(box(420), win));
+
+		expect(win.parent.postMessage).toHaveBeenCalledTimes(1);
+		const [message, targetOrigin] = win.parent.postMessage.mock.calls[0]!;
+		expect(message).toEqual({ type: EMBED_HEIGHT_MESSAGE, height: expect.any(Number) });
+		expect(message.height).toBeGreaterThanOrEqual(420);
+		expect(targetOrigin).toBe('*');
+	});
+
+	it('der erste ResizeObserver-Lauf wiederholt die Startmeldung nicht', async () => {
+		const win = fakeWindow(true);
+		const el = box(300);
+		cleanups.push(startHeightReporting(el, win));
+
+		// Observer laufen in der Reihenfolge ihrer Erzeugung: Feuert dieser hier,
+		// ist der von `startHeightReporting` im selben Durchlauf schon gelaufen.
+		// `setTimeout` verlässt diesen Durchlauf: Liefe der Rest des Laufs in seinen
+		// Mikrotasks weiter, beobachtete schon der nächste Test mitten darin ein
+		// neues Element („ResizeObserver loop completed…").
+		await new Promise<void>((resolve) => {
+			const observer = new ResizeObserver(() => {
+				observer.disconnect();
+				setTimeout(resolve);
+			});
+			observer.observe(el);
+		});
+
+		expect(win.parent.postMessage).toHaveBeenCalledTimes(1);
+	});
+
 	it('meldet eine neue Höhe, wenn das Element wächst oder schrumpft', async () => {
 		const win = fakeWindow(true);
 		const el = box(300);
