@@ -27,7 +27,7 @@ const logger = createLogger('spam:rescore');
  * mehr zu prüfen: Über sie ist längst entschieden oder die Frist abgelaufen.
  * Ohne die Ausnahme blieben solche Zeilen für immer in `remaining` stehen.
  */
-function unscoredRows(): SQL {
+export function unscoredRows(): SQL {
 	return and(isNull(sightings.spamScore), isNull(sightings.anonymizedAt)) as SQL;
 }
 

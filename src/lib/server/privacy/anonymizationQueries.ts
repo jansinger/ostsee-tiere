@@ -34,6 +34,19 @@ export function dueForAnonymization(): SQL {
 }
 
 /**
+ * Über der Frist: Eingang vor mehr als 3 Monaten, noch nicht anonymisiert.
+ *
+ * Ohne den Tag Puffer aus `dueForAnonymization` — der Job leert einen Tag vor
+ * der Frist, die Überwachung schlägt an, wenn die Frist selbst verletzt ist.
+ */
+export function overdueForAnonymization(): SQL {
+	return and(
+		isNull(sightings.anonymizedAt),
+		sql`${sightings.created} + ${RETENTION} <= (NOW() AT TIME ZONE 'UTC')`
+	) as SQL;
+}
+
+/**
  * Eingang der jüngsten fälligen Meldung, dekodiert wie die Spalte selbst.
  *
  * Ein rohes `sql<Date>` bekäme vom Treiber den Text ohne Zonenangabe, und

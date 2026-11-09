@@ -8,7 +8,11 @@
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { describe, expect, it } from 'vitest';
 import { groupByConsents } from './anonymizationPatch';
-import { dueForAnonymization, newestCreated } from './anonymizationQueries';
+import {
+	dueForAnonymization,
+	newestCreated,
+	overdueForAnonymization
+} from './anonymizationQueries';
 
 const text = (): string => new PgDialect().sqlToQuery(dueForAnonymization()).sql;
 
@@ -70,5 +74,22 @@ describe('newestCreated', () => {
 
 		expect(decoded).toEqual(new Date('2026-08-08T12:00:00Z'));
 		expect(new PgDialect().sqlToQuery(expression).sql).toBe('MAX("sichtungen"."created")');
+	});
+});
+
+describe('overdueForAnonymization', () => {
+	// Über der Frist heißt: die 3 Monate sind um — ohne den Tag Puffer, den der
+	// Job sich gönnt. Genau das zeigt die Überwachung rot.
+	const sql = (): string => new PgDialect().sqlToQuery(overdueForAnonymization()).sql;
+
+	it('rechnet 3 Monate ab Eingang, ohne Puffer, in UTC', () => {
+		expect(sql()).toContain(
+			`"sichtungen"."created" + INTERVAL '3 months' <= (NOW() AT TIME ZONE 'UTC')`
+		);
+		expect(sql()).not.toContain("INTERVAL '1 day'");
+	});
+
+	it('zählt nur noch nicht anonymisierte Meldungen', () => {
+		expect(sql()).toContain('"sichtungen"."anonymisiert_am" is null');
 	});
 });

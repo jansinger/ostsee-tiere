@@ -1,4 +1,5 @@
 import { isSuperAdminUser, requireUserRole } from '#lib/server/auth/auth.ts';
+import { loadAnonymizationBanner } from '#lib/server/privacy/anonymizationStatus.ts';
 import { getBuildInfo } from '#lib/server/startup/versionInfo.ts';
 import type { PublicUser } from '#lib/types/User.ts';
 import type { LayoutServerLoad } from './$types';
@@ -27,6 +28,10 @@ export const load = (async ({ locals, url }) => {
 		// Frontend bekommt weiterhin keine Rollen (siehe oben). Dieselbe Form
 		// wie in admin/settings/+page.server.ts.
 		isSuperAdmin: isSuperAdminUser(locals.user),
-		buildInfo: getBuildInfo()
+		buildInfo: getBuildInfo(),
+		// Hinweisleiste der Anonymisierung (rot bei Meldungen über der Frist oder
+		// einem letzten Lauf vor mehr als 48 Stunden). Nur Ampel und Anzahl;
+		// `null`, wenn der Status nicht ermittelbar ist.
+		anonymization: await loadAnonymizationBanner()
 	};
 }) satisfies LayoutServerLoad;

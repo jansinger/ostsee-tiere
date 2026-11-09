@@ -6,6 +6,7 @@ import {
 	initializeDefaultConfigurations
 } from '#lib/server/services/configInitializer.ts';
 import { isSuperAdminUser, requireUserRole } from '#lib/server/auth/auth.ts';
+import { getAnonymizationStatus } from '#lib/server/privacy/anonymizationStatus.ts';
 import type { PageServerLoad } from './$types';
 
 const logger = createLogger('admin:settings:page');
@@ -13,6 +14,17 @@ const logger = createLogger('admin:settings:page');
 export const load: PageServerLoad = async ({ locals, url }) => {
 	// Layout guard allows ['admin', 'superadmin']; settings requires at least one of these
 	requireUserRole(url, locals.user, ['admin', 'superadmin']);
+
+	// Status der Anonymisierung fürs Panel. Unabhängig von den Einstellungen
+	// unten: Fällt er aus, zeigt das Panel „nicht ermittelbar", die übrige
+	// Seite bleibt bedienbar.
+	const anonymization = await getAnonymizationStatus().catch((error: unknown) => {
+		logger.error(
+			{ errorName: error instanceof Error ? error.name : typeof error },
+			'Anonymisierungs-Status nicht ermittelbar'
+		);
+		return null;
+	});
 
 	try {
 		// Ensure default configurations are initialized
@@ -53,7 +65,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		return {
 			groupedConfigs: mergedConfigs,
 			hasUnsavedChanges: false,
-			isSuperAdmin: isSuperAdminUser(locals.user)
+			isSuperAdmin: isSuperAdminUser(locals.user),
+			anonymization
 		};
 	} catch (error) {
 		logger.error(
@@ -86,6 +99,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			groupedConfigs: fallbackConfigs,
 			hasUnsavedChanges: false,
 			isSuperAdmin: isSuperAdminUser(locals.user),
+			anonymization,
 			error:
 				'Datenbankfehler: Einstellungen werden als Standard-Werte angezeigt. Bitte prüfen Sie die Datenbankverbindung.'
 		};
