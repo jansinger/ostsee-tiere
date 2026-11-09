@@ -78,7 +78,11 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
 			'Spam-Check für Sichtung durchgeführt'
 		);
 
-		return json({ stored, recomputed } satisfies SpamCheckResponse, {
+		// Anonymisiert fehlen Name und E-Mail — die Neuberechnung fällt dann zu
+		// mild aus. Die Oberfläche bekommt das als Kennzeichen mit.
+		const anonymized = sighting.anonymizedAt != null;
+
+		return json({ stored, recomputed, anonymized } satisfies SpamCheckResponse, {
 			headers: { 'Cache-Control': 'no-store' }
 		});
 	} catch (err) {

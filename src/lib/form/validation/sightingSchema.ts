@@ -1379,7 +1379,20 @@ function buildAdminSightingSchema(locale: Locale) {
 	const base = getSightingSchema(locale);
 	const sightingFromTextBase = base.fields.sightingFromText as yup.StringSchema;
 
+	// Nach der Anonymisierung fehlen E-Mail und, ohne Namens-Einwilligung, der
+	// Name (docs/ANONYMISIERUNG_KONZEPT.md, 5.2). Ob die Zeile anonymisiert ist,
+	// weiß nur der Server; `PUT /api/sightings/[id]` reicht es als Kontext
+	// `anonymized` herein. Ohne Kontext bleibt alles Pflicht wie bisher.
+	const optionalWhenAnonymized = (field: yup.StringSchema): yup.StringSchema =>
+		field.when('$anonymized', {
+			is: true,
+			then: (schema) => schema.notRequired()
+		});
+
 	return base.shape({
+		firstName: optionalWhenAnonymized(base.fields.firstName as yup.StringSchema),
+		lastName: optionalWhenAnonymized(base.fields.lastName as yup.StringSchema),
+		email: optionalWhenAnonymized(base.fields.email as yup.StringSchema),
 		totalCount: (base.fields.totalCount as yup.NumberSchema)
 			.min(0, m.sighting_totalcount_min_2({}, { locale }))
 			.max(9999, m.sighting_totalcount_max_2({}, { locale })),

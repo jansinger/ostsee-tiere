@@ -85,6 +85,11 @@ export interface SpamCheckResponse {
 	stored: SpamStoredFinding | null;
 	/** Frischer Lauf über den aktuellen Datensatz, ohne Meldezeitpunkt-Signale. */
 	recomputed: SpamCheckResult;
+	/**
+	 * Die Meldung ist anonymisiert: Die Neuberechnung lief ohne Name und
+	 * E-Mail und fällt deshalb zu mild aus. `stored` ist davon nicht betroffen.
+	 */
+	anonymized: boolean;
 }
 
 /**

@@ -192,7 +192,15 @@ paths:
       tags:
         - sightings
       summary: Sichtung aktualisieren
-      description: Aktualisiert eine bestehende Sichtung (Admin-Berechtigung erforderlich)
+      description: >
+        Aktualisiert eine bestehende Sichtung (Admin-Berechtigung erforderlich).
+
+
+        Ist die Sichtung anonymisiert, sind Vor-, Nachname und E-Mail keine
+        Pflicht mehr. Felder, die die Anonymisierung geleert hat (Kontaktdaten;
+        Name ohne Namens-, Schiffsname und Heimathafen ohne
+        Schiffsnamen-Einwilligung), lassen sich nicht wieder füllen — die
+        Anfrage wird dann mit 422 abgewiesen.
       security:
         - adminAuth: []
       parameters:
@@ -225,6 +233,15 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '422':
+          description: >-
+            Die Sichtung ist anonymisiert, und die Anfrage würde ein geleertes
+            Feld wieder füllen. `code` ist `ANONYMIZED_FIELDS`, `errors` nennt
+            die Felder.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -3002,8 +3019,14 @@ components:
           example: REF-501
     SpamCheckResponse:
       type: object
-      required: [stored, recomputed]
+      required: [stored, recomputed, anonymized]
       properties:
+        anonymized:
+          type: boolean
+          description: >-
+            Die Sichtung ist anonymisiert. Die Neuberechnung lief dann ohne
+            Name und E-Mail und fällt systematisch zu mild aus; `stored` ist
+            davon nicht betroffen.
         stored:
           nullable: true
           description: >-

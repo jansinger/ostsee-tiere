@@ -78,7 +78,11 @@ describe('getSpamDrift', () => {
 		stored: { score: number; indicators: string[] } | null,
 		recomputed: Partial<SpamCheckResult>
 	): SpamCheckResponse {
-		return { stored, recomputed: { score: 0, isHighRisk: false, indicators: [], ...recomputed } };
+		return {
+			stored,
+			recomputed: { score: 0, isHighRisk: false, indicators: [], ...recomputed },
+			anonymized: false
+		};
 	}
 
 	it('meldet keine Abweichung, wenn beide Läufe denselben Score ergeben', () => {

@@ -16,10 +16,20 @@
 import { createLogger } from '#lib/logger.server.ts';
 import { db } from '#lib/server/db/index.ts';
 import { sightings } from '#lib/server/db/schema.ts';
-import { count, eq, isNull } from 'drizzle-orm';
+import { and, count, eq, isNull, type SQL } from 'drizzle-orm';
 import { detectSpamIndicators } from './spamDetector';
 
 const logger = createLogger('spam:rescore');
+
+/**
+ * Unbewertet und nicht anonymisiert. Einer anonymisierten Meldung fehlen Name
+ * und E-Mail — ihr Score fiele systematisch zu mild aus, und es gibt nichts
+ * mehr zu prüfen: Über sie ist längst entschieden oder die Frist abgelaufen.
+ * Ohne die Ausnahme blieben solche Zeilen für immer in `remaining` stehen.
+ */
+function unscoredRows(): SQL {
+	return and(isNull(sightings.spamScore), isNull(sightings.anonymizedAt)) as SQL;
+}
 
 /** Obergrenze je Lauf. Hält die Antwortzeit im Rahmen (MX-Lookups!). */
 export const MAX_RESCORE_BATCH = 1000;
@@ -80,7 +90,7 @@ export async function rescoreSightings(options: RescoreOptions): Promise<Rescore
 			inBalticSeaGeo: sightings.inBalticSeaGeo
 		})
 		.from(sightings)
-		.where(isNull(sightings.spamScore))
+		.where(unscoredRows())
 		.orderBy(sightings.id)
 		.limit(limit);
 
@@ -123,7 +133,7 @@ export async function rescoreSightings(options: RescoreOptions): Promise<Rescore
 	const [remainingRow] = await db
 		.select({ count: count() })
 		.from(sightings)
-		.where(isNull(sightings.spamScore));
+		.where(unscoredRows());
 	const remaining = Number(remainingRow?.count ?? 0);
 
 	// Zwei Abbruchgründe, und beide werden gebraucht:
