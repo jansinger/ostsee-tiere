@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.27.0](https://github.com/jansinger/ostsee-tiere/compare/v2.26.0...v2.27.0) (2026-11-09)
+
+
+### Features
+
+* **security:** anonymize reporter data 3 months after receipt ([#1011](https://github.com/jansinger/ostsee-tiere/issues/1011)) ([2946e8f](https://github.com/jansinger/ostsee-tiere/commit/2946e8f594df72076d87c932e91c478f54e26794))
+
 ## [2.26.0](https://github.com/jansinger/ostsee-tiere/compare/v2.25.0...v2.26.0) (2026-11-09)
 
 
