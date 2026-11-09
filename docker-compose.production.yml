@@ -92,6 +92,9 @@ services:
       # Bearer-Token für POST /api/admin/cleanup-orphans (externer Web-Cron).
       # Ohne Wert bleibt der Endpunkt nur über eine Admin-Session erreichbar.
       CLEANUP_TOKEN: ${CLEANUP_TOKEN:-}
+      # Schlüssel für den Melder-Hash (docs/ENVIRONMENT.md). Nie rotieren.
+      # Ohne Wert: Meldungen ohne Hash, Backfill und Anonymisierung verweigern.
+      REPORTER_HASH_KEY: ${REPORTER_HASH_KEY:-}
 
       # Auth0 Configuration
       AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID}

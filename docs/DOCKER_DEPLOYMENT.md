@@ -102,6 +102,10 @@ ENCRYPTION_KEY=REPLACE_WITH_GENERATED_VALUE
 # shown to reporters is never kept. See PRODUCTION_DEPLOYMENT.md.
 CLEANUP_TOKEN=REPLACE_WITH_GENERATED_VALUE
 
+# Key for the reporter hash (links reports of one person after anonymization).
+# openssl rand -base64 48 — never rotate, back up separately. See ENVIRONMENT.md.
+REPORTER_HASH_KEY=REPLACE_WITH_GENERATED_VALUE
+
 # Auth0 - get these from your Auth0 dashboard
 AUTH0_CLIENT_ID=your-auth0-client-id
 AUTH0_CLIENT_SECRET=your-auth0-client-secret
@@ -494,6 +498,8 @@ HOST_HEADER=x-forwarded-host
 ENCRYPTION_KEY=your-generated-64-char-hex-key-here
 # openssl rand -hex 32 — required for the orphaned-upload cleanup cron
 CLEANUP_TOKEN=your-generated-cleanup-token-here
+# openssl rand -base64 48 — reporter hash key, never rotate (see ENVIRONMENT.md)
+REPORTER_HASH_KEY=your-generated-reporter-hash-key-here
 
 # Auth0
 AUTH0_CLIENT_ID=your-auth0-client-id

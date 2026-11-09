@@ -26,6 +26,7 @@ export const variables = defineEnvVars({
 	PUBLIC_SITE_URL: { public: true, schema: asIs },
 	API_AUDIENCE: { schema: asIs },
 	CLEANUP_TOKEN: { schema: asIs },
+	REPORTER_HASH_KEY: { schema: asIs },
 	STORAGE_PROVIDER: { schema: asIs },
 	VERCEL: { schema: asIs },
 	UPLOAD_PATH: { schema: asIs },
