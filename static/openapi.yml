@@ -1495,8 +1495,10 @@ paths:
       description: >
         Findet alle Sichtungen einer Person über die genannte E-Mail-Adresse —
         über den Melder-Hash, also auch bereits anonymisierte — und
-        anonymisiert sie sofort nach derselben Feld-Matrix wie der tägliche
-        Lauf. Zusätzlich wird der Melder-Hash geleert: Die Sichtungen bleiben,
+        anonymisiert sie sofort. Anders als der tägliche Lauf leert das
+        Löschersuchen Name, Schiffsname und Heimathafen auch bei Einwilligung —
+        wer die Löschung verlangt, zieht sie damit zurück. Zusätzlich wird der
+        Melder-Hash geleert: Die Sichtungen bleiben,
         die Verknüpfung zur Person ist weg. Bereits anonymisierte Sichtungen
         behalten ihr ursprüngliches `anonymisiert_am`.
 

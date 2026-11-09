@@ -88,6 +88,21 @@ const mockSighting = {
 	entryChannel: 0
 };
 
+/** Nach der Anonymisierung: Kontaktdaten NULL, `anonymizedAt` gesetzt. */
+const anonymizedSighting = {
+	...mockSighting,
+	email: null,
+	lastName: null,
+	firstName: null,
+	phone: null,
+	city: null,
+	shipName: null,
+	homePort: null,
+	reporterHash: 'a'.repeat(64),
+	reporterInternal: false,
+	anonymizedAt: new Date('2024-09-15T03:15:00Z')
+};
+
 async function mockDbWithSighting(sighting: object) {
 	const { db } = vi.mocked(await import('#lib/server/db/index.ts'));
 	(db.select as any).mockReturnValueOnce({
@@ -153,6 +168,42 @@ describe('Contract: GET /api/sightings/export/json', () => {
 		expect(apiRes).toSatisfyApiSpec();
 		expect((apiRes.body as any).sichtungen).toHaveLength(1);
 		expect((apiRes.body as any).metadata.recordCount).toBe(1);
+	});
+});
+
+describe('Contract: Exporte mit anonymisierten Meldungen', () => {
+	// docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4: Exporte müssen NULL in den
+	// Kontaktfeldern vertragen, und der Hash darf nie in einer Datei landen.
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('JSON bleibt spec-konform und enthält den Hash nicht', async () => {
+		await mockDbWithSighting(anonymizedSighting);
+		const event = createEvent('/api/sightings/export/json', { locals: { user: mockAdminUser } });
+		const res = await jsonGET(event);
+		const apiRes = await asApiResponse(res, event);
+
+		expect(apiRes.status).toBe(200);
+		expect(apiRes).toSatisfyApiSpec();
+		expect(JSON.stringify(apiRes.body)).not.toContain('a'.repeat(64));
+	});
+
+	it.each([
+		['csv', () => csvGET],
+		['xml', () => xmlGET],
+		['kml', () => kmlGET]
+	])('%s liefert die Zeile ohne Fehler und ohne Hash', async (format, handler) => {
+		await mockDbWithSighting(anonymizedSighting);
+		const event = createEvent(`/api/sightings/export/${format}`, {
+			locals: { user: mockAdminUser }
+		});
+		const res = await handler()(event);
+		const body = await res.text();
+
+		expect(res.status).toBe(200);
+		expect(body).not.toContain('a'.repeat(64));
+		expect(body).not.toMatch(/\bnull\b|undefined/);
 	});
 });
 

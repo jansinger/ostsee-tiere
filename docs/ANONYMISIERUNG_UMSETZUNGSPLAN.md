@@ -311,15 +311,20 @@ Top 10, `/about`). Erwartet: Die neue Zahl entspricht der alten Zählung über
   anonymisierte Zeile, an der das auffiele.
 - **Löschersuchen** als `POST /api/admin/reporter-erasure` (nur Superadmin,
   nur Session, Vorschau als Standard). Gefunden wird über den Hash und über
-  die noch vorhandene Adresse (Altsystem-Zeilen vor dem Backfill). Die
-  Feld-Matrix gilt wie im täglichen Lauf; bereits anonymisierte Zeilen
-  behalten ihr Datum. Ein anschließender Job-Lauf stellt den Hash nicht wieder
+  die noch vorhandene Adresse (Altsystem-Zeilen vor dem Backfill). Anders als
+  im täglichen Lauf werden Name und Schiff auch bei Einwilligung geleert
+  (Entscheidung 2026-11-09); bereits anonymisierte Zeilen behalten ihr Datum. Ein anschließender Job-Lauf stellt den Hash nicht wieder
   her (gegen PostgreSQL geprüft). Eine Oberfläche dafür ist nicht Teil von
   PR 5 und wäre bei Bedarf nachzuziehen.
 - **Fehler-Logging.** Ein `DrizzleQueryError` trägt die Parameter der
   Anweisung in seiner Meldung, beim Backfill also E-Mail-Adressen. Die
   Endpunkte `anonymize`, `reporter-hash` und `reporter-erasure` loggen deshalb
   nur Fehlertyp und SQLSTATE (`describeDbError.ts`).
+- **Contract-Tests** um anonymisierte Fälle ergänzt: `GET /api/sightings/{id}`,
+  alle vier Exportformate (spec-konform, kein Hash in der Datei) und
+  `showreports.json`. Dort fehlen `na`/`sh` ohne Einwilligung wie bisher — es
+  entstehen weder `null` noch neue Leerstrings; der Legacy-Vertrag bleibt
+  unverändert.
 - **Rate-Limit** wie `cleanup-orphans`: 30 Aufrufe je Stunde. Der erste Lauf
   braucht bei ~20.000 Meldungen mit `limit=2000` etwa zehn Aufrufe.
 

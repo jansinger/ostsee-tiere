@@ -146,16 +146,29 @@ describe('eraseReporter', () => {
 		);
 	});
 
-	it('wendet die Feld-Matrix je Einwilligungslage an', async () => {
+	it('leert Name und Schiff auch bei Einwilligung', async () => {
+		// Wer die Löschung verlangt, zieht damit auch die Einwilligung zur
+		// Namensnennung zurück (Entscheidung 2026-11-09). Nur beim Löschersuchen —
+		// der tägliche Lauf behält Name und Schiff bei Einwilligung.
 		selectRows.mockReturnValue([
 			{ id: 1, nameConsent: 0, shipNameConsent: 0 },
 			{ id: 2, nameConsent: 1, shipNameConsent: 1 }
 		]);
 
-		await eraseReporter({ email: 'a@example.invalid', now: NOW, mode: 'execute' });
+		const report = await eraseReporter({ email: 'a@example.invalid', now: NOW, mode: 'execute' });
 
-		expect(updateSets).toHaveLength(2);
-		expect(updateSets[1]).not.toHaveProperty('firstName');
-		expect(updateSets[1]).toMatchObject({ email: null, reporterHash: null });
+		expect(updateSets).toHaveLength(1);
+		expect(updateSets[0]).toMatchObject({
+			email: null,
+			phone: null,
+			street: null,
+			firstName: null,
+			lastName: null,
+			shipName: null,
+			homePort: null,
+			reporterHash: null
+		});
+		expect(render(updateWheres[0]).params).toEqual([1, 2]);
+		expect(report.erased).toBe(2);
 	});
 });

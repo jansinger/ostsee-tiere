@@ -224,8 +224,11 @@ findet die Admin-Suche auch anonymisierte Meldungen einer Person:
 - **Auskunftsersuchen (Art. 15):** „Welche Meldungen haben Sie von mir?" →
   Adresse hashen, Treffer auflisten.
 - **Löschersuchen (Art. 17):** Dieselbe Suche; anschließend die Treffer
-  **sofort anonymisieren** (Feld-Matrix aus 5.2, `anonymisiert_am` setzen) und
-  den `melder_hash` auf `NULL` setzen. Die Meldungen bleiben, die Verknüpfung
+  **sofort anonymisieren** (`anonymisiert_am` setzen) und den `melder_hash` auf
+  `NULL` setzen. Abweichend von der Feld-Matrix aus 5.2 werden dabei auch Vor-
+  und Nachname, Schiffsname und Heimathafen geleert, wenn eine Einwilligung
+  vorlag: Wer die Löschung verlangt, zieht sie damit zurück (Entscheidung
+  2026-11-09). Der tägliche Lauf bleibt bei der Matrix. Die Meldungen bleiben, die Verknüpfung
   ist weg. Nur den Hash zu leeren reicht nicht: Solange die E-Mail noch da ist,
   rechnet der Backfill (`hashReporters`) ihn beim nächsten Lauf neu aus.
   Anonymisierte Zeilen nimmt er dagegen aus. Gefunden im Review von PR #1006.
