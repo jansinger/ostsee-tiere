@@ -313,4 +313,32 @@ describe('SightingInboxCard', () => {
 			)
 			.toBeVisible();
 	});
+
+	describe('Fristhinweis der Anonymisierung', () => {
+		// Eingang 2026-08-01 10:00 UTC → fällig ab 2026-10-31 10:00 UTC.
+		it('schweigt, solange mehr als 14 Tage bleiben', async () => {
+			const screen = await render(SightingInboxCard, {
+				...basisProps(),
+				now: new Date('2026-09-01T10:00:00Z')
+			});
+			await expect.element(screen.getByText(/Tierart|Schweinswal/).first()).toBeInTheDocument();
+			expect(screen.getByText(/Rückfragen nur noch bis|Frist abgelaufen/).elements()).toHaveLength(0);
+		});
+
+		it('nennt ab 14 Tagen vorher das Datum', async () => {
+			const screen = await render(SightingInboxCard, {
+				...basisProps(),
+				now: new Date('2026-10-20T10:00:00Z')
+			});
+			await expect.element(screen.getByText('Rückfragen nur noch bis 31.10.2026')).toBeVisible();
+		});
+
+		it('sagt nach Ablauf, dass die Kontaktdaten anonymisiert werden', async () => {
+			const screen = await render(SightingInboxCard, {
+				...basisProps(),
+				now: new Date('2026-11-01T10:00:00Z')
+			});
+			await expect.element(screen.getByText(/Frist abgelaufen/)).toBeVisible();
+		});
+	});
 });

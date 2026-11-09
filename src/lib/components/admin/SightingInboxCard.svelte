@@ -14,6 +14,7 @@
 	import type { DuplicateCandidate } from '#lib/server/db/duplicateCandidates.ts';
 	import type { ReporterHistory } from '#lib/types/reporterHistory.ts';
 	import Icon from '#lib/components/Icon.svelte';
+	import { contactDeadline } from '#lib/utils/privacy/anonymizationHealth.ts';
 	import ReporterHistoryBadge from './ReporterHistoryBadge.svelte';
 	import { inboxDetailHref } from './adminReturn';
 	import { SIGHTING_STATUS_PRESENTATION } from './sightingStatus';
@@ -31,6 +32,8 @@
 		busy: boolean;
 		onApprove: () => void;
 		onReject: () => void;
+		/** Bezugszeitpunkt für den Fristhinweis — nur für Tests überschrieben. */
+		now?: Date;
 	}
 
 	let {
@@ -41,8 +44,14 @@
 		reporterHistory = null,
 		busy,
 		onApprove,
-		onReject
+		onReject,
+		now = new Date()
 	}: Props = $props();
+
+	/* Rückfragen sind nur möglich, solange die Kontaktdaten da sind: 3 Monate
+	   nach Eingang werden sie anonymisiert. Ab 14 Tagen vorher sagt die Karte
+	   das (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, „Überwachung"). */
+	const deadline = $derived(contactDeadline(new Date(sighting.created), now));
 
 	/* „1 ähnliche Meldung" statt „1 ähnliche Meldungen": Die Karte ist die
 	   Arbeitsfläche des Museums, nicht eine Log-Zeile. */
@@ -143,6 +152,16 @@
 					'datetime'
 				)}
 			</div>
+			{#if deadline}
+				<div class="mt-1 flex items-center gap-1 text-sm">
+					<Icon icon="lucide:clock" width="14" class="text-warning-strong" aria-hidden="true" />
+					{#if deadline.kind === 'soon'}
+						Rückfragen nur noch bis {formatLocalDateTime(deadline.dueAt, 'date')}
+					{:else}
+						Frist abgelaufen — die Kontaktdaten werden anonymisiert
+					{/if}
+				</div>
+			{/if}
 		</div>
 
 		<div class="text-sm">

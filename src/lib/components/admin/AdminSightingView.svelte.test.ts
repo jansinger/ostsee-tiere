@@ -112,6 +112,25 @@ describe('AdminSightingView — Foto-Ankündigung', () => {
  * Lebendsichtung behauptete damit optisch einen Totfund-Abschnitt, und beim
  * Überfliegen sahen beide Arten gleich aus.
  */
+describe('AdminSightingView — anonymisierte Kontaktdaten', () => {
+	it('nennt das Datum der Anonymisierung in der Kontakt-Karte', async () => {
+		await render(AdminSightingView, {
+			sighting: baseSighting({ email: null, anonymizedAt: '2026-11-01T03:15:00.000Z' })
+		});
+
+		await expect
+			.element(page.getByRole('row', { name: /Kontaktdaten anonymisiert am 01\.11\.2026/ }))
+			.toBeVisible();
+	});
+
+	it('zeigt die Zeile nicht bei nicht anonymisierten Meldungen', async () => {
+		await render(AdminSightingView, { sighting: baseSighting({ anonymizedAt: null }) });
+
+		await expect.element(page.getByRole('heading', { name: 'Kontakt' })).toBeVisible();
+		expect(page.getByText(/anonymisiert am/).elements()).toHaveLength(0);
+	});
+});
+
 describe('AdminSightingView — Totfund-Auszeichnung', () => {
 	it('zeichnet einen Totfund über allen Angaben aus und zeigt die Totfund-Karte', async () => {
 		await render(AdminSightingView, {

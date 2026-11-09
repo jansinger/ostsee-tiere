@@ -1447,7 +1447,8 @@ paths:
         Leeren holt jeder Lauf fehlende Melder-Hashes nach; wird das nicht
         fertig, wird nichts geleert (`skipped: "hash_backfill_incomplete"`).
         Idempotent; bei `done: false` erneut aufrufen. Zugang über
-        Admin-Session oder Bearer-Token (`CLEANUP_TOKEN`) für den täglichen Cron.
+        Admin- oder Superadmin-Session oder Bearer-Token (`CLEANUP_TOKEN`) für
+        den täglichen Cron.
       security:
         - adminAuth: []
         - cleanupToken: []
@@ -1486,6 +1487,82 @@ paths:
           description: >-
             Nur bei `mode=execute`: `REPORTER_HASH_KEY` fehlt oder ist kürzer als
             32 Zeichen. Es wurde nichts geändert.
+
+  /api/admin/anonymize/activate:
+    post:
+      tags:
+        - Admin
+      summary: Anonymisierung einmalig freischalten
+      description: >
+        Schaltet den Anonymisierungs-Job frei. Bis dahin führt
+        `POST /api/admin/anonymize` auch mit `mode=execute` nur die Vorschau
+        aus. Die Freischaltung wird genau einmal gesetzt und lässt sich über
+        die Oberfläche nicht zurücknehmen.
+
+
+        **Erfordert die Rolle `superadmin`** und eine angemeldete Session; den
+        Cron-Token akzeptiert der Endpunkt nicht. Bestätigt wird durch die
+        Anzahl der aktuell fälligen Sichtungen (`due` der Vorschau). Vorbedingungen:
+        `REPORTER_HASH_KEY` gesetzt, jede Adresse gehasht, Spam-Nachbewertung
+        abgeschlossen.
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [confirmedDue]
+              properties:
+                confirmedDue:
+                  type: integer
+                  minimum: 0
+                  description: Anzahl fälliger Sichtungen laut aktueller Vorschau.
+      responses:
+        '200':
+          description: Freigeschaltet
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [activated]
+                properties:
+                  activated:
+                    type: boolean
+        '302':
+          $ref: '#/components/responses/LoginRedirect'
+        '400':
+          description: Anzahl fehlt oder ist keine nicht-negative ganze Zahl.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: >-
+            Nicht freigeschaltet. `code` nennt den Grund — `ALREADY_ACTIVATED`
+            (mit `activatedAt`, sofern bekannt), `COUNT_MISMATCH` (mit der
+            aktuellen Anzahl `due`), `HASH_BACKFILL_PENDING` (mit
+            `pendingHashes`) oder `SPAM_RESCORE_PENDING` (mit `unscoredSpam`).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [code]
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      [ALREADY_ACTIVATED, COUNT_MISMATCH, HASH_BACKFILL_PENDING, SPAM_RESCORE_PENDING]
+                  pendingHashes:
+                    type: integer
+                  activatedAt:
+                    type: string
+                    format: date-time
+                  due:
+                    type: integer
+                  unscoredSpam:
+                    type: integer
+        '503':
+          description: '`REPORTER_HASH_KEY` fehlt oder ist zu kurz (`code: KEY_MISSING`).'
 
   /api/admin/reporter-erasure:
     post:

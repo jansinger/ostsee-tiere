@@ -8,7 +8,7 @@
  * einzelne Statuszeile aus der gemeinsamen Quelle `sightingStatus.ts`, wie in
  * der Metazeile von `AdminSightingView.svelte`.
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AdminSightingEditForm from './AdminSightingEditForm.svelte';
@@ -235,6 +235,66 @@ describe('AdminSightingEditForm — Speichern-Knopf', () => {
 		// entstehen, wenn die Fläche im DOM steht.
 		expect(knopf.getAttribute('aria-describedby')).toBeNull();
 		expect(knopf.disabled).toBe(false);
+	});
+});
+
+describe('AdminSightingEditForm — anonymisierte Meldung', () => {
+	const anonymisiert = () =>
+		gueltigeSichtung({
+			firstName: null,
+			lastName: null,
+			email: null,
+			anonymizedAt: '2026-11-01T03:15:00.000Z'
+		});
+
+	it('sagt, dass die Kontaktdaten anonymisiert sind', async () => {
+		await render(AdminSightingEditForm, {
+			sighting: anonymisiert(),
+			onSave: vi.fn(),
+			onCancel: vi.fn()
+		});
+
+		await expect.element(page.getByText(/Kontaktdaten anonymisiert am/)).toBeVisible();
+	});
+
+	it('lässt sie ohne Name und E-Mail speichern', async () => {
+		// Ohne den Kontext `anonymized` hielt die Maske im Browser an Pflichtfeldern
+		// fest, die nach der Anonymisierung leer sind — der Server hätte die
+		// Meldung angenommen (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
+		// Nur der PUT bekommt eine Antwort. Die Upload-Konfiguration, die die Maske
+		// beim Laden holt, fällt wie in den übrigen Tests auf ihre Vorgabe zurück.
+		const originalFetch = globalThis.fetch;
+		onTestFinished(() => {
+			globalThis.fetch = originalFetch;
+		});
+		const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
+			if (init?.method === 'PUT') return { ok: true, json: async () => anonymisiert() };
+			throw new Error('nicht im Test');
+		});
+		globalThis.fetch = fetchMock as unknown as typeof fetch;
+		const onSave = vi.fn();
+		await render(AdminSightingEditForm, { sighting: anonymisiert(), onSave, onCancel: vi.fn() });
+
+		await page.getByRole('button', { name: 'Speichern' }).click();
+
+		await vi.waitFor(() => expect(onSave).toHaveBeenCalled());
+		// Der erste fetch der Maske lädt die Upload-Konfiguration — gesucht ist der PUT.
+		const put = fetchMock.mock.calls.find((call) => call[1]?.method === 'PUT');
+		expect(String(put?.[0])).toBe('/api/sightings/1');
+	});
+
+	it('verlangt Name und E-Mail weiterhin bei nicht anonymisierten Meldungen', async () => {
+		const onSave = vi.fn();
+		await render(AdminSightingEditForm, {
+			sighting: gueltigeSichtung({ firstName: null, lastName: null, email: null }),
+			onSave,
+			onCancel: vi.fn()
+		});
+
+		await page.getByRole('button', { name: 'Speichern' }).click();
+
+		await expect.element(page.getByText(/Eingabefehler gefunden/)).toBeVisible();
+		expect(onSave).not.toHaveBeenCalled();
 	});
 });
 

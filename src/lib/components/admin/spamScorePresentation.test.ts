@@ -104,6 +104,17 @@ describe('getSpamDrift', () => {
 		expect(getSpamDrift(antwort({ score: 1, indicators: [] }, { score: 4 }))).toBe('higher');
 	});
 
+	it('sagt bei einer anonymisierten Meldung, dass die Neuberechnung ohne Kontaktdaten lief', () => {
+		// Ohne Name und E-Mail fällt der Nachlauf systematisch zu mild aus — das
+		// ist kein „niedriger als beim Eingang" im üblichen Sinn, sondern eine
+		// fehlende Eingabe (docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md, PR 4).
+		const response = { ...antwort({ score: 4, indicators: [] }, { score: 0 }), anonymized: true };
+
+		expect(getSpamDrift(response)).toBe('anonymized');
+		expect(SPAM_DRIFT_PRESENTATION.anonymized.note).toMatch(/anonymisiert/);
+		expect(SPAM_DRIFT_PRESENTATION.anonymized.note).toMatch(/Erstbefund/);
+	});
+
 	it('vergleicht nicht gegen einen Altbestand ohne Bewertung', () => {
 		// `stored: null` heißt „nie bewertet" und nicht „Score 0". Ein Vergleich
 		// dagegen behauptete eine Veränderung, wo es keinen Vorzustand gibt.

@@ -13,6 +13,7 @@ export type AuditAction =
 	| 'sighting.reporter_hash_backfill'
 	| 'privacy.anonymize'
 	| 'privacy.erasure'
+	| 'privacy.anonymize_activate'
 	| 'file.delete'
 	| 'file.cleanup_orphans'
 	| 'config.update'

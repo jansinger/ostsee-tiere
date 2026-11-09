@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
+	import Icon from '#lib/components/Icon.svelte';
 	import { isFormDirty } from '#lib/form/isFormDirty.ts';
 	import { getAdminSightingSchema } from '#lib/form/validation/sightingSchema.ts';
 	import Form from '#lib/report/components/form/Form.svelte';
@@ -78,6 +79,10 @@
 	const initProps = untrack(() => ({
 		initialValues: buildAdminEditInitialValues(sighting),
 		validationSchema: getAdminSightingSchema(),
+		// Dieselbe Regel wie der Server: An einer anonymisierten Meldung sind Name
+		// und E-Mail keine Pflicht mehr (PUT /api/sightings/[id] setzt denselben
+		// Kontext aus der geladenen Zeile).
+		validationContext: { anonymized: sighting.anonymizedAt != null },
 		onSubmit: submitForm
 	}));
 	let isValid = $derived(formContext.isValid);
@@ -152,6 +157,18 @@
 </script>
 
 <Form class="space-y-6" {...initProps} bind:context={formContext}>
+	{#if sighting.anonymizedAt}
+		<!-- Geleerte Kontaktdaten lassen sich nicht wieder eintragen; der Server
+		     weist das ab (422 ANONYMIZED_FIELDS). Name und Schiff bleiben bei
+		     Einwilligung bearbeitbar. -->
+		<div class="alert alert-info" role="note">
+			<Icon icon="lucide:user-x" class="shrink-0" aria-hidden="true" />
+			<span class="text-sm">
+				Kontaktdaten anonymisiert am {formatLocalDateTime(sighting.anonymizedAt, 'date')}. Geleerte
+				Felder können nicht wieder befüllt werden.
+			</span>
+		</div>
+	{/if}
 	<div class="grid grid-cols-1 gap-4 md:grid-cols-1">
 		<div class="space-y-4">
 			<div class="card bg-base-200 p-4">

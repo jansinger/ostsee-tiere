@@ -4,7 +4,9 @@
 	import Icon from '#lib/components/Icon.svelte';
 	import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 	import { untrack } from 'svelte';
+	import AnonymizationPanel from './AnonymizationPanel.svelte';
 	import CleanupPanel from './CleanupPanel.svelte';
+	import ReporterErasurePanel from './ReporterErasurePanel.svelte';
 	import ResetSettingsButton from './ResetSettingsButton.svelte';
 	import { ACTIVE_CONFIG_KEYS, getConfigLabel } from './configLabels';
 	import { buildSaveSummary } from './saveSummary';
@@ -656,6 +658,16 @@
 					<button onclick={saveAllChanges} class="btn btn-success btn-sm"> Alle speichern </button>
 				</div>
 			</div>
+		</div>
+	{/if}
+
+	<div class="mt-6">
+		<AnonymizationPanel status={data.anonymization ?? null} {isSuperAdmin} />
+	</div>
+
+	{#if isSuperAdmin}
+		<div class="mt-6">
+			<ReporterErasurePanel />
 		</div>
 	{/if}
 
