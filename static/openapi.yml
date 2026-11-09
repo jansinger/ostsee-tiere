@@ -3054,8 +3054,9 @@ components:
         stalled:
           type: boolean
           description: >-
-            true, wenn ein Batch keinen einzigen Hash geschrieben hat. Weitere
-            Aufrufe läsen dieselben Zeilen wieder.
+            true, wenn jede geladene Zeile des Batches übersprungen wurde
+            (`skipped`). Weitere Aufrufe läsen dieselben Zeilen wieder. Leere
+            Updates wegen paralleler Änderungen zählen nicht dazu.
     SpamRescoreReport:
       type: object
       required: [scored, skippedFailed, lastId, remaining, done, stalled, distribution]

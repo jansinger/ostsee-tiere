@@ -124,8 +124,8 @@ REPORTER_HASH_KEY=$(openssl rand -base64 48)
 
 Nach dem ersten Setzen einmal den Bestand hashen, solange die Adressen noch
 vorhanden sind — wiederholen, bis die Antwort `"done": true` enthält. Steht
-dabei `"stalled": true`, hat ein ganzer Batch keinen Hash geschrieben (etwa
-Adressen, die nur aus Weißraum bestehen); weitere Aufrufe ändern dann nichts,
+dabei `"stalled": true`, bestand ein ganzer Batch aus Adressen ohne verwertbaren
+Inhalt (etwa nur Weißraum); weitere Aufrufe ändern dann nichts,
 die Zeilen gehören von Hand geprüft:
 
 ```bash

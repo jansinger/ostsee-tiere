@@ -207,4 +207,22 @@ describe('hashReporters', () => {
 
 		expect(report).toEqual({ hashed: 0, skipped: 2, remaining: 2, done: true, stalled: true });
 	});
+
+	it('hält einen Batch nicht für festgefahren, den ein paralleler Lauf schon erledigt hat', async () => {
+		// Alle bedingten Updates kommen leer zurück, weil die Zeilen inzwischen
+		// gehasht sind. Der nächste Batch hat dann neue Zeilen — wer hier
+		// aufhört, lässt hashbare Zeilen liegen (Review PR #1008).
+		primeDb(
+			[
+				{ id: 1, email: 'a@example.invalid' },
+				{ id: 2, email: 'b@example.invalid' }
+			],
+			3
+		);
+		updateReturning.mockImplementation(() => []);
+
+		const report = await hashReporters({ limit: 2 });
+
+		expect(report).toEqual({ hashed: 0, skipped: 0, remaining: 3, done: false, stalled: false });
+	});
 });

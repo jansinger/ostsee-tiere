@@ -46,8 +46,8 @@ try {
 		console.log(`  ${hashed} gehasht, ${report.remaining} offen …`);
 		if (report.stalled) {
 			console.error(
-				`\nAbbruch: Der letzte Batch hat nichts geschrieben (${report.skipped} Adressen ohne ` +
-					`verwertbaren Inhalt, ${report.remaining} Zeilen weiterhin ohne Hash).`
+				`\nAbbruch: Der letzte Batch bestand nur aus Adressen ohne verwertbaren Inhalt ` +
+					`(${report.skipped} Zeilen, ${report.remaining} weiterhin ohne Hash). Von Hand prüfen.`
 			);
 			process.exit(1);
 		}

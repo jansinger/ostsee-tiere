@@ -50,8 +50,9 @@ export interface HashReportersReport {
 	/** `false` heißt: noch einmal aufrufen */
 	done: boolean;
 	/**
-	 * Ein Batch ohne einen einzigen Hash. Ein weiterer Aufruf läse dieselben
-	 * Zeilen wieder — `done` ist dann gesetzt, damit kein Aufrufer endlos läuft.
+	 * Ein Batch, in dem jede geladene Zeile übersprungen wurde (`skipped`). Ein
+	 * weiterer Aufruf läse dieselben Zeilen wieder — `done` ist dann gesetzt,
+	 * damit kein Aufrufer endlos läuft.
 	 */
 	stalled: boolean;
 }
@@ -117,7 +118,12 @@ export async function hashReporters(options: HashReportersOptions): Promise<Hash
 
 	const [remainingRow] = await db.select({ count: count() }).from(sightings).where(pendingRows());
 
-	const stalled = rows.length > 0 && hashed === 0;
+	// Festgefahren ist ein Batch nur, wenn KEINE geladene Zeile einen Hash
+	// bekommen kann. Kommen Updates leer zurück, weil ein paralleler Lauf oder
+	// ein Admin die Zeilen schon gehasht hat, sind sie nicht mehr offen, und der
+	// nächste Batch hat neue — `hashed === 0` allein wäre dann ein Abbruch mitten
+	// im Backfill (Review PR #1008).
+	const stalled = rows.length > 0 && skipped === rows.length;
 	return {
 		hashed,
 		skipped,
