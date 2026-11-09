@@ -88,7 +88,9 @@
 	];
 </script>
 
-<div class="mx-auto max-w-2xl px-4 py-8" data-testid="report-kind-choice">
+<!-- Kein eigener Seitenrand und kein Abstand nach unten: Darunter folgt der Hilfeblock aus
+     `+page.svelte`, der bringt seinen Abstand mit und soll mit den Karten bündig stehen. -->
+<div class="mx-auto max-w-2xl pt-8" data-testid="report-kind-choice">
 	{#if isNotIFrame}
 		<!-- Nur außerhalb des meeresmuseum.de-iframe: Die Museumsseite trägt dort
 		     ihre eigene Überschrift — dieselbe Bedingung wie an der (bewusst

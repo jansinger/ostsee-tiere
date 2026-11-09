@@ -48,7 +48,6 @@
 	import { ValidationError } from 'yup';
 	import Form from './form/Form.svelte';
 	import FormSteps from './form/FormSteps.svelte';
-	import FormHelp from './FormHelp.svelte';
 	import ReportHeading from './ReportHeading.svelte';
 	import Step1LocationTime from './steps/Step1LocationTime.svelte';
 	import Step2SightingDetails from './steps/Step2SightingDetails.svelte';
@@ -757,6 +756,4 @@
 	</div>
 
 	<FormActions {onCancel} {onReset} {onchangekind}></FormActions>
-
-	<FormHelp />
 </Form>

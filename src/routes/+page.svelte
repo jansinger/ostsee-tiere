@@ -10,6 +10,7 @@
 	import { tick } from 'svelte';
 	import { createLogger } from '#lib/logger.ts';
 	import HreflangHead from '#lib/components/seo/HreflangHead.svelte';
+	import FormHelp from '#lib/report/components/FormHelp.svelte';
 	import ModernReportForm from '#lib/report/components/ModernReportForm.svelte';
 	import ReportKindChoice from '#lib/report/components/ReportKindChoice.svelte';
 	import SubmissionSuccess from '#lib/report/components/SubmissionSuccess.svelte';
@@ -371,6 +372,14 @@
 				onchangekind={changeKind}
 				onreset={resetReportKind}
 			/>
+		{/if}
+
+		<!-- Hinter den Zweigen statt in `ModernReportForm`, damit die Hilfe schon auf der
+		     Einstiegsseite steht (Vorschlag von 2026-11). Es ist eine einzige
+		     Instanz: Beim Wechsel ins Formular bleibt sie aufgeklappt, und die Statistik
+		     wird nicht ein zweites Mal geladen. -->
+		{#if !submissionSuccess}
+			<FormHelp />
 		{/if}
 	</div>
 </div>
