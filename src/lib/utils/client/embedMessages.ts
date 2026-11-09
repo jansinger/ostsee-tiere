@@ -63,6 +63,11 @@ export function startHeightReporting(element: HTMLElement, win: EmbedWindow = wi
 	const observer = new ResizeObserver(report);
 	observer.observe(element);
 	win.addEventListener('message', onMessage);
+	// Nicht dem Observer überlassen: Chromium rendert einen fremden iframe außerhalb
+	// des Sichtfelds gar nicht, der Observer feuert dort nie. Auf der Museumsseite
+	// (Oberkante bei 1159px) blieb der iframe dadurch auf 3350px stehen, bis jemand
+	// hineinscrollte, und sprang dann auf 453px (gemessen 2026-11-09).
+	report();
 	return () => {
 		observer.disconnect();
 		win.removeEventListener('message', onMessage);
