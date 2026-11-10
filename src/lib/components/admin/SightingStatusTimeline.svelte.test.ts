@@ -75,4 +75,41 @@ describe('SightingStatusTimeline', () => {
 		await expect.element(screen.getByRole('list')).toBeInTheDocument();
 		expect(screen.getByRole('listitem').elements()).toHaveLength(2);
 	});
+
+	/* Ohne den Eintrag liest sich die leere Kontakt-Karte wie eine Meldung ohne
+	   Kontaktangaben. Der Zeitpunkt kommt aus der Zeile, nicht aus dem Log. */
+	describe('Anonymisierung', () => {
+		it('zeigt sie als eigenen Eintrag mit Datum, ohne Bearbeiter', async () => {
+			const screen = await render(SightingStatusTimeline, {
+				entries: [eintrag(1, 'approve', '2026-08-01T10:00:00Z', 'anna@example.com')],
+				anonymizedAt: '2026-11-09T03:15:00Z'
+			});
+
+			await expect.element(screen.getByText('Kontaktdaten anonymisiert')).toBeVisible();
+			expect(screen.getByRole('listitem').elements()).toHaveLength(2);
+			expect(screen.getByText(/durch/).elements()).toHaveLength(1);
+		});
+
+		it('steht beim Altbestand neben dem Hinweis, dass Entscheidungen fehlen', async () => {
+			const screen = await render(SightingStatusTimeline, {
+				entries: [],
+				anonymizedAt: '2026-11-09T03:15:00Z'
+			});
+
+			await expect.element(screen.getByText('Kontaktdaten anonymisiert')).toBeVisible();
+			await expect.element(screen.getByText(/Aufzeichnung beginnt/)).toBeVisible();
+		});
+
+		it('bleibt sichtbar, wenn die Entscheidungen nicht geladen werden konnten', async () => {
+			// Die Anonymisierung kommt aus der Zeile selbst — der Ladefehler betrifft sie nicht.
+			const screen = await render(SightingStatusTimeline, {
+				entries: [],
+				failed: true,
+				anonymizedAt: '2026-11-09T03:15:00Z'
+			});
+
+			await expect.element(screen.getByRole('alert')).toBeVisible();
+			await expect.element(screen.getByText('Kontaktdaten anonymisiert')).toBeVisible();
+		});
+	});
 });
