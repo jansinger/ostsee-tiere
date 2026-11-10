@@ -88,6 +88,23 @@ ist weiterhin genau `freigegeben_am IS NOT NULL`. `geprueft` wird seit 2026-08
 **nicht mehr gelesen** (Guard: `verifiedReadScan.test.ts`); die Spalte bleibt,
 weil das Altsystem auf derselben Datenbank liegt.
 
+### Melderdaten — Löschfrist 3 Monate, neue Spalten einordnen
+
+Ein täglicher Job leert 3 Monate nach Eingang die Kontaktdaten jeder Meldung,
+Name und Schiff ohne Einwilligung ebenso (Weisung des
+Landesdatenschutzbeauftragten MV). Meldungen einer Person bleiben über
+`melder_hash` (HMAC der E-Mail) verknüpft; der Hash verlässt nie den Server.
+
+- **Neue Spalte in `sichtungen` → in `src/lib/server/privacy/piiColumns.ts`
+  einordnen.** Die Einordnung entscheidet, was der Job leert;
+  `piiColumns.test.ts` bricht bei einer Spalte ohne Eintrag.
+- **Kein Code darf annehmen, dass E-Mail, Name oder Schiff einer alten Meldung
+  gefüllt sind.** Verknüpfungen über Personen laufen über `melder_hash`.
+- **`REPORTER_HASH_KEY` nie rotieren** (`docs/ENVIRONMENT.md`).
+
+Konzept: `docs/ANONYMISIERUNG_KONZEPT.md`; Umsetzung, Freigabe und Betrieb:
+`docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md`.
+
 ### Design System — PFLICHT bei UI-Änderungen
 
 Theme-Tokens statt hardcodierter Farben, `*-content` ausschließlich auf Vollton-Flächen (auf Tints wie `bg-warning/10` gehört `text-base-content` — sonst weiß auf hell), WCAG 2.1 AA. Regeln laden automatisch bei UI-Dateien: `.claude/rules/design-system.md` (Feld-Pipeline, Button-Hierarchie, A11y-Minima) und `.claude/rules/daisyui.md` (Theme, DaisyUI-Overrides). Hintergrund und verifizierter Ist-Zustand: `docs/DESIGN_GUIDE.md`
@@ -203,22 +220,24 @@ Erst der manuelle Workflow **Promote to Production** (mit Approval am Environmen
 
 ## Weitere Dokumentation
 
-| Dokument                           | Inhalt                                                                             |
-| ---------------------------------- | ---------------------------------------------------------------------------------- |
-| `.claude/README.md`                | Aufbau der Claude-Konfiguration                                                    |
-| `docs/DESIGN_GUIDE.md`             | Design-Prinzipien, Ist-Zustand, Grenzen                                            |
-| `docs/CONFIGURATION_USAGE.md`      | ConfigService (Laufzeit-Konfiguration)                                             |
-| `docs/LEGACY_API_SPECIFICATION.md` | Legacy API (KRITISCH)                                                              |
-| `docs/OSTSEE_FLAGS.md`             | `ostsee` vs. `ostsee_geo` — Namen sind irreführend, `2` im Altbestand              |
-| `docs/IFRAME_EINBETTUNG.md`        | iframe auf meeresmuseum.de: Formular, Sichtungskarte, `/bestimmungshilfe` gesperrt |
-| `docs/SPAM_DETECTION.md`           | Spam-Score: Signale, Persistenz, Backfill (deployt nur per Admin-Endpunkt)         |
-| `docs/RELEASE_PIPELINE.md`         | Release → Staging → Production, Image-Tags, Promotion, Rollback                    |
-| `docs/PRODUCTION_DEPLOYMENT.md`    | Production Deployment (Schnellanleitung)                                           |
-| `docs/DOCKER_DEPLOYMENT.md`        | Docker Setup (Vollständige Referenz)                                               |
-| `docs/PREPROD_HAWKING.md`          | Preprod hawking: native PG, Plesk-Host, Postgres/Docker-Netzwerk-Race (Fix)        |
-| `docs/ENVIRONMENT.md`              | Umgebungsvariablen, inkl. Zeitzonen-Konvention (Abschnitt `TZ`)                    |
-| `docs/WORKTREES.md`                | Worktree-Setup, geteilte Ressourcen, Ports                                         |
-| `docs/DATABASE_MIGRATION.md`       | DB Migrationen                                                                     |
+| Dokument                                | Inhalt                                                                             |
+| --------------------------------------- | ---------------------------------------------------------------------------------- |
+| `.claude/README.md`                     | Aufbau der Claude-Konfiguration                                                    |
+| `docs/DESIGN_GUIDE.md`                  | Design-Prinzipien, Ist-Zustand, Grenzen                                            |
+| `docs/CONFIGURATION_USAGE.md`           | ConfigService (Laufzeit-Konfiguration)                                             |
+| `docs/LEGACY_API_SPECIFICATION.md`      | Legacy API (KRITISCH)                                                              |
+| `docs/OSTSEE_FLAGS.md`                  | `ostsee` vs. `ostsee_geo` — Namen sind irreführend, `2` im Altbestand              |
+| `docs/IFRAME_EINBETTUNG.md`             | iframe auf meeresmuseum.de: Formular, Sichtungskarte, `/bestimmungshilfe` gesperrt |
+| `docs/SPAM_DETECTION.md`                | Spam-Score: Signale, Persistenz, Backfill (deployt nur per Admin-Endpunkt)         |
+| `docs/RELEASE_PIPELINE.md`              | Release → Staging → Production, Image-Tags, Promotion, Rollback                    |
+| `docs/PRODUCTION_DEPLOYMENT.md`         | Production Deployment (Schnellanleitung)                                           |
+| `docs/DOCKER_DEPLOYMENT.md`             | Docker Setup (Vollständige Referenz)                                               |
+| `docs/PREPROD_HAWKING.md`               | Preprod hawking: native PG, Plesk-Host, Postgres/Docker-Netzwerk-Race (Fix)        |
+| `docs/ENVIRONMENT.md`                   | Umgebungsvariablen, inkl. Zeitzonen-Konvention (Abschnitt `TZ`)                    |
+| `docs/WORKTREES.md`                     | Worktree-Setup, geteilte Ressourcen, Ports                                         |
+| `docs/DATABASE_MIGRATION.md`            | DB Migrationen                                                                     |
+| `docs/ANONYMISIERUNG_KONZEPT.md`        | Löschfrist Melderdaten: Felder, Frist, Hash, Löschersuchen                         |
+| `docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md` | PRs, Freigabe des ersten Laufs, Cron, Überwachung, Textvorschlag Datenschutz       |
 
 Themenspezifische Regeln in `.claude/rules/` laden automatisch, sobald passende Dateien bearbeitet werden — sie müssen hier nicht aufgezählt werden.
 

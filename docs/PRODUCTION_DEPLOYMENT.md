@@ -268,6 +268,45 @@ löscht, ist kein Test:
 Ein `%` im Crontab ist ein Zeilenumbruch-Sonderzeichen und muss als `\%` escaped
 werden — betrifft jeden, der ein `date`-Format in den Log-Namen baut.
 
+### Anonymisierung der Melderdaten (täglich)
+
+Kontaktdaten werden 3 Monate nach Eingang geleert, Name und Schiff ohne
+Einwilligung ebenso (`docs/ANONYMISIERUNG_KONZEPT.md`). Der Job läuft über
+denselben Token-Weg und dieselbe Env-Datei wie das Aufräumen:
+
+```
+45 3 * * * . $HOME/.ostsee-cleanup.env && curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" "https://$HOST/api/admin/anonymize?mode=execute" >> $HOME/anonymize.log 2>&1
+```
+
+Test wie oben ohne `mode` — das ist die Vorschau und ändert nichts:
+
+```bash
+/bin/sh -c '. $HOME/.ostsee-cleanup.env && curl -fsS -X POST -H "Authorization: Bearer $CLEANUP_TOKEN" -H "Content-Type: application/json" "https://$HOST/api/admin/anonymize"' | python3 -m json.tool
+```
+
+Vier Punkte, die beim Einrichten zählen:
+
+- **Die Zeile darf vor der Freischaltung schon stehen.** Bis ein Superadmin in
+  _Einstellungen → Anonymisierung_ freischaltet, antwortet `mode=execute` mit
+  `"executed": false, "skipped": "not_activated"` und ändert nichts. Der Lauf
+  wird trotzdem als „letzter Lauf" festgehalten — so zeigt das Panel nach der
+  Freischaltung sofort, ob der Cron wirklich läuft.
+- **Ein Aufruf leert einen Stapel:** 500 Meldungen, mit `&limit=…` bis höchstens
+  2.000. Für den täglichen Zugang reicht das weit. Den Altbestand (rund 20.000)
+  arbeitet man nach der Freischaltung über „Jetzt ausführen" im Panel ab (je
+  Klick ein Stapel) oder ruft den Endpunkt wiederholt auf, bis `"done": true` und `"remaining": 0`
+  stehen — nicht auf den Cron warten, sonst steht das Panel tagelang rot.
+- **Rot wird die Überwachung,** sobald eine Meldung die 3 Monate ohne Puffer
+  überschritten hat oder der letzte Lauf älter als 48 Stunden ist. Die
+  Hinweisleiste im Admin-Bereich zeigt das jedem Admin.
+- **`"skipped": "hash_backfill_incomplete"`** heißt: Es gibt Adressen ohne Hash,
+  die der Job nicht nachholen konnte. Er leert dann bewusst nichts, damit keine
+  Meldung ihre Verknüpfung zur Person verliert. Ursache klären
+  (`POST /api/admin/reporter-hash`, siehe `docs/ENVIRONMENT.md`).
+
+`45 3` statt `15 3`: Beide Jobs gleichzeitig zu starten bringt nichts, und im
+Log lassen sie sich so getrennt lesen.
+
 ---
 
 ## 4. Anwendung starten
