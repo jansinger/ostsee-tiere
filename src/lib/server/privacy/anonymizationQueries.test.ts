@@ -6,10 +6,13 @@
  * liegen (docs/ANONYMISIERUNG_KONZEPT.md, 5.1).
  */
 import { PgDialect } from 'drizzle-orm/pg-core';
+import type { SQL } from 'drizzle-orm';
+import { openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
 import { describe, expect, it } from 'vitest';
 import { groupByConsents } from './anonymizationPatch';
 import {
 	dueForAnonymization,
+	dueStatusFilters,
 	newestCreated,
 	overdueForAnonymization
 } from './anonymizationQueries';
@@ -91,5 +94,22 @@ describe('overdueForAnonymization', () => {
 
 	it('zählt nur noch nicht anonymisierte Meldungen', () => {
 		expect(sql()).toContain('"sichtungen"."anonymisiert_am" is null');
+	});
+});
+
+describe('dueStatusFilters', () => {
+	// „Ungeprüft" heißt dasselbe wie im Eingang: weder freigegeben noch
+	// abgelehnt. `pendingOnly()` zählte abgelehnte mit — die Vorschau auf
+	// Production meldete 536 „ungeprüfte" Meldungen bei leerem Eingang.
+	// Verglichen wird mit den Prädikaten aus approvalFilter selbst; sie hier
+	// nachzuschreiben, verbietet approvalPredicateScan.test.ts zu Recht.
+	const render = (value: SQL): string => new PgDialect().sqlToQuery(value).sql;
+
+	it('zählt als offen dieselbe Menge wie der Eingang', () => {
+		expect(render(dueStatusFilters().open)).toBe(render(openOnly()));
+	});
+
+	it('zählt abgelehnte Meldungen getrennt', () => {
+		expect(render(dueStatusFilters().rejected)).toBe(render(rejectedOnly()));
 	});
 });

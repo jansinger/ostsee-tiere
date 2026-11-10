@@ -48,7 +48,8 @@ const REPORT = {
 			namesKept: 1,
 			shipsCleared: 0,
 			shipsKept: 0,
-			pending: 1
+			open: 0,
+			rejected: 1
 		}
 	],
 	pendingHashes: 0,

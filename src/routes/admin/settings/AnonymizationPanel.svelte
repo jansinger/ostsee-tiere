@@ -244,7 +244,8 @@
 										<th scope="col" class="text-right">Namen behalten</th>
 										<th scope="col" class="text-right">Schiffe geleert</th>
 										<th scope="col" class="text-right">Schiffe behalten</th>
-										<th scope="col" class="text-right">davon ungeprüft</th>
+										<th scope="col" class="text-right">davon offen</th>
+										<th scope="col" class="text-right">davon abgelehnt</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -256,7 +257,8 @@
 											<td class="text-right">{number(row.namesKept)}</td>
 											<td class="text-right">{number(row.shipsCleared)}</td>
 											<td class="text-right">{number(row.shipsKept)}</td>
-											<td class="text-right">{number(row.pending)}</td>
+											<td class="text-right">{number(row.open)}</td>
+											<td class="text-right">{number(row.rejected)}</td>
 										</tr>
 									{/each}
 								</tbody>
