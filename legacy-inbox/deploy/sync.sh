@@ -49,6 +49,35 @@ done
 . "$KONFIG"
 . "$VERZEICHNIS/melde.sh"
 
+# Aufbewahrungsfrist: einmal am Tag abgelaufene Dateien aus importiert/ und
+# abgewiesen/ löschen (src/tools/prune-legacy-inbox.js). Die Dateien tragen
+# Name, E-Mail und Telefon der Melder; in der Datenbank werden diese Angaben
+# nach 3 Monaten geleert, hier dürfen sie nicht länger liegen.
+#
+# Einmal am Tag statt bei jedem Lauf: Ein Befund, der einen Menschen braucht
+# (Posteingang über der Frist), käme sonst alle 15 Minuten als Mail. Die
+# Marke wird auch nach einem Fehler gesetzt — aus demselben Grund. Sie liegt
+# in der Wurzel des Datenverzeichnisses, die der Dienst nicht liest.
+#
+# Das Aufräumen hält den Sync nie auf: Scheitert es, wird gemeldet und
+# trotzdem übertragen.
+AUFRAEUM_CLI="$REPO_TOOLS/prune-legacy-inbox-cli.js"
+AUFRAEUM_MARKE="$DATEN_DIR/.aufgeraeumt-am"
+HEUTE=$(date +%Y-%m-%d)
+if [ "$(cat "$AUFRAEUM_MARKE" 2>/dev/null)" != "$HEUTE" ]; then
+	echo "$HEUTE" >"$AUFRAEUM_MARKE"
+	if [ ! -f "$AUFRAEUM_CLI" ]; then
+		echo "Aufräum-Skript fehlt: $AUFRAEUM_CLI" | melde "Posteingang: Aufräumen nicht möglich"
+	else
+		AUFRAEUM_AUSGABE=$("$NODE" "$AUFRAEUM_CLI" "--dir=$DATEN_DIR" 2>&1)
+		AUFRAEUM_CODE=$?
+		echo "$AUFRAEUM_AUSGABE"
+		if [ "$AUFRAEUM_CODE" -ne 0 ]; then
+			echo "$AUFRAEUM_AUSGABE" | melde "Posteingang: Aufräumen braucht einen Blick"
+		fi
+	fi
+fi
+
 CLI="$REPO_TOOLS/send-legacy-inbox-cli.js"
 
 if [ ! -f "$CLI" ]; then

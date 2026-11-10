@@ -67,6 +67,7 @@
 		"generate:antworten": "TEST=true vite-node src/tools/generate-antworten-json.js",
 		"import:legacy-inbox": "TEST=true vite-node src/tools/import-legacy-inbox-cli.js --",
 		"send:legacy-inbox": "node src/tools/send-legacy-inbox-cli.js",
+		"prune:legacy-inbox": "node src/tools/prune-legacy-inbox-cli.js",
 		"spam:rescore": "TEST=true vite-node src/tools/rescore-spam.ts --",
 		"privacy:hash-reporters": "TEST=true vite-node src/tools/hash-reporters.ts --",
 		"privacy:anonymize": "TEST=true vite-node src/tools/anonymize.ts -- --execute",
