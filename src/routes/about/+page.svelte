@@ -338,8 +338,12 @@
 	     abschließend und veraltet mit jeder Änderung. Die verlinkte Erklärung
 	     führt sie vollständig — ein Klick entfernt. (PR #714, Review-Hinweis)
 
-	     Sobald das Museum eine Löschfrist festgelegt hat, gehört sie hierher
-	     zurück — dann aber mit der Frist im Text, nicht als Verweis. -->
+	     Die Löschfrist steht seit 2026-11 wieder hier, mit der Frist im Text:
+	     drei Monate ab Eingang für die Kontaktdaten, auf Weisung des
+	     Landesdatenschutzbeauftragten MV (docs/ANONYMISIERUNG_KONZEPT.md). -->
+	<!-- ACHTUNG: Den Satz zur Frist erst ausliefern, wenn der Job in
+	     Production freigeschaltet ist und täglich läuft — vorher stimmt er
+	     nicht. -->
 	<!--
 	     ACHTUNG — `messages/en.json` trägt für diesen Abschnitt bewusst noch den
 	     DEUTSCHEN Wortlaut, obwohl `TRANSLATION_ROLLOUT_COMPLETE` seit
@@ -390,6 +394,27 @@
 						<span>
 							<strong>{m.routes_about_page_privacy_name_und_schiffsname()}</strong>
 							{m.routes_about_page_privacy_ohne_zustimmung()}
+						</span>
+					</li>
+					<!-- Löschfrist (seit 2026-11, Anonymisierungs-Job): Kontaktdaten
+					     fallen drei Monate nach Eingang weg, unabhängig vom Prüfstatus.
+					     Name und Schiff ohne Einwilligung ebenso. Die „Kennung" ist der
+					     HMAC-Hash der Adresse (`melder_hash`), der Meldungen einer Person
+					     verknüpft hält. „Nicht ablesen" statt „anonym": Mit dem Schlüssel
+					     auf dem Server lässt sich eine BEKANNTE Adresse wiederfinden
+					     (Löschersuchen) — das ist Pseudonymisierung, und der Satz
+					     behauptet nichts darüber hinaus. Frist und Felder:
+					     docs/ANONYMISIERUNG_KONZEPT.md. -->
+					<li class="flex items-start gap-2">
+						<Icon
+							icon="lucide:check"
+							width="16"
+							class="text-success-strong mt-1 shrink-0"
+							aria-hidden="true"
+						/>
+						<span>
+							<strong>{m.routes_about_page_privacy_drei_monate()}</strong>
+							{m.routes_about_page_privacy_danach()}
 						</span>
 					</li>
 					<li class="flex items-start gap-2">

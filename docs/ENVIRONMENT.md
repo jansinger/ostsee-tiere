@@ -113,8 +113,11 @@ Begründung: `docs/ANONYMISIERUNG_KONZEPT.md`, Abschnitt 3.
 
 - **Pflicht:** ja, in jeder deployten Umgebung. Ohne Wert werden Meldungen
   trotzdem gespeichert, aber ohne Hash (Fehler im Log), und
-  `POST /api/admin/reporter-hash` antwortet mit `503`. Die spätere
-  Anonymisierung verweigert ohne Schlüssel jede Änderung.
+  `POST /api/admin/reporter-hash` antwortet mit `503`. Die Anonymisierung
+  (`POST /api/admin/anonymize?mode=execute`) antwortet ohne Schlüssel ebenfalls
+  mit `503` und ändert nichts — sie würde sonst Adressen leeren, deren Hash nie
+  entstanden ist. Die Vorschau (ohne `mode`) läuft auch ohne Schlüssel und meldet
+  `"keyConfigured": false`; das Admin-Panel zeigt dasselbe an.
 - **Mindestlänge:** 32 Zeichen. Ein kürzerer Wert gilt als nicht gesetzt.
 - **Nie rotieren.** Nach der Anonymisierung gibt es keine Adresse mehr, aus der
   sich mit einem neuen Schlüssel neu hashen ließe. Ein neuer Schlüssel trennt

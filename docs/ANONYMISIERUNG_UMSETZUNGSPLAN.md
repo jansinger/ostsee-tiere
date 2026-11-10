@@ -385,6 +385,71 @@ Datenschutzerklärung an das Museum.
 
 **Größe:** S · `docs(security): document reporter data retention`
 
+**Umgesetzt.** `/about` nennt die Frist im Text (fünfter Punkt im Abschnitt
+„Datenschutz & Sicherheit"). Der Satz darf erst ausgeliefert werden, wenn der
+Job in Production freigeschaltet ist und täglich läuft — sonst ist er falsch.
+
+### Textvorschlag für die Datenschutzerklärung des Museums
+
+Die Erklärung auf deutsches-meeresmuseum.de nennt Fristen für Tickets,
+Kontaktformular und Bewerbungen, für Sichtungsmeldungen keine. Vorschlag für
+einen eigenen Abschnitt; die Rechtsgrundlagen prüft das Museum, sie stehen
+hier nur als Platzhalter dessen, was die Erklärung für das Meldeformular heute
+schon nennt.
+
+> **Meldungen von Meeressäuger-Sichtungen (ostsee-tiere.de)**
+>
+> Wenn Sie uns eine Sichtung melden, speichern wir die Angaben zur Sichtung
+> (Ort, Zeit, Tierart, Anzahl, Beobachtungsbedingungen, Fotos) sowie Ihre
+> Kontaktdaten: Vor- und Nachname und E-Mail-Adresse, freiwillig auch
+> Telefonnummer, Faxnummer und Anschrift, bei Meldungen von Bord auch Schiffsname
+> und Heimathafen. Die Kontaktdaten benötigen wir für Rückfragen zu Ihrer
+> Meldung. Name und Schiffsname veröffentlichen wir nur, wenn Sie dem im Formular
+> ausdrücklich zugestimmt haben.
+>
+> **Speicherdauer.** Drei Monate nach Eingang der Meldung löschen wir Ihre
+> E-Mail-Adresse, Telefonnummer, Faxnummer und Anschrift. Haben Sie der Nennung
+> Ihres Namens oder Schiffsnamens nicht zugestimmt, löschen wir zum selben
+> Zeitpunkt auch Vor- und Nachname bzw. Schiffsname und Heimathafen. Die Angaben
+> zur Sichtung selbst bewahren wir als wissenschaftlichen Datenbestand dauerhaft
+> auf.
+>
+> **Zuordnung von Meldungen.** Damit wir mehrere Meldungen derselben Person auch
+> nach dieser Löschung gemeinsam auswerten können (etwa um wiederholte
+> Beobachtungen eines Schiffes oder Doppelmeldungen zu erkennen), bilden wir beim
+> Eingang aus Ihrer E-Mail-Adresse mit einem geheimen Schlüssel eine Kennung
+> (kryptografischer Hash). Aus der Kennung lässt sich die E-Mail-Adresse nicht
+> ablesen. Sie verlässt unsere Server nicht und wird weder angezeigt noch
+> exportiert. Wer Kennung und Schlüssel zusammen hat, kann allerdings zu einer
+> bekannten E-Mail-Adresse prüfen, ob von ihr Meldungen stammen; der Schlüssel
+> wird deshalb getrennt vom Datenbestand verwahrt.
+>
+> **Löschung auf Anfrage.** Auf Ihren Wunsch (Art. 17 DSGVO) löschen wir Ihre
+> Kontaktdaten, Ihren Namen und Schiffsnamen sowie die Kennung sofort und für
+> alle Ihre Meldungen, auch für veröffentlichte. Die Angaben zur Sichtung bleiben
+> erhalten. Haben Sie in Bemerkungen oder auf Fotos selbst Hinweise auf Ihre
+> Person hinterlassen, entfernen wir diese dabei von Hand.
+
+Vier Punkte für das Gespräch mit dem Museum:
+
+- **Freitexte und Fotos löscht kein Job.** Job und Löschersuchen leeren nur die
+  eingeordneten Felder (`piiColumns.ts`, Klassen `contact`, `name`, `ship`) und
+  den Hash. Bemerkungen und Medien bleiben (Entscheidung E3); bereinigt wird bei
+  der Prüfung von Hand. Der letzte Satz des Abschnitts „Löschung auf Anfrage"
+  sagt deshalb einen Handgriff zu: Wer ein Löschersuchen ausführt, sieht die
+  Bemerkungen und Fotos der betroffenen Meldungen durch. Will das Museum das
+  nicht zusagen, entfällt der Satz, und der Abschnitt darf nicht behaupten, es
+  bleibe kein Bezug zur Person.
+
+- **„Kennung" statt „anonym".** Mit dem Schlüssel auf dem Server ist die
+  Kennung ein Pseudonym, kein anonymes Datum. Der Text sagt deshalb nur, was
+  stimmt: nicht ablesbar, aber zu einer bekannten Adresse prüfbar.
+- **Sicherungen.** Datenbank-Backups halten die Kontaktdaten länger als drei
+  Monate fest, solange sie aufbewahrt werden. Die Frist für Backups (höchstens
+  drei Monate, Schritt 2 der Freigabe) gehört entweder in denselben Abschnitt
+  oder in den allgemeinen Teil der Erklärung.
+- **Zeitpunkt.** Erst veröffentlichen, wenn der Job in Production läuft.
+
 ---
 
 ## Freigabe des ersten Laufs
@@ -402,15 +467,15 @@ Panel zeigt dann rot.
 
 **Ablauf:**
 
-| Schritt | Wer         | Was                                                                                                                                                                                                                                |
-| ------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1       | Entwicklung | Vorbedingungen herstellen. Das Panel zeigt sie als Checkliste: Schlüssel gesetzt; keine Zeile mit E-Mail ohne Hash; Spam-Nachbewertung abgeschlossen (`spam_score IS NULL` = 0); Lesestellen umgestellt (PR 3 deployt).            |
-| 2       | Museum      | Datenbank-Backup ziehen, mit festgelegter Löschfrist (höchstens 3 Monate).                                                                                                                                                         |
-| 3       | Entwicklung | **Vorschau** erzeugen und dem Museum schicken: Anzahl fälliger Meldungen gesamt und je Jahr; davon Namen geleert und behalten; Schiffsnamen geleert und behalten; davon offen (wie im Eingang) und abgelehnt; Grenzdatum. Keine personenbezogenen Werte.      |
-| 4       | Museum      | **Schriftliche Freigabe** per E-Mail mit Bezug auf die Zahlen der Vorschau. Ablage als `docs/archive/ANONYMISIERUNG_FREIGABE_<datum>.md`: wer, wann, welche Zahlen; ohne private Adressen.                                         |
-| 5       | Superadmin  | **Freischaltung** im Panel. Der Dialog zeigt die aktuelle Vorschau; bestätigt wird durch Eingabe der Anzahl. Weicht sie deutlich von der freigegebenen ab, ist das der Moment, um anzuhalten. Audit-Eintrag mit Person und Zahlen. |
-| 6       | Superadmin  | **Erster Lauf** über „Jetzt ausführen" im Panel oder den Endpunkt. Er arbeitet in Stapeln, bis nichts mehr fällig ist (bei ~20.000 Zeilen etwa 40 Stapel zu 500).                                                                  |
-| 7       | Entwicklung | **Prüfung:** Panel grün (0 über der Frist); Stichproben in der Detailansicht; Historie und Statistik plausibel; Legacy-Contract-Tests grün.                                                                                        |
+| Schritt | Wer         | Was                                                                                                                                                                                                                                                      |
+| ------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1       | Entwicklung | Vorbedingungen herstellen. Das Panel zeigt sie als Checkliste: Schlüssel gesetzt; keine Zeile mit E-Mail ohne Hash; Spam-Nachbewertung abgeschlossen (`spam_score IS NULL` = 0); Lesestellen umgestellt (PR 3 deployt).                                  |
+| 2       | Museum      | Datenbank-Backup ziehen, mit festgelegter Löschfrist (höchstens 3 Monate).                                                                                                                                                                               |
+| 3       | Entwicklung | **Vorschau** erzeugen und dem Museum schicken: Anzahl fälliger Meldungen gesamt und je Jahr; davon Namen geleert und behalten; Schiffsnamen geleert und behalten; davon offen (wie im Eingang) und abgelehnt; Grenzdatum. Keine personenbezogenen Werte. |
+| 4       | Museum      | **Schriftliche Freigabe** per E-Mail mit Bezug auf die Zahlen der Vorschau. Ablage als `docs/archive/ANONYMISIERUNG_FREIGABE_<datum>.md`: wer, wann, welche Zahlen; ohne private Adressen.                                                               |
+| 5       | Superadmin  | **Freischaltung** im Panel. Der Dialog zeigt die aktuelle Vorschau; bestätigt wird durch Eingabe der Anzahl. Weicht sie deutlich von der freigegebenen ab, ist das der Moment, um anzuhalten. Audit-Eintrag mit Person und Zahlen.                       |
+| 6       | Superadmin  | **Erster Lauf** über „Jetzt ausführen" im Panel oder den Endpunkt. Er arbeitet in Stapeln, bis nichts mehr fällig ist (bei ~20.000 Zeilen etwa 40 Stapel zu 500).                                                                                        |
+| 7       | Entwicklung | **Prüfung:** Panel grün (0 über der Frist); Stichproben in der Detailansicht; Historie und Statistik plausibel; Legacy-Contract-Tests grün.                                                                                                              |
 
 Auf **Staging** wird derselbe Ablauf vorher einmal vollständig durchgespielt.
 
@@ -449,7 +514,8 @@ jemand merkt. Deshalb:
   fällig werden („Rückfragen nur noch bis …").
 
 **Cron:** Für `cleanup-orphans` ist in Production ein Cron eingerichtet
-(bestätigt 2026-11-02). Der Aufruf von `/api/admin/anonymize` wird dort ergänzt.
+(bestätigt 2026-11-02). Die Zeile für `/api/admin/anonymize` samt Testaufruf
+steht in `docs/PRODUCTION_DEPLOYMENT.md` („Anonymisierung der Melderdaten").
 
 ---
 

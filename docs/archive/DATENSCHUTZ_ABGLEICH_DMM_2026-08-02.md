@@ -29,14 +29,14 @@ die App. Alles unten Genannte ist an dieser Formulierung zu messen.
 
 ## 1. Von der DMM-Erklärung abgedeckt
 
-| Punkt                                                          | Fundstelle im Code                                                                      | Bewertung                                                         |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Punkt                                                          | Fundstelle im Code                                                                         | Bewertung                                                         |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
 | Erhebung von Sichtungsdaten (Datum, Position, Tierart, Anzahl) | [schema.ts:33–58](../../src/lib/server/db/schema.ts#L33-L58)                               | Vom Absatz oben und dem Verweis auf den Erhebungsbogen getragen   |
 | Veröffentlichung der Sichtungsinformationen im Internet        | [publicMapConditions.ts:31](../../src/routes/api/map/sightings/publicMapConditions.ts#L31) | Ausdrücklich genannt („Bereitstellung … im Internet")             |
 | Kontaktdaten für Rückfragen durch Wissenschaftler              | [schema.ts:63–70](../../src/lib/server/db/schema.ts#L63-L70)                               | Ausdrücklich genannt („Kontaktaufnahme … bei Nachfragen")         |
 | Rechtsgrundlage Einwilligung (Art. 6 Abs. 1 lit. a)            | [sightingSchema.ts:1218–1224](../../src/lib/form/validation/sightingSchema.ts#L1218-L1224) | Erklärung nennt Einwilligung als Grundlage für Sichtungsmeldungen |
-| Betroffenenrechte, Widerruf, Beschwerderecht                   | —                                                                                       | Vollständig in der DMM-Erklärung (Art. 15–21, 77)                 |
-| Verantwortlicher + Datenschutzbeauftragter                     | —                                                                                       | Stiftung DMM, Stralsund; ECOVIS Rostock                           |
+| Betroffenenrechte, Widerruf, Beschwerderecht                   | —                                                                                          | Vollständig in der DMM-Erklärung (Art. 15–21, 77)                 |
+| Verantwortlicher + Datenschutzbeauftragter                     | —                                                                                          | Stiftung DMM, Stralsund; ECOVIS Rostock                           |
 
 ---
 
@@ -45,6 +45,14 @@ die App. Alles unten Genannte ist an dieser Formulierung zu messen.
 Nach Wirkung sortiert, nicht nach Aufwand.
 
 ### 2.1 Keine Löschfrist für Sichtungen — und `/about` sagt das Gegenteil
+
+> **Erledigt (2026-11).** Auf Weisung des Landesdatenschutzbeauftragten MV
+> leert ein täglicher Job die Kontaktdaten jeder Meldung 3 Monate nach Eingang,
+> Name und Schiff ohne Einwilligung ebenso; ein HMAC-Hash hält Meldungen einer
+> Person verknüpft. Die Frist steht auf `/about` im Text. Konzept:
+> `docs/ANONYMISIERUNG_KONZEPT.md`, Umsetzung: `docs/ANONYMISIERUNG_UMSETZUNGSPLAN.md`.
+> Ein Textvorschlag für die Datenschutzerklärung des Museums steht dort im
+> Abschnitt zu PR 6. Der Befund unten bleibt als Stand vom 2026-08-02 stehen.
 
 Die einzige Aufbewahrungsregel im Code betrifft **verwaiste Uploads (24 h)**
 ([uploadRetention.ts:15](../../src/lib/constants/uploadRetention.ts#L15)). Für Sichtungen samt Klarnamen,
@@ -136,8 +144,8 @@ Vollständigkeit verweist.
 
 ### 2.6 Nicht genannte Verarbeitungen
 
-| Verarbeitung                                                | Fundstelle                                                          |
-| ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| Verarbeitung                                                | Fundstelle                                                             |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------- |
 | IP-Adressen im Audit-Log                                    | [schema.ts:203](../../src/lib/server/db/schema.ts#L203)                |
 | Browser-Speicherung der Formulareingaben (`sessionStorage`) | [localStorage.ts:55–58](../../src/lib/storage/localStorage.ts#L55-L58) |
 | Dauerhafte Kontaktdaten im `localStorage`                   | [localStorage.ts:336](../../src/lib/storage/localStorage.ts#L336)      |
@@ -214,7 +222,8 @@ Impressum bleibt sinnvollerweise verlinkt — Anbieter ist unverändert das Muse
 
 ### Unabhängig von dieser Entscheidung
 
-1. **Löschfrist für Sichtungen klären** (§2.1) — fachliche Entscheidung des Museums, dann Umsetzung.
+1. ~~**Löschfrist für Sichtungen klären** (§2.1)~~ — erledigt 2026-11, siehe §2.1.
+   Ursprünglicher Punkt: — fachliche Entscheidung des Museums, dann Umsetzung.
    Bis dahin ist die Vollständigkeitszusage auf `/about:324` die einzige heute falsche Aussage der App.
 2. **EXIF beim Upload strippen** (§2.2) — nicht dringend, solange keine Fotos öffentlich angezeigt
    werden, aber **zwingende Vorbedingung** dieses Features. Kostet die Admin-Ansicht nichts.

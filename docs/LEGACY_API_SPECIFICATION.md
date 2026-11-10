@@ -468,6 +468,30 @@ URL path, data type or response structure changed. Admin clients are unaffected.
 Pinned by `src/routes/sichtungen/showreports.json/showreports.test.ts`
 (`Datenschutz - Suche über personenbezogene Felder`).
 
+### Anonymized reports (since 2026-11)
+
+Three months after receipt, a nightly job clears the reporter's contact data
+(email, phone, fax, address) of every report, and first name, last name, ship
+name and home port where the reporter did not consent to being named
+(`docs/ANONYMISIERUNG_KONZEPT.md`). This is **not** a change of the contract —
+no field, path, type or structure changes — but it changes what old reports
+contain:
+
+- **`na` and `sh`** are emitted only with consent, exactly as before. A report
+  with consent keeps name and ship name, so its output is unchanged. A report
+  without consent never emitted them, so its output is unchanged as well.
+- **Search** finds anonymized reports only through fields that still hold a
+  value. For anonymous callers nothing changes (they only ever searched
+  consented names). An **admin** searching by email finds only reports younger
+  than about three months; older ones match by name only if the name was
+  consented.
+- **Erasure requests** (Art. 17 GDPR, handled by a superadmin) clear name and
+  ship name regardless of consent and set both consent flags to `0`. From then
+  on `na`/`sh` are no longer emitted for that person's reports — the one case
+  in which the output of an existing report changes.
+- **`POST /rest_sichtungen`** is unaffected. Incoming reports are stored as
+  before; the job only touches rows older than three months.
+
 ### Response Format
 
 JSON Array with JSON Objects:
