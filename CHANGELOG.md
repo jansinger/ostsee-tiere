@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.28.0](https://github.com/jansinger/ostsee-tiere/compare/v2.27.0...v2.28.0) (2026-11-10)
+
+
+### Features
+
+* **admin:** add anonymization approval and monitoring ([#1013](https://github.com/jansinger/ostsee-tiere/issues/1013)) ([73f54df](https://github.com/jansinger/ostsee-tiere/commit/73f54dfeebdd2265321a91c722101eb54a80f5f0))
+
+
+### Bug Fixes
+
+* **admin:** split due sightings into open and rejected ([#1015](https://github.com/jansinger/ostsee-tiere/issues/1015)) ([6e43faa](https://github.com/jansinger/ostsee-tiere/commit/6e43faac5197a17cbc83b44ad844bb9339302512))
+
 ## [2.27.0](https://github.com/jansinger/ostsee-tiere/compare/v2.26.0...v2.27.0) (2026-11-09)
 
 
