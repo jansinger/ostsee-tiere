@@ -2,17 +2,26 @@
 	import Icon from '#lib/components/Icon.svelte';
 	import { formatLocalDateTime } from '#lib/utils/format/dateTime.ts';
 	import { SIGHTING_STATUS_PRESENTATION, verdictToStatus } from './sightingStatus';
-	import { VERDICT_LOG_LABEL } from './sightingStatusLog';
+	import { buildSightingHistory, VERDICT_LOG_LABEL } from './sightingStatusLog';
 	import type { SightingStatusLogEntry } from './sightingStatusLog';
 
 	let {
 		entries,
-		failed = false
+		failed = false,
+		anonymizedAt = null
 	}: {
 		entries: SightingStatusLogEntry[];
 		/** Die Historie konnte nicht geladen werden — siehe Markup, nicht dasselbe wie „leer". */
 		failed?: boolean;
+		/** `anonymisiert_am` der Sichtung — wird als Eintrag eingereiht, siehe `buildSightingHistory`. */
+		anonymizedAt?: Date | string | null;
 	} = $props();
+
+	const items = $derived(buildSightingHistory(failed ? [] : entries, anonymizedAt));
+	const emptyHint = $derived(
+		`${items.length === 0 ? 'Keine Einträge.' : 'Keine Prüfentscheidungen aufgezeichnet.'} ` +
+			'Die Aufzeichnung beginnt mit der Einführung der Historie — ältere Entscheidungen sind nur als aktueller Status erhalten.'
+	);
 </script>
 
 {#if failed}
@@ -31,28 +40,42 @@
 	<!-- Eine leere Liste wortlos zu zeigen wäre eine falsche Aussage: Die
 	     Aufzeichnung beginnt mit dieser Tabelle, nicht mit der Sichtung. 19.262
 	     Freigaben stammen aus dem Altsystem und haben deshalb keinen Eintrag —
-	     ohne diesen Satz liest sich das als „nie bearbeitet". -->
-	<p class="text-base-content/70 text-sm">
-		Keine Einträge. Die Aufzeichnung beginnt mit der Einführung der Historie — ältere Entscheidungen
-		sind nur als aktueller Status erhalten.
-	</p>
-{:else}
-	<ul class="space-y-3">
-		{#each entries as entry (entry.id)}
-			{@const status = verdictToStatus(entry.verdict)}
-			{@const presentation = SIGHTING_STATUS_PRESENTATION[status]}
+	     ohne diesen Satz liest sich das als „nie bearbeitet". Steht eine
+	     Anonymisierung darunter, gilt der Satz nur für die Prüfentscheidungen. -->
+	<p class="text-base-content/70 text-sm">{emptyHint}</p>
+{/if}
+
+<!-- Die Anonymisierung steht auch beim Ladefehler und beim Altbestand da: Ihr
+     Zeitpunkt kommt aus der Zeile (`anonymisiert_am`), nicht aus dem Log, und
+     ist deshalb immer bekannt. Kein Bearbeiter — der nächtliche Job hat keinen,
+     und wer ein Löschersuchen ausgeführt hat, steht im Audit-Log. -->
+{#if items.length > 0}
+	<ul class="space-y-3" class:mt-3={failed || entries.length === 0}>
+		{#each items as item (item.key)}
 			<li class="flex items-start gap-3">
-				<!-- Icon trägt die Bedeutung mit, nicht nur die Farbe: Freigabe und
-				     Ablehnung müssen auch ohne Farbwahrnehmung unterscheidbar sein. -->
-				<span class="badge {presentation.badgeClass} mt-0.5 shrink-0 gap-1">
-					<Icon icon={presentation.icon} width="14" aria-hidden="true" />
-					{VERDICT_LOG_LABEL[entry.verdict]}
-				</span>
-				<span class="text-base-content/70 text-sm">
-					{formatLocalDateTime(entry.recordedAt, 'datetime')}{entry.editor
-						? ` durch ${entry.editor}`
-						: ''}
-				</span>
+				{#if item.kind === 'verdict'}
+					{@const status = verdictToStatus(item.entry.verdict)}
+					{@const presentation = SIGHTING_STATUS_PRESENTATION[status]}
+					<!-- Icon trägt die Bedeutung mit, nicht nur die Farbe: Freigabe und
+					     Ablehnung müssen auch ohne Farbwahrnehmung unterscheidbar sein. -->
+					<span class="badge {presentation.badgeClass} mt-0.5 shrink-0 gap-1">
+						<Icon icon={presentation.icon} width="14" aria-hidden="true" />
+						{VERDICT_LOG_LABEL[item.entry.verdict]}
+					</span>
+					<span class="text-base-content/70 text-sm">
+						{formatLocalDateTime(item.at, 'datetime')}{item.entry.editor
+							? ` durch ${item.entry.editor}`
+							: ''}
+					</span>
+				{:else}
+					<span class="badge badge-ghost mt-0.5 shrink-0 gap-1">
+						<Icon icon="lucide:eraser" width="14" aria-hidden="true" />
+						Kontaktdaten anonymisiert
+					</span>
+					<span class="text-base-content/70 text-sm">
+						{formatLocalDateTime(item.at, 'datetime')}
+					</span>
+				{/if}
 			</li>
 		{/each}
 	</ul>

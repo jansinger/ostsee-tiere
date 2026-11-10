@@ -603,7 +603,8 @@
 	     zum Status, wird aber selten gebraucht — aufgeklappt schöbe sie alle
 	     Sichtungsdaten nach unten. `summary` als eigenes Bedienelement, damit der
 	     Zustand per Tastatur erreichbar bleibt. -->
-	{@const historyLabel = `Bearbeitungs-Historie${statusLog.length > 0 ? ` (${statusLog.length})` : ''}`}
+	{@const historyCount = statusLog.length + (currentSighting.anonymizedAt ? 1 : 0)}
+	{@const historyLabel = `Bearbeitungs-Historie${historyCount > 0 ? ` (${historyCount})` : ''}`}
 	<!-- `aria-label` am `details`: Ein `summary` mit `collapse-title` wird als
 	     namenloses `group` exponiert, die Zusammenfassung selbst als `generic` —
 	     ein Screenreader meldete den Bereich damit gar nicht. Der Text ist
@@ -613,7 +614,11 @@
 			{historyLabel}
 		</summary>
 		<div class="collapse-content">
-			<SightingStatusTimeline entries={statusLog} failed={statusLogFailed} />
+			<SightingStatusTimeline
+				entries={statusLog}
+				failed={statusLogFailed}
+				anonymizedAt={currentSighting.anonymizedAt}
+			/>
 		</div>
 	</details>
 
