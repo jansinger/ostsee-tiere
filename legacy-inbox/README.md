@@ -235,12 +235,34 @@ schlimmsten Fall rund 6 GB pro Tag auf die Platte (1.000 Requests/Stunde à
 256 KB). Die Reißleine schützt vor einer Flut, nicht vor einem geduldigen
 Angreifer.
 
-**Aufräumen.** Weder `abgewiesen/` noch `importiert/` räumen sich selbst auf:
+**Aufräumen und Aufbewahrungsfrist.** Die Dateien tragen Name, E-Mail,
+Telefon und Anschrift der Melder. In der Datenbank werden diese Angaben 3 Monate
+nach Eingang geleert (`docs/ANONYMISIERUNG_KONZEPT.md`); länger dürfen sie auch
+hier nicht liegen. `sync.sh` ruft deshalb einmal am Tag
+`src/tools/prune-legacy-inbox-cli.js` auf:
 
-- `abgewiesen/` nach Sichtung durch einen Menschen leeren — echte Sichtungen
-  von Hand nachtragen, Missbrauch löschen
-- `importiert/` nach gesicherter Übernahme in die Datenbank archivieren oder
-  löschen. Die Dateien werden nur noch als Herkunftsnachweis gebraucht
+| Verzeichnis    | gelöscht nach                       | warum                                                           |
+| -------------- | ----------------------------------- | --------------------------------------------------------------- |
+| `importiert/`  | 30 Tagen ab Eingang                 | Meldung steht in der Datenbank, Datei ist nur Herkunftsnachweis |
+| `abgewiesen/`  | 3 Monaten ab Eingang (1 Tag Puffer) | dieselbe Frist wie in der Datenbank                             |
+| `posteingang/` | **nie**                             | noch nicht übertragen — Löschen wäre Datenverlust               |
+
+Datiert wird über den Zeitstempel im Dateinamen, nicht über `mtime`. Eine Datei
+ohne lesbaren Zeitstempel bleibt stehen. Liegt im Posteingang etwas über der
+Frist oder gibt es Dateien ohne Datum, kommt eine Mail über `melde.sh`
+(„Aufräumen braucht einen Blick"). Ob heute schon aufgeräumt wurde, steht in
+`.aufgeraeumt-am` in der Wurzel des Datenverzeichnisses.
+
+Daraus folgt für `abgewiesen/`: **Innerhalb von 3 Monaten sichten.** Echte
+Sichtungen von Hand nachtragen, Missbrauch löschen. Was bis zur Frist liegen
+bleibt, wird gelöscht, auch ungesichtet.
+
+Von Hand, etwa zum Prüfen:
+
+    node src/tools/prune-legacy-inbox-cli.js --dir="$LEGACY_INBOX_DATA_DIR"
+
+**Sicherungen** des Datenverzeichnisses (siehe oben) unterliegen derselben
+Frist und dürfen höchstens 3 Monate aufbewahrt werden.
 
 ## Import
 
