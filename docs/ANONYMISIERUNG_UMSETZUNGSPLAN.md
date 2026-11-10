@@ -427,9 +427,19 @@ schon nennt.
 > **Löschung auf Anfrage.** Auf Ihren Wunsch (Art. 17 DSGVO) löschen wir Ihre
 > Kontaktdaten, Ihren Namen und Schiffsnamen sowie die Kennung sofort und für
 > alle Ihre Meldungen, auch für veröffentlichte. Die Angaben zur Sichtung bleiben
-> ohne Bezug zu Ihrer Person erhalten.
+> erhalten. Haben Sie in Bemerkungen oder auf Fotos selbst Hinweise auf Ihre
+> Person hinterlassen, entfernen wir diese dabei von Hand.
 
-Drei Punkte für das Gespräch mit dem Museum:
+Vier Punkte für das Gespräch mit dem Museum:
+
+- **Freitexte und Fotos löscht kein Job.** Job und Löschersuchen leeren nur die
+  eingeordneten Felder (`piiColumns.ts`, Klassen `contact`, `name`, `ship`) und
+  den Hash. Bemerkungen und Medien bleiben (Entscheidung E3); bereinigt wird bei
+  der Prüfung von Hand. Der letzte Satz des Abschnitts „Löschung auf Anfrage"
+  sagt deshalb einen Handgriff zu: Wer ein Löschersuchen ausführt, sieht die
+  Bemerkungen und Fotos der betroffenen Meldungen durch. Will das Museum das
+  nicht zusagen, entfällt der Satz, und der Abschnitt darf nicht behaupten, es
+  bleibe kein Bezug zur Person.
 
 - **„Kennung" statt „anonym".** Mit dem Schlüssel auf dem Server ist die
   Kennung ein Pseudonym, kein anonymes Datum. Der Text sagt deshalb nur, was
