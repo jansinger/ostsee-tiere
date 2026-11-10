@@ -6,6 +6,8 @@
  * liegen (docs/ANONYMISIERUNG_KONZEPT.md, 5.1).
  */
 import { PgDialect } from 'drizzle-orm/pg-core';
+import type { SQL } from 'drizzle-orm';
+import { openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
 import { describe, expect, it } from 'vitest';
 import { groupByConsents } from './anonymizationPatch';
 import {
@@ -99,16 +101,15 @@ describe('dueStatusFilters', () => {
 	// „Ungeprüft" heißt dasselbe wie im Eingang: weder freigegeben noch
 	// abgelehnt. `pendingOnly()` zählte abgelehnte mit — die Vorschau auf
 	// Production meldete 536 „ungeprüfte" Meldungen bei leerem Eingang.
-	const render = (value: unknown): string =>
-		new PgDialect().sqlToQuery(value as Parameters<PgDialect['sqlToQuery']>[0]).sql;
+	// Verglichen wird mit den Prädikaten aus approvalFilter selbst; sie hier
+	// nachzuschreiben, verbietet approvalPredicateScan.test.ts zu Recht.
+	const render = (value: SQL): string => new PgDialect().sqlToQuery(value).sql;
 
-	it('zählt als offen nur weder freigegebene noch abgelehnte Meldungen', () => {
-		const text = render(dueStatusFilters().open);
-		expect(text).toContain('"sichtungen"."freigegeben_am" is null');
-		expect(text).toContain('"sichtungen"."abgelehnt_am" is null');
+	it('zählt als offen dieselbe Menge wie der Eingang', () => {
+		expect(render(dueStatusFilters().open)).toBe(render(openOnly()));
 	});
 
 	it('zählt abgelehnte Meldungen getrennt', () => {
-		expect(render(dueStatusFilters().rejected)).toContain('"sichtungen"."abgelehnt_am" is not null');
+		expect(render(dueStatusFilters().rejected)).toBe(render(rejectedOnly()));
 	});
 });
