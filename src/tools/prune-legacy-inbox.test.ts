@@ -11,9 +11,11 @@ import { mkdtemp, mkdir, writeFile, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ANONYMIZE_AFTER_MONTHS } from '#lib/constants/reporterDataRetention.ts';
+import { anonymizationDueAt } from '#lib/utils/privacy/anonymizationCutoff.ts';
 import {
 	ABGEWIESEN_MONATE,
 	IMPORTIERT_TAGE,
+	abgewiesenFaelligAb,
 	empfangenAm,
 	raeumeAuf
 } from './prune-legacy-inbox.js';
@@ -51,6 +53,25 @@ describe('empfangenAm', () => {
 			expect(empfangenAm(datei)).toBeNull();
 		}
 	);
+});
+
+describe('abgewiesenFaelligAb', () => {
+	// Monatsende: PostgreSQL kappt auf das Ende des Zielmonats, setUTCMonth()
+	// liefe in den Folgemonat über und überschritte die Frist (Review PR #1019).
+	it('kappt am Monatsende auf das Ende des Zielmonats, bevor der Puffer abgeht', () => {
+		expect(abgewiesenFaelligAb(new Date('2026-11-30T12:00:00Z'))).toEqual(
+			new Date('2027-02-27T12:00:00Z')
+		);
+	});
+
+	// Das Werkzeug läuft unter blankem node und kann die TS-Fassung nicht
+	// importieren — der Vergleich hält beide Rechnungen deckungsgleich.
+	it('rechnet wie die Fristberechnung der App, über ein ganzes Jahr', () => {
+		for (let tag = 0; tag < 366; tag++) {
+			const eingang = new Date(Date.UTC(2027, 0, 1 + tag, 13, 7, 5, 123));
+			expect(abgewiesenFaelligAb(eingang)).toEqual(anonymizationDueAt(eingang));
+		}
+	});
 });
 
 describe('raeumeAuf', () => {
@@ -133,5 +154,17 @@ describe('raeumeAuf', () => {
 		const bericht = await raeumeAuf({ datenVerzeichnis: wurzel, jetzt: JETZT, log: stumm });
 
 		expect(bericht.geloescht).toEqual({ importiert: 0, abgewiesen: 0 });
+	});
+
+	it('meldet undatierte Dateien im Posteingang, ohne sie zu löschen', async () => {
+		// Etwa ein .tmp-Rest nach einem Prozessabbruch: Der Sender überträgt ihn
+		// nicht (nur *.json), gelöscht wird er hier nicht — also muss er auffallen.
+		const tmp = `${name(1, '2026-01-01T00:00:00.000Z')}.tmp`;
+		const wurzel = await datenVerzeichnis({ posteingang: [tmp] });
+
+		const bericht = await raeumeAuf({ datenVerzeichnis: wurzel, jetzt: JETZT, log: stumm });
+
+		expect(await readdir(join(wurzel, 'posteingang'))).toEqual([tmp]);
+		expect(bericht.uebersprungen).toEqual([`posteingang/${tmp}`]);
 	});
 });
