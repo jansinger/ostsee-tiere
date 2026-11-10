@@ -14,7 +14,7 @@
 		/** Die Historie konnte nicht geladen werden — siehe Markup, nicht dasselbe wie „leer". */
 		failed?: boolean;
 		/** `anonymisiert_am` der Sichtung — wird als Eintrag eingereiht, siehe `buildSightingHistory`. */
-		anonymizedAt?: Date | string | null;
+		anonymizedAt?: Date | string | null | undefined;
 	} = $props();
 
 	const items = $derived(buildSightingHistory(failed ? [] : entries, anonymizedAt));
