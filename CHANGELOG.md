@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.29.0](https://github.com/jansinger/ostsee-tiere/compare/v2.28.0...v2.29.0) (2026-11-10)
+
+
+### Features
+
+* **admin:** show anonymization in the sighting history ([#1017](https://github.com/jansinger/ostsee-tiere/issues/1017)) ([deb5f4c](https://github.com/jansinger/ostsee-tiere/commit/deb5f4c8bad38a9d7e7c6ec5a42aae1346263b19))
+
+
+### Documentation
+
+* **security:** document reporter data retention ([#1016](https://github.com/jansinger/ostsee-tiere/issues/1016)) ([030214d](https://github.com/jansinger/ostsee-tiere/commit/030214dbbac3a906c25203ffc64be0260807a93e))
+
 ## [2.28.0](https://github.com/jansinger/ostsee-tiere/compare/v2.27.0...v2.28.0) (2026-11-10)
 
 
