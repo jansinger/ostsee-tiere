@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest';
 import { groupByConsents } from './anonymizationPatch';
 import {
 	dueForAnonymization,
+	dueStatusFilters,
 	newestCreated,
 	overdueForAnonymization
 } from './anonymizationQueries';
@@ -91,5 +92,23 @@ describe('overdueForAnonymization', () => {
 
 	it('zählt nur noch nicht anonymisierte Meldungen', () => {
 		expect(sql()).toContain('"sichtungen"."anonymisiert_am" is null');
+	});
+});
+
+describe('dueStatusFilters', () => {
+	// „Ungeprüft" heißt dasselbe wie im Eingang: weder freigegeben noch
+	// abgelehnt. `pendingOnly()` zählte abgelehnte mit — die Vorschau auf
+	// Production meldete 536 „ungeprüfte" Meldungen bei leerem Eingang.
+	const render = (value: unknown): string =>
+		new PgDialect().sqlToQuery(value as Parameters<PgDialect['sqlToQuery']>[0]).sql;
+
+	it('zählt als offen nur weder freigegebene noch abgelehnte Meldungen', () => {
+		const text = render(dueStatusFilters().open);
+		expect(text).toContain('"sichtungen"."freigegeben_am" is null');
+		expect(text).toContain('"sichtungen"."abgelehnt_am" is null');
+	});
+
+	it('zählt abgelehnte Meldungen getrennt', () => {
+		expect(render(dueStatusFilters().rejected)).toContain('"sichtungen"."abgelehnt_am" is not null');
 	});
 });

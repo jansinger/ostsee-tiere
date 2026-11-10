@@ -33,7 +33,8 @@ function summary(total: number): DueSummary {
 							namesKept: 0,
 							shipsCleared: 0,
 							shipsKept: 0,
-							pending: 0
+							open: 0,
+							rejected: 0
 						}
 					]
 				: []

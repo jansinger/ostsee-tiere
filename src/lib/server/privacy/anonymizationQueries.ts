@@ -12,7 +12,7 @@
  */
 import { and, count, inArray, isNull, sql, type SQL, type SQLWrapper } from 'drizzle-orm';
 import { ANONYMIZE_AFTER_MONTHS } from '#lib/constants/reporterDataRetention.ts';
-import { pendingOnly } from '#lib/server/db/approvalFilter.ts';
+import { openOnly, rejectedOnly } from '#lib/server/db/approvalFilter.ts';
 import { db } from '#lib/server/db/index.ts';
 import { sightings } from '#lib/server/db/schema.ts';
 import { berlinDatePart } from '#lib/server/db/sqlTimeZone.ts';
@@ -60,7 +60,18 @@ export function newestCreated(): SQL<Date | null> {
 
 const hasText = (column: SQLWrapper): SQL => sql`${column} ~ '[^[:space:]]'`;
 
+/**
+ * Status der fälligen Meldungen, wie der Eingang ihn sieht: offen heißt weder
+ * freigegeben noch abgelehnt (`openOnly`). `pendingOnly()` zählte abgelehnte
+ * mit — die Vorschau auf Production meldete 536 „ungeprüfte" Meldungen bei
+ * leerem Eingang.
+ */
+export function dueStatusFilters(): { open: SQL; rejected: SQL } {
+	return { open: openOnly(), rejected: rejectedOnly() };
+}
+
 async function summarizeDue(): Promise<DueSummary> {
+	const status = dueStatusFilters();
 	const year = sql<number>`${berlinDatePart('year', sightings.created)}::integer`;
 	const hasName = sql`(${hasText(sightings.firstName)} OR ${hasText(sightings.lastName)})`;
 	const hasShip = sql`(${hasText(sightings.shipName)} OR ${hasText(sightings.homePort)})`;
@@ -75,7 +86,8 @@ async function summarizeDue(): Promise<DueSummary> {
 			namesKept: sql<number>`COUNT(*) FILTER (WHERE ${hasName} AND ${nameGiven})::integer`,
 			shipsCleared: sql<number>`COUNT(*) FILTER (WHERE ${hasShip} AND NOT (${shipGiven}))::integer`,
 			shipsKept: sql<number>`COUNT(*) FILTER (WHERE ${hasShip} AND ${shipGiven})::integer`,
-			pending: sql<number>`COUNT(*) FILTER (WHERE ${pendingOnly()})::integer`,
+			open: sql<number>`COUNT(*) FILTER (WHERE ${status.open})::integer`,
+			rejected: sql<number>`COUNT(*) FILTER (WHERE ${status.rejected})::integer`,
 			newest: newestCreated()
 		})
 		.from(sightings)
@@ -99,7 +111,8 @@ async function summarizeDue(): Promise<DueSummary> {
 			namesKept: Number(row.namesKept),
 			shipsCleared: Number(row.shipsCleared),
 			shipsKept: Number(row.shipsKept),
-			pending: Number(row.pending)
+			open: Number(row.open),
+			rejected: Number(row.rejected)
 		}))
 	};
 }

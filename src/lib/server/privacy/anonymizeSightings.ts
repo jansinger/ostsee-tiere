@@ -41,8 +41,10 @@ export interface DueYear {
 	namesKept: number;
 	shipsCleared: number;
 	shipsKept: number;
-	/** davon noch nicht freigegeben */
-	pending: number;
+	/** davon offen: weder freigegeben noch abgelehnt (wie der Eingang) */
+	open: number;
+	/** davon abgelehnt */
+	rejected: number;
 }
 
 export interface DueSummary {

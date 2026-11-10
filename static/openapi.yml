@@ -3337,7 +3337,7 @@ components:
           description: Aufschlüsselung der fälligen Sichtungen nach Eingangsjahr (Berliner Zeit).
           items:
             type: object
-            required: [year, total, namesCleared, namesKept, shipsCleared, shipsKept, pending]
+            required: [year, total, namesCleared, namesKept, shipsCleared, shipsKept, open, rejected]
             properties:
               year:
                 type: integer
@@ -3353,9 +3353,12 @@ components:
                 type: integer
               shipsKept:
                 type: integer
-              pending:
+              open:
                 type: integer
-                description: Davon noch nicht freigegeben.
+                description: Davon offen — weder freigegeben noch abgelehnt, wie im Eingang.
+              rejected:
+                type: integer
+                description: Davon abgelehnt.
         pendingHashes:
           type: integer
           description: Sichtungen mit Adresse, aber ohne Melder-Hash — vor diesem Aufruf.

@@ -59,7 +59,8 @@ const PREVIEW = {
 			namesKept: 150,
 			shipsCleared: 90,
 			shipsKept: 10,
-			pending: 3
+			open: 3,
+			rejected: 40
 		}
 	],
 	pendingHashes: 0,
@@ -109,6 +110,18 @@ describe('AnonymizationPanel', () => {
 		await expect.element(page.getByRole('cell', { name: '2025' })).toBeVisible();
 		expect(calledWith(fetchMock, '/api/admin/anonymize')).toBe(true);
 		expect(calledWith(fetchMock, 'mode=execute')).toBe(false);
+	});
+
+	it('trennt offene von abgelehnten Meldungen, wie der Eingang', async () => {
+		mockFetch(() => ({ body: PREVIEW }));
+		render(AnonymizationPanel, { status: INACTIVE, isSuperAdmin: true });
+
+		await page.getByRole('button', { name: 'Vorschau laden' }).click();
+
+		await expect.element(page.getByRole('columnheader', { name: 'davon offen' })).toBeVisible();
+		await expect.element(page.getByRole('columnheader', { name: 'davon abgelehnt' })).toBeVisible();
+		await expect.element(page.getByRole('cell', { name: '40' })).toBeVisible();
+		expect(page.getByRole('columnheader', { name: /ungeprüft/ }).elements()).toHaveLength(0);
 	});
 
 	it('zeigt die Vorbedingungen als Checkliste', async () => {
