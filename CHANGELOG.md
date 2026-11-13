@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.30.0](https://github.com/jansinger/ostsee-tiere/compare/v2.29.0...v2.30.0) (2026-11-10)
+
+
+### Features
+
+* **security:** apply retention period to the legacy inbox files ([#1019](https://github.com/jansinger/ostsee-tiere/issues/1019)) ([ea79d47](https://github.com/jansinger/ostsee-tiere/commit/ea79d471468c3e42aa293f8ce76c94901baf5af9))
+
 ## [2.29.0](https://github.com/jansinger/ostsee-tiere/compare/v2.28.0...v2.29.0) (2026-11-10)
 
 
