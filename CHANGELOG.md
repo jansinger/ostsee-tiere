@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.30.1](https://github.com/jansinger/ostsee-tiere/compare/v2.30.0...v2.30.1) (2026-11-17)
+
+
+### Dependencies
+
+* **deps:** bump @rollup/rollup-linux-x64-gnu ([#1027](https://github.com/jansinger/ostsee-tiere/issues/1027)) ([1406ba0](https://github.com/jansinger/ostsee-tiere/commit/1406ba0d3fcbc606a0f9774bb5200cf74355e017))
+* **deps:** bump @scalar/sveltekit from 0.3.35 to 0.3.37 ([#1024](https://github.com/jansinger/ostsee-tiere/issues/1024)) ([b563fc0](https://github.com/jansinger/ostsee-tiere/commit/b563fc0e6add333fe8add0205c2eff26a10c9c68))
+* **deps:** bump daisyui from 5.7.50 to 5.8.0 ([#1025](https://github.com/jansinger/ostsee-tiere/issues/1025)) ([d039fa1](https://github.com/jansinger/ostsee-tiere/commit/d039fa1796cb1af70b197f1a37adff5efe143910))
+* **deps:** bump the dev-tooling group with 3 updates ([#1022](https://github.com/jansinger/ostsee-tiere/issues/1022)) ([e75928f](https://github.com/jansinger/ostsee-tiere/commit/e75928f61050d222044ce15ee4a09f978aa9ad4d))
+* **deps:** bump the production-dependencies group with 5 updates ([#1021](https://github.com/jansinger/ostsee-tiere/issues/1021)) ([ed88f75](https://github.com/jansinger/ostsee-tiere/commit/ed88f75272d24dd12e617d54678dbc7f784f239c))
+* **deps:** bump the svelte-framework group with 4 updates ([#1023](https://github.com/jansinger/ostsee-tiere/issues/1023)) ([772a99f](https://github.com/jansinger/ostsee-tiere/commit/772a99f91cebfc65362d8ea4421196da5e3791d6))
+
 ## [2.30.0](https://github.com/jansinger/ostsee-tiere/compare/v2.29.0...v2.30.0) (2026-11-10)
 
 
