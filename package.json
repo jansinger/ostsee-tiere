@@ -162,7 +162,7 @@
 		"yup": "^1.7.1"
 	},
 	"optionalDependencies": {
-		"@rollup/rollup-linux-x64-gnu": "4.68.2"
+		"@rollup/rollup-linux-x64-gnu": "4.68.3"
 	},
 	"overrides": {
 		"axios": "^1.16.1"
