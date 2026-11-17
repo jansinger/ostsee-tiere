@@ -101,7 +101,7 @@
 		"@iconify/json": "^2.2.550",
 		"@inlang/paraglide-js": "^2.29.3",
 		"@playwright/test": "^1.65.0",
-		"@scalar/sveltekit": "^0.3.35",
+		"@scalar/sveltekit": "^0.3.37",
 		"@sveltejs/adapter-node": "^6.0.2",
 		"@sveltejs/adapter-vercel": "^7.0.3",
 		"@sveltejs/kit": "^3.2.0",
