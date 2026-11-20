@@ -13,6 +13,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	distinctReporterCount,
 	hasReporter,
+	latestConsentedName,
 	latestContactEmail,
 	notInternalReporter,
 	reporterKey
@@ -52,5 +53,30 @@ describe('reporterAggregates', () => {
 		);
 		expect(sql).toMatch(/filter \(where "sichtungen"\."email" ~ '\[\^\[:space:\]\]'\)/i);
 		expect(sql).toMatch(/\)\[1\]$/);
+	});
+
+	describe('latestConsentedName', () => {
+		// Der Name bleibt nach der Anonymisierung nur mit Einwilligung stehen. Er
+		// trägt damit die Rangliste, wo die Adresse längst geleert ist — und nur
+		// dort, wo die Person der Nennung zugestimmt hat.
+		const sql = (): string => text(latestConsentedName);
+
+		it('nimmt nur Meldungen mit Einwilligung zur Namensnennung', () => {
+			expect(sql()).toMatch(/"sichtungen"\."namensnennung" = 1/);
+		});
+
+		it('setzt Vor- und Nachnamen zusammen, ohne leere Teile', () => {
+			expect(sql()).toMatch(
+				/concat_ws\(' ', nullif\(btrim\("sichtungen"\."vorname"\), ''\), nullif\(btrim\("sichtungen"\."name"\), ''\)\)/i
+			);
+		});
+
+		it('nimmt den jüngsten Namen und nur einen nicht leeren', () => {
+			expect(sql()).toMatch(/order by "sichtungen"\."created" desc/i);
+			expect(sql()).toMatch(
+				/"sichtungen"\."vorname" ~ '\[\^\[:space:\]\]' or "sichtungen"\."name" ~ '\[\^\[:space:\]\]'/i
+			);
+			expect(sql()).toMatch(/\)\[1\]$/);
+		});
 	});
 });

@@ -581,7 +581,7 @@
 						<table class="table">
 							<thead>
 								<tr>
-									<th>E-Mail</th>
+									<th>Beobachter</th>
 									<th>Sichtungen</th>
 									<th>Ø Gruppengröße</th>
 									<th>Zeitraum</th>
@@ -597,15 +597,26 @@
 												(1000 * 3600 * 24)
 										) + 1}
 									<tr>
-										<!-- Gruppiert wird über den Melder-Hash. Sind alle Meldungen einer
-										     Person anonymisiert, gibt es keine Adresse mehr — die Zeile
-										     bleibt trotzdem, sonst fiele die Person aus der Rangliste. -->
-										<td class="font-mono text-sm">
+										<!-- Gruppiert wird über den Melder-Hash. Der Name steht nur da,
+										     wenn die Person der Namensnennung zugestimmt hat — er bleibt
+										     als Einziges über die Anonymisierung hinaus. Die Adresse gibt
+										     es nur, solange eine Meldung jünger als 3 Monate ist. Fehlt
+										     beides, bleibt die Zeile trotzdem, sonst fiele die Person aus
+										     der Rangliste. -->
+										<td class="text-sm">
 											<span class="badge badge-ghost">#{index + 1}</span>
+											{#if observer.name}
+												{observer.name}
+											{/if}
 											{#if observer.email}
-												{observer.email}
-											{:else}
-												<span class="text-support font-sans italic">anonymisiert</span>
+												<span
+													class="font-mono"
+													class:text-support={observer.name}
+													class:block={observer.name}>{observer.email}</span
+												>
+											{/if}
+											{#if !observer.name && !observer.email}
+												<span class="text-support italic">anonymisiert</span>
 											{/if}
 										</td>
 										<td>

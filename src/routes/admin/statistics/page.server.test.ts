@@ -592,6 +592,8 @@ describe('admin/statistics load() — Melder über den Hash', () => {
 
 		// Angezeigt wird die jüngste noch vorhandene Adresse, nie der Hash.
 		expect(sqlVon(abfrage, 'email')).toContain('array_agg');
+		// Und der Name, aber nur aus Meldungen mit Einwilligung zur Namensnennung.
+		expect(sqlVon(abfrage, 'name')).toContain('"namensnennung" = 1');
 		for (const spalte of Object.values(abfrage!.columns)) {
 			expect(toSqlText(spalte as SQL)).not.toBe('"sichtungen"."melder_hash"');
 		}

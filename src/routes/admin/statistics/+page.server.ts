@@ -10,6 +10,7 @@ import { isBehaviorAnswered } from '#lib/server/db/optionalFields.ts';
 import {
 	distinctReporterCount,
 	hasReporter,
+	latestConsentedName,
 	latestContactEmail,
 	notInternalReporter,
 	reporterKey
@@ -367,12 +368,14 @@ export const load: PageServerLoad = async ({ url }) => {
 			}
 		];
 
-		// Top-Beobachter, gruppiert über den Melder-Hash. Angezeigt wird die jüngste
-		// noch vorhandene Adresse der Person, `null` wenn alle ihre Meldungen
-		// anonymisiert sind. Das Museum fällt über `melder_intern` heraus statt über
-		// die Domain, die es nach der Anonymisierung nicht mehr gibt.
+		// Top-Beobachter, gruppiert über den Melder-Hash. Angezeigt werden der Name,
+		// soweit die Person der Namensnennung zugestimmt hat, und die jüngste noch
+		// vorhandene Adresse — beides `null`, wenn nichts davon übrig ist. Das
+		// Museum fällt über `melder_intern` heraus statt über die Domain, die es
+		// nach der Anonymisierung nicht mehr gibt.
 		const topObservers = await db
 			.select({
+				name: latestConsentedName,
 				email: latestContactEmail,
 				sightingCount: sql<number>`COUNT(*)::integer`,
 				// Berlin-Kalendertag statt naivem UTC-Cast (M1) — sonst rutscht eine
