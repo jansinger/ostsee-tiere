@@ -13,6 +13,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	distinctReporterCount,
 	hasReporter,
+	latestConsentedName,
 	latestContactEmail,
 	notInternalReporter,
 	reporterKey
@@ -52,5 +53,33 @@ describe('reporterAggregates', () => {
 		);
 		expect(sql).toMatch(/filter \(where "sichtungen"\."email" ~ '\[\^\[:space:\]\]'\)/i);
 		expect(sql).toMatch(/\)\[1\]$/);
+	});
+
+	describe('latestConsentedName', () => {
+		// Der Name bleibt nach der Anonymisierung nur mit Einwilligung stehen. Er
+		// trägt damit die Rangliste, wo die Adresse längst geleert ist — und nur
+		// dort, wo die Person der Nennung zugestimmt hat.
+		const sql = (): string => text(latestConsentedName);
+
+		it('nimmt nur Meldungen mit Einwilligung zur Namensnennung', () => {
+			expect(sql()).toMatch(/"sichtungen"\."namensnennung" = 1/);
+		});
+
+		it('setzt Vor- und Nachnamen zusammen und lässt Teile aus, die nur Leerraum sind', () => {
+			// Nicht `btrim`: Das entfernt nur Leerzeichen, ein bloßer Zeilenumbruch im
+			// Vornamen stünde sonst im Namen (Review PR #1028, vgl. optionalFields.ts).
+			const teil = (spalte: string): string =>
+				`nullif(regexp_replace("sichtungen"."${spalte}", '^[[:space:]]+|[[:space:]]+$', '', 'g'), '')`;
+			expect(sql()).toContain(`concat_ws(' ', ${teil('vorname')}, ${teil('name')})`);
+			expect(sql()).not.toMatch(/btrim/i);
+		});
+
+		it('nimmt den jüngsten Namen und nur einen nicht leeren', () => {
+			expect(sql()).toMatch(/order by "sichtungen"\."created" desc/i);
+			expect(sql()).toMatch(
+				/"sichtungen"\."vorname" ~ '\[\^\[:space:\]\]' or "sichtungen"\."name" ~ '\[\^\[:space:\]\]'/i
+			);
+			expect(sql()).toMatch(/\)\[1\]$/);
+		});
 	});
 });

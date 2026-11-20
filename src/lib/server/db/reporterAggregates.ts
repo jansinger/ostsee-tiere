@@ -49,3 +49,23 @@ export function notInternalReporter(): SQL {
 export const latestContactEmail = sql<
 	string | null
 >`(array_agg(${sightings.email} ORDER BY ${sightings.created} DESC) FILTER (WHERE ${sightings.email} ~ '[^[:space:]]'))[1]`;
+
+/**
+ * Name einer Melder-Gruppe, aber nur aus Meldungen mit Einwilligung zur
+ * Namensnennung (`namensnennung = 1`): der jüngste nicht leere „Vorname Name".
+ *
+ * Nach der Anonymisierung ist die Adresse weg, der Name bleibt genau dann
+ * stehen, wenn die Person der Nennung zugestimmt hat. Ohne diesen Baustein
+ * stand die Rangliste nach dem ersten Lauf fast nur noch auf „anonymisiert".
+ * Ein Name ohne Einwilligung wird nie gezeigt, auch solange er noch nicht
+ * geleert ist — die Anzeige soll vor und nach der Frist dasselbe versprechen.
+ *
+ * Leerraum wird mit derselben Definition wie im FILTER entfernt (`[[:space:]]`),
+ * nicht mit `btrim`, das nur Leerzeichen kennt (Review PR #1028).
+ *
+ * `NULL`, wenn keine Meldung der Person eine Einwilligung trägt.
+ * Aggregatfunktion, also nur zusammen mit `GROUP BY reporterKey`.
+ */
+export const latestConsentedName = sql<
+	string | null
+>`(array_agg(concat_ws(' ', nullif(regexp_replace(${sightings.firstName}, '^[[:space:]]+|[[:space:]]+$', '', 'g'), ''), nullif(regexp_replace(${sightings.lastName}, '^[[:space:]]+|[[:space:]]+$', '', 'g'), '')) ORDER BY ${sightings.created} DESC) FILTER (WHERE ${sightings.nameConsent} = 1 AND (${sightings.firstName} ~ '[^[:space:]]' OR ${sightings.lastName} ~ '[^[:space:]]')))[1]`;
