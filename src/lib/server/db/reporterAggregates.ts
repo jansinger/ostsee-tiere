@@ -60,9 +60,12 @@ export const latestContactEmail = sql<
  * Ein Name ohne Einwilligung wird nie gezeigt, auch solange er noch nicht
  * geleert ist — die Anzeige soll vor und nach der Frist dasselbe versprechen.
  *
+ * Leerraum wird mit derselben Definition wie im FILTER entfernt (`[[:space:]]`),
+ * nicht mit `btrim`, das nur Leerzeichen kennt (Review PR #1028).
+ *
  * `NULL`, wenn keine Meldung der Person eine Einwilligung trägt.
  * Aggregatfunktion, also nur zusammen mit `GROUP BY reporterKey`.
  */
 export const latestConsentedName = sql<
 	string | null
->`(array_agg(concat_ws(' ', nullif(btrim(${sightings.firstName}), ''), nullif(btrim(${sightings.lastName}), '')) ORDER BY ${sightings.created} DESC) FILTER (WHERE ${sightings.nameConsent} = 1 AND (${sightings.firstName} ~ '[^[:space:]]' OR ${sightings.lastName} ~ '[^[:space:]]')))[1]`;
+>`(array_agg(concat_ws(' ', nullif(regexp_replace(${sightings.firstName}, '^[[:space:]]+|[[:space:]]+$', '', 'g'), ''), nullif(regexp_replace(${sightings.lastName}, '^[[:space:]]+|[[:space:]]+$', '', 'g'), '')) ORDER BY ${sightings.created} DESC) FILTER (WHERE ${sightings.nameConsent} = 1 AND (${sightings.firstName} ~ '[^[:space:]]' OR ${sightings.lastName} ~ '[^[:space:]]')))[1]`;

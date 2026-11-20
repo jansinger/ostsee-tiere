@@ -65,10 +65,13 @@ describe('reporterAggregates', () => {
 			expect(sql()).toMatch(/"sichtungen"\."namensnennung" = 1/);
 		});
 
-		it('setzt Vor- und Nachnamen zusammen, ohne leere Teile', () => {
-			expect(sql()).toMatch(
-				/concat_ws\(' ', nullif\(btrim\("sichtungen"\."vorname"\), ''\), nullif\(btrim\("sichtungen"\."name"\), ''\)\)/i
-			);
+		it('setzt Vor- und Nachnamen zusammen und lässt Teile aus, die nur Leerraum sind', () => {
+			// Nicht `btrim`: Das entfernt nur Leerzeichen, ein bloßer Zeilenumbruch im
+			// Vornamen stünde sonst im Namen (Review PR #1028, vgl. optionalFields.ts).
+			const teil = (spalte: string): string =>
+				`nullif(regexp_replace("sichtungen"."${spalte}", '^[[:space:]]+|[[:space:]]+$', '', 'g'), '')`;
+			expect(sql()).toContain(`concat_ws(' ', ${teil('vorname')}, ${teil('name')})`);
+			expect(sql()).not.toMatch(/btrim/i);
 		});
 
 		it('nimmt den jüngsten Namen und nur einen nicht leeren', () => {
