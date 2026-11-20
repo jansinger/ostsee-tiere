@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.31.0](https://github.com/jansinger/ostsee-tiere/compare/v2.30.1...v2.31.0) (2026-11-20)
+
+
+### Features
+
+* **admin:** show consented names in the top observers list ([#1028](https://github.com/jansinger/ostsee-tiere/issues/1028)) ([ca03a57](https://github.com/jansinger/ostsee-tiere/commit/ca03a57371028f57226d21581bd1ddb990319b83))
+
 ## [2.30.1](https://github.com/jansinger/ostsee-tiere/compare/v2.30.0...v2.30.1) (2026-11-17)
 
 
