@@ -44,5 +44,5 @@ keywords:
   - Baltic Sea
   - Ostsee
   - biodiversity monitoring
-version: 2.30.1 # x-release-please-version
-date-released: '2026-11-17' # x-release-please-date
+version: 2.31.0 # x-release-please-version
+date-released: '2026-11-20' # x-release-please-date
