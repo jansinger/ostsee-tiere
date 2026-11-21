@@ -4,52 +4,10 @@ Diese Regeln gelten für **jede** Code-Änderung im Projekt.
 
 ---
 
-## Technology Stack
-
-| Bereich   | Technologie                                                    |
-| --------- | -------------------------------------------------------------- |
-| Framework | SvelteKit 5 mit TypeScript                                     |
-| Datenbank | PostgreSQL + PostGIS                                           |
-| ORM       | Drizzle (type-safe)                                            |
-| Styling   | TailwindCSS + DaisyUI (Theme: `meeresmuseum`)                  |
-| Karten    | OpenLayers                                                     |
-| Forms     | Eigene `createForm`-Impl. (`src/lib/form/createForm.ts`) + Yup |
-| Logging   | Pino                                                           |
-| Icons     | unplugin-icons (lucide)                                        |
-
----
-
 ## Projektstruktur
 
 Der vollständige Verzeichnisbaum steht in `.claude/README.md` — er ist
 Navigations-Referenz, keine Regel.
-
----
-
-## Clean Code Prinzipien
-
-### SOLID Grundlagen
-
-- **DRY**: Wiederverwendbare Logik in Utility-Funktionen extrahieren
-- **Single Responsibility**: Eine Funktion = ein Zweck
-- **KISS**: Einfache Lösungen bevorzugen
-- **YAGNI**: Keine Funktionen "auf Vorrat"
-
-### TypeScript Standards
-
-- **Keine `any` Typen** - immer typisieren
-- **Explizite Return Types** für Funktionen
-- **Type Guards** für Runtime-Sicherheit
-- **Pure Functions** wo möglich
-
-### Namenskonventionen
-
-| Element          | Konvention       | Beispiel              |
-| ---------------- | ---------------- | --------------------- |
-| Components       | PascalCase       | `MediaGallery.svelte` |
-| Funktionen       | camelCase        | `loadSightingFiles`   |
-| Konstanten       | UPPER_SNAKE_CASE | `MAX_FILE_SIZE`       |
-| Types/Interfaces | PascalCase       | `SightingFormData`    |
 
 ---
 
@@ -158,40 +116,9 @@ Gleiches gilt für `vi.mock('#lib/…')`: Der Pfad muss exakt dem Import entspre
 
 ---
 
-## Accessibility (WCAG 2.1 AA)
-
-- Alle interaktiven Elemente mit Keyboard bedienbar
-- Aussagekräftige Labels für Form-Elemente
-- ARIA-Attribute wo nötig
-- Farbkontrast mindestens 4.5:1
-- Focus-States sichtbar
-
----
-
-## Icons
-
-### unplugin-icons (Standard)
-
-```svelte
-<script>
-	import MapPin from '~icons/lucide/map-pin';
-	import Calendar from '~icons/lucide/calendar';
-</script>
-
-<MapPin width="20" height="20" class="text-primary" />
-```
-
-### Weather Icons (CSS-basiert)
-
-```html
-<i class="wi wi-day-sunny"></i> <i class="wi wi-wind towards-n"></i>
-```
-
----
-
 ## Context7 - IMMER verwenden
 
-Vor der Arbeit mit Libraries context7 MCP Server nutzen für:
+Vor der Arbeit mit Libraries den Context7 MCP Server (`resolve-library-id`, dann `query-docs`) nutzen für:
 
 - DaisyUI v5 Patterns
 - Svelte 5 Best Practices

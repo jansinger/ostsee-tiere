@@ -14,7 +14,7 @@ Kernfunktionen: Multi-Step-Formular für Sichtungsmeldungen, interaktive Kartenv
 
 ### Context7 MCP Server — IMMER verwenden
 
-Vor der Arbeit mit externen Libraries IMMER den passenden MCP Server für aktuelle Dokumentation nutzen: DaisyUI v5, Svelte 5, SvelteKit, Drizzle ORM, OpenLayers.
+Vor der Arbeit mit externen Libraries IMMER den Context7 MCP Server (`resolve-library-id`, dann `query-docs`) für aktuelle Dokumentation nutzen: DaisyUI v5, Svelte 5, SvelteKit, Drizzle ORM, OpenLayers. Für Svelte zusätzlich der Svelte-MCP (`svelte-autofixer`).
 
 ### Svelte 5 Runes — PFLICHT
 
@@ -113,27 +113,11 @@ Theme-Tokens statt hardcodierter Farben, `*-content` ausschließlich auf Vollton
 
 ## Development Commands
 
-```bash
-npm run dev          # Server (https://localhost:4000)
-npm run certs:setup  # Dev-TLS-Zertifikate via mkcert (läuft automatisch vor dev)
-npm run build        # Production Build
+Skripte stehen in `package.json`. Nicht erratbar:
 
-npm run db:start     # PostgreSQL starten (Docker)
-npm run db:push      # Schema auf lokale Dev-DB pushen (nur Entwicklung)
-npm run db:generate  # Migration generieren — PFLICHT bei Schema-Änderungen (committen!)
-npm run db:migrate   # Migrationen anwenden (läuft im Container automatisch)
-npm run db:studio    # Drizzle Studio
-
-npm run lint         # ESLint
-npm run type-check   # TypeScript
-npm run check        # Svelte-Check
-
-npm run test:quick   # Gate vor dem Commit: E2E-Shard-Abgleich + lint + types + check
-                     # + Unit-Tests (Server) + Komponenten-Tests (Browser). ~70 s.
-                     # Nicht enthalten: die E2E-Suite (npm run test:e2e).
-```
-
-Vollständige Test-Befehle: `.claude/rules/testing.md`
+- `npm run db:generate` ist bei jeder Schema-Änderung PFLICHT (Migration committen); `db:push` nur für lokale Dev-DB.
+- `npm run test:quick` ist das Gate vor dem Commit (E2E-Suite nicht enthalten) — Details `.claude/rules/testing.md`.
+- Dev-Server läuft auf https://localhost:4000; `certs:setup` (mkcert) läuft automatisch vor `dev`.
 
 ### Worktrees
 
@@ -162,21 +146,7 @@ Details, Belege und Aufräum-Befehle: `docs/WORKTREES.md`
 
 SvelteKit 5 + TypeScript, PostgreSQL/PostGIS, Drizzle ORM, TailwindCSS/DaisyUI (Theme `meeresmuseum`), OpenLayers, eigene `createForm`-Implementierung + Yup, Pino, unplugin-icons.
 
-Tech-Stack-Details, Projektstruktur, Clean-Code-Prinzipien und Namenskonventionen: `.claude/rules/architecture.md`
-
-### Schlüsseldateien
-
-- `src/routes/+page.svelte` — Einstiegsseite ↔ Multi-Step Form
-- `src/lib/report/reportKind.ts` — Zweig-Zustandsmaschine der Einstiegsseite (lebend/Totfund)
-- `src/lib/report/components/ReportKindChoice.svelte` — Einstiegsseite „Was möchten Sie melden?"
-- `src/lib/form/createForm.ts` — Form State Management
-- `src/lib/form/validation/sightingSchema.ts` — Yup Validation
-- `src/lib/report/components/` — Form Step & Section Components
-- `src/lib/components/map/OLMap.svelte` — Karten-Komponente
-- `src/lib/server/db/schema.ts` — DB Schema
-- `src/lib/server/db/sightingRepository.ts` — Repository
-
----
+Imports (`#lib` mit Dateiendung), Svelte-5-Runes und SSR-sicherer State: `.claude/rules/architecture.md`
 
 ## Datenbank
 
