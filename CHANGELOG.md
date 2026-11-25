@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.31.1](https://github.com/jansinger/ostsee-tiere/compare/v2.31.0...v2.31.1) (2026-11-25)
+
+
+### Documentation
+
+* **docs:** trim derivable claude config and point docs lookup to context7 ([#1030](https://github.com/jansinger/ostsee-tiere/issues/1030)) ([428e1c8](https://github.com/jansinger/ostsee-tiere/commit/428e1c84f95dd0acf5d562567717b36d8da79c30))
+
+
+### Dependencies
+
+* **deps:** bump @scalar/sveltekit from 0.3.37 to 0.3.40 ([#1036](https://github.com/jansinger/ostsee-tiere/issues/1036)) ([3542c33](https://github.com/jansinger/ostsee-tiere/commit/3542c33225b11386f6045b3be58c0eb6aa145401))
+* **deps:** bump daisyui from 5.8.0 to 5.8.1 ([#1035](https://github.com/jansinger/ostsee-tiere/issues/1035)) ([af5e414](https://github.com/jansinger/ostsee-tiere/commit/af5e414de09018d45ad8996accbce8fda491ccc9))
+* **deps:** bump the dev-tooling group with 5 updates ([#1033](https://github.com/jansinger/ostsee-tiere/issues/1033)) ([92760b2](https://github.com/jansinger/ostsee-tiere/commit/92760b2c918fbb66d030b621f8c35d4679c852fc))
+* **deps:** bump the production-dependencies group with 3 updates ([#1032](https://github.com/jansinger/ostsee-tiere/issues/1032)) ([9c19fd3](https://github.com/jansinger/ostsee-tiere/commit/9c19fd35a4e6a4ab3440d42191e0063060f265fe))
+* **deps:** bump the svelte-framework group with 4 updates ([#1034](https://github.com/jansinger/ostsee-tiere/issues/1034)) ([b7f7b76](https://github.com/jansinger/ostsee-tiere/commit/b7f7b762a7c01cb086c2246d9a1d3b837059b3e6))
+
 ## [2.31.0](https://github.com/jansinger/ostsee-tiere/compare/v2.30.1...v2.31.0) (2026-11-20)
 
 
